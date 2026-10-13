@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>王钰淞 · Yusong Wang — GIS × Multimodal AI</title>
+<meta name="description" content="王钰淞 Yusong Wang — HKUST(GZ) MPhil, HeritageExplorer, multimodal RAG & agent workflow." />
+<meta name="theme-color" content="#0b0b0a" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --bg:#0b0b0a;
+    --panel:#11110f;
+    --panel-2:#171613;
+    --fg:#ece8dc;
+    --mute:#8d8777;
+    --amber:#f2b33d;
+    --amber-dim:rgba(242,179,61,.28);
+    --amber-faint:rgba(242,179,61,.08);
+    --red:#e5372a;
+    --live:#5ed0e0;
+    --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+    --sans:'Noto Sans SC','PingFang SC','Microsoft YaHei',system-ui,sans-serif;
+    --macro:'Archivo Black','Noto Sans SC',system-ui,sans-serif;
+    --pad:clamp(1rem,3vw,2.25rem);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:64px;color-scheme:dark}
+  body{
+    background:var(--bg);color:var(--fg);
+    font-family:var(--sans);font-size:15px;line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  ::selection{background:var(--amber);color:#000}
+
+  /* language */
+  body[data-lang="zh"] .lang-en{display:none !important}
+  body[data-lang="en"] .lang-zh{display:none !important}
+
+  /* CRT overlay: scanlines + vignette (non-interactive) */
+  body::after{
+    content:"";position:fixed;inset:0;z-index:90;pointer-events:none;
+    background:
+      repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 3px),
+      radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,.45) 100%);
+  }
+
+  /* ---------- shared atoms ---------- */
+  .mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;font-size:.72rem}
+  .dim{color:var(--mute)}
+  .amber{color:var(--amber)}
+  .wrap{width:100%;max-width:1360px;margin:0 auto;padding:0 var(--pad)}
+
+  /* bracket frame: corner ticks, not boxes */
+  .frame{position:relative;background:var(--panel);border:1px solid var(--amber-dim)}
+  .frame::before,.frame::after{
+    content:"";position:absolute;width:12px;height:12px;pointer-events:none;
+    border:2px solid var(--amber);
+  }
+  .frame::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
+  .frame::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
+
+  /* hairline grid: 1px gaps showing the parent bg */
+  .cells{display:grid;gap:1px;background:var(--amber-dim);border:1px solid var(--amber-dim)}
+  .cells > *{background:var(--panel);padding:.75rem .9rem;min-width:0}
+
+  .tag{
+    display:inline-block;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;
+    text-transform:uppercase;padding:.15rem .5rem;border:1px solid var(--amber-dim);color:var(--fg);
+  }
+  .tag::before{content:"[ ";color:var(--amber)} .tag::after{content:" ]";color:var(--amber)}
+  .tags{display:flex;flex-wrap:wrap;gap:.4rem}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:.6rem;
+    font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;
+    padding:.8rem 1.2rem;border:1px solid var(--amber);color:var(--amber);cursor:pointer;background:transparent;
+    transition:background .15s,color .15s;
+  }
+  .btn:hover,.btn:focus-visible{background:var(--amber);color:#000;outline:0}
+  .btn.solid{background:var(--amber);color:#000}
+  .btn.solid:hover{background:transparent;color:var(--amber)}
+
+  .barcode{height:34px;width:100%;max-width:170px;color:var(--fg)}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(11,11,10,.92);backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--amber-dim);
+  }
+  .topbar .wrap{display:flex;align-items:center;gap:1.25rem;height:52px}
+  .brand{font-family:var(--mono);font-weight:700;font-size:.82rem;letter-spacing:.08em;white-space:nowrap}
+  .brand i{font-style:normal;color:var(--amber)}
+  .brand .sub{color:var(--mute);font-weight:400;margin-left:.6rem}
+  .nav{display:flex;gap:0;margin-left:auto}
+  .nav a{
+    white-space:nowrap;
+    font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;
+    padding:.35rem .7rem;color:var(--mute);border:1px solid transparent;
+  }
+  .nav a b{color:var(--amber);font-weight:500;margin-right:.35rem}
+  .nav a:hover{color:var(--fg)}
+  .nav a.on{color:#000;background:var(--amber)}
+  .nav a.on b{color:#000}
+  .tools{display:flex;gap:.5rem;align-items:center}
+  .clock{font-family:var(--mono);font-size:.7rem;color:var(--mute);white-space:nowrap}
+  .clock::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--live);margin-right:.5rem;animation:blink 1.6s steps(2) infinite}
+  .mini{
+    font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;
+    border:1px solid var(--amber-dim);padding:.3rem .6rem;color:var(--fg);background:transparent;cursor:pointer;
+  }
+  .mini:hover{border-color:var(--amber);color:var(--amber)}
+  @keyframes blink{50%{opacity:.15}}
+
+  /* ---------- section head strip ---------- */
+  section{padding:clamp(3rem,7vw,6rem) 0;border-bottom:1px solid var(--amber-dim);position:relative}
+  .shead{
+    display:grid;grid-template-columns:auto 1fr auto;align-items:end;gap:1.25rem;
+    margin-bottom:clamp(1.5rem,3vw,2.5rem);
+  }
+  .shead .no{font-family:var(--macro);font-size:clamp(3rem,7vw,6rem);line-height:.8;color:transparent;-webkit-text-stroke:1px var(--amber)}
+  .shead h2{font-family:var(--macro);font-size:clamp(1.5rem,3.4vw,2.8rem);line-height:1.05;letter-spacing:-.01em;font-weight:400}
+  .shead .meta{text-align:right;line-height:1.5}
+
+  /* ---------- hero ---------- */
+  .hero{padding-top:clamp(1.5rem,3vw,2.5rem)}
+  .chart-head{grid-template-columns:repeat(4,1fr)}
+  .chart-head > div{display:flex;flex-direction:column;gap:.1rem}
+  .chart-head b{font-family:var(--mono);font-size:.9rem;font-weight:700;letter-spacing:.04em}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(1rem,3vw,2.5rem);margin-top:clamp(1.25rem,3vw,2.5rem);align-items:stretch}
+  .hero h1{
+    font-family:var(--macro);font-weight:400;
+    font-size:clamp(3rem,8.4vw,8.6rem);line-height:.92;letter-spacing:-.04em;
+    margin-top:.5rem;
+  }
+  .hero h1 .zh-name{display:block;color:var(--amber)}
+  .hero h1 .line2{display:block;text-wrap:balance;font-size:.4em;line-height:1.05;letter-spacing:-.02em;margin-top:.15em;color:var(--fg)}
+  .lead{max-width:62ch;margin-top:1.6rem;color:#cfc9ba}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.75rem}
+  .term{margin-top:2rem;padding:.9rem 1rem;font-family:var(--mono);font-size:.76rem;line-height:1.8;color:var(--mute)}
+  .term .p{color:var(--amber)} .term .ok{color:var(--fg)}
+  .caret{display:inline-block;width:.55em;height:1em;background:var(--amber);vertical-align:-.15em;animation:blink 1s steps(2) infinite}
+
+  .id-card{display:flex;flex-direction:column}
+  .portrait{position:relative;aspect-ratio:4/5;overflow:hidden;background:#000;border-bottom:1px solid var(--amber-dim)}
+  .portrait img{width:100%;height:100%;object-fit:cover;object-position:50% 18%;filter:grayscale(1) contrast(1.15) brightness(.95)}
+  .portrait::before{ /* amber duotone */
+    content:"";position:absolute;inset:0;background:var(--amber);mix-blend-mode:multiply;z-index:1;
+  }
+  .portrait::after{ /* range ring + crosshair, aviation-chart style */
+    content:"";position:absolute;inset:0;z-index:2;
+    background:
+      linear-gradient(var(--amber),var(--amber)) 50% 0/1px 100% no-repeat,
+      linear-gradient(var(--amber),var(--amber)) 0 50%/100% 1px no-repeat,
+      radial-gradient(circle at 50% 50%,transparent 0 33%,rgba(242,179,61,.7) 33.4%,transparent 34%,transparent 49%,rgba(242,179,61,.4) 49.4%,transparent 50%);
+    opacity:.55;mix-blend-mode:screen;
+  }
+  .portrait .ph{position:absolute;z-index:3;left:.6rem;bottom:.5rem;font-family:var(--mono);font-size:.64rem;color:var(--amber);letter-spacing:.08em}
+  .id-body{padding:1rem 1.1rem;display:flex;flex-direction:column;gap:.9rem}
+  .id-name{font-family:var(--macro);font-size:1.5rem;line-height:1}
+  .id-row{display:flex;justify-content:space-between;gap:1rem;align-items:flex-end}
+
+  .exp{margin-top:clamp(1.5rem,3vw,2.5rem)}
+  .exp-row{display:grid;grid-template-columns:90px minmax(0,1fr) minmax(0,1.4fr)}
+  .exp-row .y{font-family:var(--macro);font-size:1.4rem;color:var(--amber);line-height:1}
+  .exp-row b{font-weight:700}
+  .exp-row p{color:#b9b3a3;font-size:.88rem;line-height:1.6}
+
+  /* ---------- heritage ---------- */
+  .shot{margin:0}
+  .shot img{width:100%;height:auto;aspect-ratio:2559/1272;object-fit:cover;border-bottom:1px solid var(--amber-dim)}
+  .shot figcaption{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:.6rem .9rem}
+  .readouts{grid-template-columns:repeat(4,1fr);margin-top:1rem}
+  .readouts > div{display:flex;flex-direction:column;gap:.15rem;padding:1rem}
+  .readouts b{font-family:var(--macro);font-size:clamp(1.8rem,3.6vw,3rem);line-height:1;color:var(--amber);font-weight:400}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+  .label-card{padding:1.1rem 1.2rem;display:flex;flex-direction:column;gap:.7rem}
+  .label-card h3{font-family:var(--macro);font-weight:400;font-size:1.25rem;line-height:1.15}
+  .label-card p{color:#bdb7a7;font-size:.9rem}
+  .label-top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--amber-dim);padding-bottom:.5rem}
+
+  /* ---------- work ---------- */
+  .work-top{display:grid;grid-template-columns:1.2fr 1fr .8fr;gap:1rem}
+  .work-top .featured{background:var(--amber);color:#000;border-color:var(--amber)}
+  .work-top .featured::before,.work-top .featured::after{border-color:#000}
+  .work-top .featured p,.work-top .featured .dim{color:#2a2208}
+  .work-top .featured .label-top{border-color:rgba(0,0,0,.35)}
+  .work-top .featured a{text-decoration:underline}
+  .ip{display:flex;flex-direction:column;justify-content:space-between}
+  .ip .n{font-family:var(--macro);font-size:3.4rem;line-height:1;color:var(--amber)}
+  .ip-row{display:flex;gap:1rem;align-items:baseline;border-bottom:1px solid var(--amber-dim);padding:.6rem 0}
+  .ip-row:last-child{border:0}
+  .ptable{margin-top:1rem}
+  .prow{display:grid;grid-template-columns:48px minmax(0,1fr) minmax(0,1.5fr) 90px;align-items:baseline}
+  .prow .i{font-family:var(--mono);color:var(--amber);font-size:.8rem}
+  .prow b{font-weight:700}
+  .prow p{color:#b9b3a3;font-size:.86rem;line-height:1.55}
+  .prow time{font-family:var(--mono);font-size:.74rem;color:var(--mute);text-align:right}
+
+  /* ---------- portfolio: natural aspect ratios, no cropping ---------- */
+  .pf-cover{margin:0;display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
+  .pf-cover img{width:100%;height:auto;aspect-ratio:1600/900;background:#000;cursor:zoom-in}
+  .pf-cover figcaption{display:flex;flex-direction:column;justify-content:space-between;gap:1.25rem;padding:1.1rem 1.2rem;border-left:1px solid var(--amber-dim)}
+  .pf-stats{grid-template-columns:repeat(4,1fr)}
+  .pf-stats > div{padding:.6rem .8rem}
+  .pf-stats b{display:block;font-family:var(--macro);font-weight:400;font-size:1.7rem;line-height:1;color:var(--amber)}
+  .pf-grid{column-count:3;column-gap:1rem;margin-top:1rem}
+  .pf{break-inside:avoid;margin:0 0 1rem;display:block;width:100%;text-align:left;font:inherit;color:inherit;cursor:zoom-in}
+  .pf .img{background:#fff;border-bottom:1px solid var(--amber-dim)}
+  .pf img{width:100%;height:auto}
+  .pf .cap{padding:.7rem .85rem .85rem;display:flex;flex-direction:column;gap:.25rem}
+  .pf .cap h3{font-weight:700;font-size:1rem;line-height:1.3}
+  .pf .cap p{font-size:.82rem;color:#b9b3a3;line-height:1.55}
+  .pf .row{display:flex;justify-content:space-between;gap:.5rem}
+  .pf:hover,.pf:focus-visible{border-color:var(--amber);outline:0}
+
+  dialog.lb{
+    border:1px solid var(--amber);background:var(--bg);color:var(--fg);
+    padding:0;max-width:min(96vw,1500px);max-height:94vh;margin:auto;
+  }
+  dialog.lb::backdrop{background:rgba(0,0,0,.88)}
+  .lb-bar{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.55rem .8rem;border-bottom:1px solid var(--amber-dim)}
+  .lb img{max-width:100%;max-height:calc(94vh - 90px);width:auto;height:auto;margin:0 auto;background:#fff}
+
+  /* ---------- toolbox ---------- */
+  .tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  .tool{padding:1.1rem 1.2rem}
+  .tool h3{font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:.8rem}
+
+  /* ---------- contact ---------- */
+  .contact h2.big{font-family:var(--macro);font-weight:400;font-size:clamp(2.2rem,6vw,5.4rem);line-height:.98;letter-spacing:-.03em}
+  .contact h2.big em{font-style:normal;color:var(--amber)}
+  .c-grid{grid-template-columns:1.5fr 1fr 1fr;margin-top:2.25rem}
+  .c-grid a:hover{background:var(--amber);color:#000}
+  .c-grid a:hover .dim{color:#000}
+  .c-val{font-family:var(--mono);margin-top:.35rem;word-break:break-all}
+  footer{padding:1.25rem 0 2rem}
+  footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+
+  /* reveal (only when JS is on) */
+  .js .rv{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+  .js .rv.in{opacity:1;transform:none}
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .js .rv{opacity:1;transform:none;transition:none}
+    .clock::before,.caret{animation:none}
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:1000px){
+    .nav{display:none}
+    .tools{margin-left:auto}
+    .hero-grid{grid-template-columns:1fr}
+    .id-card{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1fr)}
+    .portrait{aspect-ratio:auto;border-bottom:0;border-right:1px solid var(--amber-dim);min-height:260px}
+    .work-top{grid-template-columns:1fr}
+    .pf-cover{grid-template-columns:1fr}
+    .pf-cover figcaption{border-left:0;border-top:1px solid var(--amber-dim)}
+    .pf-grid{column-count:2}
+    .tool-grid{grid-template-columns:1fr 1fr}
+    .two{grid-template-columns:1fr}
+  }
+  @media (max-width:640px){
+    .clock,.brand .sub{display:none}
+    .chart-head{grid-template-columns:1fr 1fr}
+    .id-card{display:flex}
+    .portrait{aspect-ratio:4/4.2;border-right:0;border-bottom:1px solid var(--amber-dim)}
+    .shead{grid-template-columns:1fr;gap:.4rem}
+    .shead .meta{text-align:left}
+    .exp-row{grid-template-columns:70px 1fr}
+    .exp-row p{grid-column:2}
+    .readouts,.pf-stats{grid-template-columns:1fr 1fr}
+    .pf-grid{column-count:1}
+    .tool-grid{grid-template-columns:1fr}
+    .prow{grid-template-columns:36px 1fr}
+    .prow p,.prow time{grid-column:2;text-align:left}
+    .c-grid{grid-template-columns:1fr}
+  }
+</style>
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body data-lang="zh">
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top"><i>▮</i> YUSONG.WANG<span class="sub">// GIS × MULTIMODAL AI</span></a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#top" data-s="top"><b>00</b><span class="lang-zh">首页</span><span class="lang-en">Home</span></a>
+      <a href="#heritage" data-s="heritage"><b>01</b>Heritage</a>
+      <a href="#work" data-s="work"><b>02</b><span class="lang-zh">成果</span><span class="lang-en">Work</span></a>
+      <a href="#portfolio" data-s="portfolio"><b>03</b><span class="lang-zh">作品集</span><span class="lang-en">Portfolio</span></a>
+      <a href="#toolbox" data-s="toolbox"><b>04</b><span class="lang-zh">工具链</span><span class="lang-en">Toolbox</span></a>
+      <a href="#contact" data-s="contact"><b>05</b><span class="lang-zh">联系</span><span class="lang-en">Contact</span></a>
+    </nav>
+    <div class="tools">
+      <span class="clock" id="clock">--:--:-- CST</span>
+      <button class="mini" id="langBtn" type="button"><span class="lang-zh">EN</span><span class="lang-en">中文</span></button>
+      <a class="mini" href="index.html"><span class="lang-zh">像素房间</span><span class="lang-en">Pixel room</span></a>
+      <a class="mini" href="CV_Yusong_Wang.docx"><span class="lang-zh">简历</span><span class="lang-en">CV</span></a>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ============ 00 HERO ============ -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="cells chart-head">
+      <div><span class="mono dim">Portfolio</span><b>2026 / REV 3.0</b></div>
+      <div><span class="mono dim"><span class="lang-zh">学校</span><span class="lang-en">Institution</span></span><b>HKUST(GZ) · MPhil</b></div>
+      <div><span class="mono dim"><span class="lang-zh">所在地</span><span class="lang-en">Based</span></span><b>NANNING · GUANGZHOU</b></div>
+      <div><span class="mono dim">Status</span><b class="amber"><span class="lang-zh">寻找全职机会</span><span class="lang-en">OPEN TO ROLES</span></b></div>
+    </div>
+
+    <div class="hero-grid">
+      <div>
+        <div class="mono amber">&gt;&gt;&gt; UNIT / D-01 · GIS × MULTIMODAL AI</div>
+        <h1>
+          <span class="zh-name lang-zh">王钰淞</span>
+          <span class="zh-name lang-en">Yusong Wang</span>
+          <span class="line2 lang-zh">GIS 与多模态 AI — 研究 / 工程。</span>
+          <span class="line2 lang-en">GIS &amp; Multimodal AI — research / engineering.</span>
+        </h1>
+        <p class="lead">
+          <span class="lang-zh">香港科技大学（广州）计算媒体与艺术 MPhil，前中科院上海微系统所嵌入式工程师。关注 GIS 可视化、知识图谱、多模态检索与文化遗产计算。</span>
+          <span class="lang-en">MPhil student in Computational Media &amp; Arts at HKUST(GZ), formerly an embedded engineer at CAS SIMIT. I work across GIS visualization, knowledge graphs, multimodal retrieval, and computational heritage.</span>
+        </p>
+        <div class="tags" style="margin-top:1.25rem">
+          <span class="tag">HKUST(GZ) · MPhil</span>
+          <span class="tag">VINCI 2025 · 1st author</span>
+          <span class="tag">CHI 2025 · co-author</span>
+          <span class="tag">4 patents + 1 SW©</span>
+        </div>
+        <div class="hero-actions">
+          <a class="btn solid" href="#heritage"><span class="lang-zh">看 HeritageExplorer</span><span class="lang-en">See HeritageExplorer</span> →</a>
+          <a class="btn" href="#contact"><span class="lang-zh">联系我</span><span class="lang-en">Get in touch</span></a>
+        </div>
+        <div class="term frame" aria-hidden="true">
+          <div><span class="p">$</span> <span class="ok">whoami</span></div>
+          <div>yusong_wang · GIS × multimodal_ai</div>
+          <div><span class="p">$</span> <span class="ok">portfolioctl</span> --target=homepage</div>
+          <div>HeritageExplorer · papers · patents · project graph … ready <span class="caret"></span></div>
+        </div>
+      </div>
+
+      <aside class="frame id-card" aria-label="Profile">
+        <div class="portrait">
+          <img src="assets/yusong_portrait.webp" alt="Yusong Wang portrait" width="800" height="1201" fetchpriority="high" />
+          <span class="ph">FIG.001 / SUBJECT · YW</span>
+        </div>
+        <div class="id-body">
+          <div class="id-row">
+            <div>
+              <div class="id-name"><span class="lang-zh">王钰淞</span><span class="lang-en">Yusong Wang</span></div>
+              <div class="mono dim" style="margin-top:.35rem"><span class="lang-zh">研究 · 工程 · 文化遗产计算</span><span class="lang-en">Research · Engineering · Heritage computing</span></div>
+            </div>
+            <svg class="barcode" viewBox="0 0 120 34" data-barcode="YUSONGWANG2026" aria-hidden="true"></svg>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="frame exp rv">
+      <div class="label-top" style="padding:.6rem .9rem">
+        <span class="mono amber"><span class="lang-zh">经历</span><span class="lang-en">Experience</span> / TIMELINE</span>
+        <span class="mono dim">4 ENTRIES</span>
+      </div>
+      <div class="cells" style="border:0;border-top:0">
+        <div class="exp-row"><span class="y">2016</span><b><span class="lang-zh">广西大学 · 电气工程本科</span><span class="lang-en">Guangxi Univ. · B.Eng</span></b><p><span class="lang-zh">电气工程及其自动化；参与智慧农业、光伏运维等互联网+项目。</span><span class="lang-en">Electrical engineering; Internet+ projects in smart agriculture and PV O&amp;M.</span></p></div>
+        <div class="exp-row"><span class="y">2020</span><b><span class="lang-zh">中科院上海微系统所 · 嵌入式工程师</span><span class="lang-en">CAS SIMIT · Embedded engineer</span></b><p><span class="lang-zh">无线水压表、LoRa 测力、消防感知；从原理图到固件和现场部署。参与标准起草。</span><span class="lang-en">Wireless meters, LoRa sensors, fire-safety devices from schematic to field deployment. Co-authored industry standards.</span></p></div>
+        <div class="exp-row"><span class="y">2024</span><b><span class="lang-zh">HKUST(GZ) · 计算媒体与艺术 MPhil</span><span class="lang-en">HKUST(GZ) · CMA MPhil</span></b><p><span class="lang-zh">HeritageExplorer 投稿 VINCI 2025；合作 GenColor CHI 2025。</span><span class="lang-en">HeritageExplorer for VINCI 2025; co-authored GenColor at CHI 2025.</span></p></div>
+        <div class="exp-row"><span class="y">2025</span><b><span class="lang-zh">HeritageExplorer · 从原型到工程化</span><span class="lang-en">HeritageExplorer · Prototype to product</span></b><p><span class="lang-zh">扩展至广西历史建筑数据；搭建 Vue 3、FastAPI、Neo4j、多通路 RAG。</span><span class="lang-en">Scaled to Guangxi heritage data with Vue 3, FastAPI, Neo4j, and multi-lane RAG.</span></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 01 HERITAGE ============ -->
+<section id="heritage">
+  <div class="wrap">
+    <div class="shead rv">
+      <span class="no">01</span>
+      <div>
+        <div class="mono amber">GIS Project · 01</div>
+        <h2>HeritageExplorer</h2>
+      </div>
+      <div class="meta mono dim">SYS / VUE3 · FASTAPI · NEO4J<br/>14 CITIES · 2,036 BUILDINGS</div>
+    </div>
+
+    <p class="lead rv" style="margin:0 0 1.25rem;max-width:80ch">
+      <span class="lang-zh"><b>广西历史建筑多模态 GIS 平台。</b>前端 Vue 3 + Mars2D，后端 FastAPI + Neo4j，一键 Docker Compose。14 个城市、2,036 处建筑、9,636 个构件 — 可看、可搜、可对话。</span>
+      <span class="lang-en"><b>A multimodal GIS platform for Guangxi heritage.</b> Vue 3 + Mars2D on the front, FastAPI + Neo4j on the back, single Docker Compose. 14 cities, 2,036 buildings, 9,636 components — visible, searchable, conversational.</span>
+    </p>
+
+    <figure class="frame shot rv">
+      <img src="assets/gisauto_hero.webp" alt="HeritageExplorer live interface — heritage GIS dashboard" width="2559" height="1272" loading="lazy" />
+      <figcaption>
+        <span class="mono amber">LIVE INTERFACE</span>
+        <span class="mono dim">Heritage Explorer · <span class="lang-zh">交互式地图 · 知识图谱 · AI 对话</span><span class="lang-en">Map · Knowledge Graph · AI Chat</span></span>
+      </figcaption>
+    </figure>
+
+    <div class="cells readouts rv">
+      <div><span class="mono dim"><span class="lang-zh">历史建筑</span><span class="lang-en">Buildings</span></span><b>2,036</b></div>
+      <div><span class="mono dim"><span class="lang-zh">建筑构件</span><span class="lang-en">Components</span></span><b>9,636</b></div>
+      <div><span class="mono dim"><span class="lang-zh">地图点</span><span class="lang-en">Map points</span></span><b>1,294</b></div>
+      <div><span class="mono dim"><span class="lang-zh">检索通路</span><span class="lang-en">Retrieval lanes</span></span><b>4</b></div>
+    </div>
+
+    <div class="two">
+      <article class="frame label-card rv">
+        <div class="label-top"><span class="mono amber">ARCHITECTURE</span><span class="mono dim">FIG.002</span></div>
+        <h3><span class="lang-zh">地图入口 · 图谱大脑</span><span class="lang-en">Map entry · graph brain</span></h3>
+        <p><span class="lang-zh">Vue 3 + Mars2D 前端，FastAPI 路由，Neo4j 存储建筑、构件、城市与年代关系。</span><span class="lang-en">Vue 3 + Mars2D front end, FastAPI router, Neo4j relations across buildings, components, cities, and eras.</span></p>
+        <div class="tags"><span class="tag">Vue 3</span><span class="tag">Mars2D</span><span class="tag">FastAPI</span><span class="tag">Neo4j</span><span class="tag">Docker</span></div>
+      </article>
+      <article class="frame label-card rv">
+        <div class="label-top"><span class="mono amber">AGENT WORKFLOW</span><span class="mono dim">FIG.003</span></div>
+        <h3><span class="lang-zh">4 通路 RAG · 可追溯回答</span><span class="lang-en">4-lane RAG · grounded replies</span></h3>
+        <p><span class="lang-zh">关键词、BGE 文本、CLIP 图像、CLIP 构件并行检索，DeepSeek-V3 融合答复并回指证据。</span><span class="lang-en">Keyword, BGE text, CLIP image, and CLIP component lanes are fused by DeepSeek-V3 with evidence traces.</span></p>
+        <div class="tags"><span class="tag">BGE</span><span class="tag">CLIP</span><span class="tag">Grounding DINO</span><span class="tag">DeepSeek-V3</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 WORK ============ -->
+<section id="work">
+  <div class="wrap">
+    <div class="shead rv">
+      <span class="no">02</span>
+      <div>
+        <div class="mono amber"><span class="lang-zh">成果与项目</span><span class="lang-en">Work</span></div>
+        <h2><span class="lang-zh">论文、专利与工程项目</span><span class="lang-en">Papers, IP &amp; projects</span></h2>
+      </div>
+      <div class="meta mono dim">2 PAPERS · 5 IP · 6 PROJECTS</div>
+    </div>
+
+    <div class="work-top">
+      <article class="frame label-card featured rv">
+        <div class="label-top"><span class="mono">First author · VINCI 2025</span><span class="mono">FIG.004</span></div>
+        <h3>HeritageExplorer</h3>
+        <p><span class="lang-zh">广州 831 处历史建筑的多模态交互式可视化与对话系统，并扩展至广西历史建筑数据与工程化部署。</span><span class="lang-en">Interactive visualization + dialogue for 831 Guangzhou heritage buildings, extended to Guangxi-scale heritage data and production deployment.</span></p>
+        <div class="mono">DOI · <a href="https://doi.org/10.1145/3769534.3769571" target="_blank" rel="noopener">10.1145/3769534.3769571</a></div>
+      </article>
+      <article class="frame label-card rv">
+        <div class="label-top"><span class="mono amber">Co-author · CHI 2025</span><span class="mono dim">FIG.005</span></div>
+        <h3>GenColor</h3>
+        <p><span class="lang-zh">基于文生图扩散模型的生成式框架，自动提取与语境相关的设计配色方案。</span><span class="lang-en">A text-to-image diffusion framework that extracts context-specific color palettes for visual design.</span></p>
+        <div class="tags"><span class="tag">Diffusion</span><span class="tag">Color Design</span><span class="tag">HCI</span></div>
+      </article>
+      <article class="frame label-card ip rv">
+        <div class="label-top"><span class="mono amber"><span class="lang-zh">知识产权</span><span class="lang-en">IP</span></span><span class="mono dim">©</span></div>
+        <div>
+          <div class="ip-row"><span class="n">4</span><span><span class="lang-zh">发明专利</span><span class="lang-en">patents</span></span></div>
+          <div class="ip-row"><span class="n">1</span><span><span class="lang-zh">软件著作权</span><span class="lang-en">software copyright</span></span></div>
+        </div>
+      </article>
+    </div>
+
+    <div class="cells ptable rv">
+      <div class="prow"><span class="i">01</span><b><span class="lang-zh">危化品云数据联动装置</span><span class="lang-en">Hazardous-chemical cloud sensor</span></b><p><span class="lang-zh">上海市科委 19511102801。CH4/CO2/温湿度 + 摄像头多传感器融合，危化品特征提取与场景识别。</span><span class="lang-en">STCSM #19511102801. Fused CH4/CO2/T&amp;H sensors with camera imagery for hazardous-chemical feature extraction.</span></p><time>2020–22</time></div>
+      <div class="prow"><span class="i">02</span><b><span class="lang-zh">消防管理智能感知设备</span><span class="lang-en">Smart fire-safety sensor</span></b><p><span class="lang-zh">上海市科委 19DZ12020027。场景自适应配置，CSMA/CA 载波侦听避免碰撞。</span><span class="lang-en">STCSM #19DZ12020027. Scene-adaptive configuration with CSMA/CA carrier sensing.</span></p><time>2020–22</time></div>
+      <div class="prow"><span class="i">03</span><b><span class="lang-zh">振弦式钢筋计无线测力</span><span class="lang-en">Vibrating-wire wireless force sensor</span></b><p><span class="lang-zh">基于 LoRa 为深基坑混凝土支撑轴力提供无线监测，按信号质量动态组网。</span><span class="lang-en">LoRa-based axial-force monitor for deep-pit struts, with signal-quality-driven relay placement.</span></p><time>2021–22</time></div>
+      <div class="prow"><span class="i">04</span><b><span class="lang-zh">虹桥站客流检测</span><span class="lang-en">Hongqiao passenger flow</span></b><p><span class="lang-zh">基于蓝牙的实时热力图，为高峰预警与后续规划提供依据。</span><span class="lang-en">Bluetooth-based real-time heatmaps informing peak-hour alerts and station planning.</span></p><time>2020–21</time></div>
+      <div class="prow"><span class="i">05</span><b><span class="lang-zh">光伏运维平台</span><span class="lang-en">PV O&amp;M platform</span></b><p><span class="lang-zh">第五届“互联网+”大赛。基于物联网的光伏系统故障监测与修复平台。</span><span class="lang-en">5th Internet+ contest. An IoT platform for PV fault detection and remediation.</span></p><time>2019</time></div>
+      <div class="prow"><span class="i">06</span><b><span class="lang-zh">智慧农业</span><span class="lang-en">Smart agriculture</span></b><p><span class="lang-zh">第三届“互联网+”大赛。果园病虫害检测与反馈管理平台。</span><span class="lang-en">3rd Internet+ contest. An orchard pest and disease feedback platform.</span></p><time>2017</time></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 PORTFOLIO ============ -->
+<section id="portfolio">
+  <div class="wrap">
+    <div class="shead rv">
+      <span class="no">03</span>
+      <div>
+        <div class="mono amber"><span class="lang-zh">作品集</span><span class="lang-en">Portfolio</span></div>
+        <h2><span class="lang-zh">AI 叙事影像与生成媒介</span><span class="lang-en">AI narrative &amp; generative media</span></h2>
+      </div>
+      <div class="meta mono dim">CLICK ANY FRAME · FULL SIZE</div>
+    </div>
+
+    <figure class="frame pf-cover rv">
+      <img src="assets/ai_portfolio/ai_cover.jpg" alt="AI generative portfolio cover collage" width="1600" height="900" loading="lazy" data-full="assets/ai_portfolio/ai_cover.jpg" data-title="Cover" />
+      <figcaption>
+        <div>
+          <div class="mono amber">COVER / FIG.000</div>
+          <p style="margin-top:.3rem;color:#cfc9ba;font-size:.9rem">
+            <span class="lang-zh">根据《Yusong Wang AI Generative Portfolio》整理，展示 PPT 内嵌的图像、分镜、流程板和生成作品。</span>
+            <span class="lang-en">Rebuilt from the AI Generative Portfolio deck: embedded artwork, storyboards, process boards, and generated visuals.</span>
+          </p>
+        </div>
+        <div class="cells pf-stats">
+          <div><b>10</b><span class="mono dim"><span class="lang-zh">PPT 页</span><span class="lang-en">slides</span></span></div>
+          <div><b>7</b><span class="mono dim"><span class="lang-zh">项目</span><span class="lang-en">works</span></span></div>
+          <div><b>22</b><span class="mono dim"><span class="lang-zh">素材</span><span class="lang-en">assets</span></span></div>
+          <div><b>4</b><span class="mono dim"><span class="lang-zh">流程</span><span class="lang-en">pipelines</span></span></div>
+        </div>
+      </figcaption>
+    </figure>
+
+    <div class="pf-grid">
+      <button class="frame pf rv" type="button" data-full="assets/ai_portfolio/ai_method.jpg" data-title="创作方法地图 / METHOD">
+        <div class="img"><img src="assets/ai_portfolio/ai_method.jpg" alt="Portfolio method map" width="1280" height="936" loading="lazy" /></div>
+        <div class="cap"><div class="row mono"><span class="amber">PPT · 02</span><span class="dim">METHOD</span></div><h3><span class="lang-zh">创作方法地图</span><span class="lang-en">Creative method map</span></h3><p><span class="lang-zh">从历史文本、风格转译到实时生成，梳理整套跨媒介创作路径。</span><span class="lang-en">A map from archive and style transfer to realtime generative work.</span></p></div>
+      </button>
+      <button class="frame pf rv" type="button" data-full="assets/ai_portfolio/ai_lishishi.jpg" data-title="Li Shishi / STORYBOARD">
+        <div class="img"><img src="assets/ai_portfolio/ai_lishishi.jpg" alt="Li Shishi storyboard material" width="1280" height="752" loading="lazy" /></div>
+        <div class="cap"><div class="row mono"><span class="amber">PPT · 03</span><span class="dim">STORYBOARD</span></div><h3>Li Shishi</h3><p><span class="lang-zh">把人物设定、镜头脚本和分镜串成可复用的古典叙事流程。</span><span class="lang-en">A reusable classical narrative flow from character to storyboard.</span></p></div>
+      </button>
+      <button class="frame pf rv" type="button" data-full="assets/ai_portfolio/ai_straw_boats.jpg" data-title="草船借箭 / NARRATIVE">
+        <div class="img"><img src="assets/ai_portfolio/ai_straw_boats.jpg" alt="Straw Boats project board" width="1280" height="874" loading="lazy" /></div>
+        <div class="cap"><div class="row mono"><span class="amber">PPT · 04</span><span class="dim">NARRATIVE</span></div><h3><span class="lang-zh">草船借箭</span><span class="lang-en">Straw Boats</span></h3><p><span class="lang-zh">以三国故事测试人物一致性、字幕叙事与镜头节奏。</span><span class="lang-en">A Three Kingdoms narrative study on character consistency and pacing.</span></p></div>
+      </button>
+      <button class="frame pf rv" type="button" data-full="assets/ai_portfolio/ai_star.jpg" data-title="The Star / REWRITE">
+        <div class="img"><img src="assets/ai_portfolio/ai_star.jpg" alt="The Star ukiyo-e visual" width="1280" height="714" loading="lazy" /></div>
+        <div class="cap"><div class="row mono"><span class="amber">PPT · 05</span><span class="dim">REWRITE</span></div><h3>The Star</h3><p><span class="lang-zh">把科幻文本转译成浮世绘式宇宙灾难视觉。</span><span class="lang-en">A sci-fi text rewritten as ukiyo-e cosmic catastrophe imagery.</span></p></div>
+      </button>
+      <button class="frame pf rv" type="button" data-full="assets/ai_portfolio/ai_twodimensional.jpg" data-title="二向箔 / ARTWORK">
+        <div class="img"><img src="assets/ai_portfolio/ai_twodimensional.jpg" alt="Two-dimensional foil artwork" width="1280" height="720" loading="lazy" /></div>
+        <div class="cap"><div class="row mono"><span class="amber">PPT · 06</span><span class="dim">ARTWORK</span></div><h3><span class="lang-zh">二向箔</span><span class="lang-en">Two-Dimensional Foil</span></h3><p><span class="lang-zh">用梵高式旋涡重构《三体》的维度打击意象。</span><span class="lang-en">A Three-Body concept image rebuilt through a Van Gogh-like vortex.</span></p></div>
+      </button>
+      <button class="frame pf rv" type="button" data-full="assets/ai_portfolio/ai_qingming.jpg" data-title="清明上河图 RPG / INTERACTION">
+        <div class="img"><img src="assets/ai_portfolio/ai_qingming.jpg" alt="Qingming Festival RPG interface material" width="1280" height="954" loading="lazy" /></div>
+        <div class="cap"><div class="row mono"><span class="amber">PPT · 07</span><span class="dim">INTERACTION</span></div><h3><span class="lang-zh">清明上河图 RPG</span><span class="lang-en">Qingming RPG</span></h3><p><span class="lang-zh">将长卷人物转为可点击 NPC，探索数字博物馆交互入口。</span><span class="lang-en">Turning scroll figures into clickable NPCs for museum interaction.</span></p></div>
+      </button>
+      <button class="frame pf rv" type="button" data-full="assets/ai_portfolio/ai_boat_style.jpg" data-title="训练与风格转译 / STYLE">
+        <div class="img"><img src="assets/ai_portfolio/ai_boat_style.jpg" alt="Dataset and style transfer material" width="1280" height="712" loading="lazy" /></div>
+        <div class="cap"><div class="row mono"><span class="amber">PPT · 08</span><span class="dim">STYLE</span></div><h3><span class="lang-zh">训练与风格转译</span><span class="lang-en">Training &amp; style transfer</span></h3><p><span class="lang-zh">通过数据集迭代、提示词控制和本地流程做风格实验。</span><span class="lang-en">Dataset iteration, prompt control, and local style-transfer tests.</span></p></div>
+      </button>
+      <button class="frame pf rv" type="button" data-full="assets/ai_portfolio/ai_touchdesigner.jpg" data-title="TouchDesigner / REAL-TIME">
+        <div class="img"><img src="assets/ai_portfolio/ai_touchdesigner.jpg" alt="TouchDesigner realtime generation material" width="1280" height="720" loading="lazy" /></div>
+        <div class="cap"><div class="row mono"><span class="amber">PPT · 09</span><span class="dim">REAL-TIME</span></div><h3>TouchDesigner</h3><p><span class="lang-zh">把生成推进到粒子、路径、镜头和空间原型。</span><span class="lang-en">Realtime particles, paths, camera systems, and spatial prototypes.</span></p></div>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 TOOLBOX ============ -->
+<section id="toolbox">
+  <div class="wrap">
+    <div class="shead rv">
+      <span class="no">04</span>
+      <div>
+        <div class="mono amber"><span class="lang-zh">工具链</span><span class="lang-en">Toolbox</span></div>
+        <h2><span class="lang-zh">从 PCB 到 Prompt</span><span class="lang-en">From PCB to Prompt</span></h2>
+      </div>
+      <div class="meta mono dim">6 MODULES</div>
+    </div>
+
+    <div class="tool-grid">
+      <div class="frame tool rv"><h3><span class="lang-zh">多模态 AI &amp; 大模型</span><span class="lang-en">Multimodal AI &amp; LLMs</span></h3><div class="tags"><span class="tag">Chinese-CLIP</span><span class="tag">BGE embeddings</span><span class="tag">Grounding DINO</span><span class="tag">Qwen-VL</span><span class="tag">DeepSeek-V3</span><span class="tag">GPT</span><span class="tag">Claude API</span><span class="tag">Prompt Engineering</span><span class="tag">Agent Workflow</span></div></div>
+      <div class="frame tool rv"><h3><span class="lang-zh">GIS &amp; 可视化</span><span class="lang-en">GIS &amp; Visualization</span></h3><div class="tags"><span class="tag">Mars2D</span><span class="tag">Cesium</span><span class="tag">Leaflet</span><span class="tag"><span class="lang-zh">高德 API</span><span class="lang-en">Amap API</span></span><span class="tag">ECharts</span><span class="tag">vis-network</span><span class="tag">Cytoscape</span></div></div>
+      <div class="frame tool rv"><h3><span class="lang-zh">图谱 &amp; 检索</span><span class="lang-en">Graph &amp; Retrieval</span></h3><div class="tags"><span class="tag">Neo4j · Cypher</span><span class="tag"><span class="lang-zh">向量索引</span><span class="lang-en">Vector Index</span></span><span class="tag">RAG</span><span class="tag"><span class="lang-zh">多通道融合</span><span class="lang-en">Multi-lane Fusion</span></span></div></div>
+      <div class="frame tool rv"><h3><span class="lang-zh">Web &amp; 部署</span><span class="lang-en">Web &amp; Deployment</span></h3><div class="tags"><span class="tag">Vue 3 + Vite</span><span class="tag">TypeScript</span><span class="tag">FastAPI</span><span class="tag">Docker Compose</span><span class="tag">Nginx</span></div></div>
+      <div class="frame tool rv"><h3><span class="lang-zh">编程 &amp; 嵌入式</span><span class="lang-en">Programming &amp; Embedded</span></h3><div class="tags"><span class="tag">Python</span><span class="tag">C / C++</span><span class="tag">TypeScript</span><span class="tag">HTML</span><span class="tag"><span class="lang-zh">汇编</span><span class="lang-en">Assembly</span></span><span class="tag">IAR Workbench</span></div></div>
+      <div class="frame tool rv"><h3><span class="lang-zh">设计 &amp; 建模</span><span class="lang-en">Design &amp; Modeling</span></h3><div class="tags"><span class="tag">Altium Designer</span><span class="tag">SolidWorks</span><span class="tag">Photoshop</span><span class="tag">TouchDesigner</span><span class="tag">Blender</span></div></div>
+    </div>
+    <p class="mono dim" style="margin-top:1.5rem">
+      <span class="lang-zh">语言：中文母语 · 英语 CET-6 / IELTS 6.5</span>
+      <span class="lang-en">Languages: Chinese (native) · English (CET-6, IELTS 6.5)</span>
+    </p>
+  </div>
+</section>
+
+<!-- ============ 05 CONTACT ============ -->
+<section id="contact" class="contact" style="border-bottom:0">
+  <div class="wrap">
+    <div class="shead rv">
+      <span class="no">05</span>
+      <div><div class="mono amber"><span class="lang-zh">联系</span><span class="lang-en">Contact</span></div></div>
+      <div class="meta mono dim">CHANNEL OPEN</div>
+    </div>
+    <h2 class="big rv">
+      <span class="lang-zh">一起把<em>历史</em><br/>装进<em>下一个模型</em>。</span>
+      <span class="lang-en">Let’s put <em>history</em><br/>into the <em>next model</em>.</span>
+    </h2>
+
+    <div class="cells c-grid rv">
+      <a href="mailto:ywang677@connect.hkust-gz.edu.cn"><span class="mono dim">Email</span><div class="c-val" style="font-size:.9rem">ywang677@connect.hkust-gz.edu.cn</div></a>
+      <a href="tel:+8618877145317"><span class="mono dim"><span class="lang-zh">电话</span><span class="lang-en">Phone</span></span><div class="c-val">(+86) 188 7714 5317</div></a>
+      <div><span class="mono dim"><span class="lang-zh">所在地</span><span class="lang-en">Based in</span></span><div class="c-val"><span class="lang-zh">广西南宁 / 广州</span><span class="lang-en">Nanning · Guangzhou</span></div></div>
+    </div>
+
+    <div class="hero-actions rv">
+      <a class="btn solid" href="mailto:ywang677@connect.hkust-gz.edu.cn"><span class="lang-zh">发邮件</span><span class="lang-en">Email me</span> →</a>
+      <a class="btn" href="CV_Yusong_Wang.docx"><span class="lang-zh">下载简历 (.docx)</span><span class="lang-en">Download CV (.docx)</span></a>
+      <a class="btn" href="#top">↑ <span class="lang-zh">回到开头</span><span class="lang-en">Back to top</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap mono dim">
+    <span>© 2026 Yusong Wang · 王钰淞</span>
+    <span>®  REV 3.0 / UNIT D-01</span>
+  </div>
+</footer>
+
+<dialog class="lb" id="lb" aria-label="Image viewer">
+  <div class="lb-bar"><span class="mono amber" id="lbTitle"></span><button class="mini" type="button" id="lbClose">ESC ×</button></div>
+  <img id="lbImg" alt="" />
+</dialog>
+
+<script>
+(() => {
+  const body = document.body;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+  // language (persisted when storage is available)
+  const setLang = (l) => { body.dataset.lang = l; document.documentElement.lang = l === 'zh' ? 'zh-CN' : 'en'; };
+  try { const s = localStorage.getItem('lang'); if (s === 'en' || s === 'zh') setLang(s); } catch (e) {}
+  $('#langBtn').addEventListener('click', () => {
+    const next = body.dataset.lang === 'zh' ? 'en' : 'zh';
+    setLang(next);
+    try { localStorage.setItem('lang', next); } catch (e) {}
+  });
+
+  // clock (China Standard Time)
+  const clock = $('#clock');
+  const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Shanghai', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const tick = () => { clock.textContent = fmt.format(new Date()) + ' CST'; };
+  tick(); setInterval(tick, 1000);
+
+  // barcode from string
+  $$('[data-barcode]').forEach((svg) => {
+    const s = svg.dataset.barcode; let x = 0, out = '';
+    for (let i = 0; x < 118; i++) {
+      const c = s.charCodeAt(i % s.length) + i * 7;
+      const w = 1 + (c % 3), gap = 1 + ((c >> 2) % 3);
+      out += `<rect x="${x}" y="0" width="${w}" height="34" fill="currentColor"/>`;
+      x += w + gap;
+    }
+    svg.innerHTML = out;
+  });
+
+  // reveal on scroll
+  const rv = $$('.rv');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }), { threshold: .08 });
+    rv.forEach((el) => io.observe(el));
+  } else rv.forEach((el) => el.classList.add('in'));
+
+  // active nav
+  const links = $$('.nav a');
+  const secs = links.map((a) => document.getElementById(a.dataset.s));
+  const setOn = () => {
+    const y = window.scrollY + 120; let cur = 0;
+    secs.forEach((s, i) => { if (s && s.offsetTop <= y) cur = i; });
+    links.forEach((a, i) => a.classList.toggle('on', i === cur));
+  };
+  window.addEventListener('scroll', setOn, { passive: true }); setOn();
+
+  // lightbox
+  const lb = $('#lb'), lbImg = $('#lbImg'), lbTitle = $('#lbTitle');
+  const open = (src, title) => {
+    lbImg.src = src; lbTitle.textContent = title || '';
+    if (typeof lb.showModal === 'function') lb.showModal(); else window.open(src, '_blank');
+  };
+  $$('[data-full]').forEach((el) => el.addEventListener('click', () => open(el.dataset.full, el.dataset.title)));
+  $('#lbClose').addEventListener('click', () => lb.close());
+  lb.addEventListener('click', (e) => { if (e.target === lb) lb.close(); });
+  lb.addEventListener('close', () => { lbImg.removeAttribute('src'); });
+})();
+</script>
+</body>
+</html>
