@@ -3,194 +3,663 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>王钰淞の部屋 · Yusong Wang</title>
-<meta name="description" content="王钰淞 Yusong Wang 的等距像素风互动主页：在一间日式小屋里点击物件，探索 HeritageExplorer、论文专利、作品集与工具链。" />
-<meta name="theme-color" content="#f3dcc4" />
+<title>王钰淞の書斎 · Yusong Wang</title>
+<meta name="description" content="王钰淞 Yusong Wang 的浮世绘风 2.5D 互动主页：俯瞰一张和式书案，点击桌上的物件，探索 HeritageExplorer、论文专利、AI 作品集与工具链。" />
+<meta property="og:title" content="王钰淞の書斎 · Yusong Wang" />
+<meta property="og:description" content="GIS × Multimodal AI — an ukiyo-e style 2.5D desk you can explore." />
+<meta property="og:image" content="assets/ukiyoe/wave.webp" />
+<meta name="theme-color" content="#efe2c4" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;900&family=Yuji+Syuku&display=swap" rel="stylesheet" />
+<link rel="preload" as="image" href="assets/ukiyoe/wave.webp" />
 <style>
   :root{
-    --sumi:#2b2230; --washi:#fbf3e1; --washi-d:#ecdcbc; --red:#d64933; --gold:#f2c14e; --indigo:#34467d;
-    --font:'DotGothic16','Noto Sans SC','Hiragino Sans','PingFang SC','Yu Gothic',sans-serif;
+    --sumi:#1d1a1f; --sumi2:#3a3336;
+    --washi:#f4e9d0; --washi2:#e9d7b0; --washi3:#dcc493;
+    --ai:#1f3a63; --bero:#2f5f93; --sora:#8fb3c9;
+    --shu:#c8392b; --beni:#d4505c; --kin:#d29a3a; --cha:#8a4b22;
+    --matcha:#8d9a4c; --tatami:#cdb673; --wood:#c98a4b; --wood2:#a8642f; --wood3:#6e3a1d;
+    --serif:'Noto Serif SC','Songti SC','Hiragino Mincho ProN','Yu Mincho',serif;
+    --brush:'Yuji Syuku','Noto Serif SC',serif;
+    --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .32 0 0 0 0 .18 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    --woodgrain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='96'%3E%3Cg fill='none' stroke='%238a4b22' stroke-width='2.2' stroke-linecap='round' opacity='.55'%3E%3Cpath d='M0 10C70 3 150 20 220 10S360 2 420 10'/%3E%3Cpath d='M0 34C80 27 150 44 240 34S350 27 420 34'/%3E%3Cpath d='M0 60C90 52 160 70 240 60S360 53 420 60'/%3E%3Cpath d='M0 84C60 79 170 92 250 84S370 78 420 84'/%3E%3Cellipse cx='300' cy='47' rx='30' ry='7'/%3E%3Cellipse cx='300' cy='47' rx='14' ry='3'/%3E%3C/g%3E%3C/svg%3E");
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
-  body{font-family:var(--font);color:var(--sumi);background:#f3dcc4;overflow:hidden;font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
-  body.read{overflow:auto;background:#f3e6cf}
+  body{font-family:var(--serif);color:var(--sumi);background:var(--washi);overflow:hidden;font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
   body[data-lang="zh"] .lang-en{display:none !important}
   body[data-lang="en"] .lang-zh{display:none !important}
-  button{font:inherit;color:inherit;cursor:pointer}
+  button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
   a{color:inherit}
+  .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-  #scene{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:manipulation;outline:none}
-
-  /* pixel window: stepped corners + hard edges */
-  .px{
-    background:var(--washi);color:var(--sumi);
-    box-shadow:-3px 0 0 var(--sumi),3px 0 0 var(--sumi),0 -3px 0 var(--sumi),0 3px 0 var(--sumi),
-      inset -3px -3px 0 rgba(0,0,0,.1),inset 3px 3px 0 rgba(255,255,255,.55);
+  /* ================= SEIGAIHA (wave) pattern ================= */
+  .seigaiha{
+    --a:var(--ai); --b:var(--washi);
+    background-color:var(--a);
+    background-image:
+      radial-gradient(circle at 100% 150%, var(--a) 24%, var(--b) 24%, var(--b) 28%, var(--a) 28%, var(--a) 36%, var(--b) 36%, var(--b) 40%, transparent 40%, transparent),
+      radial-gradient(circle at 0 150%, var(--a) 24%, var(--b) 24%, var(--b) 28%, var(--a) 28%, var(--a) 36%, var(--b) 36%, var(--b) 40%, transparent 40%, transparent),
+      radial-gradient(circle at 50% 100%, var(--b) 10%, var(--a) 10%, var(--a) 23%, var(--b) 23%, var(--b) 30%, var(--a) 30%, var(--a) 43%, var(--b) 43%, var(--b) 50%, var(--a) 50%, var(--a) 63%, var(--b) 63%, var(--b) 71%, transparent 71%, transparent),
+      radial-gradient(circle at 100% 50%, var(--b) 5%, var(--a) 5%, var(--a) 15%, var(--b) 15%, var(--b) 20%, var(--a) 20%, var(--a) 29%, var(--b) 29%, var(--b) 34%, var(--a) 34%, var(--a) 44%, var(--b) 44%, var(--b) 49%, transparent 49%, transparent),
+      radial-gradient(circle at 0 50%, var(--b) 5%, var(--a) 5%, var(--a) 15%, var(--b) 15%, var(--b) 20%, var(--a) 20%, var(--a) 29%, var(--b) 29%, var(--b) 34%, var(--a) 34%, var(--a) 44%, var(--b) 44%, var(--b) 49%, transparent 49%, transparent);
+    background-size:var(--sz,36px) calc(var(--sz,36px) / 2);
   }
-  .pxbtn{
-    background:var(--washi);color:var(--sumi);border:0;padding:.34rem .7rem;font-size:.85rem;line-height:1.4;
-    box-shadow:-3px 0 0 var(--sumi),3px 0 0 var(--sumi),0 -3px 0 var(--sumi),0 3px 0 var(--sumi),inset -3px -3px 0 rgba(0,0,0,.14);
-    text-decoration:none;display:inline-block;margin:3px;white-space:nowrap;transition:background .12s, transform .08s;
-  }
-  .pxbtn:hover,.pxbtn:focus-visible{background:var(--gold);outline:0}
-  .pxbtn:active{transform:translateY(2px)}
-  .pxbtn.red{background:var(--red);color:#fff}
-  .pxbtn.red:hover{background:#e8604a}
-  .pxbtn[aria-pressed="true"]{background:#6f9a4f;color:#fff}
 
-  /* HUD */
-  .hud{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:flex-start;gap:6px;padding:14px 16px;pointer-events:none}
-  .hud > *{pointer-events:auto}
-  .brand{margin:3px auto 3px 3px;padding:.4rem .8rem;line-height:1.25}
-  .brand b{font-weight:400;font-size:1.06rem;letter-spacing:.04em;white-space:nowrap}
-  .brand b em{font-style:normal;color:var(--red)}
-  .brand small{display:block;font-size:.7rem;opacity:.65}
-  .tools{display:flex;flex-wrap:wrap;justify-content:flex-end;max-width:70vw}
+  /* ================= STAGE ================= */
+  #stage{position:fixed;inset:0;overflow:hidden;transition:filter .9s ease;
+    background:linear-gradient(180deg,#24395c 0,#3c5a80 7%,#c9b48a 30%,var(--washi) 60%)}
+  #view{position:absolute;inset:0;perspective:2600px;perspective-origin:50% 42%;touch-action:pan-y;cursor:grab}
+  #view.drag{cursor:grabbing}
+  #cam{position:absolute;left:50%;top:50%;width:1600px;height:1100px;transform-style:preserve-3d;transform-origin:800px 550px;will-change:transform}
+  .p3{transform-style:preserve-3d}
+  .abs{position:absolute}
 
-  .dock{
-    position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:20;
-    display:flex;flex-wrap:wrap;justify-content:center;width:max-content;max-width:calc(100vw - 20px);
-    transition:opacity .35s ease, transform .35s ease;
-  }
-  .dock .pxbtn{font-size:.82rem}
-  body.focus .dock{opacity:0;transform:translate(-50%,24px);pointer-events:none}
+  /* floor + walls */
+  .floor{position:absolute;inset:0;background:var(--tatami)}
+  .floor svg{display:block;width:100%;height:100%}
+  .wall{position:absolute;left:0;top:-760px;width:1600px;height:760px;transform-origin:50% 100%;transform:rotateX(-90deg);transform-style:preserve-3d;
+    background:var(--grain),linear-gradient(180deg,#d9bf8c,#e7d3a6 40%,#e2c999);}
+  .wall::after{content:"";position:absolute;inset:0;background:var(--grain);mix-blend-mode:multiply;opacity:.6;pointer-events:none}
+  .side{position:absolute;top:0;width:760px;height:1100px;transform-style:preserve-3d;
+    background:linear-gradient(90deg,#f6efdc,#efe4c8)}
+  .side.l{left:-760px;transform-origin:100% 50%;transform:rotateY(90deg)}
+  .side.r{left:1600px;transform-origin:0 50%;transform:rotateY(-90deg)}
+  .shoji{position:absolute;inset:0;border:16px solid var(--wood3);
+    background:
+      repeating-linear-gradient(90deg,transparent 0 120px,var(--wood2) 120px 128px),
+      repeating-linear-gradient(0deg,transparent 0 92px,var(--wood2) 92px 100px),
+      linear-gradient(90deg,#fbf6e8,#f1e7cc)}
+  .side.l .shoji{background:repeating-linear-gradient(0deg,transparent 0 120px,var(--wood2) 120px 128px),repeating-linear-gradient(90deg,transparent 0 92px,var(--wood2) 92px 100px),linear-gradient(0deg,#fbf6e8,#f1e7cc)}
+  .side.r .shoji{background:repeating-linear-gradient(0deg,transparent 0 120px,var(--wood2) 120px 128px),repeating-linear-gradient(90deg,transparent 0 92px,var(--wood2) 92px 100px),linear-gradient(0deg,#fbf6e8,#f1e7cc)}
+  .pillar{position:absolute;top:0;bottom:0;width:46px;background:linear-gradient(90deg,var(--wood3),var(--wood2) 30%,var(--wood) 60%,var(--wood2));border:3px solid var(--sumi)}
+  .beam{position:absolute;left:0;right:0;height:30px;background:linear-gradient(180deg,var(--wood),var(--wood2));border:3px solid var(--sumi)}
+  .ranma{position:absolute;left:0;right:0;top:0;height:112px;background:repeating-linear-gradient(90deg,var(--wood3) 0 10px,#e7d4a6 10px 36px);border-bottom:3px solid var(--sumi)}
+  .ranma::after{content:"";position:absolute;inset:18px 0;background:repeating-radial-gradient(ellipse at 50% 120%,transparent 0 18px,rgba(110,58,29,.75) 18px 22px);background-size:120px 80px;opacity:.85}
+  .baseboard{position:absolute;left:0;right:0;bottom:0;height:26px;background:var(--wood3);border-top:3px solid var(--sumi)}
 
-  #hint{
-    position:fixed;left:50%;top:84px;transform:translateX(-50%);z-index:15;padding:.35rem .85rem;font-size:.88rem;
-    white-space:nowrap;opacity:0;transition:opacity .5s;pointer-events:none;
-  }
-  #hint.on{opacity:1;animation:bob 1.6s ease-in-out infinite}
-  body.focus #hint{opacity:0}
-  @keyframes bob{50%{transform:translate(-50%,-4px)}}
+  /* ================= DESK ================= */
+  .desk{position:absolute;left:250px;top:230px;width:1100px;height:620px;transform-style:preserve-3d}
+  .desk-top{position:absolute;inset:0;transform:translateZ(150px);transform-style:preserve-3d;border:5px solid var(--sumi);border-radius:8px;
+    background:var(--woodgrain),linear-gradient(170deg,#d39758,#c4813f 55%,#b8763a);background-size:420px 96px,auto;
+    box-shadow:inset 0 0 0 7px rgba(110,58,29,.45)}
+  .desk-front{position:absolute;left:0;top:100%;width:100%;height:150px;transform-origin:50% 0;transform:translateZ(150px) rotateX(-90deg)}
+  .desk-side{position:absolute;top:0;height:100%;width:150px;transform-origin:0 50%}
+  .desk-side.l{left:0;transform:translateZ(150px) rotateY(90deg)}
+  .desk-side.r{left:100%;transform:translateZ(150px) rotateY(90deg)}
+  .desk-front svg,.desk-side svg{display:block;width:100%;height:100%;overflow:visible}
+  .shadow-floor{position:absolute;left:230px;top:250px;width:1150px;height:640px;border-radius:30px;background:rgba(60,40,20,.28);filter:blur(10px);transform:translateZ(1px)}
 
-  #toast{
-    position:fixed;left:50%;bottom:86px;z-index:25;transform:translate(-50%,12px);opacity:0;pointer-events:none;
-    padding:.5rem .95rem;max-width:min(560px,calc(100vw - 32px));text-align:center;transition:opacity .2s, transform .25s;
-  }
-  #toast.on{opacity:1;transform:translate(-50%,0)}
+  /* ================= OBJECTS ================= */
+  .obj{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);
+    transform:rotateZ(var(--r,0deg)) translateZ(calc(var(--z,2px) + var(--lift,0px)));transform-style:preserve-3d;
+    transition:transform .35s cubic-bezier(.3,1.4,.5,1)}
+  .hot{cursor:pointer;outline:none}
+  .hot:hover,.hot:focus-visible,.hot.on{--lift:16px}
+  .hot:focus-visible .face{outline:4px dashed var(--shu);outline-offset:6px}
+  .face{position:absolute;inset:0;border:3px solid var(--sumi);box-shadow:7px 9px 0 rgba(29,26,31,.22)}
+  .bb{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);transform-origin:50% 100%;
+    transform:translateZ(calc(var(--z,0px) + var(--lift,0px))) rotateX(-64deg);transition:transform .35s cubic-bezier(.3,1.4,.5,1)}
+  .bb svg{display:block;width:100%;height:100%;overflow:visible}
+  .bbshadow{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);border-radius:50%;background:rgba(29,26,31,.25);transform:translateZ(1px)}
+  /* floating kanji seal marker */
+  .mark{position:absolute;left:50%;top:50%;width:38px;height:38px;margin:-19px 0 0 -19px;pointer-events:none;
+    transform:translateZ(70px) rotateZ(calc(var(--r,0deg) * -1)) rotateX(-40deg);transform-style:flat}
+  .mark i{display:grid;place-items:center;width:100%;height:100%;background:var(--shu);color:var(--washi);font:400 22px/1 var(--brush);font-style:normal;
+    border:2px solid var(--sumi);border-radius:5px;box-shadow:3px 4px 0 rgba(29,26,31,.3);animation:bob 3.2s ease-in-out infinite}
+  .wall .mark{transform:translateZ(18px)}
+  @keyframes bob{50%{transform:translateY(-8px)}}
+  body.zoomed .mark{visibility:hidden}
 
-  /* side panel */
-  #panel{
-    position:fixed;top:16px;right:16px;bottom:16px;width:min(460px,calc(100vw - 32px));z-index:30;
-    display:flex;flex-direction:column;overflow:hidden;
-    transform:translateX(calc(100% + 40px));visibility:hidden;
-    transition:transform .5s cubic-bezier(.2,.9,.2,1.04), visibility 0s linear .5s;
-  }
-  #panel.open{transform:none;visibility:visible;transition:transform .5s cubic-bezier(.2,.9,.2,1.04), visibility 0s}
-  .panel-head{display:flex;align-items:center;gap:.7rem;padding:.7rem .85rem;background:var(--indigo);color:var(--washi);flex:none}
-  .panel-head .kanji{
-    display:grid;place-items:center;width:2.5rem;height:2.5rem;flex:none;background:var(--red);color:var(--washi);
-    font-size:1.45rem;line-height:1;box-shadow:inset -3px -3px 0 rgba(0,0,0,.22), inset 3px 3px 0 rgba(255,255,255,.2);
-  }
-  .panel-head h2{font-weight:400;font-size:1.02rem;margin-right:auto;line-height:1.3}
-  .panel-body{flex:1;overflow:auto;padding:1rem 1.15rem 1.5rem;overscroll-behavior:contain}
-  #panel .panel-body > *{opacity:0;transform:translateY(10px)}
-  #panel.open .panel-body > *{animation:rise .45s ease forwards}
-  @keyframes rise{to{opacity:1;transform:none}}
+  /* notebook */
+  .note .page{position:absolute;top:0;bottom:0;width:50%;background:var(--grain),linear-gradient(90deg,#fbf4e2,#f1e4c4);border:3px solid var(--sumi)}
+  .note .page.l{left:0;border-radius:6px 0 0 6px;box-shadow:7px 9px 0 rgba(29,26,31,.22);background:var(--grain),repeating-linear-gradient(90deg,transparent 0 21px,rgba(200,57,43,.28) 21px 22px),linear-gradient(90deg,#f1e4c4,#fbf4e2)}
+  .note .page.r{right:0;border-radius:0 6px 6px 0;box-shadow:7px 9px 0 rgba(29,26,31,.22)}
+  .note .page.l::after{content:"";position:absolute;right:0;top:0;bottom:0;width:22px;background:linear-gradient(90deg,transparent,rgba(110,58,29,.25))}
+  .note .cover{position:absolute;inset:-9px -10px -9px -10px;background:var(--ai);border:3px solid var(--sumi);border-radius:8px;transform:translateZ(-3px)}
+  .note .vt{position:absolute;writing-mode:vertical-rl;font-family:var(--brush);color:var(--sumi);line-height:1.2}
+  .note .hanko{position:absolute;width:30px;height:30px;background:var(--shu);color:var(--washi);font:400 15px/30px var(--brush);text-align:center;border-radius:3px;transform:rotate(-6deg)}
+  .note svg{position:absolute}
 
-  /* panel content */
-  .panel-body h3{font-size:1.02rem;font-weight:400;margin:1rem 0 .35rem;border-bottom:2px dotted rgba(43,34,48,.35);padding-bottom:.2rem}
-  .panel-body h3:first-child{margin-top:0}
-  .panel-body p{margin:.4rem 0}
-  .dim{opacity:.7;font-size:.88em}
-  .tags{display:flex;flex-wrap:wrap;gap:6px;margin:.45rem 0}
-  .tag{background:var(--washi-d);padding:.05rem .5rem;font-size:.8rem;border:2px solid var(--sumi)}
-  .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:.6rem 0}
-  .stats div{background:var(--washi-d);border:2px solid var(--sumi);padding:.4rem .5rem;text-align:center}
-  .stats b{display:block;font-size:1.35rem;font-weight:400;color:var(--red);line-height:1.2}
-  .stats span{font-size:.75rem}
-  .two{display:grid;grid-template-columns:1fr;gap:10px}
-  .card{border:2px solid var(--sumi);background:rgba(255,255,255,.4);padding:.6rem .75rem}
-  .card.hl{background:var(--red);color:#fff}
-  .card.hl a{color:#fff}
-  .row{display:grid;grid-template-columns:64px 1fr;gap:.2rem .8rem;padding:.5rem 0;border-bottom:2px dotted rgba(43,34,48,.3)}
-  .row .k{color:var(--red)}
-  .row small{display:block;opacity:.75}
-  .shot{width:100%;height:auto;border:2px solid var(--sumi);display:block;margin:.4rem 0}
-  .pf{columns:2 150px;column-gap:10px}
-  .pf figure{break-inside:avoid;margin:0 0 10px;border:2px solid var(--sumi);background:#fff}
-  .pf img{width:100%;height:auto;display:block}
-  .pf figcaption{padding:.3rem .5rem;font-size:.8rem;background:var(--washi-d)}
-  .pf figcaption b{font-weight:400;display:block;color:var(--red);font-size:.72rem}
-  .portrait{float:right;width:104px;margin:0 0 .5rem 1rem;border:3px solid var(--sumi)}
-  .omikuji{text-align:center;padding:1.2rem .5rem}
-  .omikuji .big{font-size:3rem;color:var(--red);line-height:1.2}
+  /* map scroll */
+  .map .mount{position:absolute;inset:0;border:3px solid var(--sumi);box-shadow:7px 9px 0 rgba(29,26,31,.22);--sz:26px}
+  .map .img{position:absolute;inset:14px 16px;border:3px solid var(--sumi);background:#f1e4c4 center/cover no-repeat}
+  .map .roll{position:absolute;top:-8px;bottom:-8px;width:20px;border:3px solid var(--sumi);border-radius:10px;transform:translateZ(9px);
+    background:linear-gradient(90deg,var(--wood3),var(--wood) 45%,#e6b078 55%,var(--wood2))}
+  .map .roll.l{left:-12px}.map .roll.r{right:-12px}
+  .map .slip{position:absolute;right:28px;top:22px;background:var(--washi);border:2px solid var(--sumi);padding:4px 5px;writing-mode:vertical-rl;font:600 13px/1.1 var(--serif);transform:translateZ(1px)}
+
+  /* prints stack */
+  .prints .pr{position:absolute;width:170px;height:118px;padding:7px;background:var(--washi);border:3px solid var(--sumi);box-shadow:6px 8px 0 rgba(29,26,31,.22)}
+  .prints .pr img{display:block;width:100%;height:100%;object-fit:cover;border:1.5px solid var(--sumi)}
+  .prints .obi{position:absolute;left:-8px;right:-8px;top:52%;height:30px;background:var(--shu);border:3px solid var(--sumi);color:var(--washi);font:400 17px/24px var(--brush);text-align:center;letter-spacing:.4em;transform:translateZ(8px) rotate(-4deg)}
+
+  /* cuboid generic */
+  .cb{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);transform-style:preserve-3d;transform:rotateZ(var(--r,0deg)) translateZ(var(--z,0px))}
+  .cb>.t{position:absolute;inset:0;transform:translateZ(var(--d));border:3px solid var(--sumi)}
+  .cb>.fr{position:absolute;left:0;top:100%;width:100%;height:var(--d);transform-origin:50% 0;transform:translateZ(var(--d)) rotateX(-90deg);border:3px solid var(--sumi)}
+  .cb>.rt{position:absolute;left:100%;top:0;width:var(--d);height:100%;transform-origin:0 50%;transform:translateZ(var(--d)) rotateY(90deg);border:3px solid var(--sumi)}
+  .cb>.lt{position:absolute;left:0;top:0;width:var(--d);height:100%;transform-origin:0 50%;transform:translateZ(var(--d)) rotateY(90deg);border:3px solid var(--sumi)}
+
+  /* inkstone box */
+  .ink .t{background:#201b1e;box-shadow:inset 0 0 0 9px #2c2328,inset 0 0 0 12px var(--shu)}
+  .ink .fr,.ink .rt,.ink .lt{background:linear-gradient(180deg,#2b2326,#151214)}
+  .ink .stone{position:absolute;left:24px;top:22px;width:92px;height:150px;border-radius:44px 44px 12px 12px;background:radial-gradient(ellipse 60% 22% at 50% 20%,#050406 0 80%,transparent 84%),linear-gradient(180deg,#45403f,#2e2a2b);border:3px solid var(--sumi);transform:translateZ(calc(var(--d) + 6px))}
+  .ink .stick{position:absolute;left:122px;top:30px;width:20px;height:96px;background:#141114;border:2px solid #000;border-radius:3px;transform:translateZ(calc(var(--d) + 10px))}
+  .ink .stick::after{content:"";position:absolute;inset:16px 3px;border:1px solid var(--kin)}
+  .ink .brush{position:absolute;height:12px;border-radius:6px;transform-origin:0 50%;transform:translateZ(calc(var(--d) + 14px));
+    background:linear-gradient(90deg,#1b1719 0 16%,var(--washi) 16% 22%,#a87a3e 22% 100%);border:2px solid var(--sumi)}
+
+  /* books (classic) */
+  .bk .t{background:var(--c)}
+  .bk .t::before{content:"";position:absolute;left:14px;top:10px;width:30px;bottom:10px;background:var(--washi);border:2px solid var(--sumi)}
+  .bk .t::after{content:"";position:absolute;right:8px;top:6px;bottom:6px;width:2px;background:repeating-linear-gradient(180deg,var(--washi) 0 6px,transparent 6px 22px)}
+  .bk .fr,.bk .rt,.bk .lt{background:repeating-linear-gradient(90deg,#f4ead2 0 3px,#e3d3ad 3px 4px)}
+  .bk .lab{position:absolute;left:16px;top:14px;width:26px;writing-mode:vertical-rl;font:600 13px/26px var(--serif);text-align:center;color:var(--sumi)}
+
+  /* CV */
+  .cv .face{background:var(--grain),
+    linear-gradient(90deg,transparent 0 66px,var(--sumi2) 66px 68px,transparent 68px),
+    repeating-linear-gradient(180deg,transparent 0 22px,rgba(58,51,54,.55) 22px 23.5px),
+    #f7efdb;background-position:0 0,0 44px,0 44px;background-repeat:repeat,no-repeat,repeat}
+  .cv .title{position:absolute;left:12px;top:7px;font:900 22px/30px var(--serif);letter-spacing:.3em}
+  .cv .seal{position:absolute;right:12px;top:8px;width:28px;height:28px;border:2.5px solid var(--shu);color:var(--shu);border-radius:50%;font:400 15px/23px var(--brush);text-align:center}
+  .cv .lines{position:absolute;left:76px;right:12px;top:50px;font:13px/23px var(--serif);color:var(--sumi2)}
+
+  /* letter */
+  .letter .face{background:var(--grain),linear-gradient(160deg,#f6ecd3,#ead8af);border-radius:3px}
+  .letter .face::before{content:"";position:absolute;inset:0;background:linear-gradient(30deg,transparent 49.4%,var(--sumi2) 49.6% 50.4%,transparent 50.6%),linear-gradient(-30deg,transparent 49.4%,var(--sumi2) 49.6% 50.4%,transparent 50.6%);background-size:100% 100%;opacity:.55;clip-path:polygon(0 0,100% 0,50% 58%)}
+  .letter .wax{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-27px 0 0 -20px;background:var(--shu);border:3px solid var(--sumi);border-radius:50%;color:var(--washi);font:400 20px/34px var(--brush);text-align:center;transform:translateZ(3px)}
+  .letter .addr{position:absolute;right:14px;bottom:10px;font:12px/1.2 var(--serif);color:var(--sumi2)}
+
+  /* round window */
+  .win{position:absolute;left:1210px;top:170px;width:270px;height:270px;border-radius:50%;border:16px solid #b98c3e;box-shadow:0 0 0 4px var(--sumi),inset 0 0 0 3px var(--sumi);overflow:hidden;
+    background:var(--winimg,url(assets/ukiyoe/fuji.webp)) var(--winpos,58% 50%)/cover}
+  .win::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 31%,#8a6a2c 31% 34%,transparent 34% 66%,#8a6a2c 66% 69%,transparent 69%)}
+  /* framed Great Wave on the wall */
+  .gaku{position:absolute;left:400px;top:286px;width:440px;height:310px;background:#1a1416;border:4px solid var(--sumi);box-shadow:inset 0 0 0 5px #b98c3e,7px 9px 0 rgba(29,26,31,.25);padding:20px}
+  .gaku span{display:block;width:100%;height:100%;border:3px solid var(--washi);background:url(assets/ukiyoe/wave.webp) center/cover}
+  /* plaque */
+  .plaque{position:absolute;left:470px;top:166px;width:340px;height:92px;background:linear-gradient(180deg,#2a2124,#151113);border:4px solid var(--sumi);box-shadow:inset 0 0 0 6px #4a3a2b,6px 8px 0 rgba(29,26,31,.25);
+    color:#e3b75a;font:400 46px/84px var(--brush);text-align:center;letter-spacing:.32em;text-indent:.32em}
+  /* hanging scroll (timeline) */
+  .jiku{--x:150px;--y:150px;--w:170px;--h:500px}
+  .jiku .mount{position:absolute;inset:0;background:linear-gradient(180deg,var(--matcha) 0 15%,#c7b37b 15% 85%,var(--matcha) 85%);border:3px solid var(--sumi);box-shadow:6px 8px 0 rgba(29,26,31,.22)}
+  .jiku .paper{position:absolute;left:18px;right:18px;top:84px;bottom:84px;background:var(--grain),#f7efda;border:2px solid var(--sumi);display:flex;flex-direction:row-reverse;justify-content:space-around;padding:14px 4px}
+  .jiku .paper span{writing-mode:vertical-rl;font:600 13px/1.25 var(--serif);color:var(--sumi)}
+  .jiku .paper span b{display:block;font-family:var(--brush);font-weight:400;color:var(--shu);font-size:14px;margin-bottom:6px}
+  .jiku .rod{position:absolute;left:-12px;right:-12px;height:16px;border:3px solid var(--sumi);border-radius:8px;background:linear-gradient(180deg,#e6b078,var(--wood2))}
+  .jiku .rod.top{top:-4px}.jiku .rod.bot{bottom:-6px}
+  .jiku .cord{position:absolute;left:50%;top:-60px;width:80px;height:60px;margin-left:-40px;border:3px solid var(--sumi);border-bottom:0;border-radius:40px 40px 0 0;clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
+  /* kawaraban */
+  .news{--x:860px;--y:280px;--w:320px;--h:310px}
+  .sheet{position:absolute;background:var(--grain),#efe3c4;border:3px solid var(--sumi);box-shadow:6px 8px 0 rgba(29,26,31,.25);padding:8px;color:var(--sumi);overflow:hidden}
+  .sheet .mast{font:900 16px/1 var(--serif);border-bottom:3px double var(--sumi);padding-bottom:5px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+  .sheet .mast em{font-style:normal;background:var(--shu);color:var(--washi);padding:2px 5px;font-size:12px}
+  .sheet .hl{writing-mode:vertical-rl;float:right;font:900 25px/1.05 var(--serif);margin-left:6px;height:100%}
+  .sheet .col{font-size:9px;line-height:1.3;color:var(--sumi2);column-count:2;column-gap:6px;column-rule:1px solid rgba(29,26,31,.3)}
+  .sheet img{display:block;width:100%;height:84px;object-fit:cover;filter:grayscale(1) contrast(1.25) sepia(.35);border:2px solid var(--sumi);margin-bottom:5px}
+  .tape{position:absolute;width:46px;height:16px;background:rgba(240,226,190,.85);border:1px solid rgba(29,26,31,.35);transform:rotate(-12deg)}
+
+
+  /* teacup steam */
+  .steam path{animation:steam 3.6s ease-in-out infinite;transform-origin:50% 100%}
+  .steam path:nth-child(2){animation-delay:1.2s}
+  @keyframes steam{0%{opacity:0;transform:translateY(8px)}40%{opacity:.8}100%{opacity:0;transform:translateY(-14px)}}
+
+  /* overlays (inside stage => filtered with theme) */
+  .kasumi{position:absolute;left:0;right:0;pointer-events:none;height:120px}
+  .kasumi svg{width:100%;height:100%;display:block}
+  .kasumi.top{top:0}.kasumi.bot{bottom:0;transform:scaleY(-1)}
+  .grainover{position:absolute;inset:0;pointer-events:none;background:var(--grain);mix-blend-mode:multiply;opacity:.55}
+  #night{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .9s;
+    background:radial-gradient(circle at var(--lx,80%) var(--ly,40%),rgba(255,214,140,0) 0,rgba(255,200,120,.08) 110px,rgba(22,30,74,.82) 380px,rgba(10,14,40,.94) 820px);mix-blend-mode:multiply}
+  #glow{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .9s;
+    background:radial-gradient(circle at var(--lx,80%) var(--ly,40%),rgba(255,196,96,.62) 0,rgba(255,170,80,.22) 140px,transparent 340px);mix-blend-mode:screen}
+  #rain{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .9s}
+
+  /* ================= THEMES ================= */
+  body[data-theme="ai"] #stage{filter:grayscale(1) sepia(.9) hue-rotate(178deg) saturate(2.4) brightness(.97) contrast(1.06)}
+  body[data-theme="ai"]{--winimg:url(assets/ukiyoe/kajika.webp);--winpos:40% 50%}
+  body[data-theme="sumi"] #stage{filter:grayscale(1) contrast(1.18) brightness(1.02)}
+  body[data-theme="sumi"]{--winimg:url(assets/ukiyoe/shower.webp);--winpos:50% 30%}
+  body[data-theme="sumi"] #rain{opacity:1}
+  body[data-theme="yoru"] #stage{filter:saturate(.85)}
+  body[data-theme="yoru"]{--winimg:url(assets/ukiyoe/moonpine.webp);--winpos:50% 40%}
+  body[data-theme="yoru"] #night,body[data-theme="yoru"] #glow{opacity:1}
+  body[data-theme="yoru"] .andon-paper{fill:#ffd98a}
+
+  /* ================= HUD ================= */
+  .hud{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;padding:14px 18px;pointer-events:none;z-index:20}
+  .hud>*{pointer-events:auto}
+  .brand{display:flex;gap:10px;align-items:flex-start;text-decoration:none}
+  .cart{writing-mode:vertical-rl;background:var(--washi);border:3px solid var(--sumi);box-shadow:inset 0 0 0 3px var(--washi),inset 0 0 0 5px var(--shu);padding:12px 7px;font:900 21px/1 var(--serif);letter-spacing:.16em;color:var(--sumi)}
+  .cart em{font-style:normal;color:var(--shu)}
+  .brand small{display:block;margin-top:6px;writing-mode:horizontal-tb;font:600 12px/1.4 var(--serif);background:var(--sumi);color:var(--washi);padding:3px 8px;border-radius:2px;white-space:nowrap}
+  .tools{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;max-width:62vw}
+  .btn{display:inline-flex;align-items:center;gap:6px;background:var(--washi);border:2.5px solid var(--sumi);box-shadow:3px 3px 0 var(--sumi);padding:6px 12px;font:600 13px/1.2 var(--serif);text-decoration:none;border-radius:3px;transition:transform .12s,box-shadow .12s;white-space:nowrap}
+  .btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--sumi)}
+  .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--sumi)}
+  .btn:focus-visible{outline:3px solid var(--shu);outline-offset:2px}
+  .btn.red{background:var(--shu);color:var(--washi)}
+  .btn.ai{background:var(--ai);color:var(--washi)}
+  .btn[aria-pressed="true"]{background:var(--sumi);color:var(--washi)}
+
+  #themeTag{position:fixed;left:18px;bottom:76px;z-index:20;display:flex;align-items:center;gap:8px;background:var(--washi);border:2.5px solid var(--sumi);box-shadow:3px 3px 0 var(--sumi);padding:5px 10px 5px 6px;font:600 12px/1.2 var(--serif)}
+  #themeTag b{background:var(--shu);color:var(--washi);font:400 15px/1 var(--brush);padding:5px 6px;border-radius:2px}
+  #hint{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:19;background:var(--sumi);color:var(--washi);padding:6px 14px;font:600 13px/1.3 var(--serif);border-radius:2px;transition:opacity .6s;pointer-events:none;white-space:nowrap}
+  body.zoomed #hint,body.touched #hint{opacity:0}
+  .dock{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:20;display:flex;gap:6px;max-width:calc(100vw - 24px);overflow-x:auto;padding:4px 4px 6px;scrollbar-width:none}
+  .dock::-webkit-scrollbar{display:none}
+  .dock button{flex:none;display:flex;align-items:center;gap:6px;background:var(--washi);border:2.5px solid var(--sumi);box-shadow:3px 3px 0 var(--sumi);padding:5px 10px 5px 5px;font:600 13px/1.1 var(--serif);border-radius:3px}
+  .dock button i{font:400 14px/1 var(--brush);font-style:normal;background:var(--shu);color:var(--washi);padding:4px 5px;border-radius:2px}
+  .dock button:hover,.dock button.on{background:var(--sumi);color:var(--washi)}
+  .dock button:focus-visible{outline:3px solid var(--shu);outline-offset:2px}
+  #tip{position:fixed;z-index:30;pointer-events:none;background:var(--washi);border:2.5px solid var(--sumi);box-shadow:3px 3px 0 var(--sumi);padding:4px 10px;font:600 13px/1.3 var(--serif);opacity:0;transform:translate(14px,14px);transition:opacity .15s;white-space:nowrap}
+  #tip.on{opacity:1}
+  #tip i{font-style:normal;color:var(--shu);margin-right:5px;font-family:var(--brush)}
+
+  /* ================= PANEL ================= */
+  #panel{position:fixed;z-index:25;top:76px;right:22px;bottom:76px;width:min(600px,48vw);display:flex;gap:0;visibility:hidden;opacity:0;transform:translateX(30px);transition:opacity .35s,transform .45s cubic-bezier(.2,.9,.3,1),visibility 0s .45s}
+  #panel.open{visibility:visible;opacity:1;transform:none;transition:opacity .35s,transform .45s cubic-bezier(.2,.9,.3,1)}
+  .psheet{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--grain),var(--washi);border:3px solid var(--sumi);box-shadow:8px 10px 0 rgba(29,26,31,.28),inset 0 0 0 6px var(--washi),inset 0 0 0 8px var(--sumi2)}
+  .phead{display:flex;align-items:center;gap:10px;padding:16px 18px 12px;border-bottom:2px solid var(--sumi2);
+    background:linear-gradient(180deg,rgba(47,95,147,.22),transparent)}
+  .phead .seal{flex:none;width:44px;height:44px;display:grid;place-items:center;background:var(--shu);color:var(--washi);font:400 26px/1 var(--brush);border:2.5px solid var(--sumi);border-radius:4px}
+  .phead h2{flex:1;font:900 20px/1.3 var(--serif);letter-spacing:.04em}
+  .pbody{flex:1;overflow:auto;padding:16px 22px 26px;overscroll-behavior:contain}
+  .pcart{flex:none;writing-mode:vertical-rl;align-self:flex-start;margin-top:22px;margin-left:-3px;background:var(--shu);color:var(--washi);border:3px solid var(--sumi);padding:14px 6px;font:400 19px/1 var(--brush);letter-spacing:.2em}
+
+  /* content (shared by panel + reader) */
+  .content h3{font:900 16px/1.4 var(--serif);margin:1.1rem 0 .5rem;padding-left:10px;border-left:5px solid var(--shu)}
+  .content h3:first-child{margin-top:0}
+  .content p{margin:.4rem 0 .7rem}
+  .content .dim{color:#5d5254;font-size:.92em}
+  .content .tags{display:flex;flex-wrap:wrap;gap:6px;margin:.5rem 0 .8rem}
+  .content .tag{border:2px solid var(--sumi);background:#fbf6e6;padding:1px 8px;font-size:12.5px;border-radius:2px}
+  .content .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:.8rem 0}
+  .content .stats div{border:2.5px solid var(--sumi);background:var(--ai);color:var(--washi);padding:8px;text-align:center}
+  .content .stats b{display:block;font:900 22px/1.1 var(--serif);color:#f2cf7a}
+  .content .stats span{font-size:12px}
+  .content .two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:.6rem 0}
+  .content .card{border:2.5px solid var(--sumi);background:#fbf6e6;padding:10px 12px;box-shadow:4px 4px 0 rgba(29,26,31,.18)}
+  .content .card.hl{background:#f6e2c8;box-shadow:4px 4px 0 var(--shu)}
+  .content .card p{font-size:13.5px}
+  .content .row{display:flex;gap:12px;padding:9px 0;border-bottom:1.5px dashed rgba(29,26,31,.35)}
+  .content .row .k{flex:none;width:68px;font:900 13px/1.35 var(--serif);color:var(--shu)}
+  .content .row small{display:block;color:#5d5254;font-size:13px;line-height:1.55}
+  .content .shot{display:block;width:100%;height:auto;border:3px solid var(--sumi);margin:.6rem 0;box-shadow:5px 5px 0 rgba(29,26,31,.2)}
+  .content .portrait{float:right;width:118px;height:auto;margin:0 0 .6rem 1rem;border:3px solid var(--sumi);box-shadow:inset 0 0 0 4px var(--washi),5px 6px 0 rgba(29,26,31,.22);padding:4px;background:var(--washi)}
+  .content .pf{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .content .pf figure{border:2.5px solid var(--sumi);background:#fbf6e6;padding:6px}
+  .content .pf img{display:block;width:100%;height:auto}
+  .content .pf figcaption{font-size:12px;padding-top:5px;display:flex;flex-direction:column}
+  .content .pf figcaption b{color:var(--shu);font-size:11px;letter-spacing:.06em}
+  .content .pxbtn{display:inline-flex;margin:.2rem .4rem .2rem 0;background:var(--washi);border:2.5px solid var(--sumi);box-shadow:3px 3px 0 var(--sumi);padding:6px 12px;font:600 13px/1.2 var(--serif);text-decoration:none;border-radius:3px}
+  .content .pxbtn.red{background:var(--shu);color:var(--washi)}
+  .content a{text-underline-offset:3px}
+
+  /* ================= READER ================= */
+  #reader{display:none}
+  body.read{overflow:auto}
+  body.read #stage,body.read #hint,body.read .dock,body.read #themeTag,body.read #panel{display:none}
+  body.read #reader{display:block;max-width:820px;margin:0 auto;padding:110px 18px 60px}
+  #reader section{background:var(--grain),var(--washi);border:3px solid var(--sumi);box-shadow:7px 8px 0 rgba(29,26,31,.22);padding:18px 22px;margin-bottom:22px}
+  #reader h2{display:flex;align-items:center;gap:10px;font:900 20px/1.3 var(--serif);margin-bottom:.8rem}
+  #reader h2 i{font:400 20px/1 var(--brush);font-style:normal;background:var(--shu);color:var(--washi);padding:6px 7px;border-radius:3px}
+  body.read{background:var(--grain),linear-gradient(180deg,#d8c393,var(--washi) 300px)}
 
   /* loader */
-  #loader{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:#2b2230;color:var(--washi);transition:opacity .7s ease, visibility 0s linear .7s}
+  #loader{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:var(--grain),var(--washi);transition:opacity .7s,visibility 0s .7s;animation:ldone .6s ease 1s forwards;pointer-events:none}
+  @keyframes ldone{to{opacity:0;visibility:hidden}}
   #loader.done{opacity:0;visibility:hidden}
-  #loader .ttl{font-size:1.5rem;letter-spacing:.12em;margin-bottom:1rem;text-align:center}
-  #loader .ttl em{font-style:normal;color:var(--gold)}
-  .bar{width:240px;height:18px;border:3px solid var(--washi);padding:2px;margin:0 auto}
-  .bar i{display:block;height:100%;width:0;background:var(--gold);transition:width .25s steps(6)}
-  #loader .sub{margin-top:.8rem;text-align:center;font-size:.8rem;opacity:.75;animation:blink 1s steps(2) infinite}
-  @keyframes blink{50%{opacity:.2}}
+  #loader .in{text-align:center}
+  #loader .cart{display:inline-block;font-size:30px;padding:16px 10px}
+  #loader p{margin-top:14px;font:600 13px/1 var(--serif);letter-spacing:.3em;color:var(--sumi2)}
+  #loader .drop{width:12px;height:12px;border-radius:50%;background:var(--sumi);margin:14px auto 0;animation:drop 1s ease-in-out infinite}
+  @keyframes drop{50%{transform:scale(1.8);opacity:.4}}
 
-  /* reader mode */
-  #reader{display:none;max-width:860px;margin:100px auto 48px;padding:0 14px}
-  #reader section{margin-bottom:22px}
-  #reader .two{grid-template-columns:1fr 1fr}
-  #reader .stats{grid-template-columns:repeat(4,1fr)}
-  body.read #scene, body.read .dock, body.read #hint, body.read #panel{display:none}
-  body.read #reader{display:block}
-
-  @media (max-width:700px){
-    .hud{padding:8px}
+  @media (max-width:760px){
+    .hud{padding:10px}
+    .cart{font-size:16px;padding:8px 5px}
     .brand small{display:none}
-    .tools .pxbtn{font-size:.76rem;padding:.28rem .5rem}
-    #panel{top:auto;left:10px;right:10px;bottom:10px;width:auto;height:60dvh;transform:translateY(calc(100% + 30px))}
-    #hint{top:auto;bottom:120px}
-    .dock{bottom:8px}
-    .dock .pxbtn{font-size:.76rem;padding:.28rem .5rem}
-    #reader .two{grid-template-columns:1fr}
-    #reader .stats{grid-template-columns:1fr 1fr}
+    .tools{gap:5px;max-width:none;flex-wrap:nowrap}
+    .btn{padding:4px 7px;font-size:11.5px;box-shadow:2px 2px 0 var(--sumi)}
+    #btnSound{display:none}
+    #hint{display:none}
+    #themeTag{bottom:64px;left:10px;font-size:11px}
+    #panel{left:8px;right:8px;top:auto;bottom:8px;height:74vh;width:auto;transform:translateY(30px)}
+    .pcart{display:none}
+    .content .stats{grid-template-columns:1fr 1fr}
+    .content .two,.content .pf{grid-template-columns:1fr}
+    .content .portrait{width:92px}
   }
   @media (prefers-reduced-motion:reduce){
-    #hint.on{animation:none}
-    #panel,#panel.open{transition:none}
-    #panel.open .panel-body > *{animation:none;opacity:1;transform:none}
+    #loader{display:none}
+    *{animation:none !important;transition-duration:.01s !important}
   }
 </style>
 </head>
-<body data-lang="zh">
+<body data-lang="zh" data-theme="nishiki">
 
-<canvas id="scene" role="img" aria-label="王钰淞的日式小屋：等距视角的互动场景。可用下方按钮导航。 / Yusong Wang's Japanese room — an interactive isometric scene. Use the buttons below to navigate."></canvas>
+<div id="stage" aria-hidden="false">
+  <div id="view" role="application" aria-label="王钰淞的和式书斋：俯瞰的 2.5D 场景，点击桌上的物件或使用下方目录导航 / Yusong Wang's ukiyo-e study — a 2.5D desk scene; click objects or use the index below">
+    <div id="cam">
+      <!-- tatami floor -->
+      <div class="floor" aria-hidden="true">
+        <svg viewBox="0 0 1600 1100" preserveAspectRatio="none">
+          <defs>
+            <pattern id="weave" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#cdb673"/><path d="M0 2h8M0 6h8" stroke="#b39a55" stroke-width="1.2"/></pattern>
+            <pattern id="weaveV" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#c8b06b"/><path d="M2 0v8M6 0v8" stroke="#ad944f" stroke-width="1.2"/></pattern>
+          </defs>
+          <g stroke="#232741" stroke-width="12">
+            <rect x="0" y="0" width="540" height="270" fill="url(#weave)"/>
+            <rect x="540" y="0" width="540" height="270" fill="url(#weave)"/>
+            <rect x="1080" y="0" width="540" height="270" fill="url(#weave)"/>
+            <rect x="0" y="270" width="270" height="540" fill="url(#weaveV)"/>
+            <rect x="270" y="270" width="540" height="270" fill="url(#weave)"/>
+            <rect x="810" y="270" width="540" height="270" fill="url(#weave)"/>
+            <rect x="1350" y="270" width="270" height="540" fill="url(#weaveV)"/>
+            <rect x="270" y="540" width="540" height="270" fill="url(#weave)"/>
+            <rect x="810" y="540" width="540" height="270" fill="url(#weave)"/>
+            <rect x="0" y="810" width="540" height="300" fill="url(#weave)"/>
+            <rect x="540" y="810" width="540" height="300" fill="url(#weave)"/>
+            <rect x="1080" y="810" width="540" height="300" fill="url(#weave)"/>
+          </g>
+        </svg>
+      </div>
+      <div class="shadow-floor" aria-hidden="true"></div>
+
+      <!-- shoji side walls -->
+      <div class="side l" aria-hidden="true"><div class="shoji"></div></div>
+      <div class="side r" aria-hidden="true"><div class="shoji"></div></div>
+
+      <!-- back wall -->
+      <div class="wall">
+        <div class="ranma" aria-hidden="true"></div>
+        <div class="beam" style="top:112px" aria-hidden="true"></div>
+        <div class="pillar" style="left:40px" aria-hidden="true"></div>
+        <div class="pillar" style="left:1514px" aria-hidden="true"></div>
+        <div class="baseboard" aria-hidden="true"></div>
+
+        <div class="plaque" aria-hidden="true">温故知新</div>
+        <div class="win" aria-hidden="true"></div>
+        <div class="gaku" aria-hidden="true"><span></span></div>
+
+        <!-- hanging scroll: timeline -->
+        <button class="obj hot jiku" id="o-exp" data-sec="exp" type="button" style="--z:4px">
+          <span class="cord" aria-hidden="true"></span>
+          <span class="mount" aria-hidden="true"></span>
+          <span class="rod top" aria-hidden="true"></span>
+          <span class="paper" aria-hidden="true">
+            <span><b>壹</b>2016 广西大学</span>
+            <span><b>贰</b>2020 中科院微系统所</span>
+            <span><b>叁</b>2024 港科大广州</span>
+            <span><b>肆</b>2026 下一站</span>
+          </span>
+          <span class="rod bot" aria-hidden="true"></span>
+          <span class="mark" aria-hidden="true"><i>歴</i></span>
+          <span class="vh">年表 · 经历 / Timeline</span>
+        </button>
+
+        <!-- kawaraban newspapers: papers & patents -->
+        <button class="obj hot news" id="o-work" data-sec="work" type="button" style="--z:3px">
+          <span class="sheet" style="left:0;top:0;width:190px;height:250px;transform:rotate(-4deg)" aria-hidden="true">
+            <span class="mast">瓦版 <em>號外</em></span>
+            <span class="hl">第一作者 登 VINCI</span>
+            <img src="assets/interface.jpg" alt="" loading="lazy" />
+            <span class="col">HeritageExplorer：广州 831 处历史建筑多模态可视化与对话系统，扩展至广西 2,036 处历史建筑。地图入口、图谱大脑、四通路检索、可追溯回答。</span>
+          </span>
+          <span class="sheet" style="left:170px;top:16px;width:150px;height:150px;transform:rotate(5deg)" aria-hidden="true">
+            <span class="mast">CHI <em>2025</em></span>
+            <span class="hl" style="font-size:20px">GenColor</span>
+            <span class="col">文生图扩散模型提取语境配色——合作论文刊于 CHI 2025。</span>
+          </span>
+          <span class="sheet" style="left:150px;top:176px;width:170px;height:130px;transform:rotate(-2deg);background-color:#f3d9c6" aria-hidden="true">
+            <span class="mast">特許 <em>四件</em></span>
+            <span class="hl" style="font-size:19px">专利四 软著一</span>
+            <span class="col">危化品云数据联动 · 消防智能感知 · LoRa 测力 · 客流检测</span>
+          </span>
+          <span class="tape" style="left:70px;top:-8px" aria-hidden="true"></span>
+          <span class="tape" style="left:230px;top:8px;transform:rotate(14deg)" aria-hidden="true"></span>
+          <span class="mark" aria-hidden="true"><i>報</i></span>
+          <span class="vh">论文 · 专利 · 项目 / Papers, patents &amp; projects</span>
+        </button>
+      </div>
+
+      <!-- ================= DESK ================= -->
+      <div class="desk">
+        <div class="desk-front" aria-hidden="true">
+          <svg viewBox="0 0 1100 150" preserveAspectRatio="none">
+            <path d="M6 0h1088v44H6z" fill="#8f4f25" stroke="#1d1a1f" stroke-width="5"/>
+            <path d="M14 30h1072" stroke="#c98a4b" stroke-width="3"/>
+            <path d="M40 44h80v54c0 20 16 30 34 34v18H40z" fill="#7a4220" stroke="#1d1a1f" stroke-width="5" stroke-linejoin="round"/>
+            <path d="M1060 44h-80v54c0 20-16 30-34 34v18h114z" fill="#7a4220" stroke="#1d1a1f" stroke-width="5" stroke-linejoin="round"/>
+            <path d="M200 44c40 28 660 28 700 0" fill="none" stroke="#1d1a1f" stroke-width="4"/>
+          </svg>
+        </div>
+        <div class="desk-side l" aria-hidden="true"><svg viewBox="0 0 150 620" preserveAspectRatio="none"><path d="M0 4h44v612H0z" fill="#7a4220" stroke="#1d1a1f" stroke-width="5"/><path d="M44 30h70v560H44z" fill="#6b3a1c" stroke="#1d1a1f" stroke-width="5"/></svg></div>
+        <div class="desk-side r" aria-hidden="true"><svg viewBox="0 0 150 620" preserveAspectRatio="none"><path d="M0 4h44v612H0z" fill="#7a4220" stroke="#1d1a1f" stroke-width="5"/><path d="M44 30h70v560H44z" fill="#6b3a1c" stroke="#1d1a1f" stroke-width="5"/></svg></div>
+
+        <div class="desk-top">
+          <!-- andon lantern (night toggle) -->
+          <span class="bbshadow" style="--x:22px;--y:120px;--w:110px;--h:34px" aria-hidden="true"></span>
+          <button class="bb hot" id="o-andon" data-act="night" type="button" style="--x:36px;--y:-38px;--w:84px;--h:176px;--z:2px">
+            <svg viewBox="0 0 84 176" aria-hidden="true">
+              <defs><radialGradient id="gl" cx="50%" cy="50%" r="60%"><stop offset="0" stop-color="#fff4cf"/><stop offset="1" stop-color="#f1d88f"/></radialGradient></defs>
+              <path d="M30 4h24l-4 10H34z" fill="#6e3a1d" stroke="#1d1a1f" stroke-width="3"/>
+              <rect x="2" y="14" width="80" height="12" rx="2" fill="#a8642f" stroke="#1d1a1f" stroke-width="3"/>
+              <rect x="7" y="26" width="70" height="124" fill="#6e3a1d" stroke="#1d1a1f" stroke-width="3"/>
+              <rect class="andon-paper" x="13" y="31" width="58" height="114" fill="url(#gl)" stroke="#1d1a1f" stroke-width="2"/>
+              <path d="M42 31v114M13 69h58M13 107h58" stroke="#6e3a1d" stroke-width="3"/>
+              <rect x="2" y="148" width="80" height="10" rx="2" fill="#a8642f" stroke="#1d1a1f" stroke-width="3"/>
+              <path d="M8 158v16M76 158v16" stroke="#1d1a1f" stroke-width="7" stroke-linecap="round"/>
+              <text x="27" y="62" font-family="Yuji Syuku,serif" font-size="20" fill="#c8392b">灯</text>
+            </svg>
+            <span class="vh">行灯：切换昼夜 / Lantern: toggle night</span>
+          </button>
+
+          <!-- stacked books (classic site) -->
+          <button class="obj hot" id="o-door" data-sec="door" type="button" style="--x:160px;--y:24px;--w:190px;--h:128px;--r:-4deg;--z:0px">
+            <span class="cb bk" style="--x:0px;--y:0px;--w:190px;--h:128px;--d:22px;--c:var(--ai)" aria-hidden="true"><span class="lt"></span><span class="fr"></span><span class="rt"></span><span class="t"></span></span>
+            <span class="cb bk" style="--x:8px;--y:-6px;--w:176px;--h:120px;--d:18px;--z:22px;--r:5deg;--c:#b7472f" aria-hidden="true"><span class="lt"></span><span class="fr"></span><span class="rt"></span><span class="t"></span></span>
+            <span class="cb bk" style="--x:4px;--y:2px;--w:180px;--h:120px;--d:18px;--z:40px;--r:-3deg;--c:#5d6b3a" aria-hidden="true"><span class="lt"></span><span class="fr"></span><span class="rt"></span><span class="t"><span class="lab">経典版</span></span></span>
+            <span class="mark" aria-hidden="true" style="transform:translateZ(110px) rotateZ(4deg) rotateX(-40deg)"><i>門</i></span>
+            <span class="vh">经典版主页 / Classic site</span>
+          </button>
+
+          <!-- notebook (about) -->
+          <button class="obj hot note" id="o-about" data-sec="about" type="button" style="--x:52px;--y:196px;--w:330px;--h:214px;--r:-6deg">
+            <span class="cover" aria-hidden="true"></span>
+            <span class="page l" aria-hidden="true">
+              <span class="vt" style="right:16px;top:16px;font-size:34px">王钰淞</span>
+              <span class="vt" style="right:64px;top:18px;font-size:14px">GIS × 多模态 AI</span>
+              <span class="vt" style="right:92px;top:18px;font-size:13px;color:#5d5254">港科大（广州）MPhil</span>
+              <span class="vt" style="right:118px;top:18px;font-size:13px;color:#5d5254">Yusong Wang</span>
+              <span class="hanko" style="left:14px;bottom:16px">钰</span>
+            </span>
+            <span class="page r" aria-hidden="true">
+              <svg viewBox="0 0 160 200" style="inset:10px 8px;width:calc(100% - 16px);height:calc(100% - 20px)">
+                <g fill="none" stroke="#1d1a1f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 84c22-4 38-18 66-38 28 20 44 34 66 38"/>
+                  <path d="M26 82c-6 0-10-4-12-8M134 82c6 0 10-4 12-8"/>
+                  <path d="M34 84h92v10H34zM42 94v58M118 94v58M64 94v58M96 94v58"/>
+                  <path d="M30 152h100v8H30z"/>
+                  <path d="M80 46v-12M70 36h20"/>
+                  <path d="M50 64c10-6 20-12 30-18 10 6 20 12 30 18" stroke-width="1.4"/>
+                  <path d="M70 120h20v32H70z" stroke-width="1.6"/>
+                </g>
+                <g stroke="#2f5f93" stroke-width="1.2" stroke-dasharray="3 3" fill="none"><path d="M14 172h132M14 180h96"/></g>
+                <circle cx="80" cy="128" r="3" fill="#c8392b"/>
+                <text x="16" y="194" font-size="10" font-family="Noto Serif SC,serif" fill="#3a3336">历史建筑 · 速写</text>
+              </svg>
+            </span>
+            <span class="mark" aria-hidden="true"><i>己</i></span>
+            <span class="vh">自己紹介 · 关于我 / About</span>
+          </button>
+
+          <!-- map scroll (HeritageExplorer) -->
+          <button class="obj hot map" id="o-heritage" data-sec="heritage" type="button" style="--x:420px;--y:50px;--w:390px;--h:226px;--r:2.5deg">
+            <span class="mount seigaiha" aria-hidden="true"></span>
+            <span class="img" style="background-image:url(assets/gisauto_hero.webp)" aria-hidden="true"></span>
+            <span class="slip" aria-hidden="true">广西历史建筑图</span>
+            <span class="roll l" aria-hidden="true"></span><span class="roll r" aria-hidden="true"></span>
+            <span class="mark" aria-hidden="true"><i>図</i></span>
+            <span class="vh">HeritageExplorer 地图卷 / HeritageExplorer</span>
+          </button>
+
+          <!-- inkstone + brushes (toolbox) -->
+          <button class="obj hot" id="o-toolbox" data-sec="toolbox" type="button" style="--x:860px;--y:56px;--w:170px;--h:210px;--r:-5deg;--z:0px">
+            <span class="cb ink" style="--x:0px;--y:0px;--w:170px;--h:210px;--d:26px" aria-hidden="true">
+              <span class="lt"></span><span class="fr"></span><span class="rt"></span>
+              <span class="t"></span>
+              <span class="stone"></span><span class="stick"></span>
+              <span class="brush" style="left:20px;top:184px;width:138px;transform:translateZ(40px) rotate(-6deg)"></span>
+            </span>
+            <span class="mark" aria-hidden="true" style="transform:translateZ(96px) rotateZ(5deg) rotateX(-40deg)"><i>筆</i></span>
+            <span class="vh">文房四宝 · 技能 / Toolbox</span>
+          </button>
+
+          <!-- brush pot (decor) -->
+          <span class="bbshadow" style="--x:1036px;--y:136px;--w:64px;--h:24px" aria-hidden="true"></span>
+          <span class="bb" style="--x:1036px;--y:-12px;--w:64px;--h:160px" aria-hidden="true">
+            <svg viewBox="0 0 64 160">
+              <g stroke="#1d1a1f" stroke-width="3" stroke-linecap="round">
+                <path d="M18 92L10 8" stroke="#a87a3e" stroke-width="6"/><path d="M10 8l-3-8" stroke="#1d1a1f" stroke-width="6"/>
+                <path d="M30 92L32 2" stroke="#6e3a1d" stroke-width="6"/><path d="M32 2v-2" stroke="#1d1a1f" stroke-width="6"/>
+                <path d="M44 92l12-74" stroke="#a87a3e" stroke-width="6"/><path d="M56 18l2-8" stroke="#f4e9d0" stroke-width="6"/>
+              </g>
+              <path d="M6 82h52l-4 74H10z" fill="#2f5f93" stroke="#1d1a1f" stroke-width="3" stroke-linejoin="round"/>
+              <ellipse cx="32" cy="82" rx="26" ry="6" fill="#1f3a63" stroke="#1d1a1f" stroke-width="3"/>
+              <path d="M12 112c8-8 14-8 20 0s14 8 20 0M14 132c8-8 14-8 20 0s12 8 18 0" fill="none" stroke="#f4e9d0" stroke-width="2.4"/>
+            </svg>
+          </span>
+
+          <!-- prints stack (AI portfolio) -->
+          <button class="obj hot prints" id="o-portfolio" data-sec="portfolio" type="button" style="--x:64px;--y:432px;--w:250px;--h:160px;--r:3deg">
+            <span class="pr" style="left:0;top:14px;transform:rotate(-9deg)" aria-hidden="true"><img src="assets/ai_portfolio/ai_qingming.jpg" alt="" loading="lazy" /></span>
+            <span class="pr" style="left:70px;top:-8px;transform:rotate(6deg) translateZ(3px)" aria-hidden="true"><img src="assets/ai_portfolio/ai_twodimensional.jpg" alt="" loading="lazy" /></span>
+            <span class="pr" style="left:38px;top:30px;transform:rotate(-2deg) translateZ(6px)" aria-hidden="true"><img src="assets/ai_portfolio/ai_star.jpg" alt="" loading="lazy" /></span>
+            <span class="obi" aria-hidden="true">作品集</span>
+            <span class="mark" aria-hidden="true"><i>画</i></span>
+            <span class="vh">AI 作品集 / AI portfolio</span>
+          </button>
+
+          <!-- CV -->
+          <button class="obj hot cv" id="o-cv" data-sec="cv" type="button" style="--x:380px;--y:392px;--w:226px;--h:160px;--r:-3deg">
+            <span class="face" aria-hidden="true"></span>
+            <span class="title" aria-hidden="true">履歴書</span>
+            <span class="seal" aria-hidden="true">印</span>
+            <span class="lines" aria-hidden="true">王钰淞 · Yusong Wang<br/>MPhil · HKUST(GZ)<br/>GIS × Multimodal AI<br/>CV_Yusong_Wang.docx</span>
+            <span class="mark" aria-hidden="true"><i>履</i></span>
+            <span class="vh">履歴書 · 简历 / CV</span>
+          </button>
+
+          <!-- letter (contact) -->
+          <button class="obj hot letter" id="o-contact" data-sec="contact" type="button" style="--x:648px;--y:330px;--w:206px;--h:128px;--r:7deg">
+            <span class="face" aria-hidden="true"></span>
+            <span class="wax" aria-hidden="true">緘</span>
+            <span class="addr" aria-hidden="true">ywang677 @ hkust-gz</span>
+            <span class="mark" aria-hidden="true"><i>文</i></span>
+            <span class="vh">书信 · 联系 / Contact</span>
+          </button>
+
+          <!-- teacup (decor) -->
+          <span class="bbshadow" style="--x:900px;--y:352px;--w:74px;--h:28px" aria-hidden="true"></span>
+          <span class="bb" style="--x:904px;--y:288px;--w:66px;--h:80px" aria-hidden="true">
+            <svg viewBox="0 0 66 80">
+              <g class="steam" fill="none" stroke="#8a7e78" stroke-width="2.4" stroke-linecap="round"><path d="M24 22c-6-6 6-10 0-18"/><path d="M40 22c-6-6 6-10 0-18"/></g>
+              <path d="M6 30h54l-6 46H12z" fill="#e8dcc2" stroke="#1d1a1f" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M8 44h50l-1.6 14H9.8z" fill="#1f3a63"/>
+              <path d="M12 52c4-5 8-5 12 0s8 5 12 0 8-5 12 0" fill="none" stroke="#f4e9d0" stroke-width="2"/>
+              <ellipse cx="33" cy="30" rx="27" ry="6" fill="#8d9a4c" stroke="#1d1a1f" stroke-width="3"/>
+            </svg>
+          </span>
+
+          <!-- folding fan (theme switch) -->
+          <button class="obj hot" id="o-fan" data-act="theme" type="button" style="--x:868px;--y:430px;--w:220px;--h:130px;--r:-10deg">
+            <svg viewBox="0 0 220 130" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible" aria-hidden="true">
+              <defs>
+                <pattern id="sg" width="24" height="12" patternUnits="userSpaceOnUse">
+                  <rect width="24" height="12" fill="#1f3a63"/>
+                  <g fill="none" stroke="#f4e9d0" stroke-width="1.4"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="0" cy="6" r="10"/><circle cx="24" cy="6" r="10"/></g>
+                </pattern>
+              </defs>
+              <path d="M110 124L8 54A118 118 0 0 1 212 54Z" fill="rgba(29,26,31,.22)" transform="translate(7 9)"/>
+              <path d="M110 124L8 54A118 118 0 0 1 212 54Z" fill="url(#sg)" stroke="#1d1a1f" stroke-width="3.5" stroke-linejoin="round"/>
+              <path d="M110 124L38 72A84 84 0 0 1 182 72Z" fill="#f4e9d0" stroke="#1d1a1f" stroke-width="2.5"/>
+              <circle cx="110" cy="44" r="15" fill="#c8392b" stroke="#1d1a1f" stroke-width="2.5"/>
+              <g stroke="#6e3a1d" stroke-width="2"><path d="M110 124L22 44M110 124L50 22M110 124L80 10M110 124V6M110 124L140 10M110 124L170 22M110 124L198 44"/></g>
+              <circle cx="110" cy="122" r="5" fill="#d29a3a" stroke="#1d1a1f" stroke-width="2.5"/>
+            </svg>
+            <span class="mark" aria-hidden="true"><i>彩</i></span>
+            <span class="vh">扇子：切换画风 / Fan: switch print style</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="kasumi top" aria-hidden="true">
+    <svg viewBox="0 0 1440 120" preserveAspectRatio="xMidYMin slice">
+      <defs><linearGradient id="kg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2a56a"/><stop offset="1" stop-color="#efc98f"/></linearGradient></defs>
+      <g fill="url(#kg)" stroke="#b97d45" stroke-width="2">
+        <rect x="-60" y="-30" width="760" height="78" rx="39"/>
+        <rect x="420" y="18" width="560" height="50" rx="25"/>
+        <rect x="860" y="-24" width="680" height="70" rx="35"/>
+        <rect x="140" y="40" width="300" height="36" rx="18"/>
+        <rect x="1080" y="34" width="260" height="34" rx="17"/>
+      </g>
+    </svg>
+  </div>
+  <div class="kasumi bot" aria-hidden="true" style="height:80px">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="xMidYMin slice">
+      <g fill="#e9bd85" stroke="#b97d45" stroke-width="2">
+        <rect x="-40" y="-30" width="520" height="60" rx="30"/>
+        <rect x="380" y="-20" width="700" height="42" rx="21"/>
+        <rect x="980" y="-30" width="520" height="58" rx="29"/>
+      </g>
+    </svg>
+  </div>
+  <canvas id="rain" aria-hidden="true"></canvas>
+  <div id="night" aria-hidden="true"></div>
+  <div id="glow" aria-hidden="true"></div>
+  <div class="grainover" aria-hidden="true"></div>
+</div>
 
 <header class="hud">
-  <div class="brand px"><b><em>王钰淞</em>の部屋</b><small>Yusong Wang · GIS × Multimodal AI</small></div>
+  <a class="brand" href="#" id="brand" aria-label="王钰淞の書斎 · 回到全景 / Back to overview">
+    <span class="cart"><em>王钰淞</em>の書斎</span>
+    <small>Yusong Wang · GIS × Multimodal AI</small>
+  </a>
   <div class="tools">
-    <button class="pxbtn" id="btnMode" type="button" aria-pressed="false"><span class="lang-zh">阅读模式</span><span class="lang-en">Reader</span></button>
-    <button class="pxbtn" id="btnNight" type="button"><span class="lang-zh">昼 / 夜</span><span class="lang-en">Day / Night</span></button>
-    <button class="pxbtn" id="btnSound" type="button" aria-pressed="false"><span class="lang-zh">音效</span><span class="lang-en">Sound</span></button>
-    <button class="pxbtn" id="btnLang" type="button"><span class="lang-zh">EN</span><span class="lang-en">中文</span></button>
-    <a class="pxbtn" href="CV_Yusong_Wang.docx"><span class="lang-zh">简历</span><span class="lang-en">CV</span></a>
+    <button class="btn ai" id="btnTheme" type="button"><span class="lang-zh">画风</span><span class="lang-en">Style</span></button>
+    <button class="btn" id="btnMode" type="button" aria-pressed="false"><span class="lang-zh">阅读模式</span><span class="lang-en">Reader</span></button>
+    <button class="btn" id="btnSound" type="button" aria-pressed="false"><span class="lang-zh">拍子木</span><span class="lang-en">Sound</span></button>
+    <button class="btn" id="btnLang" type="button"><span class="lang-zh">EN</span><span class="lang-en">中文</span></button>
+    <a class="btn red" href="CV_Yusong_Wang.docx"><span class="lang-zh">简历</span><span class="lang-en">CV</span></a>
   </div>
 </header>
 
-<div id="hint" class="px"><span class="lang-zh">✦ 点击闪光的物件探索房间</span><span class="lang-en">✦ Click the sparkling things to explore</span></div>
-<nav class="dock" id="dock" aria-label="Sections"></nav>
-<div id="toast" class="px" role="status" aria-live="polite"></div>
+<div id="hint"><span class="lang-zh">✦ 点击书案上带红印的物件 · 扇子换画风 · 行灯开夜景</span><span class="lang-en">✦ Click the red-sealed objects · fan = style · lantern = night</span></div>
+<div id="themeTag" aria-live="polite"><b id="themeKanji">錦</b><span id="themeName"></span></div>
+<nav class="dock" id="dock" aria-label="目录 / Sections"></nav>
+<div id="tip" aria-hidden="true"></div>
 
-<aside id="panel" class="px" role="dialog" aria-labelledby="panelTitle" aria-hidden="true">
-  <div class="panel-head"><span class="kanji" id="panelKanji" aria-hidden="true">部</span><h2 id="panelTitle"></h2><button class="pxbtn" id="panelClose" type="button" aria-label="Close">✕</button></div>
-  <div class="panel-body" id="panelBody"></div>
+<aside id="panel" role="dialog" aria-modal="false" aria-labelledby="panelTitle" aria-hidden="true">
+  <div class="psheet">
+    <div class="phead"><span class="seal" id="panelKanji" aria-hidden="true">己</span><h2 id="panelTitle"></h2><button class="btn" id="panelClose" type="button" aria-label="关闭 / Close">✕</button></div>
+    <div class="pbody content" id="panelBody" tabindex="0"></div>
+  </div>
+  <div class="pcart" id="panelCart" aria-hidden="true"></div>
 </aside>
 
-<main id="reader"></main>
+<main id="reader" class="content"></main>
 
-<div id="loader" aria-hidden="true">
-  <div>
-    <div class="ttl"><em>王钰淞</em>の部屋</div>
-    <div class="bar"><i id="barFill"></i></div>
-    <div class="sub">NOW LOADING…</div>
-  </div>
-</div>
+<div id="loader" aria-hidden="true"><div class="in"><span class="cart"><em>王钰淞</em>の書斎</span><p>摺 · 刷 · 中</p><div class="drop"></div></div></div>
 
-<noscript><p style="position:fixed;inset:auto 0 0 0;padding:1rem;background:#fbf3e1">这个页面需要 JavaScript。<a href="classic.html">打开经典版主页</a> / This page needs JavaScript — <a href="classic.html">open the classic site</a>.</p></noscript>
+<noscript><p style="position:fixed;inset:auto 0 0 0;z-index:60;padding:1rem;background:#f4e9d0;border-top:3px solid #1d1a1f">这个页面需要 JavaScript。<a href="classic.html">打开经典版主页</a> / This page needs JavaScript — <a href="classic.html">open the classic site</a>.</p></noscript>
 
 <!-- ================= CONTENT TEMPLATES ================= -->
 <template id="t-about">
@@ -304,1129 +773,309 @@
 (() => {
   'use strict';
   const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const body = document.body;
   const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const store = {
     get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
     set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   };
-  const T = (zh, en) => `<span class="lang-zh">${zh}</span><span class="lang-en">${en}</span>`;
+
+  /* ---------- sections ---------- */
+  const SECTIONS = [
+    { id: 'about',     k: '己', zh: '自己紹介 · 关于我',     en: 'About',                      cart: '自己紹介' },
+    { id: 'heritage',  k: '図', zh: 'HeritageExplorer 地图卷', en: 'HeritageExplorer',          cart: '地図之巻' },
+    { id: 'work',      k: '報', zh: '瓦版 · 论文 / 专利 / 项目', en: 'Papers · Patents · Projects', cart: '瓦版號外' },
+    { id: 'exp',       k: '歴', zh: '年表 · 经历',           en: 'Timeline',                   cart: '年表' },
+    { id: 'portfolio', k: '画', zh: 'AI 作品集',             en: 'AI Portfolio',               cart: '錦絵作品' },
+    { id: 'toolbox',   k: '筆', zh: '文房四宝 · 技能',       en: 'Toolbox',                    cart: '文房四宝' },
+    { id: 'contact',   k: '文', zh: '书信 · 联系',           en: 'Contact',                    cart: '書状' },
+    { id: 'cv',        k: '履', zh: '履歴書 · 简历',         en: 'CV',                         cart: '履歴書' },
+    { id: 'door',      k: '門', zh: '经典版主页',            en: 'Classic site',               cart: '経典版' }
+  ];
+  const byId = Object.fromEntries(SECTIONS.map(s => [s.id, s]));
+
+  const THEMES = [
+    { id: 'nishiki', k: '錦', zh: '其の一 · 錦絵（彩色）', en: 'No.1 · Nishiki-e (full colour)' },
+    { id: 'ai',      k: '藍', zh: '其の二 · 藍摺（北斋蓝）', en: 'No.2 · Aizuri (Prussian blue)' },
+    { id: 'sumi',    k: '墨', zh: '其の三 · 墨摺 · 大桥骤雨', en: 'No.3 · Sumizuri · sudden shower' },
+    { id: 'yoru',    k: '夜', zh: '其の四 · 夜 · 行灯',      en: 'No.4 · Night · lantern light' }
+  ];
+
+  /* ---------- language ---------- */
   const isEn = () => body.dataset.lang === 'en';
-
-  /* ================= colour + math utils ================= */
-  const hex = (c) => [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16));
-  function shade(c, f) {
-    const [r, g, b] = hex(c), t = f < 0 ? 0 : 255, p = Math.abs(f);
-    return `rgb(${Math.round(r + (t - r) * p)},${Math.round(g + (t - g) * p)},${Math.round(b + (t - b) * p)})`;
+  const T = s => isEn() ? s.en : s.zh;
+  function setLang(l) {
+    body.dataset.lang = l;
+    document.documentElement.lang = l === 'en' ? 'en' : 'zh-CN';
+    renderDock(); renderThemeTag();
+    if (current) fillPanelTitle(byId[current]);
   }
-  function mix(a, b, t) {
-    const A = hex(a), B = hex(b);
-    return `rgb(${Math.round(A[0] + (B[0] - A[0]) * t)},${Math.round(A[1] + (B[1] - A[1]) * t)},${Math.round(A[2] + (B[2] - A[2]) * t)})`;
+
+  /* ---------- camera ---------- */
+  const view = $('#view'), cam = $('#cam');
+  const DESK = { x: 250, y: 230, z: 150 }, WALL_H = 760, W = 1600, H = 1100;
+  const cur = { s: 1, tilt: 40, yaw: 0, fx: 0, fy: -60, fz: 120, sx: 0, sy: 0 };
+  const tgt = { ...cur };
+  let base = { ...cur };
+  let pan = 0, panTgt = 0, par = { x: 0, y: 0 }, parT = { x: 0, y: 0 };
+  let current = null;
+
+  function fit() {
+    const vw = innerWidth, vh = innerHeight;
+    let s = Math.min(vw * 0.64 / 1100, vh * 0.56 / 620);
+    if (vw < 760) s = Math.max(s, Math.min(vw * 1.3 / 1100, vh * 0.5 / 620));
+    base = { s, tilt: vw < 760 ? 48 : 44, yaw: 0, fx: 0, fy: vw < 760 ? -90 : -120, fz: vw < 760 ? 190 : 200, sx: 0, sy: vw < 760 ? 30 : 18 };
+    if (!current) Object.assign(tgt, base);
+    else focusOn(current, true);
   }
-  const faces = (top) => ({ top, left: shade(top, -0.12), right: shade(top, -0.27), edge: shade(top, -0.5) });
-  const rnd = (n) => { const x = Math.sin(n * 127.1) * 43758.5453; return x - Math.floor(x); };
-  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  function maxPan() { return Math.max(0, (1180 * tgt.s - innerWidth) / 2); }
 
-  const C = {
-    ink: '#2b2230', cream: '#fbf3e1', paper: '#f7efdc', red: '#d64933', redD: '#a33424', gold: '#f2c14e',
-    indigo: '#34467d', blueD: '#4e6da6', orange: '#e38b3c',
-    sakura: '#f7b7c8', sakuraD: '#ec8fab', sakuraL: '#fdd8e2',
-    wood: '#c48a52', woodD: '#8f5a33', woodDD: '#5e3a20', woodL: '#ddb07a',
-    plasterL: '#f2e6cb', plasterR: '#e3d2ae', tatami: '#d8cf8e', tatamiB: '#cec486', heri: '#3f5a3a'
-  };
+  function readNum(el, name) { return parseFloat(getComputedStyle(el).getPropertyValue(name)) || 0; }
+  function anchorOf(id) {
+    const el = $('#o-' + id);
+    const x = readNum(el, '--x'), y = readNum(el, '--y'), w = readNum(el, '--w'), h = readNum(el, '--h');
+    if (el.closest('.wall')) return { x: x + w / 2 - W / 2, y: 0 - H / 2, z: WALL_H - (y + h / 2), w, h, wall: true };
+    return { x: DESK.x + x + w / 2 - W / 2, y: DESK.y + y + h / 2 - H / 2, z: DESK.z + 10, w, h, wall: false };
+  }
+  function focusOn(id, instant) {
+    const a = anchorOf(id), vw = innerWidth, vh = innerHeight, mobile = vw < 760;
+    const availW = mobile ? vw * 0.9 : vw * 0.48, availH = mobile ? vh * 0.24 : vh * 0.62;
+    const s = Math.max(base.s * 1.3, Math.min(3, availW / (a.w * 1.15), availH / (a.h * 1.15)));
+    Object.assign(tgt, {
+      s, tilt: a.wall ? 60 : 14, yaw: 0, fx: a.x, fy: a.y, fz: a.z,
+      sx: mobile ? 0 : -vw * 0.25, sy: mobile ? -vh * 0.37 : 0
+    });
+    panTgt = 0;
+    if (instant) Object.assign(cur, tgt);
+  }
 
-  /* ================= state ================= */
-  const hour = new Date().getHours();
-  const savedNight = store.get('night');
-  let nightTarget = savedNight ? (savedNight === '1' ? 1 : 0) : ((hour >= 18 || hour < 6) ? 1 : 0);
-  let nightT = nightTarget;
-  let sound = false, hinting = true, introActive = true;
-  let hovered = null, extHover = null, focused = null, lastFocused = null, focusT = 0;
-  let catAwakeUntil = 0, furinAmp = 0, NOW = 0;
-  const lift = {}, pop = {};
-  let mouse = null;
+  let raf = 0;
+  function tick() {
+    raf = 0;
+    const k = RM ? 1 : 0.085;
+    let moving = false;
+    for (const key in tgt) {
+      const d = tgt[key] - cur[key];
+      if (Math.abs(d) > 0.001) { cur[key] += d * k; moving = true; } else cur[key] = tgt[key];
+    }
+    const pd = panTgt - pan; if (Math.abs(pd) > 0.05) { pan += pd * 0.18; moving = true; } else pan = panTgt;
+    const ppx = parT.x - par.x, ppy = parT.y - par.y;
+    if (Math.abs(ppx) + Math.abs(ppy) > 0.001) { par.x += ppx * 0.06; par.y += ppy * 0.06; moving = true; }
+    const yaw = cur.yaw + (current ? 0 : par.x * 3.2), tilt = cur.tilt + (current ? 0 : par.y * 2.4);
+    view.style.perspective = (2600 * cur.s).toFixed(0) + 'px';
+    cam.style.transform = `translate(-50%,-50%) translate(${cur.sx + pan}px,${cur.sy}px) scale(${cur.s}) rotateX(${tilt}deg) rotateZ(${yaw}deg) translate3d(${-cur.fx}px,${-cur.fy}px,${-cur.fz}px)`;
+    if (body.dataset.theme === 'yoru') placeLight();
+    if (moving) kick();
+  }
+  function kick() { if (!raf) raf = requestAnimationFrame(tick); }
 
-  /* ================= audio ================= */
-  let ac = null;
-  function tone(freq, dur = 0.08, type = 'square', vol = 0.035, delay = 0) {
-    if (!sound) return;
+  function placeLight() {
+    const r = $('#o-andon').getBoundingClientRect();
+    const st = $('#stage').style;
+    st.setProperty('--lx', (r.left + r.width / 2) + 'px');
+    st.setProperty('--ly', (r.top + r.height * 0.45) + 'px');
+  }
+
+  /* pointer parallax + drag pan */
+  let drag = null;
+  view.addEventListener('pointermove', e => {
+    if (drag) {
+      const dx = e.clientX - drag.x;
+      if (Math.abs(dx) > 6) drag.moved = true;
+      if (drag.moved && !current) { const m = maxPan(); panTgt = Math.max(-m, Math.min(m, drag.p + dx)); pan = panTgt; kick(); }
+      return;
+    }
+    if (e.pointerType === 'mouse' && !RM) {
+      parT.x = (e.clientX / innerWidth - 0.5) * 2; parT.y = (e.clientY / innerHeight - 0.5) * 2; kick();
+    }
+  });
+  view.addEventListener('pointerdown', e => { drag = { x: e.clientX, p: panTgt, moved: false }; if (e.pointerType !== 'mouse') body.classList.add('touched'); });
+  addEventListener('pointerup', () => { if (drag && drag.moved) { view.classList.remove('drag'); suppressClick = true; setTimeout(() => suppressClick = false, 50); } drag = null; });
+  view.addEventListener('pointerleave', () => { parT.x = 0; parT.y = 0; kick(); });
+  let suppressClick = false;
+
+  /* ---------- tooltip ---------- */
+  const tip = $('#tip');
+  function labelFor(el) {
+    if (el.dataset.sec) { const s = byId[el.dataset.sec]; return `<i>${s.k}</i>${T(s)}`; }
+    if (el.dataset.act === 'theme') return isEn() ? '<i>彩</i>Fan · switch print style' : '<i>彩</i>扇子 · 切换画风';
+    if (el.dataset.act === 'night') return isEn() ? '<i>灯</i>Lantern · night on / off' : '<i>灯</i>行灯 · 开 / 关夜景';
+    return '';
+  }
+  $$('.hot').forEach(el => {
+    el.addEventListener('pointerenter', e => { if (e.pointerType !== 'mouse') return; tip.innerHTML = labelFor(el); tip.classList.add('on'); clack(0.5); });
+    el.addEventListener('pointermove', e => { tip.style.left = e.clientX + 'px'; tip.style.top = e.clientY + 'px'; });
+    el.addEventListener('pointerleave', () => tip.classList.remove('on'));
+    el.addEventListener('focus', () => { const r = el.getBoundingClientRect(); tip.innerHTML = labelFor(el); tip.style.left = r.left + r.width / 2 + 'px'; tip.style.top = r.top + 'px'; tip.classList.add('on'); });
+    el.addEventListener('blur', () => tip.classList.remove('on'));
+    el.addEventListener('click', e => {
+      if (suppressClick) { e.preventDefault(); return; }
+      tip.classList.remove('on');
+      if (el.dataset.sec) openSec(el.dataset.sec);
+      else if (el.dataset.act === 'theme') cycleTheme();
+      else if (el.dataset.act === 'night') setTheme(body.dataset.theme === 'yoru' ? (store.get('dayTheme') || 'nishiki') : 'yoru');
+    });
+  });
+
+  /* ---------- panel ---------- */
+  const panel = $('#panel'), pBody = $('#panelBody');
+  let openTimer = 0;
+  function fillPanelTitle(s) {
+    $('#panelTitle').textContent = T(s);
+    $('#panelKanji').textContent = s.k;
+    $('#panelCart').textContent = s.cart;
+  }
+  function openSec(id, fromHash) {
+    const s = byId[id]; if (!s) return;
+    if (body.classList.contains('read')) setReader(false);
+    current = id;
+    tip.classList.remove('on');
+    body.classList.add('zoomed');
+    $$('.hot').forEach(h => h.classList.toggle('on', h.dataset.sec === id));
+    focusOn(id); kick();
+    clack(1);
+    clearTimeout(openTimer);
+    const show = () => {
+      fillPanelTitle(s);
+      pBody.innerHTML = '';
+      pBody.appendChild($('#t-' + id).content.cloneNode(true));
+      pBody.scrollTop = 0;
+      panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false');
+      $('#panelClose').focus({ preventScroll: true });
+    };
+    if (panel.classList.contains('open') || RM) show(); else openTimer = setTimeout(show, 520);
+    if (!fromHash && location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
+    renderDock();
+  }
+  function closeSec() {
+    if (!current) return;
+    const last = current;
+    current = null;
+    clearTimeout(openTimer);
+    panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true');
+    body.classList.remove('zoomed');
+    $$('.hot').forEach(h => h.classList.remove('on'));
+    Object.assign(tgt, base); kick();
+    history.replaceState(null, '', location.pathname + location.search);
+    renderDock();
+    const el = $('#o-' + last); if (el) el.focus({ preventScroll: true });
+  }
+  $('#panelClose').addEventListener('click', closeSec);
+  $('#brand').addEventListener('click', e => { e.preventDefault(); if (body.classList.contains('read')) setReader(false); closeSec(); });
+  addEventListener('keydown', e => { if (e.key === 'Escape') closeSec(); });
+  view.addEventListener('click', e => { if (current && !e.target.closest('.hot') && !suppressClick) closeSec(); });
+  addEventListener('hashchange', () => { const id = location.hash.slice(1); if (byId[id]) openSec(id, true); });
+
+  /* ---------- dock ---------- */
+  function renderDock() {
+    const d = $('#dock');
+    d.innerHTML = SECTIONS.map(s => `<button type="button" data-id="${s.id}" class="${current === s.id ? 'on' : ''}"><i>${s.k}</i>${isEn() ? s.en : s.zh.split(' · ')[0]}</button>`).join('');
+  }
+  $('#dock').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; current === b.dataset.id ? closeSec() : openSec(b.dataset.id); });
+
+  /* ---------- themes ---------- */
+  function renderThemeTag() {
+    const t = THEMES.find(t => t.id === body.dataset.theme) || THEMES[0];
+    $('#themeKanji').textContent = t.k; $('#themeName').textContent = T(t);
+  }
+  function setTheme(id) {
+    body.dataset.theme = id; store.set('theme', id);
+    if (id !== 'yoru') store.set('dayTheme', id);
+    renderThemeTag(); startRain(id === 'sumi');
+    if (id === 'yoru') placeLight();
+    clack(1.2);
+  }
+  function cycleTheme() {
+    const i = THEMES.findIndex(t => t.id === body.dataset.theme);
+    setTheme(THEMES[(i + 1) % THEMES.length].id);
+  }
+  $('#btnTheme').addEventListener('click', cycleTheme);
+
+  /* Hiroshige-style rain for 墨摺 */
+  const rc = $('#rain'), rx = rc.getContext('2d');
+  let drops = [], rainOn = false, rainRaf = 0;
+  function sizeRain() { rc.width = innerWidth; rc.height = innerHeight; }
+  function startRain(on) {
+    rainOn = on && !RM;
+    if (rainOn && !rainRaf) {
+      sizeRain();
+      drops = Array.from({ length: Math.round(innerWidth * innerHeight / 3800) }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, l: 26 + Math.random() * 46, v: 9 + Math.random() * 9 }));
+      rainLoop();
+    }
+    if (!rainOn) { cancelAnimationFrame(rainRaf); rainRaf = 0; rx.clearRect(0, 0, rc.width, rc.height); }
+  }
+  function rainLoop() {
+    rx.clearRect(0, 0, rc.width, rc.height);
+    rx.strokeStyle = 'rgba(24,22,28,.62)'; rx.lineWidth = 1.7; rx.beginPath();
+    for (const d of drops) {
+      rx.moveTo(d.x, d.y); rx.lineTo(d.x - d.l * 0.12, d.y + d.l);
+      d.y += d.v; d.x -= d.v * 0.12;
+      if (d.y > rc.height) { d.y = -d.l; d.x = Math.random() * (rc.width + 80); }
+    }
+    rx.stroke();
+    rainRaf = requestAnimationFrame(rainLoop);
+  }
+
+  /* ---------- reader mode ---------- */
+  function setReader(on) {
+    body.classList.toggle('read', on);
+    $('#btnMode').setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (on) {
+      if (current) closeSec();
+      const r = $('#reader');
+      if (!r.childElementCount) {
+        SECTIONS.forEach(s => {
+          const sec = document.createElement('section'); sec.id = 'r-' + s.id;
+          sec.innerHTML = `<h2><i>${s.k}</i><span class="lang-zh">${s.zh}</span><span class="lang-en">${s.en}</span></h2>`;
+          sec.appendChild($('#t-' + s.id).content.cloneNode(true));
+          r.appendChild(sec);
+        });
+      }
+      scrollTo(0, 0);
+    }
+    store.set('reader', on ? '1' : '0');
+  }
+  $('#btnMode').addEventListener('click', () => setReader(!body.classList.contains('read')));
+  $('#btnLang').addEventListener('click', () => { const n = isEn() ? 'zh' : 'en'; setLang(n); store.set('lang', n); });
+
+  /* ---------- hyoshigi (wood clapper) sound ---------- */
+  let actx = null, soundOn = store.get('sound') === '1';
+  function clack(gain = 1) {
+    if (!soundOn) return;
     try {
-      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
-      const t0 = ac.currentTime + delay, o = ac.createOscillator(), g = ac.createGain();
-      o.type = type; o.frequency.setValueAtTime(freq, t0);
-      g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-      o.connect(g).connect(ac.destination); o.start(t0); o.stop(t0 + dur + 0.02);
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      const t = actx.currentTime;
+      [0, 0.055].forEach((off, i) => {
+        const o = actx.createOscillator(), g = actx.createGain(), f = actx.createBiquadFilter();
+        o.type = 'triangle'; o.frequency.setValueAtTime(i ? 1180 : 920, t + off);
+        f.type = 'bandpass'; f.frequency.value = 1400; f.Q.value = 3;
+        g.gain.setValueAtTime(0.0001, t + off); g.gain.exponentialRampToValueAtTime(0.22 * gain, t + off + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t + off + 0.09);
+        o.connect(f).connect(g).connect(actx.destination); o.start(t + off); o.stop(t + off + 0.1);
+      });
     } catch (e) {}
   }
-  const chime = () => { tone(2093, 1.4, 'sine', 0.05); tone(3136, 1.1, 'sine', 0.025, 0.02); tone(2637, 1.2, 'sine', 0.02, 0.09); };
+  function setSound(v) { soundOn = v; store.set('sound', v ? '1' : '0'); $('#btnSound').setAttribute('aria-pressed', v ? 'true' : 'false'); }
+  $('#btnSound').addEventListener('click', () => { setSound(!soundOn); clack(1); });
 
-  /* ================= canvas + camera ================= */
-  const cv = $('#scene'), ctx = cv.getContext('2d');
-  let VW = 1, VH = 1, DPR = 1, S = 1;
-  const BB = [128, 4, 626, 424];                 // logical bounds of the diorama
-  const cam = { x: 418, y: 132, z: 3 };          // starts close on the window for the intro
-  let camAnim = null;
-  const par = { x: 0, y: 0 };
-
-  const home = () => ({
-    x: (BB[0] + BB[2]) / 2,
-    y: (BB[1] + BB[3]) / 2 + ((VW < 700 ? 128 : 76) - 74) / (2 * S),
-    z: 1
-  });
-  function resize() {
-    DPR = Math.min(window.devicePixelRatio || 1, 2);
-    VW = window.innerWidth; VH = window.innerHeight;
-    cv.width = Math.round(VW * DPR); cv.height = Math.round(VH * DPR);
-    const bw = BB[2] - BB[0], bh = BB[3] - BB[1];
-    S = VW < 700 ? Math.min(VW / (bw * 0.96), (VH - 190) / bh) : Math.min(VW / (bw * 1.1), (VH - 150) / (bh * 1.02));
-    if (focused) focusCam(focused, 0);
-    else if (!introActive && !camAnim) Object.assign(cam, home());
-  }
-  function camGo(to, dur) {
-    if (RM || !dur) { Object.assign(cam, to); camAnim = null; return; }
-    camAnim = { from: { ...cam }, to, t0: performance.now(), dur };
-  }
-  function stepCam(now) {
-    if (!camAnim) return;
-    const k = clamp((now - camAnim.t0) / camAnim.dur, 0, 1), e = ease(k);
-    ['x', 'y', 'z'].forEach((p) => { cam[p] = camAnim.from[p] + (camAnim.to[p] - camAnim.from[p]) * e; });
-    if (k >= 1) camAnim = null;
-  }
-  function setCam() {
-    const k = S * cam.z * DPR;
-    ctx.setTransform(k, 0, 0, k, DPR * VW / 2 - k * (cam.x + par.x), DPR * VH / 2 - k * (cam.y + par.y));
-  }
-  const screenSpace = () => ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  function toLogical(mx, my) { const k = S * cam.z; return [(mx - VW / 2) / k + cam.x + par.x, (my - VH / 2) / k + cam.y + par.y]; }
-  function toScreen(lx, ly) { const k = S * cam.z; return [(lx - cam.x - par.x) * k + VW / 2, (ly - cam.y - par.y) * k + VH / 2]; }
-
-  /* ================= isometric primitives =================
-     World: x → right-down, y → left-down, z → up. Floor of the room is x,y ∈ [0,200]. */
-  const OX = 360, OY = 168;
-  const P = (x, y, z = 0) => [OX + (x - y), OY + (x + y) * 0.5 - z];
-
-  let curId = null, inPlane = false, hits = [], hitList = [];
-  function reg(pts) { if (curId && !inPlane) hits.push({ id: curId, poly: pts }); }
-  function path(pts) { ctx.beginPath(); pts.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]))); ctx.closePath(); }
-  function fp(pts, fill, stroke, lw = 0.6) {
-    path(pts);
-    if (fill) { ctx.fillStyle = fill; ctx.fill(); }
-    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke(); }
-    reg(pts);
-  }
-  function ell(x, y, rx, ry, fill, stroke, lw = 0.6) {
-    ctx.beginPath(); ctx.ellipse(x, y, Math.max(0.05, rx), Math.max(0.05, ry), 0, 0, Math.PI * 2);
-    if (fill) { ctx.fillStyle = fill; ctx.fill(); }
-    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke(); }
-    reg([[x - rx, y - ry], [x + rx, y - ry], [x + rx, y + ry], [x - rx, y + ry]]);
-  }
-  function ln(pts, c, lw = 0.6) {
-    ctx.beginPath(); pts.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])));
-    ctx.strokeStyle = c; ctx.lineWidth = lw; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke();
-  }
-  function r(x, y, w, h, c) { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); }
-  function tx(s, x, y, size, c, align = 'center') {
-    ctx.font = `${size}px DotGothic16, "Noto Sans SC", sans-serif`;
-    ctx.fillStyle = c; ctx.textAlign = align; ctx.textBaseline = 'alphabetic'; ctx.fillText(s, x, y);
-  }
-  function box(x, y, z, w, d, h, col, o = {}) {
-    const f = typeof col === 'string' ? faces(col) : col, e = f.edge;
-    const t = [P(x, y, z + h), P(x + w, y, z + h), P(x + w, y + d, z + h), P(x, y + d, z + h)];
-    const l = [P(x, y + d, z), P(x + w, y + d, z), P(x + w, y + d, z + h), P(x, y + d, z + h)];
-    const rt = [P(x + w, y, z), P(x + w, y + d, z), P(x + w, y + d, z + h), P(x + w, y, z + h)];
-    if (!o.noL) fp(l, f.left, e);
-    if (!o.noR) fp(rt, f.right, e);
-    if (!o.noT) { fp(t, f.top, e); if (!o.noHi) ln([t[3], t[2], t[1]], 'rgba(255,255,255,.4)', 0.5); }
-  }
-  function cyl(x, y, z, rad, h, col, topCol, edge) {
-    const [cx, cy] = P(x, y, z), rx = rad * 1.414, ry = rad * 0.707, top = cy - h;
-    edge = edge || shade(col, -0.5);
-    const g = ctx.createLinearGradient(cx - rx, 0, cx + rx, 0);
-    g.addColorStop(0, shade(col, 0.14)); g.addColorStop(0.5, col); g.addColorStop(1, shade(col, -0.3));
-    ctx.beginPath(); ctx.moveTo(cx - rx, top); ctx.lineTo(cx - rx, cy);
-    ctx.ellipse(cx, cy, rx, ry, 0, Math.PI, 0, true); ctx.lineTo(cx + rx, top); ctx.closePath();
-    ctx.fillStyle = g; ctx.fill(); ctx.strokeStyle = edge; ctx.lineWidth = 0.5; ctx.stroke();
-    ell(cx, top, rx, ry, topCol, edge, 0.5);
-    reg([[cx - rx, top - ry], [cx + rx, top - ry], [cx + rx, cy + ry], [cx - rx, cy + ry]]);
-    return { cx, cy, top, rx, ry };
-  }
-  // flat drawing on a wall / floor plane: local (u → right, v → down)
-  const PM = { R: [1, 0.5, 0, 1], L: [1, -0.5, 0, 1], F: [1, 0.5, -1, 0.5] };
-  function plane(k, x, y, z, fn) {
-    const o = P(x, y, z), m = PM[k];
-    ctx.save(); ctx.transform(m[0], m[1], m[2], m[3], o[0], o[1]);
-    inPlane = true; fn(); inPlane = false; ctx.restore();
-  }
-  function regPlane(k, x, y, z, u0, v0, w, h) {
-    if (!curId) return;
-    const o = P(x, y, z), m = PM[k], f = (u, v) => [o[0] + m[0] * u + m[2] * v, o[1] + m[1] * u + m[3] * v];
-    hits.push({ id: curId, poly: [f(u0, v0), f(u0 + w, v0), f(u0 + w, v0 + h), f(u0, v0 + h)] });
-  }
-  function ao(x, y, w, d, z) {
-    const k = curId; curId = null;
-    fp([P(x, y, z), P(x + w, y, z), P(x + w, y + d, z), P(x, y + d, z)], 'rgba(70,45,20,.16)');
-    curId = k;
-  }
-  function up(id) {
-    const l = lift[id] || 0, p = pop[id] ? clamp((NOW - pop[id]) / 450, 0, 1) : 1;
-    return l * 2.5 + (p < 1 ? Math.sin(p * Math.PI) * 5 : 0);
-  }
-
-  /* ================= assets ================= */
-  const imgs = {};
-  const srcs = ['assets/yusong_portrait.webp', 'assets/ai_portfolio/ai_star.jpg', 'assets/ai_portfolio/ai_cover.jpg', 'assets/ai_portfolio/ai_twodimensional.jpg'];
-  const pCan = document.createElement('canvas'); pCan.width = 24; pCan.height = 30;
-  let pReady = false;
-  function makePortrait(im) {
-    const p = pCan.getContext('2d');
-    p.imageSmoothingEnabled = true;
-    p.drawImage(im, 0, im.height * 0.03, im.width, im.height * 0.72, 0, 0, 24, 30);
-    try {
-      const d = p.getImageData(0, 0, 24, 30), a = d.data;
-      for (let i = 0; i < a.length; i += 4) {
-        for (let c = 0; c < 3; c++) a[i + c] = Math.min(255, Math.round(a[i + c] / 36) * 36);
-        a[i] = Math.min(255, a[i] + 8);
-      }
-      p.putImageData(d, 0, 0);
-    } catch (e) { /* tainted on file:// — keep unposterised */ }
-    pReady = true;
-  }
-
-  /* ================= particles ================= */
-  const petals = [], bubbles = [];
-  function spawnPetal(burst) {
-    const [cx, cy] = P(128, -38, 168);
-    petals.push({
-      x: cx + (Math.random() - 0.5) * 80, y: cy + (Math.random() - 0.3) * 40,
-      vx: -(4 + Math.random() * 9) + (burst ? (Math.random() - 0.5) * 40 : 0),
-      vy: burst ? -14 + Math.random() * 26 : 5 + Math.random() * 7,
-      r: Math.random() * 6, vr: (Math.random() - 0.5) * 4, ph: Math.random() * 6
-    });
-  }
-  for (let i = 0; i < 24; i++) { spawnPetal(false); petals[i].x -= Math.random() * 240; petals[i].y += Math.random() * 340; }
-  function stepParticles(dt, t) {
-    if (!RM && Math.random() < dt * 2 && petals.length < 70) spawnPetal(false);
-    for (let i = petals.length - 1; i >= 0; i--) {
-      const p = petals[i];
-      p.vy = Math.min(p.vy + dt * 7, 15);
-      p.x += (p.vx + Math.sin(t * 1.5 + p.ph) * 6) * dt; p.y += p.vy * dt; p.r += p.vr * dt;
-      if (p.y > 440 || p.x < 90) petals.splice(i, 1);
-    }
-    for (let i = bubbles.length - 1; i >= 0; i--) {
-      const b = bubbles[i];
-      b.y += b.vy * dt; b.x += Math.sin(t * 9 + b.ph) * dt * 3; b.life -= dt * 0.9;
-      if (b.life <= 0) bubbles.splice(i, 1);
-    }
-  }
-  function drawParticles() {
-    curId = null;
-    if (!RM) petals.forEach((p) => {
-      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r);
-      ctx.fillStyle = C.sakura; ctx.beginPath(); ctx.ellipse(0, 0, 1.7, 1, 0, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = C.sakuraD; ctx.fillRect(-0.4, -0.3, 0.9, 0.6);
-      ctx.restore();
-    });
-    bubbles.forEach((b) => ell(b.x, b.y, 0.35 + 0.35 * b.life, 0.35 + 0.35 * b.life, null, `rgba(230,250,255,${b.life})`, 0.3));
-  }
-
-  /* ================= SCENE ================= */
-  function drawBackground(t) {
-    const g = ctx.createLinearGradient(0, 0, 0, VH);
-    g.addColorStop(0, mix('#bfe2ee', '#28305f', nightT));
-    g.addColorStop(0.62, mix('#f8e7cf', '#463a72', nightT));
-    g.addColorStop(1, mix('#f4cfb8', '#5a4776', nightT));
-    ctx.fillStyle = g; ctx.fillRect(0, 0, VW, VH);
-    const R0 = Math.min(VW, VH);
-    const sx = VW * 0.84, sy = VH * 0.22;
-    if (nightT < 1) { ctx.globalAlpha = (1 - nightT) * 0.55; ctx.fillStyle = '#ffe2ab'; ctx.beginPath(); ctx.arc(sx, sy, R0 * 0.1, 0, Math.PI * 2); ctx.fill(); }
-    if (nightT > 0) {
-      ctx.globalAlpha = nightT;
-      const mg = ctx.createRadialGradient(sx, sy, 0, sx, sy, R0 * 0.2);
-      mg.addColorStop(0, 'rgba(255,248,215,.35)'); mg.addColorStop(1, 'rgba(255,248,215,0)');
-      ctx.fillStyle = mg; ctx.fillRect(sx - R0 * 0.2, sy - R0 * 0.2, R0 * 0.4, R0 * 0.4);
-      ctx.fillStyle = '#f6f0d2'; ctx.beginPath(); ctx.arc(sx, sy, R0 * 0.055, 0, Math.PI * 2); ctx.fill();
-      for (let i = 0; i < 80; i++) {
-        if (Math.sin(t * 1.6 + i * 2.1) < -0.4) continue;
-        const s = rnd(i + 900) > 0.85 ? 2 : 1;
-        ctx.fillRect(rnd(i) * VW, rnd(i + 99) * VH * 0.75, s, s);
-      }
-    }
-    if (nightT < 1) {
-      ctx.globalAlpha = (1 - nightT) * 0.9;
-      for (let i = 0; i < 5; i++) {
-        const w = 70 + rnd(i + 3) * 90, sc = w / 100;
-        const x = ((rnd(i) * (VW + 300) + t * (5 + i * 2)) % (VW + 300)) - 150, y = VH * (0.12 + rnd(i + 5) * 0.5);
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(x, y + 10 * sc, w, 10 * sc); ctx.fillRect(x + 14 * sc, y, 40 * sc, 12 * sc); ctx.fillRect(x + 46 * sc, y + 4 * sc, 34 * sc, 8 * sc);
-        ctx.fillStyle = '#eaf1f6'; ctx.fillRect(x, y + 17 * sc, w, 3 * sc);
-      }
-    }
-    ctx.globalAlpha = 1;
-  }
-
-  function drawIsland() {
-    curId = null;
-    ell(392, 426, 170, 11, 'rgba(70,40,70,.13)');
-    box(-12, -12, -22, 260, 226, 18, { top: '#8a6a45', left: '#7d5c3b', right: '#5f452d', edge: '#3f2c1c' }, { noT: true });
-    plane('R', -12, 214, -4, () => { for (let i = 0; i < 18; i++) r(rnd(i) * 250, 3 + rnd(i + 3) * 13, 4 + rnd(i + 5) * 9, 1.1, 'rgba(255,230,190,.13)'); });
-    plane('L', 248, 214, -4, () => { for (let i = 0; i < 18; i++) r(rnd(i + 40) * 216, 3 + rnd(i + 43) * 13, 4 + rnd(i + 45) * 9, 1.1, 'rgba(255,230,190,.10)'); });
-    box(-12, -12, -4, 260, 226, 4, { top: '#a6c86a', left: '#8db358', right: '#729645', edge: '#4f6e30' });
-    plane('F', -12, -12, 0, () => {
-      for (let i = 0; i < 110; i++) {
-        const u = rnd(i + 1) * 260, v = rnd(i + 50) * 226;
-        r(u, v, 1.6, 0.6, 'rgba(70,110,40,.45)'); r(u + 0.5, v - 0.6, 0.6, 0.6, 'rgba(210,235,150,.6)');
-      }
-      [[226, 108, 7, 5], [238, 128, 6, 4.5], [226, 148, 7, 5], [236, 170, 6, 4.5], [224, 192, 7, 5], [236, 212, 6, 4]].forEach(([u, v, a, b]) => {
-        ell(u, v + 0.8, a, b, 'rgba(60,70,40,.25)');
-        ell(u, v, a, b, '#bdb8ab', '#8a867b', 0.5);
-        ell(u - 1, v - 1, a * 0.55, b * 0.45, 'rgba(255,255,255,.28)');
-      });
-    });
-  }
-
-  function drawTufts() {
-    curId = null;
-    for (let i = 0; i < 34; i++) {
-      let x, y;
-      if (i < 18) { x = 206 + rnd(i + 7) * 38; y = -6 + rnd(i + 9) * 214; } else { x = -8 + rnd(i + 70) * 250; y = 203 + rnd(i + 90) * 9; }
-      const [sx, sy] = P(x, y, 0);
-      ln([[sx, sy], [sx - 1.2, sy - 3]], '#5f8a37', 0.6); ln([[sx, sy], [sx + 0.3, sy - 3.8]], '#7eaa48', 0.6); ln([[sx, sy], [sx + 1.5, sy - 2.6]], '#5f8a37', 0.6);
-    }
-    for (let i = 0; i < 9; i++) {
-      const [sx, sy] = P(207 + rnd(i + 300) * 34, rnd(i + 310) * 200, 0);
-      ln([[sx, sy], [sx, sy - 2.4]], '#5f8a37', 0.4);
-      ell(sx, sy - 2.6, 0.9, 0.9, i % 2 ? C.sakuraL : '#fff3a8');
-    }
-  }
-
-  function drawTrees(t) {
-    curId = null;
-    // pine behind the left wall
-    ln([P(-40, 112, 70), P(-40, 112, 100), P(-42, 112, 122), P(-37, 112, 146)], '#5a3d2a', 4.5);
-    ln([P(-41, 112, 118), P(-62, 112, 134)], '#5a3d2a', 2.4); ln([P(-38, 112, 132), P(-16, 112, 146)], '#5a3d2a', 2.2);
-    const [px, py] = P(-40, 112, 0);
-    const pads = [[-22, -136, 17, 6], [18, -148, 16, 5.5], [-4, -162, 19, 6.5], [-14, -176, 12, 4.5], [8, -184, 9, 3.5]];
-    pads.forEach(([dx, dy, a, b]) => ell(px + dx, py + dy + 2, a, b, '#36593a'));
-    pads.forEach(([dx, dy, a, b]) => ell(px + dx, py + dy, a, b, '#4e7c47'));
-    pads.forEach(([dx, dy, a, b]) => ell(px + dx - a * 0.25, py + dy - b * 0.35, a * 0.55, b * 0.45, '#74a35f'));
-    // sakura behind the right wall
-    curId = 'tree';
-    const sw = Math.sin(t * 0.7) * 0.8;
-    ln([P(128, -38, 70), P(125, -38, 108), P(131, -38, 138), P(127, -38, 158)], '#6b4430', 5);
-    ln([P(128, -38, 132), P(104, -38, 156)], '#6b4430', 2.8); ln([P(130, -38, 142), P(156, -38, 166)], '#6b4430', 2.6);
-    const [cx, cy] = P(128, -38, 168);
-    const cl = [[0, 0, 22], [-27, 6, 17], [27, 5, 18], [-14, -15, 16], [15, -17, 17], [-40, 15, 12], [40, 16, 12], [0, -28, 13], [-2, 14, 16], [-26, -6, 12], [26, -8, 12]];
-    cl.forEach(([dx, dy, rr], i) => ell(cx + dx + sw * ((i % 3) - 1), cy + dy + 3, rr, rr * 0.82, '#e58aa6'));
-    cl.forEach(([dx, dy, rr], i) => ell(cx + dx + sw * ((i % 3) - 1), cy + dy, rr * 0.95, rr * 0.76, '#f5afc3'));
-    cl.forEach(([dx, dy, rr], i) => ell(cx + dx + sw * ((i % 3) - 1) - rr * 0.25, cy + dy - rr * 0.3, rr * 0.5, rr * 0.36, '#fdd3de'));
-    curId = null;
-    for (let i = 0; i < 44; i++) { const a = rnd(i + 500) * Math.PI * 2, d = rnd(i + 600) * 40; r(cx + Math.cos(a) * d * 1.2, cy + Math.sin(a) * d * 0.7, 0.9, 0.9, '#fff5f8'); }
-  }
-
-  function wallSkin(w) {
-    const g = ctx.createLinearGradient(0, 0, 0, 134);
-    g.addColorStop(0, 'rgba(255,255,255,.16)'); g.addColorStop(0.7, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(110,70,30,.12)');
-    ctx.fillStyle = g; ctx.fillRect(0, 0, w, 134);
-    for (let i = 0; i < 70; i++) r(rnd(i + 700) * w, 2 + rnd(i + 800) * 94, 0.5, 0.5, 'rgba(140,110,70,.18)');
-    r(0, 0, w, 1.5, 'rgba(70,40,15,.2)');
-    r(0, 28, w, 6, C.woodD); r(0, 28, w, 1, C.woodL); r(0, 34, w, 1.6, 'rgba(70,40,15,.22)');
-    r(0, 98, w, 36, C.wood); for (let u = 6; u < w; u += 8) r(u, 99, 0.45, 35, 'rgba(90,50,20,.35)');
-    r(0, 97, w, 2.2, C.woodD); r(0, 97, w, 0.6, C.woodL);
-  }
-
-  function windowArt(t) {
-    const nt = nightT;
-    r(-3, -3, 86, 66, C.woodDD); r(-1.6, -1.6, 83.2, 63.2, C.wood);
-    ctx.save(); ctx.beginPath(); ctx.rect(2, 2, 58, 56); ctx.clip();
-    let g = ctx.createLinearGradient(0, 2, 0, 58);
-    g.addColorStop(0, '#8ccbe8'); g.addColorStop(0.65, '#cfe9f0'); g.addColorStop(1, '#fbe3c3');
-    ctx.fillStyle = g; ctx.fillRect(2, 2, 58, 56);
-    if (nt > 0) {
-      ctx.globalAlpha = nt;
-      g = ctx.createLinearGradient(0, 2, 0, 58);
-      g.addColorStop(0, '#0e1438'); g.addColorStop(0.7, '#26306a'); g.addColorStop(1, '#4a3f7e');
-      ctx.fillStyle = g; ctx.fillRect(2, 2, 58, 56);
-      for (let i = 0; i < 24; i++) if (Math.sin(t * 2 + i * 1.7) > -0.3) r(4 + rnd(i + 11) * 54, 4 + rnd(i + 31) * 26, 0.7, 0.7, '#fff6c8');
-    }
-    ctx.globalAlpha = 1 - nt; ell(48, 13, 5, 5, '#fff1a8'); ell(48, 13, 3.6, 3.6, '#ffe17a');
-    ctx.globalAlpha = nt; ell(48, 13, 4, 4, '#f6f0cc'); ell(49.8, 11.6, 3.4, 3.4, '#141c48');
-    ctx.globalAlpha = 1 - nt;
-    const cx = ((t * 1.8) % 80) - 10;
-    [[cx, 16], [cx + 40, 26], [cx - 40, 24]].forEach(([x, y]) => { ell(x, y, 5, 1.8, '#fff'); ell(x - 3, y + 0.4, 3, 1.4, '#fff'); ell(x + 2.5, y - 1.2, 3, 1.6, '#fff'); });
-    ctx.globalAlpha = 1;
-    // Mt. Fuji
-    fp([[4, 48], [25, 20], [33, 20], [58, 48]], mix('#7d9fd6', '#2c3a70', nt));
-    fp([[29, 20], [33, 20], [58, 48], [40, 48]], mix('#4f6fa9', '#1f2a58', nt));
-    fp([[25, 20], [33, 20], [38.5, 26.5], [36, 28.5], [33, 25.5], [30.5, 29.5], [28, 25.5], [25, 28.5], [21.5, 25.8]], mix('#fbfcff', '#c9d1ee', nt));
-    // pagoda
-    const pc = mix('#d64933', '#5a1f28', nt), roof = mix('#3a2a30', '#140f1a', nt);
-    for (let i = 0; i < 5; i++) { const y = 34 + i * 3, hw = 2.2 + i * 0.5; r(52 - hw * 0.6, y, hw * 1.2, 2.6, pc); fp([[52 - hw, y + 0.4], [52 + hw, y + 0.4], [52 + hw * 0.6, y - 1], [52 - hw * 0.6, y - 1]], roof); }
-    r(51.7, 31, 0.6, 3, roof);
-    ell(16, 55, 22, 7, mix('#5f8f45', '#1b3324', nt)); ell(48, 57, 22, 7, mix('#7aa755', '#22402b', nt));
-    for (let i = 0; i < 7; i++) { const x = 4 + i * 8.4; fp([[x, 54], [x + 2.2, 46 - (i % 3)], [x + 4.4, 54]], mix('#3e6430', '#10261a', nt)); }
-    // sakura branch inside the frame
-    ln([[2, 6], [12, 9], [20, 7]], '#6b4430', 1); ln([[10, 8.6], [14, 14]], '#6b4430', 0.7);
-    [[5, 6], [9, 9.5], [13, 7], [17, 8], [14, 13], [20, 6.4], [7, 4]].forEach(([x, y], i) => ell(x, y, 1.5, 1.5, i % 2 ? C.sakura : C.sakuraL));
-    ctx.restore();
-    // shoji panels slid to the right
-    for (let k = 0; k < 2; k++) {
-      const ox = 60 + k * 1.2;
-      r(ox, 2, 18, 56, mix('#faf2de', '#ffe2a6', nt * 0.6));
-      for (let u = ox + 4.5; u < ox + 18; u += 4.5) r(u, 2, 0.5, 56, C.woodD);
-      for (let v = 9; v < 58; v += 7) r(ox, v, 18, 0.5, C.woodD);
-      r(ox, 2, 0.9, 56, C.woodD); r(ox + 17.1, 2, 0.9, 56, C.woodD);
-    }
-    r(1.2, 1.2, 1, 57.6, C.woodD); r(1.2, 1.2, 58.6, 1, C.woodD); r(1.2, 57.8, 58.6, 1, C.woodD);
-    r(-5, 60, 90, 2.6, C.woodL); r(-5, 62.6, 90, 1.4, C.woodDD);
-  }
-
-  function note(x, y, w, h, c, rot, fn) {
-    ctx.save(); ctx.translate(x + w / 2, y + h / 2); ctx.rotate(rot); ctx.translate(-(x + w / 2), -(y + h / 2));
-    r(x + 0.6, y + 0.8, w, h, 'rgba(60,30,10,.18)'); r(x, y, w, h, c); fn();
-    ctx.restore();
-  }
-  function ema(x, y, a, b, t, ph) {
-    const rot = Math.sin(t * 1.6 + ph) * 0.04;
-    ctx.save(); ctx.translate(x + 7, y - 2); ctx.rotate(rot); ctx.translate(-(x + 7), -(y - 2));
-    ln([[x + 7, y - 2], [x + 7, y + 1]], C.red, 0.5);
-    fp([[x, y + 4], [x + 4, y], [x + 10, y], [x + 14, y + 4], [x + 14, y + 17], [x, y + 17]], '#e7bf86', '#8a5a33', 0.4);
-    r(x + 0.6, y + 15.4, 12.8, 1.2, '#c99a5e');
-    tx(a, x + 7, y + 9.5, 3.3, C.ink); tx(b, x + 7, y + 14.2, 3.3, C.red);
-    ctx.restore();
-  }
-  function boardArt(t) {
-    r(0.8, 1, 76, 50, 'rgba(60,30,10,.2)');
-    r(0, 0, 76, 50, C.woodDD); r(2, 2, 72, 46, '#d4ad70');
-    for (let i = 0; i < 120; i++) r(3 + rnd(i + 200) * 70, 3 + rnd(i + 300) * 44, 0.5, 0.5, 'rgba(150,105,50,.55)');
-    r(4, 4, 28, 8, C.red); r(4, 11, 28, 1, C.redD); tx('成果 · WORK', 18, 9.6, 3.6, C.cream);
-    ln([[12, 16], [46, 6], [64, 8], [51, 28.5], [30, 19]], 'rgba(200,40,40,.85)', 0.35);
-    ema(6, 17, 'VINCI', '2025', t, 0);
-    ema(24, 20, '特許', '×4', t, 1.6);
-    note(38, 3, 16, 18, C.cream, 0.05, () => { tx('CHI', 46, 10.5, 4, C.ink); tx("'25", 46, 16.5, 3.6, C.red); r(40, 18.4, 12, 0.35, C.blueD); });
-    note(57, 5, 15, 16, '#d3ebc6', -0.06, () => { tx('SW©', 64.5, 11.5, 3.3, C.ink); tx('×1', 64.5, 17.5, 3.8, C.red); });
-    note(60, 31, 14, 14, '#fff1b0', 0.05, () => { tx('MPhil', 67, 37, 2.8, C.ink); tx('HKUST', 67, 41.4, 2.4, C.blueD); });
-    ctx.save(); ctx.translate(48, 37); ctx.rotate(-0.07);
-    r(-7, -9, 14, 17, '#fffaf0'); r(-6, -8, 12, 11, '#a9d0e2'); fp([[-5, -1], [0, -5], [5, -1]], C.redD);
-    r(-4, -1, 8, 3.6, C.cream); r(-1, 0, 2, 2.6, C.woodD); tx('GZ 831', 0, 6.4, 2.1, C.ink);
-    ctx.restore();
-    [[12, 16], [46, 4.6], [64, 6.6], [48, 28.5], [30, 19], [67, 31.5]].forEach(([x, y]) => ell(x, y, 1, 1, C.red, C.redD, 0.3));
-  }
-  function portraitArt() {
-    ln([[13, -7], [3, 0]], C.ink, 0.35); ln([[13, -7], [23, 0]], C.ink, 0.35); ell(13, -7, 0.8, 0.8, C.gold);
-    r(0.8, 0.8, 26, 34, 'rgba(60,30,10,.2)'); r(0, 0, 26, 34, C.woodDD); r(1.4, 1.4, 23.2, 31.2, '#d9b27a'); r(3, 3, 20, 24, '#cdb892');
-    if (pReady) { const s = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.drawImage(pCan, 3, 3, 20, 24); ctx.imageSmoothingEnabled = s; }
-    r(3, 3, 20, 0.5, 'rgba(0,0,0,.2)');
-    r(6, 28.6, 14, 3.4, C.cream); tx('王钰淞', 13, 31.4, 2.4, C.ink);
-  }
-  function scrollArt() {
-    ln([[9, -4], [2, 0]], C.ink, 0.3); ln([[9, -4], [16, 0]], C.ink, 0.3); ell(9, -4, 0.7, 0.7, C.gold);
-    r(-1, 0, 20, 2.2, C.woodDD); r(0, 2.2, 18, 54, '#7c6748'); r(1.2, 2.2, 15.6, 54, '#8f7a57'); r(3, 7, 12, 44, '#f6eedb');
-    ['温', '故', '知', '新'].forEach((c, i) => tx(c, 9, 15.5 + i * 9.2, 7.2, C.ink));
-    r(11.5, 47, 2.6, 2.6, C.red);
-    r(-1.4, 56, 20.8, 3, C.woodDD); ell(-1.4, 57.5, 1, 1.5, C.gold); ell(19.4, 57.5, 1, 1.5, C.gold);
-  }
-  const gzNow = () => new Date(Date.now() + (480 + new Date().getTimezoneOffset()) * 60000);
-  function clockArt() {
-    const d = gzNow();
-    ell(10.4, 10.6, 10, 10, 'rgba(60,30,10,.2)');
-    ell(10, 10, 10, 10, C.woodD); ell(10, 10, 8.6, 8.6, '#fbf3e1', C.woodDD, 0.4);
-    for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6; r(10 + Math.sin(a) * 7.3 - 0.35, 10 - Math.cos(a) * 7.3 - 0.35, 0.7, 0.7, C.ink); }
-    const h = ((d.getHours() % 12) + d.getMinutes() / 60) * Math.PI / 6, m = (d.getMinutes() + d.getSeconds() / 60) * Math.PI / 30, s = d.getSeconds() * Math.PI / 30;
-    ln([[10, 10], [10 + Math.sin(h) * 4.4, 10 - Math.cos(h) * 4.4]], C.ink, 0.9);
-    ln([[10, 10], [10 + Math.sin(m) * 6.4, 10 - Math.cos(m) * 6.4]], C.ink, 0.6);
-    ln([[10, 10], [10 + Math.sin(s) * 6.8, 10 - Math.cos(s) * 6.8]], C.red, 0.3);
-    ell(10, 10, 0.8, 0.8, C.gold);
-  }
-  function doorArt() {
-    r(0, 0, 42, 92, '#2b2230');
-    for (let k = 0; k < 2; k++) {
-      const x = 1.4 + k * 20;
-      r(x, 1.4, 19.2, 89.2, '#f1e5c6');
-      ctx.save(); ctx.beginPath(); ctx.rect(x, 1.4, 19.2, 89.2); ctx.clip();
-      [[x + 4 - k * 6, 14, 9, 3], [x + 16 - k * 6, 22, 10, 3.4], [x + 6 - k * 6, 32, 8, 2.6]].forEach(([cx, cy, a, b]) => ell(cx, cy, a, b, 'rgba(233,190,95,.75)'));
-      fp([[x - 6 + k * 0, 64], [x + 10 - k * 20, 44], [x + 26 - k * 20, 64]], 'rgba(52,70,125,.28)');
-      for (let row = 0; row < 7; row++) for (let col = -1; col < 7; col++) {
-        const cx = x + col * 4 + (row % 2) * 2 - k * 1, cy = 64 + row * 4.4;
-        for (let q = 3; q >= 1; q--) {
-          ctx.beginPath(); ctx.arc(cx, cy, q * 1.4, Math.PI, 0);
-          if (q === 3) { ctx.fillStyle = '#f1e5c6'; ctx.fill(); }
-          ctx.strokeStyle = q === 3 ? C.indigo : 'rgba(52,70,125,.55)'; ctx.lineWidth = 0.45; ctx.stroke();
-        }
-      }
-      ctx.restore();
-    }
-    ell(18.2, 50, 1.6, 1.6, '#c4932a', '#2b2230', 0.4); ell(23.8, 50, 1.6, 1.6, '#c4932a', '#2b2230', 0.4);
-  }
-  function drawFurin(t) {
-    curId = null;
-    const [fx, fy] = P(46, 7, 96), a = Math.sin(t * 2.6) * (0.1 + furinAmp * 0.45);
-    ln([[fx, fy - 3], [fx, fy]], '#2b2230', 0.3);
-    ctx.save(); ctx.translate(fx, fy); ctx.rotate(a);
-    ctx.beginPath(); ctx.moveTo(-3.2, 6); ctx.quadraticCurveTo(-3.4, 0, 0, 0); ctx.quadraticCurveTo(3.4, 0, 3.2, 6); ctx.closePath();
-    ctx.fillStyle = 'rgba(175,220,240,.92)'; ctx.fill(); ctx.strokeStyle = C.blueD; ctx.lineWidth = 0.35; ctx.stroke();
-    ctx.fillStyle = C.red; ctx.beginPath(); ctx.ellipse(-1, 3.4, 1.1, 0.6, 0.3, 0, Math.PI * 2); ctx.fill();
-    r(-0.2, 6, 0.4, 3, '#2b2230');
-    ctx.rotate(Math.sin(t * 3.4) * (0.2 + furinAmp * 0.6));
-    r(-1.3, 9, 2.6, 7, C.sakura); r(-1.3, 9, 2.6, 0.6, C.sakuraD);
-    ctx.restore();
-    hits.push({ id: 'furin', poly: [[fx - 5, fy - 3], [fx + 5, fy - 3], [fx + 5, fy + 17], [fx - 5, fy + 17]] });
-  }
-
-  function drawWalls(t) {
-    curId = null;
-    box(-6, -6, 0, 206, 6, 134, { top: '#b9864f', left: C.plasterR, right: '#8a5a33', edge: '#5e3a20' });
-    box(-6, 0, 0, 6, 200, 134, { top: '#b9864f', left: '#8a5a33', right: C.plasterL, edge: '#5e3a20' });
-    plane('R', 0, 0, 134, () => wallSkin(200));
-    plane('L', 0, 200, 134, () => wallSkin(200));
-    curId = 'window'; plane('R', 18, 0, 98, () => windowArt(t)); regPlane('R', 18, 0, 98, -3, -3, 86, 67);
-    curId = 'work'; plane('R', 112, 0, 98, () => boardArt(t)); regPlane('R', 112, 0, 98, 0, 0, 76, 50);
-    curId = 'about'; plane('L', 0, 46, 92, portraitArt); regPlane('L', 0, 46, 92, 0, -7, 26, 41);
-    curId = 'scroll'; plane('L', 0, 82, 100, scrollArt); regPlane('L', 0, 82, 100, -1, -4, 21, 64);
-    curId = 'clock'; plane('L', 0, 134, 128, clockArt); regPlane('L', 0, 134, 128, 0, 0, 20, 20);
-    curId = 'door'; plane('L', 0, 198, 96, doorArt); regPlane('L', 0, 198, 96, 0, 0, 42, 92);
-    curId = null;
-    const post = { top: C.woodL, left: C.wood, right: C.woodD, edge: C.woodDD };
-    box(0, 0, 0, 4, 4, 134, post); box(104, 0, 0, 4, 2.5, 134, post);
-    box(0, 86, 0, 2.5, 4, 134, post); box(0, 151, 0, 2.5, 4, 134, post);
-    drawFurin(t);
-  }
-
-  const MATS = [[0, 0, 100, 50], [100, 0, 50, 100], [150, 0, 50, 100], [0, 50, 100, 50], [0, 100, 50, 100], [50, 100, 100, 50], [50, 150, 100, 50], [150, 100, 50, 100]];
-  function drawFloor() {
-    curId = null;
-    box(0, 0, 0, 200, 200, 4, { top: C.tatami, left: '#b07a45', right: '#8a5d33', edge: '#5e3a20' }, { noHi: true });
-    plane('F', 0, 0, 4, () => {
-      MATS.forEach(([x, y, w, h], i) => {
-        r(x, y, w, h, i % 2 ? C.tatami : C.tatamiB);
-        ctx.fillStyle = 'rgba(120,110,50,.14)';
-        if (w > h) for (let yy = y + 2; yy < y + h; yy += 2.5) ctx.fillRect(x + 1, yy, w - 2, 0.5);
-        else for (let xx = x + 2; xx < x + w; xx += 2.5) ctx.fillRect(xx, y + 1, 0.5, h - 2);
-        ctx.fillStyle = C.heri;
-        if (w > h) { ctx.fillRect(x, y, w, 2.2); ctx.fillRect(x, y + h - 2.2, w, 2.2); } else { ctx.fillRect(x, y, 2.2, h); ctx.fillRect(x + w - 2.2, y, 2.2, h); }
-        ctx.strokeStyle = 'rgba(60,60,30,.35)'; ctx.lineWidth = 0.4; ctx.strokeRect(x, y, w, h);
-      });
-      let g = ctx.createLinearGradient(0, 0, 0, 16); g.addColorStop(0, 'rgba(60,40,20,.28)'); g.addColorStop(1, 'rgba(60,40,20,0)');
-      ctx.fillStyle = g; ctx.fillRect(0, 0, 200, 16);
-      g = ctx.createLinearGradient(0, 0, 16, 0); g.addColorStop(0, 'rgba(60,40,20,.22)'); g.addColorStop(1, 'rgba(60,40,20,0)');
-      ctx.fillStyle = g; ctx.fillRect(0, 0, 16, 200);
-      // light from the window
-      ctx.globalAlpha = 0.18 * (1 - nightT) + 0.1 * nightT;
-      ctx.fillStyle = nightT > 0.5 ? '#c4d0ff' : '#fff3c8';
-      ctx.beginPath(); ctx.moveTo(20, 0); ctx.lineTo(80, 0); ctx.lineTo(112, 72); ctx.lineTo(52, 72); ctx.closePath(); ctx.fill();
-      ctx.globalAlpha = 1;
-    });
-  }
-
-  /* ---------- furniture ---------- */
-  function drawAndon() {
-    ao(8, 8, 18, 18, 4);
-    curId = 'lantern';
-    const z = 4 + up('lantern');
-    const wd = { top: '#6b4024', left: '#5a351d', right: '#43271a', edge: '#2e1a10' };
-    box(9, 9, z, 2, 2, 5, wd); box(23, 9, z, 2, 2, 5, wd); box(9, 23, z, 2, 2, 5, wd); box(23, 23, z, 2, 2, 5, wd);
-    box(9, 9, z + 5, 16, 16, 2, wd);
-    box(10.5, 10.5, z + 7, 13, 13, 22, { top: mix('#f4ead2', '#ffe3a0', nightT), left: mix('#e9dcbe', '#ffdd92', nightT), right: mix('#d2c3a2', '#f7c46c', nightT), edge: '#5a351d' });
-    const lat = () => { r(6.2, 0, 0.6, 22, '#5a351d'); r(0, 7, 13, 0.5, '#5a351d'); r(0, 14.5, 13, 0.5, '#5a351d'); };
-    plane('R', 10.5, 23.5, z + 29, lat); plane('L', 23.5, 23.5, z + 29, lat);
-    box(9.5, 9.5, z + 29, 15, 15, 2, wd);
-    ln([P(17, 11, z + 31), P(17, 11, z + 36), P(17, 23, z + 36), P(17, 23, z + 31)], '#43271a', 0.9);
-  }
-
-  function drawDaruma(x, y, s) {
-    ell(x, y, 8 * s, 3 * s, 'rgba(60,30,10,.2)');
-    ell(x, y - 9 * s, 9 * s, 10 * s, C.red, '#6e1f16', 0.5);
-    ell(x, y - 11 * s, 5.5 * s, 5 * s, '#fbf3e1');
-    ell(x - 2 * s, y - 11.5 * s, 1.3 * s, 1.3 * s, C.ink);
-    ell(x + 2 * s, y - 11.5 * s, 1.3 * s, 1.3 * s, '#fbf3e1', C.ink, 0.3);
-    ln([[x - 3.5 * s, y - 4 * s], [x + 3.5 * s, y - 4 * s]], C.gold, 0.6);
-  }
-
-  function drawNeko(x, y, s, t) {
-    const busy = focused === 'contact' || hovered === 'contact' || extHover === 'contact';
-    const wave = busy ? Math.sin(t * 14) * 3 * s : (Math.floor(t * 2.4) % 2 ? 4 * s : 0);
-    const W_ = '#fffaf0';
-    ell(x, y - 1 * s, 15 * s, 4 * s, 'rgba(60,30,10,.2)');
-    ell(x, y - 18 * s, 17 * s, 19 * s, W_, C.ink, 0.5);
-    ell(x - 9 * s, y - 4 * s, 6 * s, 4 * s, W_, C.ink, 0.5); ell(x + 9 * s, y - 4 * s, 6 * s, 4 * s, W_, C.ink, 0.5);
-    ell(x - 15 * s, y - 16 * s, 5 * s, 7 * s, W_, C.ink, 0.5);
-    ell(x, y - 46 * s, 19 * s, 16 * s, W_, C.ink, 0.5);
-    fp([[x - 17 * s, y - 52 * s], [x - 13 * s, y - 68 * s], [x - 4 * s, y - 59 * s]], W_, C.ink, 0.5);
-    fp([[x + 17 * s, y - 52 * s], [x + 13 * s, y - 68 * s], [x + 4 * s, y - 59 * s]], W_, C.ink, 0.5);
-    fp([[x - 14 * s, y - 56 * s], [x - 12.5 * s, y - 64 * s], [x - 8 * s, y - 59 * s]], C.sakura);
-    fp([[x + 14 * s, y - 56 * s], [x + 12.5 * s, y - 64 * s], [x + 8 * s, y - 59 * s]], C.sakura);
-    ell(x - 11 * s, y - 56 * s, 5 * s, 4 * s, C.orange); ell(x + 12 * s, y - 52 * s, 4 * s, 3 * s, C.ink);
-    [-7, 7].forEach((dx) => { ctx.beginPath(); ctx.arc(x + dx * s, y - 46 * s, 3 * s, Math.PI * 1.1, Math.PI * 1.9); ctx.strokeStyle = C.ink; ctx.lineWidth = 0.6; ctx.stroke(); });
-    ell(x, y - 41 * s, 1.6 * s, 1.2 * s, C.sakuraD);
-    ln([[x - 3 * s, y - 38 * s], [x, y - 39 * s], [x + 3 * s, y - 38 * s]], C.ink, 0.4);
-    [-1, 1].forEach((d) => { ln([[x + d * 8 * s, y - 41 * s], [x + d * 18 * s, y - 43 * s]], C.ink, 0.25); ln([[x + d * 8 * s, y - 39 * s], [x + d * 18 * s, y - 38 * s]], C.ink, 0.25); });
-    ell(x - 6 * s, y - 42 * s, 2 * s, 1.2 * s, 'rgba(240,120,130,.45)'); ell(x + 6 * s, y - 42 * s, 2 * s, 1.2 * s, 'rgba(240,120,130,.45)');
-    fp([[x - 14 * s, y - 33 * s], [x + 14 * s, y - 33 * s], [x + 13 * s, y - 29 * s], [x - 13 * s, y - 29 * s]], C.red, C.redD, 0.3);
-    ell(x, y - 27 * s, 4 * s, 4 * s, C.gold, '#b98a1f', 0.3);
-    ell(x + 2 * s, y - 13 * s, 8 * s, 10 * s, C.gold, '#b98a1f', 0.4);
-    tx('千', x + 2 * s, y - 10 * s, 8 * s, C.redD);
-    ell(x + 20 * s, y - 50 * s + wave, 6 * s, 9 * s, W_, C.ink, 0.5);
-    ell(x + 20 * s, y - 54 * s + wave, 3 * s, 2.5 * s, C.sakura);
-  }
-
-  function drawShelf(t) {
-    ao(1, 91, 28, 60, 4);
-    curId = 'portfolio';
-    const z = 4 + up('portfolio');
-    box(2, 92, z, 26, 58, 70, { top: '#c98d55', left: '#a86c3c', right: '#8f5a31', edge: '#4e2c16' });
-    plane('L', 28, 150, z + 70, () => {
-      const shelf = (sy) => { r(2.5, sy, 53, 15, '#3d2414'); r(2.5, sy, 53, 1.6, 'rgba(0,0,0,.35)'); r(2, sy + 15, 54, 1.8, '#c98d55'); r(2, sy + 16.8, 54, 0.5, '#6b3f1f'); };
-      shelf(3); shelf(21); shelf(39);
-      const pal = ['#d64933', '#34467d', '#e7b84a', '#6f9a4f', '#f2a7bd', '#efe6d0', '#2b2230', '#5ea3b8'];
-      const books = (sy, seed, limit) => {
-        let x = 3.5, i = 0;
-        while (x < limit) {
-          const w = 1.6 + rnd(seed + i) * 2.2, h = 9 + rnd(seed + i + 40) * 5, c = pal[Math.floor(rnd(seed + i + 80) * pal.length)];
-          r(x, sy + 15 - h, w, h, c); r(x, sy + 15 - h + 1.6, w, 0.6, 'rgba(255,255,255,.35)'); r(x + w - 0.3, sy + 15 - h, 0.3, h, 'rgba(0,0,0,.25)');
-          x += w + 0.25; i++;
-        }
-      };
-      books(3, 10, 53);
-      const frame = (x, y, w, h, src) => { r(x, y, w, h, '#efe6d0'); r(x + 0.6, y + 0.6, w - 1.2, h - 1.2, '#222'); const im = imgs[src]; if (im) ctx.drawImage(im, x + 0.8, y + 0.8, w - 1.6, h - 1.6); };
-      frame(4, 23, 16, 12, 'assets/ai_portfolio/ai_star.jpg');
-      frame(21.5, 25, 13, 10, 'assets/ai_portfolio/ai_twodimensional.jpg');
-      frame(36, 24, 14, 11, 'assets/ai_portfolio/ai_cover.jpg');
-      r(51, 32, 4, 4, '#d64933'); r(50.6, 30, 4.8, 2, '#34467d');
-      books(39, 60, 40);
-      r(42, 51.8, 12, 2.2, '#6f9a4f'); r(43, 49.6, 10, 2.2, '#d64933'); r(42.5, 47.4, 11, 2.2, '#e7b84a');
-      r(2.5, 57, 26, 12, '#b8783f'); r(29.5, 57, 26, 12, '#b8783f'); r(2.5, 57, 53, 0.6, 'rgba(0,0,0,.3)');
-      ell(26, 63, 0.8, 0.8, C.gold); ell(32, 63, 0.8, 0.8, C.gold);
-      r(17, 18.4, 24, 3.2, C.cream); tx('作品集 PORTFOLIO', 29, 20.9, 2.1, C.ink);
-    });
-    curId = null;
-    drawDaruma(...P(15, 102, z + 70), 0.55);
-    curId = 'contact';
-    drawNeko(...P(15, 130, z + 70 + up('contact')), 0.4, t);
-  }
-
-  function drawTansu() {
-    ao(121, 1, 56, 26, 4);
-    curId = 'toolbox';
-    const z = 4 + up('toolbox');
-    box(122, 2, z, 54, 24, 40, { top: '#b8703f', left: '#a2603a', right: '#7d4626', edge: '#4a2714' });
-    plane('R', 122, 26, z + 40, () => {
-      for (let row = 0; row < 3; row++) for (let c = 0; c < 2; c++) {
-        const x = 1.6 + c * 25.6, y = 1.6 + row * 12.6, w = 24.8, h = 11.6;
-        r(x, y, w, h, '#ad6a40'); r(x, y, w, 0.6, 'rgba(255,255,255,.18)'); r(x, y + h - 0.6, w, 0.6, 'rgba(0,0,0,.25)');
-        r(x, y, 2.2, 0.7, C.ink); r(x, y, 0.7, 2.2, C.ink); r(x + w - 2.2, y, 2.2, 0.7, C.ink); r(x + w - 0.7, y, 0.7, 2.2, C.ink);
-        r(x + w / 2 - 3, y + h / 2 - 1.6, 6, 1.4, C.ink);
-        ctx.beginPath(); ctx.arc(x + w / 2, y + h / 2, 2.6, 0, Math.PI); ctx.strokeStyle = C.ink; ctx.lineWidth = 0.7; ctx.stroke();
-      }
-      r(3.2, 3, 10, 4.4, C.cream); tx('工具', 8.2, 6.4, 3, C.ink);
-    });
-    const tz = z + 40;
-    box(126, 7, tz, 18, 9, 7, { top: '#e0573f', left: '#c8443a', right: '#a33424', edge: '#6e1f16' });
-    ln([P(130, 11.5, tz + 7), P(130, 11.5, tz + 10), P(140, 11.5, tz + 10), P(140, 11.5, tz + 7)], C.ink, 0.8);
-    plane('R', 126, 16, tz + 7, () => { r(7.5, 1.6, 3, 1.4, '#d9d9d9'); tx('TOOLS', 9, 5.6, 1.9, C.cream); });
-    curId = null;
-    box(156, 8, tz, 14, 10, 3.6, { top: '#4c68a3', left: '#3e578c', right: '#30446e', edge: '#1d2a4a' });
-    const [bx, by] = P(163, 13, tz + 3.6);
-    ln([[bx, by], [bx - 2, by - 5], [bx + 1.5, by - 9], [bx - 1, by - 13]], '#5a3d2a', 1.4);
-    [[-6, -11, 6, 2.6], [5, -9, 5, 2.2], [-1, -15, 6, 2.6], [-6, -6, 3.6, 1.6]].forEach(([dx, dy, a, b]) => {
-      ell(bx + dx, by + dy + 0.6, a, b, '#3f6a3a'); ell(bx + dx - 0.5, by + dy - 0.3, a * 0.7, b * 0.6, '#5d8c4b'); ell(bx + dx - 1, by + dy - 0.8, a * 0.3, b * 0.3, '#86b35f');
-    });
-  }
-
-  function drawDesk(t) {
-    ao(70, 68, 80, 52, 4);
-    curId = null;
-    const lg = { top: '#a8703f', left: '#8f5a31', right: '#6e4222', edge: '#43260f' };
-    box(74, 72, 4, 5, 5, 22, lg); box(141, 72, 4, 5, 5, 22, lg); box(74, 111, 4, 5, 5, 22, lg); box(141, 111, 4, 5, 5, 22, lg);
-    box(72, 70, 26, 76, 48, 4, { top: '#d6a067', left: '#b98048', right: '#94612f', edge: '#5e3a1c' });
-    plane('F', 72, 70, 30, () => {
-      for (let v = 3; v < 48; v += 4.2) r(1, v, 74, 0.35, 'rgba(140,85,40,.28)');
-      ell(52, 20, 4, 1.6, null, 'rgba(140,85,40,.4)', 0.35); ell(52, 20, 1.8, 0.7, null, 'rgba(140,85,40,.4)', 0.35);
-    });
-    drawEnvelope(); drawNotebook(); drawMonitor(t); drawPenCup(); drawKeyboard(); drawRamune(); drawTea(t);
-  }
-  function drawEnvelope() {
-    curId = 'cv';
-    const z = 30.2 + up('cv');
-    plane('F', 78, 73, z, () => {
-      r(0.5, 0.6, 17, 11, 'rgba(60,30,10,.15)'); r(0, 0, 17, 11, '#fffaf0');
-      ctx.strokeStyle = '#cbb994'; ctx.lineWidth = 0.3; ctx.strokeRect(0, 0, 17, 11);
-      ln([[0, 0], [8.5, 5.6], [17, 0]], '#cbb994', 0.3);
-      ell(8.5, 5.6, 1.6, 1.6, C.red, C.redD, 0.3);
-      tx('履歴書', 8.5, 9.8, 2.2, C.ink);
-    });
-    regPlane('F', 78, 73, z, 0, 0, 17, 11);
-  }
-  function drawNotebook() {
-    curId = 'exp';
-    const z = 30 + up('exp');
-    box(76, 93, z, 24, 17, 0.8, '#a33424');
-    plane('F', 77, 94, z + 0.8, () => {
-      r(0, 0, 10.8, 15, '#fffaf0'); r(11.2, 0, 10.8, 15, '#fffaf0'); r(10.6, 0, 1.2, 15, '#e3d6b8');
-      for (let i = 0; i < 6; i++) r(1.4, 2 + i * 2, 8, 0.25, 'rgba(78,109,166,.7)');
-      tx('経歴', 16.6, 5, 3.2, C.ink); tx('2016→2026', 16.6, 8.6, 1.7, C.blueD);
-      ell(19.4, 12.4, 1.3, 1.3, C.red, C.redD, 0.25); tx('王', 19.4, 13, 1.4, '#fffaf0');
-      ln([[-3, 12], [7, 17.5]], C.ink, 1.1); ln([[-3, 12], [7, 17.5]], '#e7b84a', 0.7); ell(-3, 12, 0.6, 0.6, '#f2a7bd');
-    });
-    regPlane('F', 77, 94, z + 0.8, -3, 0, 25, 17.5);
-  }
-  function drawMonitor(t) {
-    curId = 'heritage';
-    const z = 30 + up('heritage');
-    const cr = { top: '#f4ecd6', left: '#ebe1c6', right: '#cfc3a2', edge: '#8a7f63' };
-    box(104, 64, z + 3, 17, 8, 15, cr);
-    box(100, 73, z, 26, 19, 1.6, '#d6cbb0');
-    box(101, 72, z + 1.6, 24, 20, 20, cr);
-    plane('R', 101, 92, z + 21.6, () => {
-      r(2, 1.8, 20, 13.6, '#d8ccad'); r(3, 2.8, 18, 11.4, '#0b2216');
-      const g = nightT > 0.5 ? '#8cffb8' : '#62e797';
-      ['HeritageExplorer', '14 cities', '2,036 bldgs', 'RAG × 4 lanes'].forEach((s, i) => tx(s, 4, 5.4 + i * 2.3, i ? 1.6 : 1.9, i ? g : C.gold, 'left'));
-      if (Math.floor(t * 2) % 2 === 0) r(4, 12.9, 1.1, 1.2, g);
-      for (let y = 2.8; y < 14.2; y += 0.7) r(3, y, 18, 0.22, 'rgba(0,0,0,.28)');
-      r(3, 2.8 + ((t * 4) % 11), 18, 0.5, 'rgba(255,255,255,.07)');
-      fp([[3, 2.8], [9, 2.8], [5, 14.2], [3, 14.2]], 'rgba(255,255,255,.06)');
-      r(13, 16.4, 8, 0.9, C.ink); r(4, 16.5, 1.4, 0.8, nightT > 0.5 ? '#8cffb8' : '#4cc77a');
-      for (let i = 0; i < 4; i++) r(6.5 + i * 1.3, 16.2, 0.5, 1.6, '#b9ad8c');
-      ctx.save(); ctx.translate(2.5, 1.6); ctx.rotate(-0.25); r(-1, -1.1, 8.4, 2.6, C.gold); tx("VINCI'25", 3.2, 0.85, 1.5, C.ink); ctx.restore();
-    });
-  }
-  function drawKeyboard() {
-    curId = 'heritage';
-    const z = 30 + up('heritage');
-    box(101, 96, z, 24, 8.5, 1.3, '#ebe1c6');
-    plane('F', 101, 96, z + 1.3, () => {
-      for (let row = 0; row < 3; row++) for (let c = 0; c < 11; c++) r(1 + c * 2.06, 0.8 + row * 2.1, 1.6, 1.6, '#fffaf0');
-      r(5, 7, 13, 1.1, '#fffaf0');
-    });
-  }
-  function drawPenCup() {
-    curId = null;
-    const c = cyl(132, 75, 30, 2.3, 6.5, '#34467d', '#1d264a');
-    [[-1, 9, '#e7b84a'], [0.4, 11, C.red], [1.4, 8, '#6f9a4f'], [-0.2, 7.5, '#fffaf0']].forEach(([dx, len, col]) => {
-      ln([[c.cx + dx, c.top], [c.cx + dx * 1.6, c.top - len]], C.ink, 1.3); ln([[c.cx + dx, c.top], [c.cx + dx * 1.6, c.top - len]], col, 0.8);
-    });
-  }
-  function drawRamune() {
-    curId = 'ramune';
-    const z = 30 + up('ramune');
-    ctx.globalAlpha = 0.93;
-    const c = cyl(141, 84, z, 1.9, 8, '#8fd0e2', '#bfeaf4');
-    cyl(141, 84, z + 8, 1.1, 3.2, '#8fd0e2', '#3f8fc0');
-    ctx.globalAlpha = 1;
-    ell(c.cx, c.top - 1.6, 0.9, 0.9, '#eefaff', '#7cb7cf', 0.3);
-    r(c.cx - c.rx + 0.6, c.top + 1, 0.5, 5, 'rgba(255,255,255,.7)');
-  }
-  function drawTea(t) {
-    curId = 'tea';
-    const z = 30 + up('tea');
-    const [sx, sy] = P(138, 106, z);
-    ell(sx, sy + 0.3, 6.2, 3, '#b98048', '#6e4222', 0.4);
-    const c = cyl(138, 106, z + 0.4, 3, 4.6, '#efe8d6', '#8fae4a');
-    ctx.beginPath(); ctx.ellipse(c.cx, c.top + 2.3, c.rx, c.ry, 0, 0, Math.PI); ctx.strokeStyle = C.blueD; ctx.lineWidth = 0.7; ctx.stroke();
-    ell(c.cx, c.top, c.rx * 0.78, c.ry * 0.7, '#a9c45f');
-    curId = null;
-    for (let i = 0; i < 3; i++) {
-      const ph = (t * 0.5 + i / 3) % 1, pts = [];
-      ctx.globalAlpha = 0.65 * (1 - ph);
-      for (let k = 0; k < 6; k++) pts.push([c.cx - 2 + i * 2 + Math.sin(t * 2 + k * 0.9 + i) * 1, c.top - 1.5 - ph * 12 - k * 1.6]);
-      ln(pts, '#ffffff', 0.5);
-      ctx.globalAlpha = 1;
-    }
-  }
-  function drawZabuton() {
-    ao(95, 123, 30, 30, 4);
-    curId = null;
-    box(96, 124, 4, 28, 28, 3.6, { top: '#cf4a3d', left: '#b03a2f', right: '#8a2b22', edge: '#5e1a14' });
-    const [cx, cy] = P(110, 138, 7.6); ell(cx, cy, 1.4, 0.8, C.gold);
-    [[96, 124], [124, 124], [124, 152], [96, 152]].forEach(([x, y]) => { const p = P(x, y, 5.5); ell(p[0], p[1], 1, 1, C.gold); });
-  }
-  function drawCatShape(x, y, s, t, awake) {
-    ell(x, y + 1 * s, 36 * s, 9 * s, 'rgba(20,20,50,.22)');
-    const tw = Math.sin(t * (awake ? 7 : 1.4)) * 3 * s;
-    const tail = [[x - 30 * s, y - 2 * s], [x - 12 * s, y + 9 * s], [x + 14 * s, y + 8 * s + tw * 0.3], [x + 26 * s, y + 2 * s + tw]];
-    ln(tail, C.ink, 7.5 * s); ln(tail, C.orange, 5.5 * s);
-    const br = Math.sin(t * 2.2) * 0.8 * s;
-    ell(x - 4 * s, y - 6 * s, 34 * s, 17 * s + br, '#f6ead0');
-    ell(x - 18 * s, y - 12 * s, 12 * s, 7 * s + br * 0.5, C.orange); ell(x + 4 * s, y - 1 * s, 10 * s, 6 * s, C.orange);
-    ell(x - 4 * s, y - 6 * s, 34 * s, 17 * s + br, null, C.ink, 0.55);
-    const hx = x + 26 * s, hy = y - (awake ? 17 : 12) * s, eh = awake ? 22 : 18;
-    fp([[hx - 12 * s, hy - 5 * s], [hx - 10 * s, hy - eh * s], [hx - 2 * s, hy - 10 * s]], '#f6ead0', C.ink, 0.5);
-    fp([[hx + 12 * s, hy - 5 * s], [hx + 10 * s, hy - eh * s], [hx + 2 * s, hy - 10 * s]], C.orange, C.ink, 0.5);
-    ell(hx, hy, 14 * s, 11 * s, '#f6ead0', C.ink, 0.55);
-    ell(hx + 6 * s, hy - 5 * s, 6 * s, 4 * s, C.orange);
-    if (awake) [-5, 5].forEach((d) => { ell(hx + d * s, hy, 2 * s, 2.6 * s, C.ink); ell(hx + d * s - 0.6 * s, hy - 1 * s, 0.7 * s, 0.7 * s, '#fff'); });
-    else [-5, 5].forEach((d) => ln([[hx + d * s - 3 * s, hy], [hx + d * s, hy + 1.2 * s], [hx + d * s + 3 * s, hy]], C.ink, 0.55));
-    ell(hx, hy + 4 * s, 1.4 * s, 1 * s, C.sakuraD);
-    if (!awake) {
-      const zz = (t * 0.5) % 1;
-      ctx.globalAlpha = 1 - zz; tx('z', hx + 14 * s + zz * 8, hy - 14 * s - zz * 16, 4 + zz * 3, C.indigo); ctx.globalAlpha = 1;
-    } else {
-      const bx = hx + 12 * s, by = hy - 26 * s;
-      fp([[bx - 4, by - 5], [bx + 4, by - 5], [bx + 4, by + 2], [bx + 1, by + 2], [bx - 1, by + 4], [bx - 1, by + 2], [bx - 4, by + 2]], '#fffaf0', C.ink, 0.5);
-      tx('!', bx, by + 1, 5.5, C.red);
-    }
-  }
-  function drawCat(t) {
-    ao(149, 139, 32, 32, 4);
-    curId = 'cat';
-    const z = 4 + up('cat');
-    box(150, 140, z, 30, 30, 3, { top: '#5266a6', left: '#42548c', right: '#334271', edge: '#1f2a4d' });
-    plane('F', 150, 140, z + 3, () => { ell(15, 15, 11, 11, null, 'rgba(255,255,255,.2)', 0.4); ell(15, 15, 7, 7, null, 'rgba(255,255,255,.14)', 0.4); });
-    const [x, y] = P(164, 157, z + 3);
-    drawCatShape(x, y, 0.42, t, NOW < catAwakeUntil);
-  }
-  function drawToro() {
-    ao(218, 52, 16, 16, 0);
-    curId = 'toro';
-    const st = { top: '#c4bfb2', left: '#a6a195', right: '#8a867b', edge: '#5d5a52' }, x = 226, y = 60;
-    box(x - 7, y - 7, 0, 14, 14, 3, st); box(x - 3, y - 3, 3, 6, 6, 13, st);
-    box(x - 8, y - 8, 16, 16, 16, 2.5, st); box(x - 6, y - 6, 18.5, 12, 12, 9, st);
-    const lit = mix('#2b2230', '#ffcf73', nightT);
-    plane('R', x - 6, y + 6, 27.5, () => r(3, 2, 6, 5, lit));
-    plane('L', x + 6, y + 6, 27.5, () => r(3, 2, 6, 5, lit));
-    const c = P(x + 10, y + 10, 27.5), b = P(x + 10, y - 10, 27.5), d = P(x - 10, y + 10, 27.5), ap = P(x, y, 35);
-    fp([d, c, ap], '#a8a397', st.edge); fp([b, c, ap], '#8a867b', st.edge);
-    ell(ap[0], ap[1] - 1.2, 1.6, 2, '#c4bfb2', st.edge, 0.4);
-  }
-
-  function drawScene(t) {
-    hits = []; curId = null;
-    drawIsland(); drawTrees(t); drawWalls(t); drawFloor(); drawTufts();
-    drawAndon(); drawShelf(t); drawTansu(); drawDesk(t); drawZabuton(); drawToro(); drawCat(t);
-    drawParticles();
-    hitList = hits;
-  }
-
-  function drawLights(t) {
-    if (nightT < 0.01) return;
-    ctx.save(); ctx.globalCompositeOperation = 'lighter';
-    const glow = (x, y, rad, c, a) => {
-      const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
-      g.addColorStop(0, `rgba(${c},${a * nightT})`); g.addColorStop(1, `rgba(${c},0)`);
-      ctx.fillStyle = g; ctx.fillRect(x - rad, y - rad, rad * 2, rad * 2);
-    };
-    const fl = 1 + Math.sin(t * 9) * 0.03 + Math.sin(t * 23) * 0.02;
-    let p = P(17, 17, 20 + up('lantern'));
-    glow(p[0], p[1], 85 * fl, '255,175,85', 0.5); glow(p[0], p[1], 14, '255,235,180', 0.6);
-    p = P(113, 92, 44); glow(p[0], p[1], 46, '90,255,170', 0.22);
-    p = P(226, 60, 31); glow(p[0], p[1], 34 * fl, '255,190,100', 0.5);
-    p = P(46, 7, 92); glow(p[0], p[1], 10, '170,220,255', 0.25);
-    ctx.restore();
-  }
-
-  /* ================= overlays (hover, sparkle, focus) ================= */
-  function boundsOf(id) {
-    let b = null;
-    hitList.forEach((h) => {
-      if (h.id !== id) return;
-      h.poly.forEach(([x, y]) => {
-        if (!b) b = [x, y, x, y];
-        else { b[0] = Math.min(b[0], x); b[1] = Math.min(b[1], y); b[2] = Math.max(b[2], x); b[3] = Math.max(b[3], y); }
-      });
-    });
-    return b;
-  }
-  function inPoly(pt, poly) {
-    let c = false;
-    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-      const [xi, yi] = poly[i], [xj, yj] = poly[j];
-      if ((yi > pt[1]) !== (yj > pt[1]) && pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi) c = !c;
-    }
-    return c;
-  }
-  function pick(mx, my) {
-    const pt = toLogical(mx, my);
-    for (let i = hitList.length - 1; i >= 0; i--) if (inPoly(pt, hitList[i].poly)) return hitList[i].id;
-    return null;
-  }
-  function drawHover(t) {
-    const id = focused ? null : (hovered || extHover);
-    if (!id || !OBJ[id]) return;
-    setCam();
-    ctx.fillStyle = 'rgba(255,248,225,.2)';
-    hitList.forEach((h) => { if (h.id === id) { path(h.poly); ctx.fill(); } });
-    const b = boundsOf(id); if (!b) return;
-    screenSpace();
-    const [x0, y0] = toScreen(b[0], b[1]), [x1, y1] = toScreen(b[2], b[3]);
-    const pad = 6 + Math.sin(t * 6) * 2, L = 10;
-    const corners = [[x0 - pad, y0 - pad, 1, 1], [x1 + pad, y0 - pad, -1, 1], [x0 - pad, y1 + pad, 1, -1], [x1 + pad, y1 + pad, -1, -1]];
-    [[C.ink, 4.5], [C.gold, 2.5]].forEach(([c, w]) => {
-      ctx.strokeStyle = c; ctx.lineWidth = w; ctx.lineCap = 'square';
-      corners.forEach(([x, y, dx, dy]) => { ctx.beginPath(); ctx.moveTo(x, y + L * dy); ctx.lineTo(x, y); ctx.lineTo(x + L * dx, y); ctx.stroke(); });
-    });
-    const o = OBJ[id], s = isEn() ? o.en : o.zh;
-    ctx.font = '14px DotGothic16, "Noto Sans SC", sans-serif';
-    const w = ctx.measureText(s).width + 18, h = 26;
-    let lx = clamp((x0 + x1) / 2 - w / 2, 8, VW - w - 8), ly = y0 - pad - h - 12 + Math.sin(t * 4) * 1.5;
-    let below = false;
-    if (ly < 76) { ly = y1 + pad + 12; below = true; }
-    ctx.fillStyle = C.ink; ctx.fillRect(lx - 3, ly, w + 6, h); ctx.fillRect(lx, ly - 3, w, h + 6);
-    ctx.fillStyle = C.cream; ctx.fillRect(lx, ly, w, h);
-    ctx.fillStyle = C.ink; const ax = clamp((x0 + x1) / 2, lx + 8, lx + w - 8);
-    ctx.beginPath();
-    if (below) { ctx.moveTo(ax - 6, ly - 2); ctx.lineTo(ax, ly - 9); ctx.lineTo(ax + 6, ly - 2); }
-    else { ctx.moveTo(ax - 6, ly + h + 2); ctx.lineTo(ax, ly + h + 9); ctx.lineTo(ax + 6, ly + h + 2); }
-    ctx.fill();
-    ctx.fillStyle = C.ink; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(s, lx + 9, ly + h / 2 + 1);
-  }
-  const SPARK = ['heritage', 'portfolio', 'contact', 'work', 'about', 'exp', 'toolbox', 'cv'];
-  function drawSparkle(t) {
-    if (!hinting || hovered || focused || introActive) return;
-    screenSpace();
-    for (let n = 0; n < 2; n++) {
-      const k = t / 1.2 + n * 0.5, id = SPARK[(Math.floor(k) + n * 4) % SPARK.length], ph = k % 1;
-      const b = boundsOf(id); if (!b) continue;
-      const [sx, sy] = toScreen(b[2] - 2, b[1] + 3), s = Math.sin(ph * Math.PI) * 10;
-      if (s < 0.5) continue;
-      ctx.beginPath();
-      ctx.moveTo(sx, sy - s); ctx.quadraticCurveTo(sx, sy, sx + s, sy); ctx.quadraticCurveTo(sx, sy, sx, sy + s);
-      ctx.quadraticCurveTo(sx, sy, sx - s, sy); ctx.quadraticCurveTo(sx, sy, sx, sy - s);
-      ctx.fillStyle = '#fff8d6'; ctx.fill(); ctx.strokeStyle = C.gold; ctx.lineWidth = 1.2; ctx.stroke();
-    }
-  }
-  function drawVignette() {
-    if (focusT < 0.01) return;
-    const b = boundsOf(focused || lastFocused); if (!b) return;
-    screenSpace();
-    const [x0, y0] = toScreen(b[0], b[1]), [x1, y1] = toScreen(b[2], b[3]);
-    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, rin = Math.max(x1 - x0, y1 - y0) * 0.75;
-    const g = ctx.createRadialGradient(cx, cy, rin, cx, cy, Math.max(VW, VH));
-    g.addColorStop(0, 'rgba(24,16,40,0)'); g.addColorStop(1, `rgba(24,16,40,${0.6 * focusT})`);
-    ctx.fillStyle = g; ctx.fillRect(0, 0, VW, VH);
-  }
-
-  function render(t) {
-    screenSpace(); ctx.clearRect(0, 0, VW, VH);
-    drawBackground(t);
-    setCam(); drawScene(t);
-    if (nightT > 0.01) { screenSpace(); ctx.fillStyle = `rgba(14,18,56,${0.42 * nightT})`; ctx.fillRect(0, 0, VW, VH); }
-    setCam(); drawLights(t);
-    drawVignette();
-    drawHover(t);
-    drawSparkle(t);
-  }
-
-  /* ================= objects, panels, interactions ================= */
-  const OBJ = {
-    about:     { zh: '自己紹介 · 关于我', en: 'About me', kanji: '人', panel: 1, dock: ['自己紹介', 'About'] },
-    heritage:  { zh: 'HeritageExplorer', en: 'HeritageExplorer', kanji: '史', panel: 1, dock: ['HeritageExplorer', 'HeritageExplorer'] },
-    work:      { zh: '成果 · 论文 · 专利', en: 'Papers · IP · Projects', kanji: '績', panel: 1, dock: ['成果', 'Work'] },
-    exp:       { zh: '経歴 · 经历', en: 'Experience', kanji: '歴', panel: 1, dock: ['経歴', 'Experience'] },
-    portfolio: { zh: '作品集', en: 'Portfolio', kanji: '絵', panel: 1, dock: ['作品集', 'Portfolio'] },
-    toolbox:   { zh: '箪笥 · 工具链', en: 'Tansu · Toolbox', kanji: '具', panel: 1, dock: ['工具链', 'Toolbox'] },
-    contact:   { zh: '招き猫 · 联系我', en: 'Maneki-neko · Contact', kanji: '招', panel: 1, dock: ['联系', 'Contact'] },
-    cv:        { zh: '履歴書 · 简历', en: 'CV', kanji: '書', panel: 1, dock: ['简历', 'CV'] },
-    door:      { zh: '襖 · 经典版主页', en: 'Door · classic site', kanji: '門', panel: 1 },
-    tea:       { zh: 'お茶 · 抽签', en: 'Tea · omikuji', kanji: '籤' },
-    cat:       { zh: '猫（睡觉中）', en: 'Cat (sleeping)' },
-    lantern:   { zh: '行灯 · 切换昼夜', en: 'Andon · day / night' },
-    window:    { zh: '窓 · 富士山', en: 'Window · Mt. Fuji' },
-    furin:     { zh: '風鈴', en: 'Wind chime' },
-    clock:     { zh: '時計 · 广州时间', en: 'Clock · Guangzhou time' },
-    scroll:    { zh: '掛け軸 · 温故知新', en: 'Scroll · 温故知新' },
-    ramune:    { zh: 'ラムネ', en: 'Ramune' },
-    tree:      { zh: '桜 · 摇一摇', en: 'Sakura · shake it' },
-    toro:      { zh: '石灯籠', en: 'Stone lantern' }
+  /* ---------- boot ---------- */
+  { const l = store.get('lang'); setLang(l === 'en' || l === 'zh' ? l : (navigator.language || '').toLowerCase().startsWith('zh') ? 'zh' : 'en'); }
+  { const t = store.get('theme'); const ok = THEMES.some(x => x.id === t); body.dataset.theme = ok ? t : 'nishiki'; renderThemeTag(); }
+  setSound(soundOn);
+  fit(); Object.assign(cur, tgt); tick();
+  if (body.dataset.theme === 'sumi') startRain(true);
+  addEventListener('resize', () => { fit(); kick(); if (rainOn) sizeRain(); });
+  if (store.get('reader') === '1') setReader(true);
+  const h = location.hash.slice(1);
+  let booted = false;
+  const done = () => {
+    if (booted) return; booted = true;
+    $('#loader').classList.add('done');
+    if (byId[h]) setTimeout(() => openSec(h, true), 350);
+    setTimeout(() => body.classList.add('touched'), 9000);
   };
-  const TITLES = {
-    about: T('自己紹介', 'About me'), heritage: 'HeritageExplorer', work: T('成果 · 论文 · 专利 · 项目', 'Work · Papers · IP · Projects'),
-    exp: T('経歴', 'Experience'), portfolio: T('作品集', 'Portfolio'), toolbox: T('工具链', 'Toolbox'),
-    contact: T('連絡先', 'Contact'), cv: T('履歴書', 'CV'), door: T('襖の向こう', 'Through the door'), omikuji: T('おみくじ', 'Omikuji')
-  };
-  const fortunes = [
-    ['大吉', 'Great luck', '今日召回率 +10%，评审一次过。', 'Recall +10% today; reviewers say yes.'],
-    ['中吉', 'Good luck', 'Docker Compose 一次 up 成功。', 'docker compose up works on the first try.'],
-    ['小吉', 'Small luck', '图谱里会冒出一个意外的好关联。', 'The graph surfaces a pleasant surprise link.'],
-    ['吉', 'Luck', '今天的 Prompt 不会被模型误解。', 'The model will understand your prompt today.'],
-    ['末吉', 'Future luck', '先喝茶，bug 自己会现形。', 'Drink tea first; the bug will reveal itself.']
-  ];
-  const meows = [['にゃっ！（被你吵醒了）', 'Nya! (you woke it up)'], ['呼噜呼噜……', 'Purr purr…'], ['猫伸了个懒腰，又睡了。', 'The cat stretches and dozes off again.']];
-  let fi = Math.floor(Math.random() * fortunes.length), mi = 0;
-
-  const panel = $('#panel'), pBody = $('#panelBody'), pTitle = $('#panelTitle'), pKanji = $('#panelKanji');
-  function openPanel(id, html) {
-    pTitle.innerHTML = TITLES[id] || '';
-    pKanji.textContent = id === 'omikuji' ? '籤' : ((OBJ[id] && OBJ[id].kanji) || '部');
-    pBody.innerHTML = html != null ? html : $('#t-' + id).innerHTML;
-    pBody.scrollTop = 0;
-    [...pBody.children].forEach((el, i) => { el.style.animationDelay = (160 + i * 55) + 'ms'; });
-    panel.classList.remove('open'); void panel.offsetWidth; panel.classList.add('open');
-    panel.setAttribute('aria-hidden', 'false');
-    $('#panelClose').focus({ preventScroll: true });
-  }
-  function closePanel() { panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true'); }
-
-  function focusCam(id, dur = 850) {
-    const b = boundsOf(id);
-    if (!b) return;
-    const bw = Math.max(20, b[2] - b[0]), bh = Math.max(20, b[3] - b[1]), cx = (b[0] + b[2]) / 2, cy = (b[1] + b[3]) / 2;
-    const mob = VW < 700;
-    const z = clamp(Math.min((mob ? VW * 0.62 : VW * 0.34) / (bw * S), (mob ? VH * 0.26 : VH * 0.52) / (bh * S)), 1.4, 4.2);
-    const k = S * z;
-    camGo(mob ? { x: cx, y: cy + (VH * 0.3) / k, z } : { x: cx + (VW * 0.2) / k, y: cy, z }, dur);
-  }
-  function focusOn(id, cb) {
-    focused = id; lastFocused = id; hovered = null;
-    body.classList.add('focus');
-    focusCam(id);
-    tone(523, 0.07); tone(784, 0.09, 'square', 0.035, 0.07);
-    setTimeout(() => { if (focused === id && cb) cb(); }, RM ? 0 : 380);
-  }
-  function unfocus() {
-    if (!focused) return;
-    closePanel(); focused = null;
-    body.classList.remove('focus');
-    camGo(home(), 800); tone(392, 0.07);
-  }
-
-  let toastTimer;
-  const toastEl = $('#toast');
-  function toast(html) {
-    toastEl.innerHTML = html; toastEl.classList.add('on');
-    clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('on'), 2800);
-  }
-  function stopHint() { if (!hinting) return; hinting = false; $('#hint').classList.remove('on'); }
-
-  function activate(id) {
-    stopHint();
-    pop[id] = NOW;
-    const o = OBJ[id];
-    if (o && o.panel) return focusOn(id, () => openPanel(id));
-    if (id === 'tea') {
-      return focusOn('tea', () => {
-        const f = fortunes[fi++ % fortunes.length];
-        openPanel('omikuji', `<div class="omikuji"><div class="big">${f[0]}</div><p>${T(f[2], f[3])}</p><p class="dim">${f[1]}</p></div><p class="dim">${T('再点一次茶杯可以重新抽签。', 'Click the tea again for another fortune.')}</p>`);
-      });
-    }
-    if (focused) unfocus();
-    if (id === 'cat') { catAwakeUntil = NOW + 2600; tone(880, 0.08, 'triangle', 0.04); tone(660, 0.12, 'triangle', 0.04, 0.08); const m = meows[mi++ % meows.length]; return toast(T(m[0], m[1])); }
-    if (id === 'lantern') { setNight(!nightTarget); tone(nightTarget ? 330 : 520, 0.12, 'triangle'); return toast(nightTarget ? T('点亮行灯 —— 夜が来た。', 'Lights on — night falls.') : T('熄灯 —— 朝になった。', 'Lights out — morning again.')); }
-    if (id === 'window') return toast(T('窗外：富士山、五重塔和一枝樱花。（本人其实在广州。）', 'Outside: Mt. Fuji, a pagoda and sakura. (Actually based in Guangzhou.)'));
-    if (id === 'furin') { furinAmp = 1; chime(); return toast(sound ? T('ちりん——', 'Chirin—') : T('ちりん——（打开右上角音效可以听到风铃）', 'Chirin— (turn on Sound to hear it)')); }
-    if (id === 'clock') { const d = gzNow(), p2 = (n) => String(n).padStart(2, '0'); return toast(T(`广州时间 ${p2(d.getHours())}:${p2(d.getMinutes())}`, `Guangzhou time ${p2(d.getHours())}:${p2(d.getMinutes())}`)); }
-    if (id === 'scroll') return toast(T('温故知新 —— 用新的模型，读懂旧的建筑。', '温故知新 — new models to understand old buildings.'));
-    if (id === 'ramune') {
-      const [x, y] = P(141, 84, 43);
-      for (let i = 0; i < 16; i++) bubbles.push({ x: x + (Math.random() - 0.5) * 2, y: y - Math.random() * 2, vy: -(8 + Math.random() * 10), life: 1, ph: Math.random() * 6 });
-      tone(1568, 0.06, 'square', 0.03); tone(2093, 0.09, 'square', 0.03, 0.06);
-      return toast(T('啵——弹珠汽水开了。夏天的味道。', 'Pop — ramune opened. Tastes like summer.'));
-    }
-    if (id === 'tree') { for (let i = 0; i < 46; i++) spawnPetal(true); tone(784, 0.1, 'triangle'); tone(988, 0.12, 'triangle', 0.03, 0.08); return toast(T('桜吹雪！', 'Sakura blizzard!')); }
-    if (id === 'toro') return toast(T('石灯籠：天黑以后会亮起来。', 'Stone lantern: it lights up after dark.'));
-  }
-  function setNight(v) { nightTarget = v ? 1 : 0; store.set('night', v ? '1' : '0'); }
-
-  /* pointer */
-  cv.addEventListener('pointermove', (e) => { mouse = [e.clientX, e.clientY]; });
-  cv.addEventListener('pointerleave', () => { mouse = null; hovered = null; cv.style.cursor = ''; });
-  cv.addEventListener('click', (e) => {
-    if (introActive) return;
-    mouse = [e.clientX, e.clientY];
-    const id = pick(e.clientX, e.clientY);
-    if (id && id !== focused) activate(id);
-    else if (!id && focused) unfocus();
-  });
-  function updateHover() {
-    if (!mouse || introActive || focused) { if (hovered) hovered = null; cv.style.cursor = ''; return; }
-    const id = pick(mouse[0], mouse[1]);
-    if (id !== hovered) { hovered = id; if (id) tone(1200, 0.025, 'square', 0.018); }
-    cv.style.cursor = id ? 'pointer' : '';
-  }
-  $('#panelClose').addEventListener('click', unfocus);
-  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && focused) unfocus(); });
-
-  /* dock */
-  const dock = $('#dock');
-  ['about', 'heritage', 'work', 'exp', 'portfolio', 'toolbox', 'contact', 'cv'].forEach((id) => {
-    const b = document.createElement('button');
-    b.type = 'button'; b.className = 'pxbtn'; b.innerHTML = T(OBJ[id].dock[0], OBJ[id].dock[1]);
-    b.addEventListener('click', () => activate(id));
-    b.addEventListener('mouseenter', () => { extHover = id; });
-    b.addEventListener('mouseleave', () => { extHover = null; });
-    b.addEventListener('focus', () => { extHover = id; });
-    b.addEventListener('blur', () => { extHover = null; });
-    dock.appendChild(b);
-  });
-
-  /* HUD */
-  $('#btnNight').addEventListener('click', () => { setNight(!nightTarget); tone(440, 0.08); });
-  $('#btnSound').addEventListener('click', (e) => { sound = !sound; e.currentTarget.setAttribute('aria-pressed', String(sound)); tone(784, 0.1); });
-  const setLang = (l) => { body.dataset.lang = l; document.documentElement.lang = l === 'zh' ? 'zh-CN' : 'en'; };
-  { const l = store.get('lang'); if (l === 'en' || l === 'zh') setLang(l); }
-  $('#btnLang').addEventListener('click', () => { const n = isEn() ? 'zh' : 'en'; setLang(n); store.set('lang', n); });
-  const reader = $('#reader');
-  $('#btnMode').addEventListener('click', (e) => {
-    const on = !body.classList.contains('read');
-    if (on && !reader.children.length) {
-      ['about', 'heritage', 'work', 'exp', 'portfolio', 'toolbox', 'contact'].forEach((id) => {
-        const sec = document.createElement('section'); sec.className = 'px';
-        sec.innerHTML = `<div class="panel-head"><span class="kanji" aria-hidden="true">${OBJ[id].kanji}</span><h2>${TITLES[id]}</h2></div><div class="panel-body">${$('#t-' + id).innerHTML}</div>`;
-        reader.appendChild(sec);
-      });
-    }
-    if (on && focused) unfocus();
-    body.classList.toggle('read', on);
-    e.currentTarget.setAttribute('aria-pressed', String(on));
-    window.scrollTo(0, 0);
-    if (!on) resize();
-  });
-
-  /* loading + intro */
-  let doneCount = 0, finished = false;
-  const total = srcs.length + 1;
-  function progress() {
-    doneCount++;
-    $('#barFill').style.width = Math.round(Math.min(1, doneCount / total) * 100) + '%';
-    if (doneCount >= total) finishLoad();
-  }
-  srcs.forEach((src) => {
-    const im = new Image();
-    im.onload = () => { imgs[src] = im; if (src.includes('portrait')) makePortrait(im); progress(); };
-    im.onerror = progress;
-    im.src = src;
-  });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(progress); else progress();
-  setTimeout(finishLoad, 3500);
-  function finishLoad() {
-    if (finished) return; finished = true;
-    $('#barFill').style.width = '100%';
-    setTimeout(() => { $('#loader').classList.add('done'); startIntro(); }, RM ? 0 : 300);
-  }
-  function startIntro() {
-    const go = () => { introActive = false; setTimeout(() => { if (hinting) $('#hint').classList.add('on'); }, 300); };
-    if (RM) { Object.assign(cam, home()); go(); return; }
-    camGo(home(), 2300);
-    setTimeout(go, 2100);
-  }
-
-  /* main loop */
-  let last = 0;
-  function frame(now) {
-    requestAnimationFrame(frame);
-    if (body.classList.contains('read')) return;
-    const minStep = VW < 700 ? 30 : 15;
-    if (now - last < minStep) return;
-    const dt = Math.min(0.05, (now - (last || now)) / 1000);
-    last = now; NOW = now;
-    const t = now / 1000;
-    stepCam(now);
-    nightT += (nightTarget - nightT) * Math.min(1, dt * 2.4);
-    focusT += ((focused ? 1 : 0) - focusT) * Math.min(1, dt * 5);
-    furinAmp *= Math.pow(0.35, dt);
-    Object.keys(OBJ).forEach((id) => {
-      const tg = (hovered === id || extHover === id || focused === id) ? 1 : 0;
-      lift[id] = (lift[id] || 0) + (tg - (lift[id] || 0)) * Math.min(1, dt * 12);
-    });
-    const pt = (!focused && !introActive && mouse && VW >= 700) ? [(mouse[0] / VW - 0.5) * 10 / cam.z, (mouse[1] / VH - 0.5) * 6 / cam.z] : [0, 0];
-    par.x += (pt[0] - par.x) * Math.min(1, dt * 3); par.y += (pt[1] - par.y) * Math.min(1, dt * 3);
-    stepParticles(dt, t);
-    render(t);
-    updateHover();
-  }
-
-  window.addEventListener('resize', resize);
-  resize();
-  Object.assign(cam, { x: 418, y: 132, z: 3 });
-  requestAnimationFrame(frame);
+  if (document.readyState === 'complete') done();
+  else { addEventListener('load', done, { once: true }); setTimeout(done, 1400); }
 })();
 </script>
 </body>
