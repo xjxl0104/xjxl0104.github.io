@@ -4,239 +4,49 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>王钰淞の書斎 · Yusong Wang</title>
-<meta name="description" content="王钰淞 Yusong Wang 的浮世绘风 2.5D 互动主页：俯瞰一张和式书案，点击桌上的物件，探索 HeritageExplorer、论文专利、AI 作品集与工具链。" />
+<meta name="description" content="王钰淞 Yusong Wang 的浮世绘风 2.5D 互动主页：俯瞰一张和式书案，在光影里找到可以翻看的东西 —— HeritageExplorer、论文专利、AI 作品集与工具链。" />
 <meta property="og:title" content="王钰淞の書斎 · Yusong Wang" />
-<meta property="og:description" content="GIS × Multimodal AI — an ukiyo-e style 2.5D desk you can explore." />
+<meta property="og:description" content="GIS × Multimodal AI — an ukiyo-e study desk to explore." />
 <meta property="og:image" content="assets/ukiyoe/wave.webp" />
 <meta name="theme-color" content="#efe2c4" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;900&family=Yuji+Syuku&display=swap" rel="stylesheet" />
-<link rel="preload" as="image" href="assets/ukiyoe/wave.webp" />
+<link rel="modulepreload" href="assets/vendor/three.module.min.js" />
 <style>
   :root{
-    --sumi:#1d1a1f; --sumi2:#3a3336;
-    --washi:#f4e9d0; --washi2:#e9d7b0; --washi3:#dcc493;
-    --ai:#1f3a63; --bero:#2f5f93; --sora:#8fb3c9;
-    --shu:#c8392b; --beni:#d4505c; --kin:#d29a3a; --cha:#8a4b22;
-    --matcha:#8d9a4c; --tatami:#cdb673; --wood:#c98a4b; --wood2:#a8642f; --wood3:#6e3a1d;
-    --serif:'Noto Serif SC','Songti SC','Hiragino Mincho ProN','Yu Mincho',serif;
-    --brush:'Yuji Syuku','Noto Serif SC',serif;
+    --sumi:#1d1a1f; --sumi2:#3a3336; --washi:#f4e9d0; --washi2:#e9d7b0;
+    --ai:#1f3a63; --bero:#2f5f93; --shu:#c8392b; --kin:#d29a3a;
+    --serif:'Songti SC','STSong','Noto Serif CJK SC','Source Han Serif SC','SimSun',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
     --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .32 0 0 0 0 .18 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    --woodgrain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='96'%3E%3Cg fill='none' stroke='%238a4b22' stroke-width='2.2' stroke-linecap='round' opacity='.55'%3E%3Cpath d='M0 10C70 3 150 20 220 10S360 2 420 10'/%3E%3Cpath d='M0 34C80 27 150 44 240 34S350 27 420 34'/%3E%3Cpath d='M0 60C90 52 160 70 240 60S360 53 420 60'/%3E%3Cpath d='M0 84C60 79 170 92 250 84S370 78 420 84'/%3E%3Cellipse cx='300' cy='47' rx='30' ry='7'/%3E%3Cellipse cx='300' cy='47' rx='14' ry='3'/%3E%3C/g%3E%3C/svg%3E");
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
-  body{font-family:var(--serif);color:var(--sumi);background:var(--washi);overflow:hidden;font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  body{font-family:var(--serif);color:var(--sumi);background:#d9c69b;overflow:hidden;font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
   body[data-lang="zh"] .lang-en{display:none !important}
   body[data-lang="en"] .lang-zh{display:none !important}
   button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
   a{color:inherit}
-  .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-  /* ================= SEIGAIHA (wave) pattern ================= */
-  .seigaiha{
-    --a:var(--ai); --b:var(--washi);
-    background-color:var(--a);
-    background-image:
-      radial-gradient(circle at 100% 150%, var(--a) 24%, var(--b) 24%, var(--b) 28%, var(--a) 28%, var(--a) 36%, var(--b) 36%, var(--b) 40%, transparent 40%, transparent),
-      radial-gradient(circle at 0 150%, var(--a) 24%, var(--b) 24%, var(--b) 28%, var(--a) 28%, var(--a) 36%, var(--b) 36%, var(--b) 40%, transparent 40%, transparent),
-      radial-gradient(circle at 50% 100%, var(--b) 10%, var(--a) 10%, var(--a) 23%, var(--b) 23%, var(--b) 30%, var(--a) 30%, var(--a) 43%, var(--b) 43%, var(--b) 50%, var(--a) 50%, var(--a) 63%, var(--b) 63%, var(--b) 71%, transparent 71%, transparent),
-      radial-gradient(circle at 100% 50%, var(--b) 5%, var(--a) 5%, var(--a) 15%, var(--b) 15%, var(--b) 20%, var(--a) 20%, var(--a) 29%, var(--b) 29%, var(--b) 34%, var(--a) 34%, var(--a) 44%, var(--b) 44%, var(--b) 49%, transparent 49%, transparent),
-      radial-gradient(circle at 0 50%, var(--b) 5%, var(--a) 5%, var(--a) 15%, var(--b) 15%, var(--b) 20%, var(--a) 20%, var(--a) 29%, var(--b) 29%, var(--b) 34%, var(--a) 34%, var(--a) 44%, var(--b) 44%, var(--b) 49%, transparent 49%, transparent);
-    background-size:var(--sz,36px) calc(var(--sz,36px) / 2);
-  }
-
-  /* ================= STAGE ================= */
-  #stage{position:fixed;inset:0;overflow:hidden;transition:filter .9s ease;
-    background:linear-gradient(180deg,#24395c 0,#3c5a80 7%,#c9b48a 30%,var(--washi) 60%)}
-  #view{position:absolute;inset:0;perspective:2600px;perspective-origin:50% 42%;touch-action:pan-y;cursor:grab}
-  #view.drag{cursor:grabbing}
-  #cam{position:absolute;left:50%;top:50%;width:1600px;height:1100px;transform-style:preserve-3d;transform-origin:800px 550px;will-change:transform}
-  .p3{transform-style:preserve-3d}
-  .abs{position:absolute}
-
-  /* floor + walls */
-  .floor{position:absolute;inset:0;background:var(--tatami)}
-  .floor svg{display:block;width:100%;height:100%}
-  .wall{position:absolute;left:0;top:-760px;width:1600px;height:760px;transform-origin:50% 100%;transform:rotateX(-90deg);transform-style:preserve-3d;
-    background:var(--grain),linear-gradient(180deg,#d9bf8c,#e7d3a6 40%,#e2c999);}
-  .wall::after{content:"";position:absolute;inset:0;background:var(--grain);mix-blend-mode:multiply;opacity:.6;pointer-events:none}
-  .side{position:absolute;top:0;width:760px;height:1100px;transform-style:preserve-3d;
-    background:linear-gradient(90deg,#f6efdc,#efe4c8)}
-  .side.l{left:-760px;transform-origin:100% 50%;transform:rotateY(90deg)}
-  .side.r{left:1600px;transform-origin:0 50%;transform:rotateY(-90deg)}
-  .shoji{position:absolute;inset:0;border:16px solid var(--wood3);
-    background:
-      repeating-linear-gradient(90deg,transparent 0 120px,var(--wood2) 120px 128px),
-      repeating-linear-gradient(0deg,transparent 0 92px,var(--wood2) 92px 100px),
-      linear-gradient(90deg,#fbf6e8,#f1e7cc)}
-  .side.l .shoji{background:repeating-linear-gradient(0deg,transparent 0 120px,var(--wood2) 120px 128px),repeating-linear-gradient(90deg,transparent 0 92px,var(--wood2) 92px 100px),linear-gradient(0deg,#fbf6e8,#f1e7cc)}
-  .side.r .shoji{background:repeating-linear-gradient(0deg,transparent 0 120px,var(--wood2) 120px 128px),repeating-linear-gradient(90deg,transparent 0 92px,var(--wood2) 92px 100px),linear-gradient(0deg,#fbf6e8,#f1e7cc)}
-  .pillar{position:absolute;top:0;bottom:0;width:46px;background:linear-gradient(90deg,var(--wood3),var(--wood2) 30%,var(--wood) 60%,var(--wood2));border:3px solid var(--sumi)}
-  .beam{position:absolute;left:0;right:0;height:30px;background:linear-gradient(180deg,var(--wood),var(--wood2));border:3px solid var(--sumi)}
-  .ranma{position:absolute;left:0;right:0;top:0;height:112px;background:repeating-linear-gradient(90deg,var(--wood3) 0 10px,#e7d4a6 10px 36px);border-bottom:3px solid var(--sumi)}
-  .ranma::after{content:"";position:absolute;inset:18px 0;background:repeating-radial-gradient(ellipse at 50% 120%,transparent 0 18px,rgba(110,58,29,.75) 18px 22px);background-size:120px 80px;opacity:.85}
-  .baseboard{position:absolute;left:0;right:0;bottom:0;height:26px;background:var(--wood3);border-top:3px solid var(--sumi)}
-
-  /* ================= DESK ================= */
-  .desk{position:absolute;left:250px;top:230px;width:1100px;height:620px;transform-style:preserve-3d}
-  .desk-top{position:absolute;inset:0;transform:translateZ(150px);transform-style:preserve-3d;border:5px solid var(--sumi);border-radius:8px;
-    background:var(--woodgrain),linear-gradient(170deg,#d39758,#c4813f 55%,#b8763a);background-size:420px 96px,auto;
-    box-shadow:inset 0 0 0 7px rgba(110,58,29,.45)}
-  .desk-front{position:absolute;left:0;top:100%;width:100%;height:150px;transform-origin:50% 0;transform:translateZ(150px) rotateX(-90deg)}
-  .desk-side{position:absolute;top:0;height:100%;width:150px;transform-origin:0 50%}
-  .desk-side.l{left:0;transform:translateZ(150px) rotateY(90deg)}
-  .desk-side.r{left:100%;transform:translateZ(150px) rotateY(90deg)}
-  .desk-front svg,.desk-side svg{display:block;width:100%;height:100%;overflow:visible}
-  .shadow-floor{position:absolute;left:230px;top:250px;width:1150px;height:640px;border-radius:30px;background:rgba(60,40,20,.28);filter:blur(10px);transform:translateZ(1px)}
-
-  /* ================= OBJECTS ================= */
-  .obj{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);
-    transform:rotateZ(var(--r,0deg)) translateZ(calc(var(--z,2px) + var(--lift,0px)));transform-style:preserve-3d;
-    transition:transform .35s cubic-bezier(.3,1.4,.5,1)}
-  .hot{cursor:pointer;outline:none}
-  .hot:hover,.hot:focus-visible,.hot.on{--lift:16px}
-  .hot:focus-visible .face{outline:4px dashed var(--shu);outline-offset:6px}
-  .face{position:absolute;inset:0;border:3px solid var(--sumi);box-shadow:7px 9px 0 rgba(29,26,31,.22)}
-  .bb{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);transform-origin:50% 100%;
-    transform:translateZ(calc(var(--z,0px) + var(--lift,0px))) rotateX(-64deg);transition:transform .35s cubic-bezier(.3,1.4,.5,1)}
-  .bb svg{display:block;width:100%;height:100%;overflow:visible}
-  .bbshadow{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);border-radius:50%;background:rgba(29,26,31,.25);transform:translateZ(1px)}
-  /* floating kanji seal marker */
-  .mark{position:absolute;left:50%;top:50%;width:38px;height:38px;margin:-19px 0 0 -19px;pointer-events:none;
-    transform:translateZ(70px) rotateZ(calc(var(--r,0deg) * -1)) rotateX(-40deg);transform-style:flat}
-  .mark i{display:grid;place-items:center;width:100%;height:100%;background:var(--shu);color:var(--washi);font:400 22px/1 var(--brush);font-style:normal;
-    border:2px solid var(--sumi);border-radius:5px;box-shadow:3px 4px 0 rgba(29,26,31,.3);animation:bob 3.2s ease-in-out infinite}
-  .wall .mark{transform:translateZ(18px)}
-  @keyframes bob{50%{transform:translateY(-8px)}}
-  body.zoomed .mark{visibility:hidden}
-
-  /* notebook */
-  .note .page{position:absolute;top:0;bottom:0;width:50%;background:var(--grain),linear-gradient(90deg,#fbf4e2,#f1e4c4);border:3px solid var(--sumi)}
-  .note .page.l{left:0;border-radius:6px 0 0 6px;box-shadow:7px 9px 0 rgba(29,26,31,.22);background:var(--grain),repeating-linear-gradient(90deg,transparent 0 21px,rgba(200,57,43,.28) 21px 22px),linear-gradient(90deg,#f1e4c4,#fbf4e2)}
-  .note .page.r{right:0;border-radius:0 6px 6px 0;box-shadow:7px 9px 0 rgba(29,26,31,.22)}
-  .note .page.l::after{content:"";position:absolute;right:0;top:0;bottom:0;width:22px;background:linear-gradient(90deg,transparent,rgba(110,58,29,.25))}
-  .note .cover{position:absolute;inset:-9px -10px -9px -10px;background:var(--ai);border:3px solid var(--sumi);border-radius:8px;transform:translateZ(-3px)}
-  .note .vt{position:absolute;writing-mode:vertical-rl;font-family:var(--brush);color:var(--sumi);line-height:1.2}
-  .note .hanko{position:absolute;width:30px;height:30px;background:var(--shu);color:var(--washi);font:400 15px/30px var(--brush);text-align:center;border-radius:3px;transform:rotate(-6deg)}
-  .note svg{position:absolute}
-
-  /* map scroll */
-  .map .mount{position:absolute;inset:0;border:3px solid var(--sumi);box-shadow:7px 9px 0 rgba(29,26,31,.22);--sz:26px}
-  .map .img{position:absolute;inset:14px 16px;border:3px solid var(--sumi);background:#f1e4c4 center/cover no-repeat}
-  .map .roll{position:absolute;top:-8px;bottom:-8px;width:20px;border:3px solid var(--sumi);border-radius:10px;transform:translateZ(9px);
-    background:linear-gradient(90deg,var(--wood3),var(--wood) 45%,#e6b078 55%,var(--wood2))}
-  .map .roll.l{left:-12px}.map .roll.r{right:-12px}
-  .map .slip{position:absolute;right:28px;top:22px;background:var(--washi);border:2px solid var(--sumi);padding:4px 5px;writing-mode:vertical-rl;font:600 13px/1.1 var(--serif);transform:translateZ(1px)}
-
-  /* prints stack */
-  .prints .pr{position:absolute;width:170px;height:118px;padding:7px;background:var(--washi);border:3px solid var(--sumi);box-shadow:6px 8px 0 rgba(29,26,31,.22)}
-  .prints .pr img{display:block;width:100%;height:100%;object-fit:cover;border:1.5px solid var(--sumi)}
-  .prints .obi{position:absolute;left:-8px;right:-8px;top:52%;height:30px;background:var(--shu);border:3px solid var(--sumi);color:var(--washi);font:400 17px/24px var(--brush);text-align:center;letter-spacing:.4em;transform:translateZ(8px) rotate(-4deg)}
-
-  /* cuboid generic */
-  .cb{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);transform-style:preserve-3d;transform:rotateZ(var(--r,0deg)) translateZ(var(--z,0px))}
-  .cb>.t{position:absolute;inset:0;transform:translateZ(var(--d));border:3px solid var(--sumi)}
-  .cb>.fr{position:absolute;left:0;top:100%;width:100%;height:var(--d);transform-origin:50% 0;transform:translateZ(var(--d)) rotateX(-90deg);border:3px solid var(--sumi)}
-  .cb>.rt{position:absolute;left:100%;top:0;width:var(--d);height:100%;transform-origin:0 50%;transform:translateZ(var(--d)) rotateY(90deg);border:3px solid var(--sumi)}
-  .cb>.lt{position:absolute;left:0;top:0;width:var(--d);height:100%;transform-origin:0 50%;transform:translateZ(var(--d)) rotateY(90deg);border:3px solid var(--sumi)}
-
-  /* inkstone box */
-  .ink .t{background:#201b1e;box-shadow:inset 0 0 0 9px #2c2328,inset 0 0 0 12px var(--shu)}
-  .ink .fr,.ink .rt,.ink .lt{background:linear-gradient(180deg,#2b2326,#151214)}
-  .ink .stone{position:absolute;left:24px;top:22px;width:92px;height:150px;border-radius:44px 44px 12px 12px;background:radial-gradient(ellipse 60% 22% at 50% 20%,#050406 0 80%,transparent 84%),linear-gradient(180deg,#45403f,#2e2a2b);border:3px solid var(--sumi);transform:translateZ(calc(var(--d) + 6px))}
-  .ink .stick{position:absolute;left:122px;top:30px;width:20px;height:96px;background:#141114;border:2px solid #000;border-radius:3px;transform:translateZ(calc(var(--d) + 10px))}
-  .ink .stick::after{content:"";position:absolute;inset:16px 3px;border:1px solid var(--kin)}
-  .ink .brush{position:absolute;height:12px;border-radius:6px;transform-origin:0 50%;transform:translateZ(calc(var(--d) + 14px));
-    background:linear-gradient(90deg,#1b1719 0 16%,var(--washi) 16% 22%,#a87a3e 22% 100%);border:2px solid var(--sumi)}
-
-  /* books (classic) */
-  .bk .t{background:var(--c)}
-  .bk .t::before{content:"";position:absolute;left:14px;top:10px;width:30px;bottom:10px;background:var(--washi);border:2px solid var(--sumi)}
-  .bk .t::after{content:"";position:absolute;right:8px;top:6px;bottom:6px;width:2px;background:repeating-linear-gradient(180deg,var(--washi) 0 6px,transparent 6px 22px)}
-  .bk .fr,.bk .rt,.bk .lt{background:repeating-linear-gradient(90deg,#f4ead2 0 3px,#e3d3ad 3px 4px)}
-  .bk .lab{position:absolute;left:16px;top:14px;width:26px;writing-mode:vertical-rl;font:600 13px/26px var(--serif);text-align:center;color:var(--sumi)}
-
-  /* CV */
-  .cv .face{background:var(--grain),
-    linear-gradient(90deg,transparent 0 66px,var(--sumi2) 66px 68px,transparent 68px),
-    repeating-linear-gradient(180deg,transparent 0 22px,rgba(58,51,54,.55) 22px 23.5px),
-    #f7efdb;background-position:0 0,0 44px,0 44px;background-repeat:repeat,no-repeat,repeat}
-  .cv .title{position:absolute;left:12px;top:7px;font:900 22px/30px var(--serif);letter-spacing:.3em}
-  .cv .seal{position:absolute;right:12px;top:8px;width:28px;height:28px;border:2.5px solid var(--shu);color:var(--shu);border-radius:50%;font:400 15px/23px var(--brush);text-align:center}
-  .cv .lines{position:absolute;left:76px;right:12px;top:50px;font:13px/23px var(--serif);color:var(--sumi2)}
-
-  /* letter */
-  .letter .face{background:var(--grain),linear-gradient(160deg,#f6ecd3,#ead8af);border-radius:3px}
-  .letter .face::before{content:"";position:absolute;inset:0;background:linear-gradient(30deg,transparent 49.4%,var(--sumi2) 49.6% 50.4%,transparent 50.6%),linear-gradient(-30deg,transparent 49.4%,var(--sumi2) 49.6% 50.4%,transparent 50.6%);background-size:100% 100%;opacity:.55;clip-path:polygon(0 0,100% 0,50% 58%)}
-  .letter .wax{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-27px 0 0 -20px;background:var(--shu);border:3px solid var(--sumi);border-radius:50%;color:var(--washi);font:400 20px/34px var(--brush);text-align:center;transform:translateZ(3px)}
-  .letter .addr{position:absolute;right:14px;bottom:10px;font:12px/1.2 var(--serif);color:var(--sumi2)}
-
-  /* round window */
-  .win{position:absolute;left:1210px;top:170px;width:270px;height:270px;border-radius:50%;border:16px solid #b98c3e;box-shadow:0 0 0 4px var(--sumi),inset 0 0 0 3px var(--sumi);overflow:hidden;
-    background:var(--winimg,url(assets/ukiyoe/fuji.webp)) var(--winpos,58% 50%)/cover}
-  .win::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 31%,#8a6a2c 31% 34%,transparent 34% 66%,#8a6a2c 66% 69%,transparent 69%)}
-  /* framed Great Wave on the wall */
-  .gaku{position:absolute;left:400px;top:286px;width:440px;height:310px;background:#1a1416;border:4px solid var(--sumi);box-shadow:inset 0 0 0 5px #b98c3e,7px 9px 0 rgba(29,26,31,.25);padding:20px}
-  .gaku span{display:block;width:100%;height:100%;border:3px solid var(--washi);background:url(assets/ukiyoe/wave.webp) center/cover}
-  /* plaque */
-  .plaque{position:absolute;left:470px;top:166px;width:340px;height:92px;background:linear-gradient(180deg,#2a2124,#151113);border:4px solid var(--sumi);box-shadow:inset 0 0 0 6px #4a3a2b,6px 8px 0 rgba(29,26,31,.25);
-    color:#e3b75a;font:400 46px/84px var(--brush);text-align:center;letter-spacing:.32em;text-indent:.32em}
-  /* hanging scroll (timeline) */
-  .jiku{--x:150px;--y:150px;--w:170px;--h:500px}
-  .jiku .mount{position:absolute;inset:0;background:linear-gradient(180deg,var(--matcha) 0 15%,#c7b37b 15% 85%,var(--matcha) 85%);border:3px solid var(--sumi);box-shadow:6px 8px 0 rgba(29,26,31,.22)}
-  .jiku .paper{position:absolute;left:18px;right:18px;top:84px;bottom:84px;background:var(--grain),#f7efda;border:2px solid var(--sumi);display:flex;flex-direction:row-reverse;justify-content:space-around;padding:14px 4px}
-  .jiku .paper span{writing-mode:vertical-rl;font:600 13px/1.25 var(--serif);color:var(--sumi)}
-  .jiku .paper span b{display:block;font-family:var(--brush);font-weight:400;color:var(--shu);font-size:14px;margin-bottom:6px}
-  .jiku .rod{position:absolute;left:-12px;right:-12px;height:16px;border:3px solid var(--sumi);border-radius:8px;background:linear-gradient(180deg,#e6b078,var(--wood2))}
-  .jiku .rod.top{top:-4px}.jiku .rod.bot{bottom:-6px}
-  .jiku .cord{position:absolute;left:50%;top:-60px;width:80px;height:60px;margin-left:-40px;border:3px solid var(--sumi);border-bottom:0;border-radius:40px 40px 0 0;clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
-  /* kawaraban */
-  .news{--x:860px;--y:280px;--w:320px;--h:310px}
-  .sheet{position:absolute;background:var(--grain),#efe3c4;border:3px solid var(--sumi);box-shadow:6px 8px 0 rgba(29,26,31,.25);padding:8px;color:var(--sumi);overflow:hidden}
-  .sheet .mast{font:900 16px/1 var(--serif);border-bottom:3px double var(--sumi);padding-bottom:5px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
-  .sheet .mast em{font-style:normal;background:var(--shu);color:var(--washi);padding:2px 5px;font-size:12px}
-  .sheet .hl{writing-mode:vertical-rl;float:right;font:900 25px/1.05 var(--serif);margin-left:6px;height:100%}
-  .sheet .col{font-size:9px;line-height:1.3;color:var(--sumi2);column-count:2;column-gap:6px;column-rule:1px solid rgba(29,26,31,.3)}
-  .sheet img{display:block;width:100%;height:84px;object-fit:cover;filter:grayscale(1) contrast(1.25) sepia(.35);border:2px solid var(--sumi);margin-bottom:5px}
-  .tape{position:absolute;width:46px;height:16px;background:rgba(240,226,190,.85);border:1px solid rgba(29,26,31,.35);transform:rotate(-12deg)}
-
-
-  /* teacup steam */
-  .steam path{animation:steam 3.6s ease-in-out infinite;transform-origin:50% 100%}
-  .steam path:nth-child(2){animation-delay:1.2s}
-  @keyframes steam{0%{opacity:0;transform:translateY(8px)}40%{opacity:.8}100%{opacity:0;transform:translateY(-14px)}}
-
-  /* overlays (inside stage => filtered with theme) */
-  .kasumi{position:absolute;left:0;right:0;pointer-events:none;height:120px}
+  /* stage */
+  #stage{position:fixed;inset:0;overflow:hidden;background:radial-gradient(120% 90% at 50% 40%,#f3e6c6 0,#e2cc9c 55%,#b99a68 100%)}
+  #gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
+  body[data-theme="ai"] #gl{filter:grayscale(1) sepia(.9) hue-rotate(178deg) saturate(2.3) brightness(.98) contrast(1.06)}
+  body[data-theme="sumi"] #gl{filter:grayscale(1) contrast(1.15) brightness(1.03)}
+  #rain{position:absolute;inset:0;pointer-events:none}
+  .vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 95% at 50% 45%,transparent 55%,rgba(60,38,18,.28) 100%)}
+  body[data-theme="yoru"] .vignette{background:radial-gradient(110% 90% at 50% 45%,transparent 40%,rgba(8,10,28,.55) 100%)}
+  .grainover{position:absolute;inset:0;pointer-events:none;background:var(--grain);mix-blend-mode:multiply;opacity:.42}
+  .kasumi{position:absolute;left:0;right:0;pointer-events:none;height:96px;opacity:.9}
   .kasumi svg{width:100%;height:100%;display:block}
-  .kasumi.top{top:0}.kasumi.bot{bottom:0;transform:scaleY(-1)}
-  .grainover{position:absolute;inset:0;pointer-events:none;background:var(--grain);mix-blend-mode:multiply;opacity:.55}
-  #night{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .9s;
-    background:radial-gradient(circle at var(--lx,80%) var(--ly,40%),rgba(255,214,140,0) 0,rgba(255,200,120,.08) 110px,rgba(22,30,74,.82) 380px,rgba(10,14,40,.94) 820px);mix-blend-mode:multiply}
-  #glow{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .9s;
-    background:radial-gradient(circle at var(--lx,80%) var(--ly,40%),rgba(255,196,96,.62) 0,rgba(255,170,80,.22) 140px,transparent 340px);mix-blend-mode:screen}
-  #rain{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .9s}
+  .kasumi.top{top:0}
+  body[data-theme="yoru"] .kasumi{opacity:.25}
 
-  /* ================= THEMES ================= */
-  body[data-theme="ai"] #stage{filter:grayscale(1) sepia(.9) hue-rotate(178deg) saturate(2.4) brightness(.97) contrast(1.06)}
-  body[data-theme="ai"]{--winimg:url(assets/ukiyoe/kajika.webp);--winpos:40% 50%}
-  body[data-theme="sumi"] #stage{filter:grayscale(1) contrast(1.18) brightness(1.02)}
-  body[data-theme="sumi"]{--winimg:url(assets/ukiyoe/shower.webp);--winpos:50% 30%}
-  body[data-theme="sumi"] #rain{opacity:1}
-  body[data-theme="yoru"] #stage{filter:saturate(.85)}
-  body[data-theme="yoru"]{--winimg:url(assets/ukiyoe/moonpine.webp);--winpos:50% 40%}
-  body[data-theme="yoru"] #night,body[data-theme="yoru"] #glow{opacity:1}
-  body[data-theme="yoru"] .andon-paper{fill:#ffd98a}
-
-  /* ================= HUD ================= */
+  /* HUD */
   .hud{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;padding:14px 18px;pointer-events:none;z-index:20}
   .hud>*{pointer-events:auto}
   .brand{display:flex;gap:10px;align-items:flex-start;text-decoration:none}
   .cart{writing-mode:vertical-rl;background:var(--washi);border:3px solid var(--sumi);box-shadow:inset 0 0 0 3px var(--washi),inset 0 0 0 5px var(--shu);padding:12px 7px;font:900 21px/1 var(--serif);letter-spacing:.16em;color:var(--sumi)}
   .cart em{font-style:normal;color:var(--shu)}
-  .brand small{display:block;margin-top:6px;writing-mode:horizontal-tb;font:600 12px/1.4 var(--serif);background:var(--sumi);color:var(--washi);padding:3px 8px;border-radius:2px;white-space:nowrap}
+  .brand small{display:block;margin-top:6px;font:600 12px/1.4 var(--serif);background:var(--sumi);color:var(--washi);padding:3px 8px;border-radius:2px;white-space:nowrap}
   .tools{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;max-width:62vw}
   .btn{display:inline-flex;align-items:center;gap:6px;background:var(--washi);border:2.5px solid var(--sumi);box-shadow:3px 3px 0 var(--sumi);padding:6px 12px;font:600 13px/1.2 var(--serif);text-decoration:none;border-radius:3px;transition:transform .12s,box-shadow .12s;white-space:nowrap}
   .btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--sumi)}
@@ -246,32 +56,43 @@
   .btn.ai{background:var(--ai);color:var(--washi)}
   .btn[aria-pressed="true"]{background:var(--sumi);color:var(--washi)}
 
-  #themeTag{position:fixed;left:18px;bottom:76px;z-index:20;display:flex;align-items:center;gap:8px;background:var(--washi);border:2.5px solid var(--sumi);box-shadow:3px 3px 0 var(--sumi);padding:5px 10px 5px 6px;font:600 12px/1.2 var(--serif)}
-  #themeTag b{background:var(--shu);color:var(--washi);font:400 15px/1 var(--brush);padding:5px 6px;border-radius:2px}
-  #hint{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:19;background:var(--sumi);color:var(--washi);padding:6px 14px;font:600 13px/1.3 var(--serif);border-radius:2px;transition:opacity .6s;pointer-events:none;white-space:nowrap}
-  body.zoomed #hint,body.touched #hint{opacity:0}
-  .dock{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:20;display:flex;gap:6px;max-width:calc(100vw - 24px);overflow-x:auto;padding:4px 4px 6px;scrollbar-width:none}
-  .dock::-webkit-scrollbar{display:none}
-  .dock button{flex:none;display:flex;align-items:center;gap:6px;background:var(--washi);border:2.5px solid var(--sumi);box-shadow:3px 3px 0 var(--sumi);padding:5px 10px 5px 5px;font:600 13px/1.1 var(--serif);border-radius:3px}
-  .dock button i{font:400 14px/1 var(--brush);font-style:normal;background:var(--shu);color:var(--washi);padding:4px 5px;border-radius:2px}
-  .dock button:hover,.dock button.on{background:var(--sumi);color:var(--washi)}
-  .dock button:focus-visible{outline:3px solid var(--shu);outline-offset:2px}
-  #tip{position:fixed;z-index:30;pointer-events:none;background:var(--washi);border:2.5px solid var(--sumi);box-shadow:3px 3px 0 var(--sumi);padding:4px 10px;font:600 13px/1.3 var(--serif);opacity:0;transform:translate(14px,14px);transition:opacity .15s;white-space:nowrap}
-  #tip.on{opacity:1}
-  #tip i{font-style:normal;color:var(--shu);margin-right:5px;font-family:var(--brush)}
+  #themeTag{position:fixed;right:18px;bottom:18px;z-index:20;display:flex;align-items:center;gap:8px;font:600 12px/1.2 var(--serif);color:var(--sumi2);pointer-events:none;opacity:.85}
+  #themeTag b{background:var(--shu);color:var(--washi);font:700 13px/1 var(--serif);padding:5px 6px;border-radius:2px}
+  body[data-theme="yoru"] #themeTag{color:#d8d2c2}
 
-  /* ================= PANEL ================= */
-  #panel{position:fixed;z-index:25;top:76px;right:22px;bottom:76px;width:min(600px,48vw);display:flex;gap:0;visibility:hidden;opacity:0;transform:translateX(30px);transition:opacity .35s,transform .45s cubic-bezier(.2,.9,.3,1),visibility 0s .45s}
+  #hint{position:fixed;left:50%;bottom:22px;transform:translate(-50%,8px);z-index:19;color:var(--sumi);background:rgba(244,233,208,.82);padding:6px 16px;border-radius:999px;font:600 13px/1.3 var(--serif);letter-spacing:.08em;opacity:0;transition:opacity 1.2s,transform 1.2s;pointer-events:none;white-space:nowrap;box-shadow:0 2px 10px rgba(60,40,20,.15)}
+  #hint.on{opacity:.8;transform:translate(-50%,0)}
+  body[data-theme="yoru"] #hint{color:#efe6d0;background:rgba(20,22,40,.7)}
+
+  /* index (collapsed) */
+  #index{position:fixed;left:18px;bottom:18px;z-index:21;display:flex;flex-direction:column-reverse;align-items:flex-start;gap:8px}
+  #indexBtn{display:inline-flex;align-items:center;gap:8px;background:var(--washi);border:2.5px solid var(--sumi);box-shadow:3px 3px 0 var(--sumi);padding:6px 12px 6px 7px;font:600 13px/1.2 var(--serif);border-radius:3px}
+  #indexBtn i{font-style:normal;background:var(--sumi);color:var(--washi);padding:3px 5px;border-radius:2px;font-size:12px}
+  #indexBtn small{font:600 11px/1 var(--sans);color:var(--sumi2);opacity:.7}
+  #indexList{display:none;flex-direction:column;gap:4px;background:var(--grain),var(--washi);border:2.5px solid var(--sumi);box-shadow:5px 6px 0 rgba(29,26,31,.3);padding:8px;max-height:min(60vh,420px);overflow:auto}
+  #index.open #indexList{display:flex}
+  #indexList button{display:flex;align-items:center;gap:8px;text-align:left;padding:5px 10px 5px 5px;font:600 13px/1.25 var(--serif);border-radius:2px;white-space:nowrap}
+  #indexList button i{font-style:normal;flex:none;background:var(--shu);color:var(--washi);padding:3px 5px;border-radius:2px;font-size:12px}
+  #indexList button.seen{color:var(--sumi2)}
+  #indexList button.seen i{background:var(--sumi2)}
+  #indexList button:hover,#indexList button.on{background:var(--sumi);color:var(--washi)}
+  #indexList button:focus-visible{outline:3px solid var(--shu)}
+
+  #tip{position:fixed;z-index:30;pointer-events:none;background:rgba(244,233,208,.94);border:2px solid var(--sumi);padding:3px 10px;font:600 13px/1.3 var(--serif);opacity:0;transition:opacity .15s;white-space:nowrap;border-radius:2px}
+  #tip.on{opacity:1}
+  #toast{position:fixed;left:50%;bottom:72px;z-index:25;transform:translate(-50%,10px);opacity:0;pointer-events:none;background:var(--washi);border:2.5px solid var(--sumi);box-shadow:3px 3px 0 var(--sumi);padding:7px 14px;font:600 13px/1.4 var(--serif);max-width:min(560px,calc(100vw - 32px));text-align:center;transition:opacity .2s,transform .25s}
+  #toast.on{opacity:1;transform:translate(-50%,0)}
+
+  /* panel */
+  #panel{position:fixed;z-index:25;top:76px;right:22px;bottom:76px;width:min(600px,48vw);display:flex;visibility:hidden;opacity:0;transform:translateX(30px);transition:opacity .35s,transform .45s cubic-bezier(.2,.9,.3,1),visibility 0s .45s}
   #panel.open{visibility:visible;opacity:1;transform:none;transition:opacity .35s,transform .45s cubic-bezier(.2,.9,.3,1)}
   .psheet{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--grain),var(--washi);border:3px solid var(--sumi);box-shadow:8px 10px 0 rgba(29,26,31,.28),inset 0 0 0 6px var(--washi),inset 0 0 0 8px var(--sumi2)}
-  .phead{display:flex;align-items:center;gap:10px;padding:16px 18px 12px;border-bottom:2px solid var(--sumi2);
-    background:linear-gradient(180deg,rgba(47,95,147,.22),transparent)}
-  .phead .seal{flex:none;width:44px;height:44px;display:grid;place-items:center;background:var(--shu);color:var(--washi);font:400 26px/1 var(--brush);border:2.5px solid var(--sumi);border-radius:4px}
+  .phead{display:flex;align-items:center;gap:10px;padding:16px 18px 12px;border-bottom:2px solid var(--sumi2);background:linear-gradient(180deg,rgba(47,95,147,.22),transparent)}
+  .phead .seal{flex:none;width:44px;height:44px;display:grid;place-items:center;background:var(--shu);color:var(--washi);font:700 24px/1 var(--serif);border:2.5px solid var(--sumi);border-radius:4px}
   .phead h2{flex:1;font:900 20px/1.3 var(--serif);letter-spacing:.04em}
   .pbody{flex:1;overflow:auto;padding:16px 22px 26px;overscroll-behavior:contain}
-  .pcart{flex:none;writing-mode:vertical-rl;align-self:flex-start;margin-top:22px;margin-left:-3px;background:var(--shu);color:var(--washi);border:3px solid var(--sumi);padding:14px 6px;font:400 19px/1 var(--brush);letter-spacing:.2em}
 
-  /* content (shared by panel + reader) */
+  /* content */
   .content h3{font:900 16px/1.4 var(--serif);margin:1.1rem 0 .5rem;padding-left:10px;border-left:5px solid var(--shu)}
   .content h3:first-child{margin-top:0}
   .content p{margin:.4rem 0 .7rem}
@@ -299,26 +120,24 @@
   .content .pxbtn{display:inline-flex;margin:.2rem .4rem .2rem 0;background:var(--washi);border:2.5px solid var(--sumi);box-shadow:3px 3px 0 var(--sumi);padding:6px 12px;font:600 13px/1.2 var(--serif);text-decoration:none;border-radius:3px}
   .content .pxbtn.red{background:var(--shu);color:var(--washi)}
   .content a{text-underline-offset:3px}
+  .omikuji{text-align:center;padding:18px 8px}
+  .omikuji .big{font:900 52px/1.2 var(--serif);color:var(--shu)}
 
-  /* ================= READER ================= */
+  /* reader */
   #reader{display:none}
-  body.read{overflow:auto}
-  body.read #stage,body.read #hint,body.read .dock,body.read #themeTag,body.read #panel{display:none}
+  body.read{overflow:auto;background:var(--grain),linear-gradient(180deg,#d8c393,var(--washi) 300px)}
+  body.read #stage,body.read #hint,body.read #index,body.read #themeTag,body.read #panel{display:none}
   body.read #reader{display:block;max-width:820px;margin:0 auto;padding:110px 18px 60px}
   #reader section{background:var(--grain),var(--washi);border:3px solid var(--sumi);box-shadow:7px 8px 0 rgba(29,26,31,.22);padding:18px 22px;margin-bottom:22px}
   #reader h2{display:flex;align-items:center;gap:10px;font:900 20px/1.3 var(--serif);margin-bottom:.8rem}
-  #reader h2 i{font:400 20px/1 var(--brush);font-style:normal;background:var(--shu);color:var(--washi);padding:6px 7px;border-radius:3px}
-  body.read{background:var(--grain),linear-gradient(180deg,#d8c393,var(--washi) 300px)}
+  #reader h2 i{font-style:normal;font:700 18px/1 var(--serif);background:var(--shu);color:var(--washi);padding:6px 7px;border-radius:3px}
+  body.nogl #stage{display:none}
 
   /* loader */
-  #loader{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:var(--grain),var(--washi);transition:opacity .7s,visibility 0s .7s;animation:ldone .6s ease 1s forwards;pointer-events:none}
-  @keyframes ldone{to{opacity:0;visibility:hidden}}
+  #loader{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:var(--grain),var(--washi);transition:opacity .7s,visibility 0s .7s;animation:ldone .6s ease 2.5s forwards;pointer-events:none}
   #loader.done{opacity:0;visibility:hidden}
-  #loader .in{text-align:center}
+  @keyframes ldone{to{opacity:0;visibility:hidden}}
   #loader .cart{display:inline-block;font-size:30px;padding:16px 10px}
-  #loader p{margin-top:14px;font:600 13px/1 var(--serif);letter-spacing:.3em;color:var(--sumi2)}
-  #loader .drop{width:12px;height:12px;border-radius:50%;background:var(--sumi);margin:14px auto 0;animation:drop 1s ease-in-out infinite}
-  @keyframes drop{50%{transform:scale(1.8);opacity:.4}}
 
   @media (max-width:760px){
     .hud{padding:10px}
@@ -327,304 +146,33 @@
     .tools{gap:5px;max-width:none;flex-wrap:nowrap}
     .btn{padding:4px 7px;font-size:11.5px;box-shadow:2px 2px 0 var(--sumi)}
     #btnSound{display:none}
-    #hint{display:none}
-    #themeTag{bottom:64px;left:10px;font-size:11px}
-    #panel{left:8px;right:8px;top:auto;bottom:8px;height:74vh;width:auto;transform:translateY(30px)}
-    .pcart{display:none}
+    #index{left:10px;bottom:calc(10px + env(safe-area-inset-bottom))}
+    #themeTag{right:10px;bottom:calc(14px + env(safe-area-inset-bottom))}
+    #hint{bottom:calc(64px + env(safe-area-inset-bottom));white-space:normal;text-align:center;width:max-content;max-width:86vw}
+    #panel{left:8px;right:8px;top:auto;bottom:8px;height:66vh;height:66dvh;width:auto;transform:translateY(30px)}
+    body.zoomed #index,body.zoomed #themeTag{opacity:0;pointer-events:none}
     .content .stats{grid-template-columns:1fr 1fr}
     .content .two,.content .pf{grid-template-columns:1fr}
     .content .portrait{width:92px}
   }
   @media (prefers-reduced-motion:reduce){
-    #loader{display:none}
     *{animation:none !important;transition-duration:.01s !important}
+    #loader{display:none}
   }
 </style>
 </head>
 <body data-lang="zh" data-theme="nishiki">
 
-<div id="stage" aria-hidden="false">
-  <div id="view" role="application" aria-label="王钰淞的和式书斋：俯瞰的 2.5D 场景，点击桌上的物件或使用下方目录导航 / Yusong Wang's ukiyo-e study — a 2.5D desk scene; click objects or use the index below">
-    <div id="cam">
-      <!-- tatami floor -->
-      <div class="floor" aria-hidden="true">
-        <svg viewBox="0 0 1600 1100" preserveAspectRatio="none">
-          <defs>
-            <pattern id="weave" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#cdb673"/><path d="M0 2h8M0 6h8" stroke="#b39a55" stroke-width="1.2"/></pattern>
-            <pattern id="weaveV" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#c8b06b"/><path d="M2 0v8M6 0v8" stroke="#ad944f" stroke-width="1.2"/></pattern>
-          </defs>
-          <g stroke="#232741" stroke-width="12">
-            <rect x="0" y="0" width="540" height="270" fill="url(#weave)"/>
-            <rect x="540" y="0" width="540" height="270" fill="url(#weave)"/>
-            <rect x="1080" y="0" width="540" height="270" fill="url(#weave)"/>
-            <rect x="0" y="270" width="270" height="540" fill="url(#weaveV)"/>
-            <rect x="270" y="270" width="540" height="270" fill="url(#weave)"/>
-            <rect x="810" y="270" width="540" height="270" fill="url(#weave)"/>
-            <rect x="1350" y="270" width="270" height="540" fill="url(#weaveV)"/>
-            <rect x="270" y="540" width="540" height="270" fill="url(#weave)"/>
-            <rect x="810" y="540" width="540" height="270" fill="url(#weave)"/>
-            <rect x="0" y="810" width="540" height="300" fill="url(#weave)"/>
-            <rect x="540" y="810" width="540" height="300" fill="url(#weave)"/>
-            <rect x="1080" y="810" width="540" height="300" fill="url(#weave)"/>
-          </g>
-        </svg>
-      </div>
-      <div class="shadow-floor" aria-hidden="true"></div>
-
-      <!-- shoji side walls -->
-      <div class="side l" aria-hidden="true"><div class="shoji"></div></div>
-      <div class="side r" aria-hidden="true"><div class="shoji"></div></div>
-
-      <!-- back wall -->
-      <div class="wall">
-        <div class="ranma" aria-hidden="true"></div>
-        <div class="beam" style="top:112px" aria-hidden="true"></div>
-        <div class="pillar" style="left:40px" aria-hidden="true"></div>
-        <div class="pillar" style="left:1514px" aria-hidden="true"></div>
-        <div class="baseboard" aria-hidden="true"></div>
-
-        <div class="plaque" aria-hidden="true">温故知新</div>
-        <div class="win" aria-hidden="true"></div>
-        <div class="gaku" aria-hidden="true"><span></span></div>
-
-        <!-- hanging scroll: timeline -->
-        <button class="obj hot jiku" id="o-exp" data-sec="exp" type="button" style="--z:4px">
-          <span class="cord" aria-hidden="true"></span>
-          <span class="mount" aria-hidden="true"></span>
-          <span class="rod top" aria-hidden="true"></span>
-          <span class="paper" aria-hidden="true">
-            <span><b>壹</b>2016 广西大学</span>
-            <span><b>贰</b>2020 中科院微系统所</span>
-            <span><b>叁</b>2024 港科大广州</span>
-            <span><b>肆</b>2026 下一站</span>
-          </span>
-          <span class="rod bot" aria-hidden="true"></span>
-          <span class="mark" aria-hidden="true"><i>歴</i></span>
-          <span class="vh">年表 · 经历 / Timeline</span>
-        </button>
-
-        <!-- kawaraban newspapers: papers & patents -->
-        <button class="obj hot news" id="o-work" data-sec="work" type="button" style="--z:3px">
-          <span class="sheet" style="left:0;top:0;width:190px;height:250px;transform:rotate(-4deg)" aria-hidden="true">
-            <span class="mast">瓦版 <em>號外</em></span>
-            <span class="hl">第一作者 登 VINCI</span>
-            <img src="assets/interface.jpg" alt="" loading="lazy" />
-            <span class="col">HeritageExplorer：广州 831 处历史建筑多模态可视化与对话系统，扩展至广西 2,036 处历史建筑。地图入口、图谱大脑、四通路检索、可追溯回答。</span>
-          </span>
-          <span class="sheet" style="left:170px;top:16px;width:150px;height:150px;transform:rotate(5deg)" aria-hidden="true">
-            <span class="mast">CHI <em>2025</em></span>
-            <span class="hl" style="font-size:20px">GenColor</span>
-            <span class="col">文生图扩散模型提取语境配色——合作论文刊于 CHI 2025。</span>
-          </span>
-          <span class="sheet" style="left:150px;top:176px;width:170px;height:130px;transform:rotate(-2deg);background-color:#f3d9c6" aria-hidden="true">
-            <span class="mast">特許 <em>四件</em></span>
-            <span class="hl" style="font-size:19px">专利四 软著一</span>
-            <span class="col">危化品云数据联动 · 消防智能感知 · LoRa 测力 · 客流检测</span>
-          </span>
-          <span class="tape" style="left:70px;top:-8px" aria-hidden="true"></span>
-          <span class="tape" style="left:230px;top:8px;transform:rotate(14deg)" aria-hidden="true"></span>
-          <span class="mark" aria-hidden="true"><i>報</i></span>
-          <span class="vh">论文 · 专利 · 项目 / Papers, patents &amp; projects</span>
-        </button>
-      </div>
-
-      <!-- ================= DESK ================= -->
-      <div class="desk">
-        <div class="desk-front" aria-hidden="true">
-          <svg viewBox="0 0 1100 150" preserveAspectRatio="none">
-            <path d="M6 0h1088v44H6z" fill="#8f4f25" stroke="#1d1a1f" stroke-width="5"/>
-            <path d="M14 30h1072" stroke="#c98a4b" stroke-width="3"/>
-            <path d="M40 44h80v54c0 20 16 30 34 34v18H40z" fill="#7a4220" stroke="#1d1a1f" stroke-width="5" stroke-linejoin="round"/>
-            <path d="M1060 44h-80v54c0 20-16 30-34 34v18h114z" fill="#7a4220" stroke="#1d1a1f" stroke-width="5" stroke-linejoin="round"/>
-            <path d="M200 44c40 28 660 28 700 0" fill="none" stroke="#1d1a1f" stroke-width="4"/>
-          </svg>
-        </div>
-        <div class="desk-side l" aria-hidden="true"><svg viewBox="0 0 150 620" preserveAspectRatio="none"><path d="M0 4h44v612H0z" fill="#7a4220" stroke="#1d1a1f" stroke-width="5"/><path d="M44 30h70v560H44z" fill="#6b3a1c" stroke="#1d1a1f" stroke-width="5"/></svg></div>
-        <div class="desk-side r" aria-hidden="true"><svg viewBox="0 0 150 620" preserveAspectRatio="none"><path d="M0 4h44v612H0z" fill="#7a4220" stroke="#1d1a1f" stroke-width="5"/><path d="M44 30h70v560H44z" fill="#6b3a1c" stroke="#1d1a1f" stroke-width="5"/></svg></div>
-
-        <div class="desk-top">
-          <!-- andon lantern (night toggle) -->
-          <span class="bbshadow" style="--x:22px;--y:120px;--w:110px;--h:34px" aria-hidden="true"></span>
-          <button class="bb hot" id="o-andon" data-act="night" type="button" style="--x:36px;--y:-38px;--w:84px;--h:176px;--z:2px">
-            <svg viewBox="0 0 84 176" aria-hidden="true">
-              <defs><radialGradient id="gl" cx="50%" cy="50%" r="60%"><stop offset="0" stop-color="#fff4cf"/><stop offset="1" stop-color="#f1d88f"/></radialGradient></defs>
-              <path d="M30 4h24l-4 10H34z" fill="#6e3a1d" stroke="#1d1a1f" stroke-width="3"/>
-              <rect x="2" y="14" width="80" height="12" rx="2" fill="#a8642f" stroke="#1d1a1f" stroke-width="3"/>
-              <rect x="7" y="26" width="70" height="124" fill="#6e3a1d" stroke="#1d1a1f" stroke-width="3"/>
-              <rect class="andon-paper" x="13" y="31" width="58" height="114" fill="url(#gl)" stroke="#1d1a1f" stroke-width="2"/>
-              <path d="M42 31v114M13 69h58M13 107h58" stroke="#6e3a1d" stroke-width="3"/>
-              <rect x="2" y="148" width="80" height="10" rx="2" fill="#a8642f" stroke="#1d1a1f" stroke-width="3"/>
-              <path d="M8 158v16M76 158v16" stroke="#1d1a1f" stroke-width="7" stroke-linecap="round"/>
-              <text x="27" y="62" font-family="Yuji Syuku,serif" font-size="20" fill="#c8392b">灯</text>
-            </svg>
-            <span class="vh">行灯：切换昼夜 / Lantern: toggle night</span>
-          </button>
-
-          <!-- stacked books (classic site) -->
-          <button class="obj hot" id="o-door" data-sec="door" type="button" style="--x:160px;--y:24px;--w:190px;--h:128px;--r:-4deg;--z:0px">
-            <span class="cb bk" style="--x:0px;--y:0px;--w:190px;--h:128px;--d:22px;--c:var(--ai)" aria-hidden="true"><span class="lt"></span><span class="fr"></span><span class="rt"></span><span class="t"></span></span>
-            <span class="cb bk" style="--x:8px;--y:-6px;--w:176px;--h:120px;--d:18px;--z:22px;--r:5deg;--c:#b7472f" aria-hidden="true"><span class="lt"></span><span class="fr"></span><span class="rt"></span><span class="t"></span></span>
-            <span class="cb bk" style="--x:4px;--y:2px;--w:180px;--h:120px;--d:18px;--z:40px;--r:-3deg;--c:#5d6b3a" aria-hidden="true"><span class="lt"></span><span class="fr"></span><span class="rt"></span><span class="t"><span class="lab">経典版</span></span></span>
-            <span class="mark" aria-hidden="true" style="transform:translateZ(110px) rotateZ(4deg) rotateX(-40deg)"><i>門</i></span>
-            <span class="vh">经典版主页 / Classic site</span>
-          </button>
-
-          <!-- notebook (about) -->
-          <button class="obj hot note" id="o-about" data-sec="about" type="button" style="--x:52px;--y:196px;--w:330px;--h:214px;--r:-6deg">
-            <span class="cover" aria-hidden="true"></span>
-            <span class="page l" aria-hidden="true">
-              <span class="vt" style="right:16px;top:16px;font-size:34px">王钰淞</span>
-              <span class="vt" style="right:64px;top:18px;font-size:14px">GIS × 多模态 AI</span>
-              <span class="vt" style="right:92px;top:18px;font-size:13px;color:#5d5254">港科大（广州）MPhil</span>
-              <span class="vt" style="right:118px;top:18px;font-size:13px;color:#5d5254">Yusong Wang</span>
-              <span class="hanko" style="left:14px;bottom:16px">钰</span>
-            </span>
-            <span class="page r" aria-hidden="true">
-              <svg viewBox="0 0 160 200" style="inset:10px 8px;width:calc(100% - 16px);height:calc(100% - 20px)">
-                <g fill="none" stroke="#1d1a1f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M14 84c22-4 38-18 66-38 28 20 44 34 66 38"/>
-                  <path d="M26 82c-6 0-10-4-12-8M134 82c6 0 10-4 12-8"/>
-                  <path d="M34 84h92v10H34zM42 94v58M118 94v58M64 94v58M96 94v58"/>
-                  <path d="M30 152h100v8H30z"/>
-                  <path d="M80 46v-12M70 36h20"/>
-                  <path d="M50 64c10-6 20-12 30-18 10 6 20 12 30 18" stroke-width="1.4"/>
-                  <path d="M70 120h20v32H70z" stroke-width="1.6"/>
-                </g>
-                <g stroke="#2f5f93" stroke-width="1.2" stroke-dasharray="3 3" fill="none"><path d="M14 172h132M14 180h96"/></g>
-                <circle cx="80" cy="128" r="3" fill="#c8392b"/>
-                <text x="16" y="194" font-size="10" font-family="Noto Serif SC,serif" fill="#3a3336">历史建筑 · 速写</text>
-              </svg>
-            </span>
-            <span class="mark" aria-hidden="true"><i>己</i></span>
-            <span class="vh">自己紹介 · 关于我 / About</span>
-          </button>
-
-          <!-- map scroll (HeritageExplorer) -->
-          <button class="obj hot map" id="o-heritage" data-sec="heritage" type="button" style="--x:420px;--y:50px;--w:390px;--h:226px;--r:2.5deg">
-            <span class="mount seigaiha" aria-hidden="true"></span>
-            <span class="img" style="background-image:url(assets/gisauto_hero.webp)" aria-hidden="true"></span>
-            <span class="slip" aria-hidden="true">广西历史建筑图</span>
-            <span class="roll l" aria-hidden="true"></span><span class="roll r" aria-hidden="true"></span>
-            <span class="mark" aria-hidden="true"><i>図</i></span>
-            <span class="vh">HeritageExplorer 地图卷 / HeritageExplorer</span>
-          </button>
-
-          <!-- inkstone + brushes (toolbox) -->
-          <button class="obj hot" id="o-toolbox" data-sec="toolbox" type="button" style="--x:860px;--y:56px;--w:170px;--h:210px;--r:-5deg;--z:0px">
-            <span class="cb ink" style="--x:0px;--y:0px;--w:170px;--h:210px;--d:26px" aria-hidden="true">
-              <span class="lt"></span><span class="fr"></span><span class="rt"></span>
-              <span class="t"></span>
-              <span class="stone"></span><span class="stick"></span>
-              <span class="brush" style="left:20px;top:184px;width:138px;transform:translateZ(40px) rotate(-6deg)"></span>
-            </span>
-            <span class="mark" aria-hidden="true" style="transform:translateZ(96px) rotateZ(5deg) rotateX(-40deg)"><i>筆</i></span>
-            <span class="vh">文房四宝 · 技能 / Toolbox</span>
-          </button>
-
-          <!-- brush pot (decor) -->
-          <span class="bbshadow" style="--x:1036px;--y:136px;--w:64px;--h:24px" aria-hidden="true"></span>
-          <span class="bb" style="--x:1036px;--y:-12px;--w:64px;--h:160px" aria-hidden="true">
-            <svg viewBox="0 0 64 160">
-              <g stroke="#1d1a1f" stroke-width="3" stroke-linecap="round">
-                <path d="M18 92L10 8" stroke="#a87a3e" stroke-width="6"/><path d="M10 8l-3-8" stroke="#1d1a1f" stroke-width="6"/>
-                <path d="M30 92L32 2" stroke="#6e3a1d" stroke-width="6"/><path d="M32 2v-2" stroke="#1d1a1f" stroke-width="6"/>
-                <path d="M44 92l12-74" stroke="#a87a3e" stroke-width="6"/><path d="M56 18l2-8" stroke="#f4e9d0" stroke-width="6"/>
-              </g>
-              <path d="M6 82h52l-4 74H10z" fill="#2f5f93" stroke="#1d1a1f" stroke-width="3" stroke-linejoin="round"/>
-              <ellipse cx="32" cy="82" rx="26" ry="6" fill="#1f3a63" stroke="#1d1a1f" stroke-width="3"/>
-              <path d="M12 112c8-8 14-8 20 0s14 8 20 0M14 132c8-8 14-8 20 0s12 8 18 0" fill="none" stroke="#f4e9d0" stroke-width="2.4"/>
-            </svg>
-          </span>
-
-          <!-- prints stack (AI portfolio) -->
-          <button class="obj hot prints" id="o-portfolio" data-sec="portfolio" type="button" style="--x:64px;--y:432px;--w:250px;--h:160px;--r:3deg">
-            <span class="pr" style="left:0;top:14px;transform:rotate(-9deg)" aria-hidden="true"><img src="assets/ai_portfolio/ai_qingming.jpg" alt="" loading="lazy" /></span>
-            <span class="pr" style="left:70px;top:-8px;transform:rotate(6deg) translateZ(3px)" aria-hidden="true"><img src="assets/ai_portfolio/ai_twodimensional.jpg" alt="" loading="lazy" /></span>
-            <span class="pr" style="left:38px;top:30px;transform:rotate(-2deg) translateZ(6px)" aria-hidden="true"><img src="assets/ai_portfolio/ai_star.jpg" alt="" loading="lazy" /></span>
-            <span class="obi" aria-hidden="true">作品集</span>
-            <span class="mark" aria-hidden="true"><i>画</i></span>
-            <span class="vh">AI 作品集 / AI portfolio</span>
-          </button>
-
-          <!-- CV -->
-          <button class="obj hot cv" id="o-cv" data-sec="cv" type="button" style="--x:380px;--y:392px;--w:226px;--h:160px;--r:-3deg">
-            <span class="face" aria-hidden="true"></span>
-            <span class="title" aria-hidden="true">履歴書</span>
-            <span class="seal" aria-hidden="true">印</span>
-            <span class="lines" aria-hidden="true">王钰淞 · Yusong Wang<br/>MPhil · HKUST(GZ)<br/>GIS × Multimodal AI<br/>CV_Yusong_Wang.docx</span>
-            <span class="mark" aria-hidden="true"><i>履</i></span>
-            <span class="vh">履歴書 · 简历 / CV</span>
-          </button>
-
-          <!-- letter (contact) -->
-          <button class="obj hot letter" id="o-contact" data-sec="contact" type="button" style="--x:648px;--y:330px;--w:206px;--h:128px;--r:7deg">
-            <span class="face" aria-hidden="true"></span>
-            <span class="wax" aria-hidden="true">緘</span>
-            <span class="addr" aria-hidden="true">ywang677 @ hkust-gz</span>
-            <span class="mark" aria-hidden="true"><i>文</i></span>
-            <span class="vh">书信 · 联系 / Contact</span>
-          </button>
-
-          <!-- teacup (decor) -->
-          <span class="bbshadow" style="--x:900px;--y:352px;--w:74px;--h:28px" aria-hidden="true"></span>
-          <span class="bb" style="--x:904px;--y:288px;--w:66px;--h:80px" aria-hidden="true">
-            <svg viewBox="0 0 66 80">
-              <g class="steam" fill="none" stroke="#8a7e78" stroke-width="2.4" stroke-linecap="round"><path d="M24 22c-6-6 6-10 0-18"/><path d="M40 22c-6-6 6-10 0-18"/></g>
-              <path d="M6 30h54l-6 46H12z" fill="#e8dcc2" stroke="#1d1a1f" stroke-width="3" stroke-linejoin="round"/>
-              <path d="M8 44h50l-1.6 14H9.8z" fill="#1f3a63"/>
-              <path d="M12 52c4-5 8-5 12 0s8 5 12 0 8-5 12 0" fill="none" stroke="#f4e9d0" stroke-width="2"/>
-              <ellipse cx="33" cy="30" rx="27" ry="6" fill="#8d9a4c" stroke="#1d1a1f" stroke-width="3"/>
-            </svg>
-          </span>
-
-          <!-- folding fan (theme switch) -->
-          <button class="obj hot" id="o-fan" data-act="theme" type="button" style="--x:868px;--y:430px;--w:220px;--h:130px;--r:-10deg">
-            <svg viewBox="0 0 220 130" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible" aria-hidden="true">
-              <defs>
-                <pattern id="sg" width="24" height="12" patternUnits="userSpaceOnUse">
-                  <rect width="24" height="12" fill="#1f3a63"/>
-                  <g fill="none" stroke="#f4e9d0" stroke-width="1.4"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="0" cy="6" r="10"/><circle cx="24" cy="6" r="10"/></g>
-                </pattern>
-              </defs>
-              <path d="M110 124L8 54A118 118 0 0 1 212 54Z" fill="rgba(29,26,31,.22)" transform="translate(7 9)"/>
-              <path d="M110 124L8 54A118 118 0 0 1 212 54Z" fill="url(#sg)" stroke="#1d1a1f" stroke-width="3.5" stroke-linejoin="round"/>
-              <path d="M110 124L38 72A84 84 0 0 1 182 72Z" fill="#f4e9d0" stroke="#1d1a1f" stroke-width="2.5"/>
-              <circle cx="110" cy="44" r="15" fill="#c8392b" stroke="#1d1a1f" stroke-width="2.5"/>
-              <g stroke="#6e3a1d" stroke-width="2"><path d="M110 124L22 44M110 124L50 22M110 124L80 10M110 124V6M110 124L140 10M110 124L170 22M110 124L198 44"/></g>
-              <circle cx="110" cy="122" r="5" fill="#d29a3a" stroke="#1d1a1f" stroke-width="2.5"/>
-            </svg>
-            <span class="mark" aria-hidden="true"><i>彩</i></span>
-            <span class="vh">扇子：切换画风 / Fan: switch print style</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
+<div id="stage">
+  <canvas id="gl" role="img" aria-label="王钰淞的和式书案：可以探索的 2.5D 场景，也可以用左下角的目录浏览 / Yusong Wang's study desk — an explorable 2.5D scene; the index at bottom-left lists everything"></canvas>
   <div class="kasumi top" aria-hidden="true">
-    <svg viewBox="0 0 1440 120" preserveAspectRatio="xMidYMin slice">
-      <defs><linearGradient id="kg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2a56a"/><stop offset="1" stop-color="#efc98f"/></linearGradient></defs>
-      <g fill="url(#kg)" stroke="#b97d45" stroke-width="2">
-        <rect x="-60" y="-30" width="760" height="78" rx="39"/>
-        <rect x="420" y="18" width="560" height="50" rx="25"/>
-        <rect x="860" y="-24" width="680" height="70" rx="35"/>
-        <rect x="140" y="40" width="300" height="36" rx="18"/>
-        <rect x="1080" y="34" width="260" height="34" rx="17"/>
-      </g>
-    </svg>
-  </div>
-  <div class="kasumi bot" aria-hidden="true" style="height:80px">
-    <svg viewBox="0 0 1440 80" preserveAspectRatio="xMidYMin slice">
-      <g fill="#e9bd85" stroke="#b97d45" stroke-width="2">
-        <rect x="-40" y="-30" width="520" height="60" rx="30"/>
-        <rect x="380" y="-20" width="700" height="42" rx="21"/>
-        <rect x="980" y="-30" width="520" height="58" rx="29"/>
-      </g>
+    <svg viewBox="0 0 1440 96" preserveAspectRatio="xMidYMin slice">
+      <defs><linearGradient id="kg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2a56a"/><stop offset="1" stop-color="#efc98f" stop-opacity=".85"/></linearGradient></defs>
+      <g fill="url(#kg)"><rect x="-60" y="-30" width="760" height="70" rx="35"/><rect x="420" y="14" width="560" height="42" rx="21"/><rect x="860" y="-24" width="680" height="62" rx="31"/></g>
     </svg>
   </div>
   <canvas id="rain" aria-hidden="true"></canvas>
-  <div id="night" aria-hidden="true"></div>
-  <div id="glow" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
   <div class="grainover" aria-hidden="true"></div>
 </div>
 
@@ -642,26 +190,28 @@
   </div>
 </header>
 
-<div id="hint"><span class="lang-zh">✦ 点击书案上带红印的物件 · 扇子换画风 · 行灯开夜景</span><span class="lang-en">✦ Click the red-sealed objects · fan = style · lantern = night</span></div>
+<div id="hint"><span class="lang-zh">书案上的东西，都可以拿起来看看</span><span class="lang-en">Everything on the desk can be picked up</span></div>
+<div id="index">
+  <button id="indexBtn" type="button" aria-expanded="false" aria-controls="indexList"><i>目録</i><span class="lang-zh">目录</span><span class="lang-en">Index</span><small id="indexCount"></small></button>
+  <nav id="indexList" aria-label="目录 / Sections"></nav>
+</div>
 <div id="themeTag" aria-live="polite"><b id="themeKanji">錦</b><span id="themeName"></span></div>
-<nav class="dock" id="dock" aria-label="目录 / Sections"></nav>
+<div id="toast" role="status" aria-live="polite"></div>
 <div id="tip" aria-hidden="true"></div>
 
-<aside id="panel" role="dialog" aria-modal="false" aria-labelledby="panelTitle" aria-hidden="true">
+<aside id="panel" role="dialog" aria-labelledby="panelTitle" aria-hidden="true">
   <div class="psheet">
     <div class="phead"><span class="seal" id="panelKanji" aria-hidden="true">己</span><h2 id="panelTitle"></h2><button class="btn" id="panelClose" type="button" aria-label="关闭 / Close">✕</button></div>
     <div class="pbody content" id="panelBody" tabindex="0"></div>
   </div>
-  <div class="pcart" id="panelCart" aria-hidden="true"></div>
 </aside>
 
 <main id="reader" class="content"></main>
 
-<div id="loader" aria-hidden="true"><div class="in"><span class="cart"><em>王钰淞</em>の書斎</span><p>摺 · 刷 · 中</p><div class="drop"></div></div></div>
+<div id="loader" aria-hidden="true"><span class="cart"><em>王钰淞</em>の書斎</span></div>
 
 <noscript><p style="position:fixed;inset:auto 0 0 0;z-index:60;padding:1rem;background:#f4e9d0;border-top:3px solid #1d1a1f">这个页面需要 JavaScript。<a href="classic.html">打开经典版主页</a> / This page needs JavaScript — <a href="classic.html">open the classic site</a>.</p></noscript>
 
-<!-- ================= CONTENT TEMPLATES ================= -->
 <template id="t-about">
   <img class="portrait" src="assets/yusong_portrait.webp" alt="Yusong Wang" width="110" />
   <h3><span class="lang-zh">自己紹介 · 王钰淞</span><span class="lang-en">About · Yusong Wang</span></h3>
@@ -769,314 +319,935 @@
   <p><a class="pxbtn red" href="classic.html"><span class="lang-zh">打开经典版 →</span><span class="lang-en">Open the classic site →</span></a></p>
 </template>
 
-<script>
-(() => {
-  'use strict';
-  const $ = (s, r = document) => r.querySelector(s);
-  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const body = document.body;
-  const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const store = {
-    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
-    set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+<script type="importmap">{ "imports": { "three": "./assets/vendor/three.module.min.js" } }</script>
+<script type="module">
+import * as THREE from 'three';
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const body = document.body;
+const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+};
+const isEn = () => body.dataset.lang === 'en';
+const T = (s) => (isEn() ? s.en : s.zh);
+const mobile = () => innerWidth < 760;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const D2R = Math.PI / 180;
+let seed = 11;
+const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+/* =====================================================================
+   SECTIONS & THEMES
+   ===================================================================== */
+const SECTIONS = [
+  { id: 'about', k: '己', zh: '自己紹介 · 关于我', en: 'About' },
+  { id: 'heritage', k: '図', zh: 'HeritageExplorer', en: 'HeritageExplorer' },
+  { id: 'work', k: '報', zh: '论文 · 专利 · 项目', en: 'Papers · Patents · Projects' },
+  { id: 'exp', k: '歴', zh: '经历', en: 'Timeline' },
+  { id: 'portfolio', k: '画', zh: 'AI 作品集', en: 'AI Portfolio' },
+  { id: 'toolbox', k: '筆', zh: '技能 · 工具链', en: 'Toolbox' },
+  { id: 'contact', k: '文', zh: '联系', en: 'Contact' },
+  { id: 'cv', k: '履', zh: '简历', en: 'CV' },
+  { id: 'door', k: '門', zh: '经典版主页', en: 'Classic site' }
+];
+const SEC = Object.fromEntries(SECTIONS.map((s) => [s.id, s]));
+// hover names — only shown when the pointer finds the object
+const NAMES = {
+  about: { zh: '一本摊开的笔记', en: 'An open notebook' },
+  heritage: { zh: '一卷地图', en: 'A rolled map' },
+  work: { zh: '墙上的剪报', en: 'Clippings on the wall' },
+  exp: { zh: '挂轴', en: 'A hanging scroll' },
+  portfolio: { zh: '一叠版画', en: 'A stack of prints' },
+  toolbox: { zh: '砚箱', en: 'An inkstone box' },
+  contact: { zh: '一封信', en: 'A sealed letter' },
+  cv: { zh: '一页表格', en: 'A filled-in form' },
+  door: { zh: '几本线装书', en: 'Stitched books' },
+  lantern: { zh: '行灯', en: 'Andon lantern' },
+  fan: { zh: '扇子', en: 'Folding fan' },
+  wave: { zh: '一幅版画', en: 'A framed print' },
+  window: { zh: '圆窗', en: 'Round window' },
+  tea: { zh: '茶', en: 'Tea' }
+};
+const THEMES = [
+  { id: 'nishiki', k: '錦', zh: '錦絵', en: 'Nishiki-e' },
+  { id: 'ai', k: '藍', zh: '藍摺', en: 'Aizuri' },
+  { id: 'sumi', k: '墨', zh: '墨摺 · 雨', en: 'Sumizuri · rain' },
+  { id: 'yoru', k: '夜', zh: '夜 · 行灯', en: 'Night · lantern' }
+];
+
+/* =====================================================================
+   RENDERER
+   ===================================================================== */
+const canvas = $('#gl');
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+} catch (e) {
+  if (window.__deskFallback) window.__deskFallback();
+  throw e;
+}
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, mobile() ? 1.75 : 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.autoUpdate = false;
+renderer.toneMapping = THREE.NeutralToneMapping;
+renderer.toneMappingExposure = 1.08;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+const MAX_ANISO = renderer.capabilities.getMaxAnisotropy();
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(26, 1, 0.1, 60);
+
+/* =====================================================================
+   TEXTURES — everything painted on canvases; no readable words on the desk
+   ===================================================================== */
+const hex = (c) => [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16));
+const shade = (c, f) => { const [r, g, b] = hex(c), t = f < 0 ? 0 : 255, p = Math.abs(f); return `rgb(${Math.round(r + (t - r) * p)},${Math.round(g + (t - g) * p)},${Math.round(b + (t - b) * p)})`; };
+function ctex(w, h, draw, opt = {}) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const g = c.getContext('2d'); draw(g, w, h);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = opt.linear ? THREE.NoColorSpace : THREE.SRGBColorSpace;
+  t.anisotropy = MAX_ANISO;
+  if (opt.repeat) { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(opt.repeat[0], opt.repeat[1]); }
+  t.userData.redraw = (fn) => { fn(g, w, h); t.needsUpdate = true; };
+  return t;
+}
+function speckle(g, w, h, n, col, a) {
+  for (let i = 0; i < n; i++) { g.fillStyle = `rgba(${col},${(rand() * a).toFixed(3)})`; const s = 0.6 + rand() * 1.8; g.fillRect(rand() * w, rand() * h, s, s); }
+}
+function paperBase(g, w, h, c1 = '#fbf4e3', c2 = '#efe1bf') {
+  const gr = g.createLinearGradient(0, 0, w, h); gr.addColorStop(0, c1); gr.addColorStop(1, c2); g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  speckle(g, w, h, w * h / 60, '120,90,50', 0.12);
+  for (let i = 0; i < w * h / 900; i++) { g.strokeStyle = `rgba(150,120,80,${(rand() * 0.12).toFixed(3)})`; g.lineWidth = 0.5; g.beginPath(); const x = rand() * w, y = rand() * h; g.moveTo(x, y); g.lineTo(x + (rand() - 0.5) * 16, y + (rand() - 0.5) * 16); g.stroke(); }
+}
+function woodPaint(base, w, h, density = 1) {
+  return (g) => {
+    const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, shade(base, 0.07)); gr.addColorStop(0.5, base); gr.addColorStop(1, shade(base, -0.07)); g.fillStyle = gr; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 160 * density; i++) {
+      const y0 = rand() * h, amp = 1.5 + rand() * 7, f = 0.003 + rand() * 0.009, ph = rand() * 6;
+      g.strokeStyle = `rgba(80,42,16,${(0.06 + rand() * 0.2).toFixed(3)})`; g.lineWidth = 0.5 + rand() * 2.4;
+      g.beginPath(); for (let x = 0; x <= w; x += 6) { const y = y0 + Math.sin(x * f + ph) * amp + Math.sin(x * f * 3.3 + ph * 2) * amp * 0.25; x ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke();
+    }
+    for (let k = 0; k < 3 * density; k++) {
+      const x = rand() * w, y = rand() * h;
+      for (let r = 3; r < 26; r += 3) { g.strokeStyle = `rgba(80,42,16,${0.18 - r * 0.005})`; g.lineWidth = 1.2; g.beginPath(); g.ellipse(x, y, r * 2.6, r * 0.55, 0, 0, Math.PI * 2); g.stroke(); }
+    }
+    speckle(g, w, h, w * h / 80, '60,30,10', 0.12);
   };
-
-  /* ---------- sections ---------- */
-  const SECTIONS = [
-    { id: 'about',     k: '己', zh: '自己紹介 · 关于我',     en: 'About',                      cart: '自己紹介' },
-    { id: 'heritage',  k: '図', zh: 'HeritageExplorer 地图卷', en: 'HeritageExplorer',          cart: '地図之巻' },
-    { id: 'work',      k: '報', zh: '瓦版 · 论文 / 专利 / 项目', en: 'Papers · Patents · Projects', cart: '瓦版號外' },
-    { id: 'exp',       k: '歴', zh: '年表 · 经历',           en: 'Timeline',                   cart: '年表' },
-    { id: 'portfolio', k: '画', zh: 'AI 作品集',             en: 'AI Portfolio',               cart: '錦絵作品' },
-    { id: 'toolbox',   k: '筆', zh: '文房四宝 · 技能',       en: 'Toolbox',                    cart: '文房四宝' },
-    { id: 'contact',   k: '文', zh: '书信 · 联系',           en: 'Contact',                    cart: '書状' },
-    { id: 'cv',        k: '履', zh: '履歴書 · 简历',         en: 'CV',                         cart: '履歴書' },
-    { id: 'door',      k: '門', zh: '经典版主页',            en: 'Classic site',               cart: '経典版' }
-  ];
-  const byId = Object.fromEntries(SECTIONS.map(s => [s.id, s]));
-
-  const THEMES = [
-    { id: 'nishiki', k: '錦', zh: '其の一 · 錦絵（彩色）', en: 'No.1 · Nishiki-e (full colour)' },
-    { id: 'ai',      k: '藍', zh: '其の二 · 藍摺（北斋蓝）', en: 'No.2 · Aizuri (Prussian blue)' },
-    { id: 'sumi',    k: '墨', zh: '其の三 · 墨摺 · 大桥骤雨', en: 'No.3 · Sumizuri · sudden shower' },
-    { id: 'yoru',    k: '夜', zh: '其の四 · 夜 · 行灯',      en: 'No.4 · Night · lantern light' }
-  ];
-
-  /* ---------- language ---------- */
-  const isEn = () => body.dataset.lang === 'en';
-  const T = s => isEn() ? s.en : s.zh;
-  function setLang(l) {
-    body.dataset.lang = l;
-    document.documentElement.lang = l === 'en' ? 'en' : 'zh-CN';
-    renderDock(); renderThemeTag();
-    if (current) fillPanelTitle(byId[current]);
-  }
-
-  /* ---------- camera ---------- */
-  const view = $('#view'), cam = $('#cam');
-  const DESK = { x: 250, y: 230, z: 150 }, WALL_H = 760, W = 1600, H = 1100;
-  const cur = { s: 1, tilt: 40, yaw: 0, fx: 0, fy: -60, fz: 120, sx: 0, sy: 0 };
-  const tgt = { ...cur };
-  let base = { ...cur };
-  let pan = 0, panTgt = 0, par = { x: 0, y: 0 }, parT = { x: 0, y: 0 };
-  let current = null;
-
-  function fit() {
-    const vw = innerWidth, vh = innerHeight;
-    let s = Math.min(vw * 0.64 / 1100, vh * 0.56 / 620);
-    if (vw < 760) s = Math.max(s, Math.min(vw * 1.3 / 1100, vh * 0.5 / 620));
-    base = { s, tilt: vw < 760 ? 48 : 44, yaw: 0, fx: 0, fy: vw < 760 ? -90 : -120, fz: vw < 760 ? 190 : 200, sx: 0, sy: vw < 760 ? 30 : 18 };
-    if (!current) Object.assign(tgt, base);
-    else focusOn(current, true);
-  }
-  function maxPan() { return Math.max(0, (1180 * tgt.s - innerWidth) / 2); }
-
-  function readNum(el, name) { return parseFloat(getComputedStyle(el).getPropertyValue(name)) || 0; }
-  function anchorOf(id) {
-    const el = $('#o-' + id);
-    const x = readNum(el, '--x'), y = readNum(el, '--y'), w = readNum(el, '--w'), h = readNum(el, '--h');
-    if (el.closest('.wall')) return { x: x + w / 2 - W / 2, y: 0 - H / 2, z: WALL_H - (y + h / 2), w, h, wall: true };
-    return { x: DESK.x + x + w / 2 - W / 2, y: DESK.y + y + h / 2 - H / 2, z: DESK.z + 10, w, h, wall: false };
-  }
-  function focusOn(id, instant) {
-    const a = anchorOf(id), vw = innerWidth, vh = innerHeight, mobile = vw < 760;
-    const availW = mobile ? vw * 0.9 : vw * 0.48, availH = mobile ? vh * 0.24 : vh * 0.62;
-    const s = Math.max(base.s * 1.3, Math.min(3, availW / (a.w * 1.15), availH / (a.h * 1.15)));
-    Object.assign(tgt, {
-      s, tilt: a.wall ? 60 : 14, yaw: 0, fx: a.x, fy: a.y, fz: a.z,
-      sx: mobile ? 0 : -vw * 0.25, sy: mobile ? -vh * 0.37 : 0
-    });
-    panTgt = 0;
-    if (instant) Object.assign(cur, tgt);
-  }
-
-  let raf = 0;
-  function tick() {
-    raf = 0;
-    const k = RM ? 1 : 0.085;
-    let moving = false;
-    for (const key in tgt) {
-      const d = tgt[key] - cur[key];
-      if (Math.abs(d) > 0.001) { cur[key] += d * k; moving = true; } else cur[key] = tgt[key];
-    }
-    const pd = panTgt - pan; if (Math.abs(pd) > 0.05) { pan += pd * 0.18; moving = true; } else pan = panTgt;
-    const ppx = parT.x - par.x, ppy = parT.y - par.y;
-    if (Math.abs(ppx) + Math.abs(ppy) > 0.001) { par.x += ppx * 0.06; par.y += ppy * 0.06; moving = true; }
-    const yaw = cur.yaw + (current ? 0 : par.x * 3.2), tilt = cur.tilt + (current ? 0 : par.y * 2.4);
-    view.style.perspective = (2600 * cur.s).toFixed(0) + 'px';
-    cam.style.transform = `translate(-50%,-50%) translate(${cur.sx + pan}px,${cur.sy}px) scale(${cur.s}) rotateX(${tilt}deg) rotateZ(${yaw}deg) translate3d(${-cur.fx}px,${-cur.fy}px,${-cur.fz}px)`;
-    if (body.dataset.theme === 'yoru') placeLight();
-    if (moving) kick();
-  }
-  function kick() { if (!raf) raf = requestAnimationFrame(tick); }
-
-  function placeLight() {
-    const r = $('#o-andon').getBoundingClientRect();
-    const st = $('#stage').style;
-    st.setProperty('--lx', (r.left + r.width / 2) + 'px');
-    st.setProperty('--ly', (r.top + r.height * 0.45) + 'px');
-  }
-
-  /* pointer parallax + drag pan */
-  let drag = null;
-  view.addEventListener('pointermove', e => {
-    if (drag) {
-      const dx = e.clientX - drag.x;
-      if (Math.abs(dx) > 6) drag.moved = true;
-      if (drag.moved && !current) { const m = maxPan(); panTgt = Math.max(-m, Math.min(m, drag.p + dx)); pan = panTgt; kick(); }
-      return;
-    }
-    if (e.pointerType === 'mouse' && !RM) {
-      parT.x = (e.clientX / innerWidth - 0.5) * 2; parT.y = (e.clientY / innerHeight - 0.5) * 2; kick();
-    }
+}
+const TEX = {};
+TEX.wood = ctex(1024, 512, woodPaint('#c4823f', 1024, 512));
+TEX.woodDark = ctex(512, 256, woodPaint('#7a4321', 512, 256, 0.6));
+TEX.woodPale = ctex(512, 256, woodPaint('#d2a46a', 512, 256, 0.6));
+TEX.plaster = ctex(1024, 512, (g, w, h) => {
+  g.fillStyle = '#e4cf9f'; g.fillRect(0, 0, w, h);
+  for (let i = 0; i < 260; i++) { const x = rand() * w, y = rand() * h, r = 10 + rand() * 60; const gr = g.createRadialGradient(x, y, 0, x, y, r); const a = rand() * 0.07; gr.addColorStop(0, rand() > 0.5 ? `rgba(255,248,225,${a})` : `rgba(150,110,60,${a})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); }
+  speckle(g, w, h, 9000, '110,80,40', 0.22); speckle(g, w, h, 3000, '255,250,235', 0.25);
+}, { repeat: [2.2, 1.1] });
+TEX.tatami = ctex(2048, 1600, (g, w, h) => {
+  g.fillStyle = '#2b3048'; g.fillRect(0, 0, w, h);
+  const U = w / 3.2; // px per world unit
+  const mats = [[-1.6, -1.1, 1.8, 0.9], [0.2, -1.1, 1.4, 0.9], [-1.6, -0.2, 0.9, 1.8], [-0.7, -0.2, 1.8, 0.9], [1.1, -0.2, 0.5, 1.8], [-0.7, 0.7, 1.8, 0.7], [-1.6, 1.6, 3.2, 0.3]];
+  mats.forEach(([x, z, mw, md], i) => {
+    const X = (x + 1.6) * U, Y = (z + 1.1) * U, Wd = mw * U, Hd = md * U, hz = mw >= md;
+    const gr = g.createLinearGradient(X, Y, X + Wd, Y + Hd); gr.addColorStop(0, i % 2 ? '#cdb56c' : '#c6ad62'); gr.addColorStop(1, i % 2 ? '#c2a85f' : '#bda258'); g.fillStyle = gr; g.fillRect(X + 2, Y + 2, Wd - 4, Hd - 4);
+    g.strokeStyle = 'rgba(110,90,40,.22)'; g.lineWidth = 1.2;
+    if (hz) for (let yy = Y + 5; yy < Y + Hd - 4; yy += 5) { g.beginPath(); g.moveTo(X + 2, yy); g.lineTo(X + Wd - 2, yy); g.stroke(); }
+    else for (let xx = X + 5; xx < X + Wd - 4; xx += 5) { g.beginPath(); g.moveTo(xx, Y + 2); g.lineTo(xx, Y + Hd - 2); g.stroke(); }
+    g.fillStyle = '#272a3f'; const b = 16;
+    if (hz) { g.fillRect(X, Y, Wd, b); g.fillRect(X, Y + Hd - b, Wd, b); } else { g.fillRect(X, Y, b, Hd); g.fillRect(X + Wd - b, Y, b, Hd); }
+    g.fillStyle = 'rgba(210,190,140,.18)'; for (let q = 0; q < (hz ? Wd : Hd); q += 14) { if (hz) { g.fillRect(X + q, Y + 6, 6, 3); g.fillRect(X + q, Y + Hd - 9, 6, 3); } else { g.fillRect(X + 6, Y + q, 3, 6); g.fillRect(X + Wd - 9, Y + q, 3, 6); } }
   });
-  view.addEventListener('pointerdown', e => { drag = { x: e.clientX, p: panTgt, moved: false }; if (e.pointerType !== 'mouse') body.classList.add('touched'); });
-  addEventListener('pointerup', () => { if (drag && drag.moved) { view.classList.remove('drag'); suppressClick = true; setTimeout(() => suppressClick = false, 50); } drag = null; });
-  view.addEventListener('pointerleave', () => { parT.x = 0; parT.y = 0; kick(); });
-  let suppressClick = false;
+  speckle(g, w, h, 20000, '80,60,20', 0.12);
+});
+TEX.shoji = ctex(512, 512, (g, w, h) => {
+  paperBase(g, w, h, '#fbf6e8', '#f1e7cc');
+  g.fillStyle = '#8a5a33'; for (let x = 0; x <= w; x += 128) g.fillRect(x - 5, 0, 10, h); for (let y = 0; y <= h; y += 96) g.fillRect(0, y - 4, w, 8);
+}, { repeat: [3, 3] });
+TEX.ranma = ctex(1024, 128, (g, w, h) => {
+  g.fillStyle = '#4a2a14'; g.fillRect(0, 0, w, h);
+  g.fillStyle = '#e8d7ad';
+  for (let x = 0; x < w; x += 64) { g.beginPath(); g.ellipse(x + 32, h * 0.55, 22, 28, 0, 0, Math.PI * 2); g.fill(); }
+  g.fillStyle = '#4a2a14'; for (let x = 0; x < w; x += 64) { g.beginPath(); g.ellipse(x + 32, h * 0.55, 10, 30, 0, 0, Math.PI * 2); g.fill(); }
+}, { repeat: [3, 1] });
+TEX.blob = ctex(128, 128, (g, w) => { const gr = g.createRadialGradient(64, 64, 4, 64, 64, 62); gr.addColorStop(0, 'rgba(0,0,0,.55)'); gr.addColorStop(0.55, 'rgba(0,0,0,.22)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, w, w); });
+TEX.dot = ctex(64, 64, (g) => { const gr = g.createRadialGradient(32, 32, 0, 32, 32, 30); gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.4, 'rgba(255,245,220,.45)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64); });
+TEX.shaft = ctex(64, 256, (g, w, h) => { const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, 'rgba(255,240,205,.9)'); gr.addColorStop(0.6, 'rgba(255,236,200,.35)'); gr.addColorStop(1, 'rgba(255,236,200,0)'); g.fillStyle = gr; g.fillRect(0, 0, w, h); });
 
-  /* ---------- tooltip ---------- */
-  const tip = $('#tip');
-  function labelFor(el) {
-    if (el.dataset.sec) { const s = byId[el.dataset.sec]; return `<i>${s.k}</i>${T(s)}`; }
-    if (el.dataset.act === 'theme') return isEn() ? '<i>彩</i>Fan · switch print style' : '<i>彩</i>扇子 · 切换画风';
-    if (el.dataset.act === 'night') return isEn() ? '<i>灯</i>Lantern · night on / off' : '<i>灯</i>行灯 · 开 / 关夜景';
-    return '';
-  }
-  $$('.hot').forEach(el => {
-    el.addEventListener('pointerenter', e => { if (e.pointerType !== 'mouse') return; tip.innerHTML = labelFor(el); tip.classList.add('on'); clack(0.5); });
-    el.addEventListener('pointermove', e => { tip.style.left = e.clientX + 'px'; tip.style.top = e.clientY + 'px'; });
-    el.addEventListener('pointerleave', () => tip.classList.remove('on'));
-    el.addEventListener('focus', () => { const r = el.getBoundingClientRect(); tip.innerHTML = labelFor(el); tip.style.left = r.left + r.width / 2 + 'px'; tip.style.top = r.top + 'px'; tip.classList.add('on'); });
-    el.addEventListener('blur', () => tip.classList.remove('on'));
-    el.addEventListener('click', e => {
-      if (suppressClick) { e.preventDefault(); return; }
-      tip.classList.remove('on');
-      if (el.dataset.sec) openSec(el.dataset.sec);
-      else if (el.dataset.act === 'theme') cycleTheme();
-      else if (el.dataset.act === 'night') setTheme(body.dataset.theme === 'yoru' ? (store.get('dayTheme') || 'nishiki') : 'yoru');
-    });
-  });
-
-  /* ---------- panel ---------- */
-  const panel = $('#panel'), pBody = $('#panelBody');
-  let openTimer = 0;
-  function fillPanelTitle(s) {
-    $('#panelTitle').textContent = T(s);
-    $('#panelKanji').textContent = s.k;
-    $('#panelCart').textContent = s.cart;
-  }
-  function openSec(id, fromHash) {
-    const s = byId[id]; if (!s) return;
-    if (body.classList.contains('read')) setReader(false);
-    current = id;
-    tip.classList.remove('on');
-    body.classList.add('zoomed');
-    $$('.hot').forEach(h => h.classList.toggle('on', h.dataset.sec === id));
-    focusOn(id); kick();
-    clack(1);
-    clearTimeout(openTimer);
-    const show = () => {
-      fillPanelTitle(s);
-      pBody.innerHTML = '';
-      pBody.appendChild($('#t-' + id).content.cloneNode(true));
-      pBody.scrollTop = 0;
-      panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false');
-      $('#panelClose').focus({ preventScroll: true });
-    };
-    if (panel.classList.contains('open') || RM) show(); else openTimer = setTimeout(show, 520);
-    if (!fromHash && location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
-    renderDock();
-  }
-  function closeSec() {
-    if (!current) return;
-    const last = current;
-    current = null;
-    clearTimeout(openTimer);
-    panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true');
-    body.classList.remove('zoomed');
-    $$('.hot').forEach(h => h.classList.remove('on'));
-    Object.assign(tgt, base); kick();
-    history.replaceState(null, '', location.pathname + location.search);
-    renderDock();
-    const el = $('#o-' + last); if (el) el.focus({ preventScroll: true });
-  }
-  $('#panelClose').addEventListener('click', closeSec);
-  $('#brand').addEventListener('click', e => { e.preventDefault(); if (body.classList.contains('read')) setReader(false); closeSec(); });
-  addEventListener('keydown', e => { if (e.key === 'Escape') closeSec(); });
-  view.addEventListener('click', e => { if (current && !e.target.closest('.hot') && !suppressClick) closeSec(); });
-  addEventListener('hashchange', () => { const id = location.hash.slice(1); if (byId[id]) openSec(id, true); });
-
-  /* ---------- dock ---------- */
-  function renderDock() {
-    const d = $('#dock');
-    d.innerHTML = SECTIONS.map(s => `<button type="button" data-id="${s.id}" class="${current === s.id ? 'on' : ''}"><i>${s.k}</i>${isEn() ? s.en : s.zh.split(' · ')[0]}</button>`).join('');
-  }
-  $('#dock').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; current === b.dataset.id ? closeSec() : openSec(b.dataset.id); });
-
-  /* ---------- themes ---------- */
-  function renderThemeTag() {
-    const t = THEMES.find(t => t.id === body.dataset.theme) || THEMES[0];
-    $('#themeKanji').textContent = t.k; $('#themeName').textContent = T(t);
-  }
-  function setTheme(id) {
-    body.dataset.theme = id; store.set('theme', id);
-    if (id !== 'yoru') store.set('dayTheme', id);
-    renderThemeTag(); startRain(id === 'sumi');
-    if (id === 'yoru') placeLight();
-    clack(1.2);
-  }
-  function cycleTheme() {
-    const i = THEMES.findIndex(t => t.id === body.dataset.theme);
-    setTheme(THEMES[(i + 1) % THEMES.length].id);
-  }
-  $('#btnTheme').addEventListener('click', cycleTheme);
-
-  /* Hiroshige-style rain for 墨摺 */
-  const rc = $('#rain'), rx = rc.getContext('2d');
-  let drops = [], rainOn = false, rainRaf = 0;
-  function sizeRain() { rc.width = innerWidth; rc.height = innerHeight; }
-  function startRain(on) {
-    rainOn = on && !RM;
-    if (rainOn && !rainRaf) {
-      sizeRain();
-      drops = Array.from({ length: Math.round(innerWidth * innerHeight / 3800) }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, l: 26 + Math.random() * 46, v: 9 + Math.random() * 9 }));
-      rainLoop();
-    }
-    if (!rainOn) { cancelAnimationFrame(rainRaf); rainRaf = 0; rx.clearRect(0, 0, rc.width, rc.height); }
-  }
-  function rainLoop() {
-    rx.clearRect(0, 0, rc.width, rc.height);
-    rx.strokeStyle = 'rgba(24,22,28,.62)'; rx.lineWidth = 1.7; rx.beginPath();
-    for (const d of drops) {
-      rx.moveTo(d.x, d.y); rx.lineTo(d.x - d.l * 0.12, d.y + d.l);
-      d.y += d.v; d.x -= d.v * 0.12;
-      if (d.y > rc.height) { d.y = -d.l; d.x = Math.random() * (rc.width + 80); }
-    }
-    rx.stroke();
-    rainRaf = requestAnimationFrame(rainLoop);
-  }
-
-  /* ---------- reader mode ---------- */
-  function setReader(on) {
-    body.classList.toggle('read', on);
-    $('#btnMode').setAttribute('aria-pressed', on ? 'true' : 'false');
-    if (on) {
-      if (current) closeSec();
-      const r = $('#reader');
-      if (!r.childElementCount) {
-        SECTIONS.forEach(s => {
-          const sec = document.createElement('section'); sec.id = 'r-' + s.id;
-          sec.innerHTML = `<h2><i>${s.k}</i><span class="lang-zh">${s.zh}</span><span class="lang-en">${s.en}</span></h2>`;
-          sec.appendChild($('#t-' + s.id).content.cloneNode(true));
-          r.appendChild(sec);
-        });
+// handwriting-like strokes (deliberately unreadable)
+function scribbleColumns(g, x0, y0, x1, y1, colW, cell, ink = 'rgba(30,24,30,.78)') {
+  g.strokeStyle = ink; g.lineCap = 'round';
+  for (let cx = x1 - colW / 2; cx > x0; cx -= colW) {
+    let y = y0 + rand() * cell; const end = y1 - rand() * cell * 3;
+    while (y < end) {
+      const n = 2 + Math.floor(rand() * 4);
+      for (let k = 0; k < n; k++) {
+        g.lineWidth = 1 + rand() * 2.2; g.beginPath();
+        const ax = cx + (rand() - 0.5) * cell * 0.7, ay = y + rand() * cell * 0.8;
+        g.moveTo(ax, ay); g.quadraticCurveTo(ax + (rand() - 0.5) * cell * 0.6, ay + (rand() - 0.5) * cell * 0.6, ax + (rand() - 0.5) * cell * 0.8, ay + (rand() - 0.3) * cell * 0.7); g.stroke();
       }
-      scrollTo(0, 0);
+      y += cell * (0.9 + rand() * 0.3);
     }
-    store.set('reader', on ? '1' : '0');
   }
-  $('#btnMode').addEventListener('click', () => setReader(!body.classList.contains('read')));
-  $('#btnLang').addEventListener('click', () => { const n = isEn() ? 'zh' : 'en'; setLang(n); store.set('lang', n); });
-
-  /* ---------- hyoshigi (wood clapper) sound ---------- */
-  let actx = null, soundOn = store.get('sound') === '1';
-  function clack(gain = 1) {
-    if (!soundOn) return;
-    try {
-      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-      const t = actx.currentTime;
-      [0, 0.055].forEach((off, i) => {
-        const o = actx.createOscillator(), g = actx.createGain(), f = actx.createBiquadFilter();
-        o.type = 'triangle'; o.frequency.setValueAtTime(i ? 1180 : 920, t + off);
-        f.type = 'bandpass'; f.frequency.value = 1400; f.Q.value = 3;
-        g.gain.setValueAtTime(0.0001, t + off); g.gain.exponentialRampToValueAtTime(0.22 * gain, t + off + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t + off + 0.09);
-        o.connect(f).connect(g).connect(actx.destination); o.start(t + off); o.stop(t + off + 0.1);
-      });
-    } catch (e) {}
+}
+function textLines(g, x, y, w, h, gap, col = 'rgba(40,34,40,.55)', lw = 3) {
+  g.fillStyle = col;
+  for (let yy = y; yy < y + h; yy += gap) { let xx = x; while (xx < x + w - 8) { const L = 8 + rand() * 40; g.fillRect(xx, yy, Math.min(L, x + w - xx), lw); xx += L + 4 + rand() * 6; } }
+}
+function seigaiha(g, x, y, w, h, r, c1, c2) {
+  g.save(); g.beginPath(); g.rect(x, y, w, h); g.clip();
+  for (let row = 0, yy = y + h + r; yy > y - r; row++, yy -= r / 2) {
+    for (let xx = x - r + (row % 2) * r; xx < x + w + r; xx += r * 2) {
+      for (let k = 4; k >= 1; k--) { g.beginPath(); g.arc(xx, yy, (r * k) / 4, Math.PI, 0); g.fillStyle = k % 2 ? c1 : c2; g.fill(); }
+    }
   }
-  function setSound(v) { soundOn = v; store.set('sound', v ? '1' : '0'); $('#btnSound').setAttribute('aria-pressed', v ? 'true' : 'false'); }
-  $('#btnSound').addEventListener('click', () => { setSound(!soundOn); clack(1); });
+  g.restore();
+}
+const images = {};
+function loadImg(src) { return new Promise((res) => { const im = new Image(); im.onload = () => { images[src] = im; res(im); }; im.onerror = () => res(null); im.src = src; }); }
+function cover(g, im, x, y, w, h, fx = 0.5, fy = 0.5) {
+  if (!im) return; const s = Math.max(w / im.width, h / im.height), sw = w / s, sh = h / s;
+  g.drawImage(im, (im.width - sw) * fx, (im.height - sh) * fy, sw, sh, x, y, w, h);
+}
 
-  /* ---------- boot ---------- */
-  { const l = store.get('lang'); setLang(l === 'en' || l === 'zh' ? l : (navigator.language || '').toLowerCase().startsWith('zh') ? 'zh' : 'en'); }
-  { const t = store.get('theme'); const ok = THEMES.some(x => x.id === t); body.dataset.theme = ok ? t : 'nishiki'; renderThemeTag(); }
-  setSound(soundOn);
-  fit(); Object.assign(cur, tgt); tick();
-  if (body.dataset.theme === 'sumi') startRain(true);
-  addEventListener('resize', () => { fit(); kick(); if (rainOn) sizeRain(); });
-  if (store.get('reader') === '1') setReader(true);
-  const h = location.hash.slice(1);
-  let booted = false;
-  const done = () => {
-    if (booted) return; booted = true;
-    $('#loader').classList.add('done');
-    if (byId[h]) setTimeout(() => openSec(h, true), 350);
-    setTimeout(() => body.classList.add('touched'), 9000);
-  };
-  if (document.readyState === 'complete') done();
-  else { addEventListener('load', done, { once: true }); setTimeout(done, 1400); }
+TEX.pageL = ctex(512, 680, (g, w, h) => {
+  paperBase(g, w, h);
+  g.strokeStyle = 'rgba(200,57,43,.28)'; g.lineWidth = 1.4; for (let x = 40; x < w - 20; x += 44) { g.beginPath(); g.moveTo(x, 30); g.lineTo(x, h - 30); g.stroke(); }
+  scribbleColumns(g, 50, 46, w - 30, h - 60, 44, 34);
+  g.fillStyle = 'rgba(200,57,43,.85)'; g.fillRect(56, h - 104, 46, 46); g.strokeStyle = 'rgba(255,240,220,.85)'; g.lineWidth = 3; g.strokeRect(64, h - 96, 30, 30); g.beginPath(); g.moveTo(79, h - 96); g.lineTo(79, h - 66); g.stroke();
+  const gr = g.createLinearGradient(w - 50, 0, w, 0); gr.addColorStop(0, 'rgba(110,70,30,0)'); gr.addColorStop(1, 'rgba(110,70,30,.22)'); g.fillStyle = gr; g.fillRect(w - 50, 0, 50, h);
+});
+TEX.pageR = ctex(512, 680, (g, w, h) => {
+  paperBase(g, w, h);
+  const gr = g.createLinearGradient(0, 0, 50, 0); gr.addColorStop(0, 'rgba(110,70,30,.22)'); gr.addColorStop(1, 'rgba(110,70,30,0)'); g.fillStyle = gr; g.fillRect(0, 0, 50, h);
+  g.strokeStyle = 'rgba(29,26,31,.85)'; g.lineWidth = 3; g.lineJoin = 'round'; g.lineCap = 'round';
+  const L = (pts) => { g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.stroke(); };
+  L([[70, 300], [130, 280], [256, 200], [382, 280], [442, 300]]); L([[96, 296], [86, 278]]); L([[416, 296], [426, 278]]);
+  L([[120, 300], [392, 300], [392, 330], [120, 330], [120, 300]]);
+  [150, 210, 300, 362].forEach((x) => L([[x, 330], [x, 520]]));
+  L([[110, 520], [402, 520], [402, 546], [110, 546], [110, 520]]); L([[230, 430], [282, 430], [282, 520], [230, 520], [230, 430]]);
+  L([[256, 200], [256, 160]]); L([[226, 168], [286, 168]]);
+  g.lineWidth = 1.6; L([[170, 262], [256, 214], [342, 262]]);
+  g.setLineDash([10, 9]); g.strokeStyle = 'rgba(47,95,147,.8)'; g.lineWidth = 2; L([[60, 600], [452, 600]]); L([[60, 628], [330, 628]]); g.setLineDash([]);
+  g.fillStyle = 'rgba(200,57,43,.9)'; g.beginPath(); g.arc(256, 456, 7, 0, Math.PI * 2); g.fill();
+  scribbleColumns(g, 300, 560, 470, 670, 30, 22, 'rgba(30,24,30,.5)');
+});
+TEX.cover = ctex(256, 256, (g, w, h) => { g.fillStyle = '#233a64'; g.fillRect(0, 0, w, h); seigaiha(g, 0, 0, w, h, 26, '#233a64', '#2f5287'); speckle(g, w, h, 900, '0,0,0', 0.2); });
+TEX.map = ctex(1024, 600, (g, w, h) => {
+  g.fillStyle = '#1f3a63'; g.fillRect(0, 0, w, h); seigaiha(g, 0, 0, w, h, 34, '#1f3a63', '#e9dcc0');
+  g.fillStyle = '#f1e4c4'; g.fillRect(34, 30, w - 68, h - 60);
+  g.fillStyle = '#1d1a1f'; g.fillRect(42, 38, w - 84, h - 76);
+  g.fillStyle = '#efe4c8'; g.fillRect(46, 42, w - 92, h - 84);
+});
+TEX.news = [0, 1, 2].map((k) => ctex(k ? 512 : 640, k ? 480 : 820, (g, w, h) => {
+  paperBase(g, w, h, k === 2 ? '#f1d9c6' : '#efe3c4', k === 2 ? '#e4c8b0' : '#e2d2ab');
+  g.fillStyle = '#1d1a1f'; g.fillRect(22, 20, w - 44, k ? 30 : 46);
+  g.fillStyle = 'rgba(239,227,196,.9)'; for (let x = 36; x < w - 60; x += 46 + rand() * 30) g.fillRect(x, 32, 22 + rand() * 18, k ? 8 : 16);
+  if (k === 2) { g.fillStyle = '#c8392b'; g.fillRect(w - 120, 20, 98, k ? 30 : 46); }
+  g.fillStyle = '#1d1a1f'; const hx = w - 86; for (let y = 80; y < h * (k ? 0.75 : 0.62); y += 64 + rand() * 18) g.fillRect(hx, y, 52, 50);
+  textLines(g, 26, 82, w - 140, k ? h - 110 : h * 0.38, 12);
+  if (!k) textLines(g, 26, h * 0.82, w - 52, h * 0.15, 12);
+}));
+TEX.cv = ctex(720, 512, (g, w, h) => {
+  paperBase(g, w, h, '#fbf6e8', '#f1e7d0');
+  g.strokeStyle = 'rgba(58,51,54,.75)'; g.lineWidth = 2.4; g.strokeRect(30, 30, w - 60, h - 60);
+  g.lineWidth = 1.4; for (let y = 96; y < h - 40; y += 42) { g.beginPath(); g.moveTo(30, y); g.lineTo(w - 30, y); g.stroke(); }
+  g.beginPath(); g.moveTo(170, 96); g.lineTo(170, h - 30); g.stroke(); g.beginPath(); g.moveTo(w - 190, 30); g.lineTo(w - 190, 96); g.stroke();
+  g.strokeStyle = 'rgba(58,51,54,.6)'; g.lineWidth = 2; g.beginPath(); g.moveTo(50, 74); g.lineTo(190, 74); g.stroke();
+  textLines(g, 186, 110, w - 240, h - 160, 42, 'rgba(40,34,40,.42)', 4);
+  g.strokeStyle = 'rgba(200,57,43,.85)'; g.lineWidth = 5; g.beginPath(); g.arc(w - 112, 63, 22, 0, Math.PI * 2); g.stroke(); g.beginPath(); g.moveTo(w - 124, 63); g.lineTo(w - 100, 63); g.moveTo(w - 112, 51); g.lineTo(w - 112, 75); g.stroke();
+});
+TEX.envelope = ctex(720, 450, (g, w, h) => {
+  paperBase(g, w, h, '#f6ecd3', '#e7d4ad');
+  g.strokeStyle = 'rgba(120,90,60,.45)'; g.lineWidth = 2; g.beginPath(); g.moveTo(0, 0); g.lineTo(w / 2, h * 0.58); g.lineTo(w, 0); g.stroke();
+  g.fillStyle = 'rgba(80,60,40,.06)'; g.beginPath(); g.moveTo(0, 0); g.lineTo(w / 2, h * 0.58); g.lineTo(w, 0); g.fill();
+  textLines(g, w - 230, h - 92, 190, 40, 16, 'rgba(60,50,60,.4)', 3);
+});
+TEX.form = ctex(256, 64, (g, w, h) => { g.fillStyle = '#c8392b'; g.fillRect(0, 0, w, h); speckle(g, w, h, 400, '255,220,200', 0.3); g.fillStyle = 'rgba(255,230,210,.35)'; for (let x = 8; x < w; x += 18) g.fillRect(x, 6, 2, h - 12); });
+TEX.book = [['#233a64', '#2f5287'], ['#a83a2a', '#c4513d'], ['#55663a', '#6e8048']].map(([a, b]) => ctex(512, 360, (g, w, h) => {
+  g.fillStyle = a; g.fillRect(0, 0, w, h); for (let i = 0; i < 2200; i++) { g.fillStyle = `rgba(${rand() > 0.5 ? '255,255,255' : '0,0,0'},${(rand() * 0.06).toFixed(3)})`; g.fillRect(rand() * w, rand() * h, 2, 2); }
+  g.strokeStyle = b; g.lineWidth = 3; g.strokeRect(14, 14, w - 28, h - 28);
+  g.fillStyle = '#f6efdc'; g.fillRect(56, 34, 70, h - 68); g.strokeStyle = 'rgba(29,26,31,.35)'; g.lineWidth = 1.5; g.strokeRect(56, 34, 70, h - 68);
+  g.fillStyle = '#efe6cf'; for (let y = 40; y < h; y += (h - 80) / 4) g.fillRect(w - 26, y, 8, 8);
+}));
+TEX.fan = ctex(512, 512, (g, w, h) => {
+  g.fillStyle = '#1f3a63'; g.fillRect(0, 0, w, h);
+  seigaiha(g, 0, 0, w, h, 30, '#1f3a63', '#e9e1cc');
+  g.fillStyle = '#c8392b'; g.beginPath(); g.arc(w * 0.62, h * 0.32, 52, 0, Math.PI * 2); g.fill();
+  g.strokeStyle = 'rgba(90,50,20,.55)'; g.lineWidth = 3; for (let a = -1.6; a <= 1.6; a += 0.2) { g.beginPath(); g.moveTo(w / 2, h); g.lineTo(w / 2 + Math.sin(a) * w, h - Math.cos(a) * w); g.stroke(); }
+});
+TEX.lantern = ctex(256, 512, (g, w, h) => {
+  const gr = g.createRadialGradient(w / 2, h / 2, 10, w / 2, h / 2, h * 0.6); gr.addColorStop(0, '#fff9e8'); gr.addColorStop(1, '#efe0bd'); g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  speckle(g, w, h, 1500, '150,110,60', 0.12);
+  g.fillStyle = '#5c3216'; g.fillRect(w / 2 - 4, 0, 8, h); g.fillRect(0, h / 3 - 4, w, 8); g.fillRect(0, (2 * h) / 3 - 4, w, 8);
+});
+TEX.lanternGlow = ctex(256, 512, (g, w, h) => { g.fillStyle = '#000'; g.fillRect(0, 0, w, h); const gr = g.createRadialGradient(w / 2, h / 2, 10, w / 2, h / 2, h * 0.55); gr.addColorStop(0, '#fff2c8'); gr.addColorStop(1, '#ffb455'); g.fillStyle = gr; g.fillRect(6, 6, w - 12, h - 12); g.fillStyle = '#000'; g.fillRect(w / 2 - 4, 0, 8, h); g.fillRect(0, h / 3 - 4, w, 8); g.fillRect(0, (2 * h) / 3 - 4, w, 8); });
+TEX.scroll = ctex(300, 820, (g, w, h) => {
+  g.fillStyle = '#7d8a49'; g.fillRect(0, 0, w, h);
+  for (let i = 0; i < 1800; i++) { g.fillStyle = `rgba(${rand() > 0.5 ? '230,220,160' : '40,50,20'},${(rand() * 0.09).toFixed(3)})`; g.fillRect(rand() * w, rand() * h, 3, 1); }
+  g.fillStyle = '#c6b27c'; g.fillRect(18, 120, w - 36, h - 240);
+  g.fillStyle = '#d9b44a'; g.fillRect(0, 112, w, 4); g.fillRect(0, h - 116, w, 4);
+  g.save(); g.translate(34, 136); paperBase(g, w - 68, h - 272, '#f7efda', '#ecdfbf'); g.restore();
+  // ensō — a single brush circle, not a word
+  const cx = w / 2, cy = 360, R = 82, a0 = -1.9, a1 = a0 + Math.PI * 1.86;
+  for (let k = 0; k < 220; k++) {
+    const t = k / 219, a = a0 + (a1 - a0) * t, wdt = 4 + 15 * Math.sin(Math.PI * Math.min(1, t * 1.15)) * (1 - t * 0.35);
+    const r = R + Math.sin(t * 9) * 2.5;
+    g.fillStyle = `rgba(22,18,22,${(0.08 + 0.06 * (1 - t)).toFixed(3)})`;
+    for (let q = 0; q < 3; q++) { g.beginPath(); g.ellipse(cx + Math.cos(a) * r + (rand() - 0.5) * 2, cy + Math.sin(a) * r + (rand() - 0.5) * 2, wdt * (0.6 + rand() * 0.5), wdt * 0.42, a + Math.PI / 2, 0, Math.PI * 2); g.fill(); }
+  }
+  for (let k = 0; k < 40; k++) { const t = 0.86 + rand() * 0.14, a = a0 + (a1 - a0) * t; g.fillStyle = 'rgba(22,18,22,.25)'; g.fillRect(cx + Math.cos(a) * (R + (rand() - 0.5) * 18), cy + Math.sin(a) * (R + (rand() - 0.5) * 18), 2, 2); }
+  g.fillStyle = 'rgba(200,57,43,.9)'; g.fillRect(cx + 46, 560, 24, 24); g.fillStyle = 'rgba(255,235,220,.5)'; g.fillRect(cx + 51, 565, 14, 2); g.fillRect(cx + 51, 571, 14, 2); g.fillRect(cx + 51, 577, 9, 2);
+});
+TEX.ink = ctex(512, 640, (g, w, h) => {
+  g.fillStyle = '#17131a'; g.fillRect(0, 0, w, h);
+  g.strokeStyle = '#a3291f'; g.lineWidth = 16; g.strokeRect(22, 22, w - 44, h - 44);
+  g.strokeStyle = 'rgba(255,255,255,.06)'; g.lineWidth = 2; g.strokeRect(40, 40, w - 80, h - 80);
+});
+TEX.stone = ctex(256, 384, (g, w, h) => {
+  g.fillStyle = '#3e3a3b'; g.fillRect(0, 0, w, h); speckle(g, w, h, 6000, '200,200,200', 0.08);
+  const gr = g.createRadialGradient(w / 2, h * 0.24, 5, w / 2, h * 0.24, w * 0.4); gr.addColorStop(0, '#050406'); gr.addColorStop(0.8, '#0c0a0e'); gr.addColorStop(1, 'rgba(12,10,14,0)'); g.fillStyle = gr; g.beginPath(); g.ellipse(w / 2, h * 0.24, w * 0.36, h * 0.15, 0, 0, Math.PI * 2); g.fill();
+});
+// images that arrive later
+TEX.wave = ctex(1024, 700, (g, w, h) => { g.fillStyle = '#e7dbc0'; g.fillRect(0, 0, w, h); });
+TEX.fuji = ctex(512, 512, (g, w, h) => { g.fillStyle = '#9fc4dc'; g.fillRect(0, 0, w, h); });
+TEX.prints = [0, 1, 2].map(() => ctex(512, 360, (g, w, h) => { g.fillStyle = '#fbf6e8'; g.fillRect(0, 0, w, h); }));
+
+/* =====================================================================
+   MATERIALS + helpers
+   ===================================================================== */
+const INK = 0x1d1a1f, GOLD = 0xf2c14e;
+let lanternPaper = null, lanternLight = null;
+const inkMat = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
+const goldMat = new THREE.MeshBasicMaterial({ color: GOLD, side: THREE.BackSide });
+const std = (o) => new THREE.MeshStandardMaterial({ roughness: 0.88, metalness: 0, ...o });
+const M = {
+  wood: std({ map: TEX.wood, roughness: 0.62 }),
+  woodDark: std({ map: TEX.woodDark, roughness: 0.7 }),
+  woodPale: std({ map: TEX.woodPale }),
+  plaster: std({ map: TEX.plaster, roughness: 0.97 }),
+  tatami: std({ map: TEX.tatami, roughness: 0.95 }),
+  shoji: std({ map: TEX.shoji, roughness: 0.95, emissive: 0xfff3dc, emissiveMap: TEX.shoji, emissiveIntensity: 0.32 }),
+  ranma: std({ map: TEX.ranma }),
+  paperSide: std({ color: 0xf1e6c8 }),
+  lacquer: std({ color: 0x17131a, roughness: 0.22, metalness: 0.05 }),
+  lacquerRed: std({ color: 0x8e2a20, roughness: 0.3 }),
+  gold: std({ color: 0xc9a046, roughness: 0.35, metalness: 0.6 })
+};
+function hull(mesh, t = 0.006) {
+  const g = mesh.geometry; g.computeBoundingBox(); const s = new THREE.Vector3(); g.boundingBox.getSize(s);
+  const c = new THREE.Vector3(); g.boundingBox.getCenter(c);
+  const h = new THREE.Mesh(g, inkMat);
+  h.scale.set(1 + (2 * t) / Math.max(s.x, 0.002), 1 + (2 * t) / Math.max(s.y, 0.002), 1 + (2 * t) / Math.max(s.z, 0.002));
+  h.position.copy(c).multiply(new THREE.Vector3(1 - h.scale.x, 1 - h.scale.y, 1 - h.scale.z));
+  h.userData.hull = true; h.raycast = () => {};
+  mesh.add(h); return mesh;
+}
+function boxMesh(w, hgt, d, mats, { outline = 0.006, cast = true, recv = true } = {}) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, hgt, d), mats); m.castShadow = cast; m.receiveShadow = recv;
+  if (outline) hull(m, outline); return m;
+}
+// top-textured slab: [+x, -x, +y, -y, +z, -z]
+const slabMats = (topMat, side = M.paperSide) => [side, side, topMat, side, side, side];
+function blob(w, d, op = 0.9) {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), new THREE.MeshBasicMaterial({ map: TEX.blob, transparent: true, opacity: op, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }));
+  m.rotation.x = -Math.PI / 2; m.renderOrder = 1; m.raycast = () => {}; return m;
+}
+
+/* =====================================================================
+   ROOM
+   ===================================================================== */
+const WALL_Z = -1.1, DESK_Y = 0.34;
+const room = new THREE.Group(); scene.add(room);
+{
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 2.5), M.tatami);
+  floor.rotation.x = -Math.PI / 2; floor.position.set(0, 0, WALL_Z + 1.25); floor.receiveShadow = true; floor.userData.block = true; room.add(floor);
+  const wall = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 2.6), M.plaster);
+  wall.position.set(0, 1.3, WALL_Z); wall.receiveShadow = true; wall.userData.block = true; room.add(wall);
+  const ranma = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 0.26), M.ranma); ranma.position.set(0, 1.49, WALL_Z + 0.004); room.add(ranma);
+  const beam = boxMesh(3.2, 0.06, 0.06, M.wood, { outline: 0.004 }); beam.position.set(0, 1.33, WALL_Z + 0.03); room.add(beam);
+  const skirting = boxMesh(3.2, 0.05, 0.03, M.woodDark, { outline: 0.003 }); skirting.position.set(0, 0.025, WALL_Z + 0.015); room.add(skirting);
+  [-1.5, 1.5].forEach((x) => { const p = boxMesh(0.09, 2.6, 0.08, M.wood, { outline: 0.004 }); p.position.set(x, 1.3, WALL_Z + 0.04); room.add(p); });
+  const beam2 = boxMesh(3.2, 0.07, 0.07, M.woodDark, { outline: 0.004 }); beam2.position.set(0, 1.66, WALL_Z + 0.035); room.add(beam2);
+  [-1.6, 1.6].forEach((x) => {
+    const s = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.6), M.shoji); s.rotation.y = x < 0 ? Math.PI / 2 : -Math.PI / 2; s.position.set(x, 1.3, WALL_Z + 1.2); s.receiveShadow = true; s.userData.block = true; room.add(s);
+    const sill = boxMesh(0.06, 0.05, 2.4, M.woodDark, { outline: 0.003 }); sill.position.set(x, 0.025, WALL_Z + 1.2); room.add(sill);
+  });
+}
+
+/* =====================================================================
+   INTERACTIVE OBJECTS
+   ===================================================================== */
+const OBJS = {};            // key → { root, vis, proxy, hulls, mats, focus, kind }
+const proxies = [], blockers = [];
+function register(key, root, vis, proxySize, proxyOffset, kind, focus) {
+  const proxy = new THREE.Mesh(new THREE.BoxGeometry(...proxySize), new THREE.MeshBasicMaterial({ visible: false }));
+  proxy.position.set(...(proxyOffset || [0, proxySize[1] / 2, 0])); proxy.userData.key = key; root.add(proxy); proxies.push(proxy);
+  const hulls = [], mats = [];
+  // own copies of the materials, so a glint on one object never lights another
+  const own = new Map(), mine = (m) => { if (!m.isMeshStandardMaterial || m === lanternPaper) return m; if (!own.has(m)) { const c = m.clone(); own.set(m, c); mats.push(c); } return own.get(m); };
+  vis.traverse((o) => { if (o.userData.hull) hulls.push(o); else if (o.isMesh && o.material) o.material = Array.isArray(o.material) ? o.material.map(mine) : mine(o.material); });
+  OBJS[key] = { key, root, vis, proxy, hulls, mats, kind, focus, lift: 0, liftT: 0, glow: 0 };
+}
+function onDesk(x, z, rotDeg) { const g = new THREE.Group(); g.position.set(x, DESK_Y, z); g.rotation.y = -rotDeg * D2R; scene.add(g); const v = new THREE.Group(); g.add(v); return [g, v]; }
+
+/* desk */
+{
+  const top = boxMesh(2.24, 0.05, 1.26, [M.wood, M.wood, M.wood, M.woodDark, M.wood, M.wood], { outline: 0.006 });
+  top.position.set(0, DESK_Y - 0.025, -0.01); top.userData.block = true; scene.add(top); blockers.push(top);
+  const apron = boxMesh(2.0, 0.07, 0.05, M.woodDark, { outline: 0.004 }); apron.position.set(0, DESK_Y - 0.085, 0.58); scene.add(apron);
+  const apron2 = apron.clone(); apron2.position.z = -0.6; scene.add(apron2);
+  [-1.0, 1.0].forEach((x) => {
+    const leg = boxMesh(0.12, DESK_Y - 0.05, 1.12, M.woodDark, { outline: 0.004 }); leg.position.set(x, (DESK_Y - 0.05) / 2, -0.01); scene.add(leg);
+    const foot = boxMesh(0.16, 0.03, 1.2, M.wood, { outline: 0.003 }); foot.position.set(x, 0.015, -0.01); scene.add(foot);
+  });
+  const sh = blob(2.9, 1.8, 0.75); sh.position.set(0.05, 0.002, 0.0); scene.add(sh);
+}
+
+/* notebook — about */
+{
+  const [g, v] = onDesk(-0.666, -0.034, -6);
+  const cover = boxMesh(0.68, 0.01, 0.44, slabMats(std({ map: TEX.cover }), std({ color: 0x1c2f52 })), { outline: 0.005 }); cover.position.y = 0.005; v.add(cover);
+  const pm = (tex) => slabMats(std({ map: tex, roughness: 0.95 }), std({ color: 0xeee2c4 }));
+  const pl = boxMesh(0.325, 0.02, 0.41, pm(TEX.pageL), { outline: 0.004 }); pl.position.set(-0.165, 0.02, 0); pl.rotation.z = -0.035; v.add(pl);
+  const pr = boxMesh(0.325, 0.02, 0.41, pm(TEX.pageR), { outline: 0.004 }); pr.position.set(0.165, 0.02, 0); pr.rotation.z = 0.035; v.add(pr);
+  const ribbon = boxMesh(0.018, 0.003, 0.2, std({ color: 0xc8392b }), { outline: 0 }); ribbon.position.set(0.02, 0.031, 0.27); v.add(ribbon);
+  const pencil = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.3, 6), std({ color: 0xe0b23f, roughness: 0.5 })); pencil.rotation.z = Math.PI / 2; pencil.rotation.y = 0.5; pencil.position.set(0.12, 0.012, 0.3); pencil.castShadow = true; hull(pencil, 0.003); v.add(pencil);
+  const b = blob(0.9, 0.62); b.position.y = 0.001; g.add(b);
+  register('about', g, v, [0.7, 0.06, 0.46], null, 'desk', { r: 0.42 });
+}
+/* map scroll — heritage */
+let mapMat;
+{
+  const [g, v] = onDesk(0.13, -0.314, 2.5);
+  mapMat = std({ map: TEX.map, roughness: 0.8 });
+  const sheet = boxMesh(0.74, 0.006, 0.45, slabMats(mapMat, std({ color: 0x1f3a63 })), { outline: 0.004 }); sheet.position.y = 0.003; v.add(sheet);
+  [-0.39, 0.39].forEach((x) => {
+    const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.024, 0.5, 18), M.woodPale); rod.rotation.x = Math.PI / 2; rod.position.set(x, 0.024, 0); rod.castShadow = true; rod.receiveShadow = true; hull(rod, 0.004); v.add(rod);
+    [-0.27, 0.27].forEach((z) => { const k = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.03, 18), M.woodDark); k.rotation.x = Math.PI / 2; k.position.set(x, 0.024, z); k.castShadow = true; hull(k, 0.003); v.add(k); });
+  });
+  const b = blob(1.0, 0.66, 0.8); b.position.y = 0.001; g.add(b);
+  register('heritage', g, v, [0.86, 0.07, 0.56], null, 'desk', { r: 0.46 });
+}
+/* inkstone box — toolbox */
+{
+  const [g, v] = onDesk(0.79, -0.318, -5);
+  const box = boxMesh(0.34, 0.05, 0.42, [M.lacquer, M.lacquer, std({ map: TEX.ink, roughness: 0.25 }), M.lacquer, M.lacquer, M.lacquer], { outline: 0.005 }); box.position.y = 0.025; v.add(box);
+  const stone = boxMesh(0.17, 0.025, 0.28, [M.lacquer, M.lacquer, std({ map: TEX.stone, roughness: 0.55 }), M.lacquer, M.lacquer, M.lacquer], { outline: 0.003 }); stone.position.set(-0.05, 0.062, -0.02); v.add(stone);
+  const stick = boxMesh(0.03, 0.022, 0.16, std({ color: 0x141114, roughness: 0.4 }), { outline: 0.002 }); stick.position.set(0.09, 0.061, -0.06); v.add(stick);
+  const brush = new THREE.Group();
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.011, 0.26, 10), M.woodPale); shaft.castShadow = true; hull(shaft, 0.002); brush.add(shaft);
+  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.014, 0.05, 10), std({ color: 0x141114 })); tip.position.y = -0.155; tip.rotation.x = Math.PI; brush.add(tip);
+  brush.rotation.z = Math.PI / 2; brush.rotation.y = 0.12; brush.position.set(0, 0.062, 0.16); v.add(brush);
+  const b = blob(0.5, 0.6); b.position.y = 0.001; g.add(b);
+  register('toolbox', g, v, [0.38, 0.1, 0.46], null, 'desk', { r: 0.36 });
+}
+/* brush pot — decor */
+{
+  const [g, v] = onDesk(1.036, -0.36, 0);
+  const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.05, 0.13, 24), std({ color: 0x2f5f93, roughness: 0.25 })); pot.position.y = 0.065; pot.castShadow = true; pot.receiveShadow = true; hull(pot, 0.004); v.add(pot);
+  [[-0.015, 0.08], [0.02, -0.1], [0.0, 0.0]].forEach(([dx, rz], i) => { const s = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.24, 8), i % 2 ? M.woodDark : M.woodPale); s.position.set(dx, 0.17, (i - 1) * 0.015); s.rotation.z = rz; s.castShadow = true; hull(s, 0.002); v.add(s); });
+  const b = blob(0.2, 0.2); b.position.y = 0.001; g.add(b);
+}
+/* stitched books — door (classic site) */
+{
+  const [g, v] = onDesk(-0.59, -0.464, -4);
+  const pageSide = std({ map: ctex(256, 32, (gg, w, h) => { gg.fillStyle = '#f2e8cf'; gg.fillRect(0, 0, w, h); gg.fillStyle = 'rgba(150,120,80,.35)'; for (let y = 2; y < h; y += 3) gg.fillRect(0, y, w, 1); }) });
+  [[0, 0.036, 0, 0], [0.012, 0.03, -0.006, 5], [0.004, 0.03, 0.004, -3]].reduce((y, [dx, hgt, dz, rot], i) => {
+    const bk = boxMesh(0.37, hgt, 0.25, [pageSide, pageSide, std({ map: TEX.book[i], roughness: 0.8 }), std({ map: TEX.book[i] }), pageSide, pageSide], { outline: 0.004 });
+    bk.position.set(dx, y + hgt / 2, dz); bk.rotation.y = -rot * D2R; v.add(bk); return y + hgt;
+  }, 0);
+  const b = blob(0.52, 0.4); b.position.y = 0.001; g.add(b);
+  register('door', g, v, [0.42, 0.13, 0.3], null, 'desk', { r: 0.3 });
+}
+/* prints — portfolio */
+let printMats = [];
+{
+  const [g, v] = onDesk(-0.722, 0.384, 3);
+  [[-0.03, 0.012, -9], [0.11, -0.03, 6], [0.04, 0.05, -2]].forEach(([x, z, r], i) => {
+    const m = std({ map: TEX.prints[i], roughness: 0.75 }); printMats.push(m);
+    const p = boxMesh(0.34, 0.004, 0.236, slabMats(m, std({ color: 0xf7f0de })), { outline: 0.003 }); p.position.set(x, 0.002 + i * 0.005, z); p.rotation.y = -r * D2R; v.add(p);
+  });
+  const obi = boxMesh(0.045, 0.006, 0.3, std({ map: TEX.form, roughness: 0.6 }), { outline: 0.003 }); obi.position.set(-0.11, 0.02, 0.05); obi.rotation.y = 0.12; v.add(obi);
+  const b = blob(0.62, 0.5); b.position.y = 0.001; g.add(b);
+  register('portfolio', g, v, [0.5, 0.06, 0.38], null, 'desk', { r: 0.34 });
+}
+/* form — cv */
+{
+  const [g, v] = onDesk(-0.114, 0.304, -3);
+  const p = boxMesh(0.45, 0.004, 0.32, slabMats(std({ map: TEX.cv, roughness: 0.92 }), std({ color: 0xf7efdb })), { outline: 0.003 }); p.position.y = 0.002; v.add(p);
+  const p2 = boxMesh(0.44, 0.004, 0.31, slabMats(std({ color: 0xefe4c8 })), { outline: 0.003 }); p2.position.set(0.012, -0.001, 0.01); p2.rotation.y = 0.04; v.add(p2);
+  const b = blob(0.6, 0.46, 0.7); b.position.y = 0.001; g.add(b);
+  register('cv', g, v, [0.47, 0.04, 0.34], null, 'desk', { r: 0.3 });
+}
+/* letter — contact */
+{
+  const [g, v] = onDesk(0.402, 0.148, 7);
+  const e = boxMesh(0.41, 0.008, 0.256, slabMats(std({ map: TEX.envelope, roughness: 0.92 }), std({ color: 0xe9d7af })), { outline: 0.003 }); e.position.y = 0.004; v.add(e);
+  const wax = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.038, 0.01, 28), std({ color: 0xa8281e, roughness: 0.35 })); wax.position.set(0, 0.013, 0.02); wax.castShadow = true; hull(wax, 0.003); v.add(wax);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.022, 0.004, 8, 24), std({ color: 0x7e1c15, roughness: 0.4 })); ring.rotation.x = Math.PI / 2; ring.position.set(0, 0.019, 0.02); v.add(ring);
+  const b = blob(0.55, 0.4, 0.75); b.position.y = 0.001; g.add(b);
+  register('contact', g, v, [0.44, 0.05, 0.3], null, 'desk', { r: 0.3 });
+}
+/* teacup — omikuji */
+let steam;
+{
+  const [g, v] = onDesk(0.774, 0.02, 0);
+  const pts = [[0, 0], [0.048, 0], [0.05, 0.006], [0.058, 0.04], [0.064, 0.09], [0.066, 0.1], [0.06, 0.1], [0.056, 0.05], [0.04, 0.012], [0, 0.012]].map(([x, y]) => new THREE.Vector2(x, y));
+  const cupTex = ctex(512, 128, (gg, w, h) => { gg.fillStyle = '#e9ddc4'; gg.fillRect(0, 0, w, h); gg.fillStyle = '#1f3a63'; gg.fillRect(0, h * 0.42, w, h * 0.3); gg.strokeStyle = '#efe6d2'; gg.lineWidth = 4; for (let x = 0; x < w; x += 40) { gg.beginPath(); gg.arc(x + 20, h * 0.72, 16, Math.PI, 0); gg.stroke(); } speckle(gg, w, h, 600, '90,70,40', 0.2); });
+  const cup = new THREE.Mesh(new THREE.LatheGeometry(pts, 40), std({ map: cupTex, roughness: 0.28, side: THREE.DoubleSide })); cup.castShadow = true; cup.receiveShadow = true; v.add(cup);
+  const tea = new THREE.Mesh(new THREE.CircleGeometry(0.057, 32), std({ color: 0x7f8f3a, roughness: 0.15 })); tea.rotation.x = -Math.PI / 2; tea.position.y = 0.085; v.add(tea);
+  const sau = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.09, 0.012, 32), M.woodDark); sau.position.y = -0.002; sau.castShadow = true; sau.receiveShadow = true; hull(sau, 0.003); v.add(sau);
+  const geo = new THREE.BufferGeometry(); const n = 14; geo.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(n * 3), 3));
+  steam = new THREE.Points(geo, new THREE.PointsMaterial({ map: TEX.dot, size: 0.05, transparent: true, opacity: 0.35, depthWrite: false, color: 0xffffff }));
+  steam.userData.seed = Array.from({ length: n }, () => [rand(), rand(), rand()]); steam.position.y = 0.1; steam.raycast = () => {}; v.add(steam);
+  const b = blob(0.3, 0.3); b.position.y = 0.001; g.add(b);
+  register('tea', g, v, [0.2, 0.14, 0.2], null, 'desk', { r: 0.22 });
+}
+/* fan — style switch */
+{
+  const [g, v] = onDesk(0.856, 0.35, 10);
+  const fan = new THREE.Mesh(new THREE.RingGeometry(0.07, 0.25, 48, 1, Math.PI * 0.06, Math.PI * 0.88), std({ map: TEX.fan, roughness: 0.75, side: THREE.DoubleSide }));
+  fan.rotation.x = -Math.PI / 2 + 0.08; fan.position.set(0, 0.012, 0.11); fan.castShadow = true; fan.receiveShadow = true; v.add(fan);
+  const pivot = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.016, 16), M.gold); pivot.position.set(0, 0.012, 0.11); v.add(pivot);
+  const b = blob(0.56, 0.36, 0.6); b.position.set(0, 0.001, 0); g.add(b);
+  register('fan', g, v, [0.5, 0.06, 0.28], [0, 0.03, 0], 'desk', { r: 0.3 });
+}
+/* andon lantern — night */
+{
+  const [g, v] = onDesk(-0.944, -0.36, 0);
+  [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => { const l = boxMesh(0.014, 0.36, 0.014, M.woodDark, { outline: 0.002 }); l.position.set(sx * 0.072, 0.18, sz * 0.072); v.add(l); });
+  lanternPaper = std({ map: TEX.lantern, emissive: 0xffffff, emissiveMap: TEX.lanternGlow, emissiveIntensity: 0.05, roughness: 0.95 });
+  const paper = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.22, 0.13), [lanternPaper, lanternPaper, std({ color: 0x5c3216 }), lanternPaper, lanternPaper, lanternPaper]); paper.position.y = 0.2; paper.castShadow = true; hull(paper, 0.003); v.add(paper);
+  const cap = boxMesh(0.17, 0.018, 0.17, M.wood, { outline: 0.003 }); cap.position.y = 0.32; v.add(cap);
+  const base = boxMesh(0.17, 0.018, 0.17, M.wood, { outline: 0.003 }); base.position.y = 0.08; v.add(base);
+  lanternLight = new THREE.PointLight(0xffb35c, 0, 4, 1.7); lanternLight.position.set(0, 0.2, 0); lanternLight.castShadow = !mobile(); lanternLight.shadow.mapSize.set(512, 512); lanternLight.shadow.bias = -0.004; lanternLight.shadow.radius = 4; v.add(lanternLight);
+  const b = blob(0.36, 0.36); b.position.y = 0.001; g.add(b);
+  register('lantern', g, v, [0.2, 0.38, 0.2], null, 'desk', { r: 0.3 });
+}
+
+/* wall pieces */
+function onWall(x, y) { const g = new THREE.Group(); g.position.set(x, y, WALL_Z + 0.006); scene.add(g); const v = new THREE.Group(); g.add(v); return [g, v]; }
+/* hanging scroll — exp */
+{
+  const [g, v] = onWall(-1.13, 0.74);
+  const s = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.84), std({ map: TEX.scroll, roughness: 0.9 })); s.position.z = 0.012; s.receiveShadow = true; v.add(s);
+  [0.43, -0.43].forEach((y) => { const r = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.36, 12), M.woodDark); r.rotation.z = Math.PI / 2; r.position.set(0, y, 0.02); r.castShadow = true; hull(r, 0.003); v.add(r); });
+  const cord = new THREE.Mesh(new THREE.TorusGeometry(0.09, 0.003, 6, 30, Math.PI), std({ color: 0x3a3030 })); cord.position.set(0, 0.43, 0.02); v.add(cord);
+  register('exp', g, v, [0.36, 0.92, 0.05], [0, 0, 0.02], 'wall', { r: 0.5 });
+}
+/* framed print — Hokusai */
+let waveMat;
+{
+  const [g, v] = onWall(-0.34, 0.66);
+  const frame = boxMesh(0.92, 0.65, 0.035, M.lacquer, { outline: 0.004 }); frame.position.z = 0.018; v.add(frame);
+  const mat = new THREE.Mesh(new THREE.PlaneGeometry(0.86, 0.59), std({ color: 0xc9a046, roughness: 0.4, metalness: 0.5 })); mat.position.z = 0.0365; v.add(mat);
+  waveMat = std({ map: TEX.wave, roughness: 0.85 });
+  const art = new THREE.Mesh(new THREE.PlaneGeometry(0.82, 0.55), waveMat); art.position.z = 0.037; art.receiveShadow = true; v.add(art);
+  register('wave', g, v, [0.94, 0.67, 0.06], [0, 0, 0.02], 'wall', { r: 0.48 });
+}
+/* clippings — work */
+{
+  const [g, v] = onWall(0.46, 0.64);
+  [[0, -0.06, 0.06, -0.06, 0.4, 0.5, 0], [0.24, 0.12, 0.08, 0.08, 0.3, 0.28, 1], [0.21, -0.17, 0.09, -0.03, 0.32, 0.26, 2]].forEach(([x, y, z, rot, w, h, k]) => {
+    const p = new THREE.Mesh(new THREE.PlaneGeometry(w, h), std({ map: TEX.news[k], roughness: 0.92 })); p.position.set(x - 0.1, y, 0.004 + k * 0.003); p.rotation.z = rot; p.castShadow = true; p.receiveShadow = true; v.add(p);
+    const tape = new THREE.Mesh(new THREE.PlaneGeometry(0.08, 0.026), new THREE.MeshStandardMaterial({ color: 0xf3e6c4, transparent: true, opacity: 0.85, roughness: 0.6 })); tape.position.set(x - 0.1 + (k ? 0.05 : -0.08), y + h / 2 - 0.006, 0.014 + k * 0.003); tape.rotation.z = rot + (k % 2 ? 0.3 : -0.25); v.add(tape);
+  });
+  // news photo on the main sheet, filled in once the image loads
+  register('work', g, v, [0.66, 0.66, 0.05], [0.0, -0.02, 0.02], 'wall', { r: 0.5 });
+}
+/* round window */
+let fujiMat;
+{
+  const [g, v] = onWall(1.09, 0.92);
+  fujiMat = new THREE.MeshBasicMaterial({ map: TEX.fuji, toneMapped: false });
+  const view = new THREE.Mesh(new THREE.CircleGeometry(0.25, 64), fujiMat); view.position.z = 0.002; v.add(view);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.262, 0.026, 16, 72), std({ color: 0xb98c3e, roughness: 0.6 })); ring.position.z = 0.02; ring.castShadow = true; v.add(ring);
+  const ring2 = new THREE.Mesh(new THREE.TorusGeometry(0.29, 0.006, 8, 72), new THREE.MeshBasicMaterial({ color: INK })); ring2.position.z = 0.02; v.add(ring2);
+  [-0.09, 0.09].forEach((x) => { const bar = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.5, 0.012), M.woodDark); bar.position.set(x, 0, 0.01); v.add(bar); });
+  register('window', g, v, [0.6, 0.6, 0.05], [0, 0, 0.02], 'wall', { r: 0.45 });
+}
+
+/* =====================================================================
+   LIGHTS — daylight through the right shoji, a pool from the round window,
+   warm/cool hemisphere; night switches to the andon.
+   ===================================================================== */
+const hemi = new THREE.HemisphereLight(0xcfdcea, 0x8a5a33, 0.72); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffe9c8, 3.1);
+sun.position.set(3.2, 3.4, 1.4); sun.target.position.set(-0.1, 0.3, -0.25); scene.add(sun, sun.target);
+sun.castShadow = true; sun.shadow.mapSize.set(mobile() ? 1024 : 2048, mobile() ? 1024 : 2048);
+Object.assign(sun.shadow.camera, { left: -1.9, right: 1.9, top: 1.6, bottom: -1.6, near: 0.5, far: 9 });
+sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.015; sun.shadow.radius = 3;
+const fill = new THREE.DirectionalLight(0xc8d6ff, 0.35); fill.position.set(-3, 2.2, 2.6); scene.add(fill);
+const winSpot = new THREE.SpotLight(0xffe0b0, 9, 6, 0.42, 0.85, 1.6);
+winSpot.position.set(1.12, 0.98, WALL_Z - 0.2); winSpot.target.position.set(0.25, DESK_Y, 0.15); scene.add(winSpot, winSpot.target);
+winSpot.castShadow = !mobile(); winSpot.shadow.mapSize.set(1024, 1024); winSpot.shadow.bias = -0.0006; winSpot.shadow.radius = 5;
+// light shaft + floating dust inside it
+const shaftGeo = new THREE.CylinderGeometry(0.24, 0.62, 1, 32, 1, true); shaftGeo.translate(0, -0.5, 0);
+const shaft = new THREE.Mesh(shaftGeo, new THREE.MeshBasicMaterial({ map: TEX.shaft, transparent: true, opacity: 0.11, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, toneMapped: false }));
+{
+  const a = new THREE.Vector3(1.0, 0.86, WALL_Z + 0.16), b = new THREE.Vector3(0.25, DESK_Y + 0.01, 0.15), dir = b.clone().sub(a);
+  shaft.scale.set(1, dir.length(), 1); shaft.position.copy(a); shaft.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), dir.normalize()); shaft.raycast = () => {}; scene.add(shaft);
+}
+const dust = (() => {
+  const n = mobile() ? 50 : 110, pos = new Float32Array(n * 3), seedv = [];
+  for (let i = 0; i < n; i++) { const t = rand(), r = rand() * 0.9; seedv.push([t, r, rand() * 6.28, 0.2 + rand() * 0.8]); }
+  const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const p = new THREE.Points(geo, new THREE.PointsMaterial({ map: TEX.dot, size: 0.012, transparent: true, opacity: 0.8, depthWrite: false, blending: THREE.AdditiveBlending, color: 0xfff0d0, toneMapped: false }));
+  p.userData.seed = seedv; p.raycast = () => {}; scene.add(p); return p;
 })();
+
+/* =====================================================================
+   THEMES
+   ===================================================================== */
+let theme = THEMES.some((t) => t.id === store.get('dtheme')) ? store.get('dtheme') : 'nishiki';
+const LIGHTING = {
+  day: { hemi: [0xcfdcea, 0x8a5a33, 0.72], sun: 3.1, fill: 0.28, spot: [0xffd9a0, 14], shaft: 0.06, dust: 0.85, shoji: 0.36, lantern: 0, paper: 0.05, exposure: 1.0, view: 0xffffff, glint: 0.16 },
+  night: { hemi: [0x2a3a6a, 0x140f18, 0.2], sun: 0, fill: 0.05, spot: [0x9db4ff, 3], shaft: 0.04, dust: 0.25, shoji: 0.015, lantern: 2.8, paper: 1.6, exposure: 1.15, view: 0x34406c, glint: 0.05 }
+};
+let lightNow = { ...LIGHTING.day }, lightFrom = null, lightTo = null, lightT0 = 0;
+function setTheme(id, instant) {
+  theme = id; store.set('dtheme', id); body.dataset.theme = id;
+  const th = THEMES.find((t) => t.id === id);
+  $('#themeKanji').textContent = th.k; $('#themeName').textContent = T(th);
+  const target = LIGHTING[id === 'yoru' ? 'night' : 'day'];
+  lightFrom = { ...lightNow }; lightTo = target; lightT0 = performance.now();
+  if (instant || RM) { applyLight(target); lightFrom = null; }
+  startRain(id === 'sumi');
+  wake(1200);
+}
+function applyLight(L) {
+  lightNow = L;
+  hemi.color.setHex(L.hemi[0]); hemi.groundColor.setHex(L.hemi[1]); hemi.intensity = L.hemi[2];
+  sun.intensity = L.sun; fill.intensity = L.fill; winSpot.color.setHex(L.spot[0]); winSpot.intensity = L.spot[1];
+  shaft.material.opacity = L.shaft; dust.material.opacity = L.dust; M.shoji.emissiveIntensity = L.shoji;
+  lanternLight.intensity = L.lantern; lanternPaper.emissiveIntensity = L.paper; renderer.toneMappingExposure = L.exposure;
+  fujiMat.color.setHex(L.view);
+  renderer.shadowMap.needsUpdate = true;
+}
+function stepLight(now) {
+  if (!lightFrom) return false;
+  const t = ease(clamp((now - lightT0) / 900, 0, 1)), a = lightFrom, b = lightTo, c = new THREE.Color(), c2 = new THREE.Color();
+  const mixHex = (x, y) => c.setHex(x).lerp(c2.setHex(y), t).getHex();
+  applyLight({ hemi: [mixHex(a.hemi[0], b.hemi[0]), mixHex(a.hemi[1], b.hemi[1]), lerp(a.hemi[2], b.hemi[2], t)], sun: lerp(a.sun, b.sun, t), fill: lerp(a.fill, b.fill, t), spot: [mixHex(a.spot[0], b.spot[0]), lerp(a.spot[1], b.spot[1], t)], shaft: lerp(a.shaft, b.shaft, t), dust: lerp(a.dust, b.dust, t), shoji: lerp(a.shoji, b.shoji, t), lantern: lerp(a.lantern, b.lantern, t), paper: lerp(a.paper, b.paper, t), exposure: lerp(a.exposure, b.exposure, t), view: mixHex(a.view, b.view), glint: lerp(a.glint, b.glint, t) });
+  if (t >= 1) { lightNow = { ...b }; lightFrom = null; }
+  return true;
+}
+
+/* =====================================================================
+   CAMERA — home framing + per-object focus, eased; view offset for the panel
+   ===================================================================== */
+const camS = { tx: 0, ty: 0.42, tz: -0.3, dist: 5, elev: 47, azim: 0, ox: 0, oy: 0, fov: 26 };
+let camFrom = null, camTo = null, camT0 = 0, camDur = 750, pan = 0, panT = 0;
+const par = { x: 0, y: 0, tx: 0, ty: 0 };
+let focused = null;
+function fitDist(halfW, halfH, fov) {
+  const a = innerWidth / innerHeight, v = Math.tan((fov * D2R) / 2), h = v * a;
+  return Math.max(halfW / h, halfH / v);
+}
+function homeState() {
+  const mob = mobile(), fov = mob ? 34 : 26;
+  return { tx: 0, ty: mob ? 0.36 : 0.42, tz: mob ? -0.16 : -0.3, dist: fitDist(mob ? 0.86 : 1.62, mob ? 1.2 : 1.02, fov), elev: mob ? 58 : 46, azim: 0, ox: 0, oy: mob ? -0.07 : 0, fov };
+}
+function focusState(key) {
+  const o = OBJS[key], wp = new THREE.Vector3(); o.proxy.getWorldPosition(wp);
+  const mob = mobile(), fov = mob ? 34 : 26, r = o.focus.r;
+  const share = mob ? 0.8 : 0.5; // fraction of width left for the object
+  const dist = fitDist(r / share, r / (mob ? 0.3 : 0.62), fov);
+  const wall = o.kind === 'wall';
+  return { tx: wp.x, ty: wp.y, tz: wp.z, dist, elev: wall ? 16 : 66, azim: wall ? 0 : -6, ox: mob ? 0 : 0.24, oy: mob ? 0.27 : 0, fov };
+}
+function camGo(to, dur = 750) { camFrom = { ...camS }; camTo = to; camT0 = performance.now(); camDur = RM ? 1 : dur; panT = 0; }
+function stepCam(now) {
+  let moving = false;
+  if (camTo) {
+    const t = ease(clamp((now - camT0) / camDur, 0, 1));
+    for (const k in camTo) camS[k] = lerp(camFrom[k], camTo[k], t);
+    if (t >= 1) camTo = null; moving = true;
+  }
+  if (Math.abs(panT - pan) > 1e-4) { pan += (panT - pan) * 0.18; moving = true; }
+  if (Math.abs(par.tx - par.x) + Math.abs(par.ty - par.y) > 1e-4) { par.x += (par.tx - par.x) * 0.06; par.y += (par.ty - par.y) * 0.06; moving = true; }
+  const el = (camS.elev + (focused ? 0 : par.y * 2.2)) * D2R, az = (camS.azim + (focused ? 0 : par.x * 3.2)) * D2R;
+  const tx = camS.tx + (focused ? 0 : pan);
+  camera.fov = camS.fov;
+  camera.position.set(tx + camS.dist * Math.cos(el) * Math.sin(az), camS.ty + camS.dist * Math.sin(el), camS.tz + camS.dist * Math.cos(el) * Math.cos(az));
+  camera.lookAt(tx, camS.ty, camS.tz);
+  const W = innerWidth, H = innerHeight;
+  camera.setViewOffset(W, H, camS.ox * W, camS.oy * H, W, H);
+  camera.updateProjectionMatrix();
+  return moving;
+}
+function resize() {
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, mobile() ? 1.75 : 2));
+  renderer.setSize(innerWidth, innerHeight, false);
+  camera.aspect = innerWidth / innerHeight;
+  Object.assign(camS, focused ? focusState(focused) : homeState()); camTo = null;
+  sizeRain(); wake(300);
+}
+
+/* =====================================================================
+   PICKING — invisible rest-position boxes, nearest wins, desk/walls occlude;
+   touch gets a tolerance ring so small things are easy to hit.
+   ===================================================================== */
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+blockers.push(...room.children.filter((o) => o.userData.block));
+function pickAt(x, y, touch) {
+  const offs = touch ? [[0, 0], [12, 0], [-12, 0], [0, 12], [0, -12], [9, 9], [-9, 9], [9, -9], [-9, -9], [20, 0], [-20, 0], [0, 18]] : [[0, 0]];
+  for (const [dx, dy] of offs) {
+    ndc.set(((x + dx) / innerWidth) * 2 - 1, -((y + dy) / innerHeight) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    const hit = ray.intersectObjects([...proxies, ...blockers], false)[0];
+    if (hit && hit.object.userData.key) return hit.object.userData.key;
+  }
+  return null;
+}
+
+/* =====================================================================
+   UI — hover, tooltip, panel, index, toast, sound, reader, language
+   ===================================================================== */
+let hovered = null, lastInteract = performance.now(), activeUntil = 0;
+const wake = (ms = 600) => { activeUntil = Math.max(activeUntil, performance.now() + ms); };
+const tip = $('#tip');
+function setHover(key, x, y) {
+  if (key !== hovered) {
+    if (hovered && OBJS[hovered]) { OBJS[hovered].liftT = 0; OBJS[hovered].hulls.forEach((h) => (h.material = inkMat)); }
+    hovered = key;
+    if (key && OBJS[key] && !focused) { OBJS[key].liftT = 1; OBJS[key].hulls.forEach((h) => (h.material = goldMat)); clack(0.45); }
+    canvas.style.cursor = key && !focused ? 'pointer' : '';
+    wake(600);
+  }
+  if (key && !focused && x != null) {
+    tip.textContent = T(NAMES[key] || SEC[key] || { zh: key, en: key });
+    tip.style.left = Math.min(x + 16, innerWidth - tip.offsetWidth - 10) + 'px'; tip.style.top = Math.max(10, y - 38) + 'px'; tip.classList.add('on');
+  } else tip.classList.remove('on');
+}
+const panel = $('#panel'), pBody = $('#panelBody');
+let openTimer = 0;
+function fillTitle(key) { const s = SEC[key] || { k: '籤', zh: 'おみくじ · 抽签', en: 'Omikuji' }; $('#panelTitle').textContent = T(s); $('#panelKanji').textContent = s.k; }
+const fortunes = [
+  ['大吉', 'Great luck', '今日召回率 +10%，评审一次过。', 'Recall +10% today; reviewers say yes.'],
+  ['中吉', 'Good luck', 'Docker Compose 一次 up 成功。', 'docker compose up works on the first try.'],
+  ['小吉', 'Small luck', '图谱里会冒出一个意外的好关联。', 'The graph surfaces a pleasant surprise link.'],
+  ['吉', 'Luck', '今天的 Prompt 不会被模型误解。', 'The model will understand your prompt today.'],
+  ['末吉', 'Future luck', '先喝口茶，bug 自己会现形。', 'Drink tea first; the bug will reveal itself.']
+];
+let fi = Math.floor(Math.random() * fortunes.length);
+function openSection(key) {
+  if (body.classList.contains('read')) setReader(false);
+  focused = key; setHover(null); body.classList.add('zoomed'); clearTimeout(openTimer);
+  camGo(focusState(key)); clack(1); wake(1200);
+  const show = () => {
+    fillTitle(key); pBody.innerHTML = '';
+    if (key === 'tea') { const f = fortunes[fi++ % fortunes.length]; pBody.innerHTML = `<div class="omikuji"><div class="big">${f[0]}</div><p>${isEn() ? f[3] : f[2]}</p><p class="dim">${f[1]}</p></div><p class="dim">${isEn() ? 'Click the tea again for another fortune.' : '再点一次茶碗，可以重新抽签。'}</p>`; }
+    else pBody.appendChild($('#t-' + key).content.cloneNode(true));
+    pBody.scrollTop = 0; panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false'); $('#panelClose').focus({ preventScroll: true });
+  };
+  if (panel.classList.contains('open') || RM) show(); else openTimer = setTimeout(show, 480);
+  if (SEC[key] && location.hash !== '#' + key) history.replaceState(null, '', '#' + key);
+  renderIndex();
+}
+function closeSection() {
+  if (!focused) return;
+  focused = null; clearTimeout(openTimer); panel.classList.remove('open'); panel.setAttribute('aria-hidden', 'true'); body.classList.remove('zoomed');
+  camGo(homeState(), 700); wake(900);
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  renderIndex();
+}
+let toastTimer = 0;
+function toast(s) { const el = $('#toast'); el.textContent = s; el.classList.add('on'); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('on'), 2800); }
+function activate(key) {
+  if (!key) return;
+  lastInteract = performance.now(); explored.add(key); hideHint();
+  const o = OBJS[key]; if (o) { o.pop = performance.now(); }
+  if (SEC[key] || key === 'tea') return openSection(key);
+  if (focused) closeSection();
+  if (key === 'lantern') { const night = theme !== 'yoru'; if (night) store.set('dayTheme', theme); setTheme(night ? 'yoru' : store.get('dayTheme') || 'nishiki'); return toast(night ? T({ zh: '点亮行灯。', en: 'Lantern lit.' }) : T({ zh: '熄灯，天亮了。', en: 'Lantern out — morning.' })); }
+  if (key === 'fan') { const i = THEMES.findIndex((t) => t.id === theme), n = THEMES[(i + 1) % THEMES.length]; if (n.id !== 'yoru') store.set('dayTheme', n.id); setTheme(n.id); return toast(T({ zh: '画风：' + n.zh, en: 'Style: ' + n.en })); }
+  if (key === 'wave') return toast(T({ zh: '葛饰北斋《神奈川冲浪里》，公有领域。', en: 'Hokusai, The Great Wave off Kanagawa (public domain).' }));
+  if (key === 'window') return toast(T({ zh: '窗外是北斋的《凯风快晴》。', en: 'Outside: Hokusai’s Red Fuji.' }));
+}
+$('#panelClose').addEventListener('click', closeSection);
+addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeSection(); $('#index').classList.remove('open'); } });
+addEventListener('hashchange', () => { const k = location.hash.slice(1); if (SEC[k]) openSection(k); });
+
+/* index (collapsed by default — the desk is meant to be explored) */
+const explored = new Set();
+function renderIndex() {
+  const list = $('#indexList');
+  list.innerHTML = SECTIONS.map((s) => `<button type="button" data-id="${s.id}" class="${focused === s.id ? 'on' : ''}${explored.has(s.id) ? ' seen' : ''}"><i>${s.k}</i>${T(s)}</button>`).join('');
+  $('#indexCount').textContent = `${SECTIONS.filter((s) => explored.has(s.id)).length}/${SECTIONS.length}`;
+}
+$('#indexBtn').addEventListener('click', () => { const on = !$('#index').classList.contains('open'); $('#index').classList.toggle('open', on); $('#indexBtn').setAttribute('aria-expanded', String(on)); });
+$('#indexList').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; $('#index').classList.remove('open'); activate(b.dataset.id); });
+
+/* hint — one quiet line, gone after the first discovery */
+let hintTimer = setTimeout(() => $('#hint').classList.add('on'), 1600);
+function hideHint() { clearTimeout(hintTimer); $('#hint').classList.remove('on'); }
+
+/* pointer */
+let down = null;
+canvas.addEventListener('pointerdown', (e) => { down = { x: e.clientX, y: e.clientY, id: e.pointerId, moved: false, touch: e.pointerType !== 'mouse', pan: panT }; try { canvas.setPointerCapture(e.pointerId); } catch (er) {} });
+canvas.addEventListener('pointermove', (e) => {
+  if (down && down.id === e.pointerId) {
+    const dx = e.clientX - down.x, dy = e.clientY - down.y;
+    if (!down.moved && Math.hypot(dx, dy) > 8) { down.moved = true; setHover(null); }
+    if (down.moved && !focused) { const lim = mobile() ? 0.62 : 0.35; panT = clamp(down.pan - (dx / innerWidth) * (mobile() ? 2.2 : 1.6), -lim, lim); wake(400); }
+    return;
+  }
+  if (e.pointerType !== 'mouse') return;
+  par.tx = (e.clientX / innerWidth - 0.5) * 2; par.ty = (e.clientY / innerHeight - 0.5) * 2; wake(500);
+  setHover(focused ? null : pickAt(e.clientX, e.clientY, false), e.clientX, e.clientY);
+});
+function endPointer(e, cancel) {
+  if (!down || down.id !== e.pointerId) return;
+  const d = down; down = null;
+  if (cancel || d.moved) return;
+  const key = pickAt(e.clientX, e.clientY, d.touch);
+  if (key && key !== focused) activate(key);
+  else if (!key && focused) closeSection();
+}
+canvas.addEventListener('pointerup', (e) => endPointer(e, false));
+canvas.addEventListener('pointercancel', (e) => endPointer(e, true));
+canvas.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') { setHover(null); par.tx = par.ty = 0; } });
+
+/* sound: wooden clapper */
+let actx = null, soundOn = store.get('sound') === '1';
+function clack(gain = 1) {
+  if (!soundOn) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = actx.currentTime;
+    [0, 0.055].forEach((off, i) => { const o = actx.createOscillator(), g = actx.createGain(), f = actx.createBiquadFilter(); o.type = 'triangle'; o.frequency.setValueAtTime(i ? 1180 : 920, t + off); f.type = 'bandpass'; f.frequency.value = 1400; f.Q.value = 3; g.gain.setValueAtTime(0.0001, t + off); g.gain.exponentialRampToValueAtTime(0.2 * gain, t + off + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t + off + 0.09); o.connect(f).connect(g).connect(actx.destination); o.start(t + off); o.stop(t + off + 0.1); });
+  } catch (e) {}
+}
+function setSound(v) { soundOn = v; store.set('sound', v ? '1' : '0'); $('#btnSound').setAttribute('aria-pressed', String(v)); }
+$('#btnSound').addEventListener('click', () => { setSound(!soundOn); clack(1); });
+$('#btnTheme').addEventListener('click', () => activate('fan'));
+
+/* language + reader */
+function setLang(l) { body.dataset.lang = l; document.documentElement.lang = l === 'en' ? 'en' : 'zh-CN'; renderIndex(); const th = THEMES.find((t) => t.id === theme); $('#themeName').textContent = T(th); if (focused) fillTitle(focused); }
+$('#btnLang').addEventListener('click', () => { const n = isEn() ? 'zh' : 'en'; setLang(n); store.set('lang', n); });
+function setReader(on) {
+  body.classList.toggle('read', on); $('#btnMode').setAttribute('aria-pressed', String(on));
+  if (on) {
+    if (focused) closeSection();
+    const r = $('#reader');
+    if (!r.childElementCount) SECTIONS.forEach((s) => { const sec = document.createElement('section'); sec.innerHTML = `<h2><i>${s.k}</i><span class="lang-zh">${s.zh}</span><span class="lang-en">${s.en}</span></h2>`; sec.appendChild($('#t-' + s.id).content.cloneNode(true)); r.appendChild(sec); });
+    scrollTo(0, 0);
+  } else resize();
+  store.set('reader', on ? '1' : '0');
+}
+$('#btnMode').addEventListener('click', () => setReader(!body.classList.contains('read')));
+$('#brand').addEventListener('click', (e) => { e.preventDefault(); if (body.classList.contains('read')) setReader(false); closeSection(); });
+
+/* rain for 墨摺 (screen-space, on its own canvas) */
+const rc = $('#rain'), rx = rc.getContext('2d');
+let drops = [], rainOn = false;
+function sizeRain() { rc.width = innerWidth; rc.height = innerHeight; }
+function startRain(on) { rainOn = on && !RM; if (rainOn) { sizeRain(); drops = Array.from({ length: Math.round((innerWidth * innerHeight) / 3600) }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, l: 24 + Math.random() * 46, v: 9 + Math.random() * 9 })); } else rx.clearRect(0, 0, rc.width, rc.height); }
+function drawRain() {
+  if (!rainOn) return;
+  rx.clearRect(0, 0, rc.width, rc.height); rx.strokeStyle = 'rgba(24,22,28,.5)'; rx.lineWidth = 1.4; rx.beginPath();
+  for (const d of drops) { rx.moveTo(d.x, d.y); rx.lineTo(d.x - d.l * 0.12, d.y + d.l); d.y += d.v; d.x -= d.v * 0.12; if (d.y > rc.height) { d.y = -d.l; d.x = Math.random() * (rc.width + 80); } }
+  rx.stroke();
+}
+
+/* =====================================================================
+   LATE IMAGES — public-domain prints + the author's own work
+   ===================================================================== */
+Promise.all(['assets/ukiyoe/wave.webp', 'assets/ukiyoe/fuji.webp', 'assets/gisauto_hero.webp', 'assets/interface.jpg',
+  'assets/ai_portfolio/ai_star.jpg', 'assets/ai_portfolio/ai_qingming.jpg', 'assets/ai_portfolio/ai_twodimensional.jpg'].map(loadImg)).then(([wave, fuji, gis, iface, star, qm, two]) => {
+  TEX.wave.userData.redraw((g, w, h) => { cover(g, wave, 0, 0, w, h); });
+  TEX.fuji.userData.redraw((g, w, h) => { cover(g, fuji, 0, 0, w, h, 0.78, 0.55); });
+  TEX.map.userData.redraw((g, w, h) => { cover(g, gis, 46, 42, w - 92, h - 84, 0.35, 0.4); g.fillStyle = 'rgba(240,226,190,.08)'; g.fillRect(46, 42, w - 92, h - 84); });
+  TEX.news[0].userData.redraw((g, w, h) => { g.save(); g.filter = 'grayscale(1) contrast(1.25) sepia(.35)'; cover(g, iface, 26, h * 0.46, w - 120, h * 0.32); g.restore(); g.strokeStyle = '#1d1a1f'; g.lineWidth = 3; g.strokeRect(26, h * 0.46, w - 120, h * 0.32); });
+  [star, qm, two].forEach((im, i) => TEX.prints[i].userData.redraw((g, w, h) => { g.fillStyle = '#fbf6e8'; g.fillRect(0, 0, w, h); cover(g, im, 20, 20, w - 40, h - 40); g.strokeStyle = 'rgba(29,26,31,.6)'; g.lineWidth = 2; g.strokeRect(20, 20, w - 40, h - 40); }));
+  renderer.shadowMap.needsUpdate = true; wake(500);
+});
+
+/* =====================================================================
+   LOOP — full rate while something moves, ~24 fps when idle
+   ===================================================================== */
+const clock = new THREE.Clock();
+let lastRender = 0, glintAt = performance.now() + 5000, glintKey = null;
+const GLINT_KEYS = ['about', 'heritage', 'work', 'exp', 'portfolio', 'toolbox', 'contact', 'cv', 'door', 'lantern', 'fan'];
+function frame(now) {
+  requestAnimationFrame(frame);
+  if (body.classList.contains('read')) return;
+  const dt = Math.min(0.05, clock.getDelta()), t = now / 1000;
+  let busy = stepCam(now) | stepLight(now);
+  // hover lift + click pop (visual only — hit boxes stay at rest)
+  for (const k in OBJS) {
+    const o = OBJS[k];
+    const popT = o.pop ? (now - o.pop) / 420 : 1, popY = popT < 1 ? Math.sin(popT * Math.PI) * 0.03 : 0;
+    o.lift += (o.liftT - o.lift) * Math.min(1, dt * 14);
+    const y = o.lift * 0.022 + popY;
+    if (Math.abs(o.vis.position.y - y) > 1e-5) { o.vis.position.y = y; busy = true; renderer.shadowMap.needsUpdate = true; }
+  }
+  // idle glint: one object quietly catches the light, nothing is labelled
+  if (!focused && !hovered && !RM && now > glintAt) { glintKey = GLINT_KEYS.filter((k) => !explored.has(k))[Math.floor(Math.random() * GLINT_KEYS.length)] || GLINT_KEYS[Math.floor(Math.random() * GLINT_KEYS.length)]; glintAt = now + 4200 + Math.random() * 2500; OBJS[glintKey].glowT0 = now; }
+  for (const k in OBJS) {
+    const o = OBJS[k], g = o.glowT0 ? (now - o.glowT0) / 1100 : 1, v = g < 1 ? Math.sin(g * Math.PI) * lightNow.glint : 0, hv = o.lift * lightNow.glint * 0.35;
+    const e = Math.max(v, hv);
+    if (Math.abs((o.glow || 0) - e) > 1e-3) { o.glow = e; o.mats.forEach((m) => { if (m === lanternPaper) return; m.emissive.setRGB(1, 0.86, 0.6); m.emissiveIntensity = e; }); busy = true; }
+  }
+  // ambient life
+  if (!RM) {
+    const sp = steam.geometry.attributes.position;
+    steam.userData.seed.forEach(([a, b, c], i) => { const ph = (t * 0.25 + a) % 1; sp.setXYZ(i, Math.sin(t * 1.3 + c * 6) * 0.02 * ph + (b - 0.5) * 0.03, ph * 0.22, (c - 0.5) * 0.03); });
+    sp.needsUpdate = true; steam.material.opacity = theme === 'yoru' ? 0.18 : 0.32;
+    const dp = dust.geometry.attributes.position, A = new THREE.Vector3(1.09, 0.92, WALL_Z + 0.05), B = new THREE.Vector3(0.25, DESK_Y + 0.05, 0.15);
+    dust.userData.seed.forEach(([u, r, ph, sp2], i) => { const s = (u + t * 0.008 * sp2) % 1, p = A.clone().lerp(B, s), rad = lerp(0.2, 0.5, s) * r; dp.setXYZ(i, p.x + Math.cos(ph + t * 0.3 * sp2) * rad, p.y + Math.sin(ph * 1.7 + t * 0.21) * rad * 0.6, p.z + Math.sin(ph + t * 0.25 * sp2) * rad); });
+    dp.needsUpdate = true;
+    if (theme === 'yoru') { lanternLight.intensity = lightNow.lantern * (1 + Math.sin(t * 9) * 0.035 + Math.sin(t * 23) * 0.02); }
+    drawRain();
+  }
+  const active = busy || now < activeUntil || rainOn;
+  if (!active && now - lastRender < 42) return;
+  lastRender = now;
+  renderer.render(scene, camera);
+}
+
+/* =====================================================================
+   BOOT
+   ===================================================================== */
+{ const l = store.get('lang'); setLang(l === 'en' || l === 'zh' ? l : (navigator.language || '').toLowerCase().startsWith('zh') ? 'zh' : 'en'); }
+setSound(soundOn);
+renderIndex();
+resize();
+setTheme(theme, true);
+renderer.shadowMap.needsUpdate = true;
+stepCam(performance.now());
+renderer.render(scene, camera);
+$('#loader').classList.add('done');
+if (store.get('reader') === '1') setReader(true);
+{ const h = location.hash.slice(1); if (SEC[h]) setTimeout(() => openSection(h), 250); }
+addEventListener('resize', resize);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { clock.getDelta(); wake(300); } });
+window.__deskReady = true;
+requestAnimationFrame(frame);
+
+</script>
+<script>
+  // if WebGL / modules are unavailable, fall back to the reader view (built without the module)
+  window.__deskFallback = function () {
+    if (window.__deskFell) return; window.__deskFell = true;
+    var b = document.body, r = document.getElementById('reader');
+    var names = { about: ['自己紹介 · 关于我', 'About'], heritage: ['HeritageExplorer', 'HeritageExplorer'], work: ['论文 · 专利 · 项目', 'Papers · Patents · Projects'], exp: ['经历', 'Timeline'], portfolio: ['AI 作品集', 'AI Portfolio'], toolbox: ['技能 · 工具链', 'Toolbox'], contact: ['联系', 'Contact'], cv: ['简历', 'CV'], door: ['经典版主页', 'Classic site'] };
+    if (!r.childElementCount) Object.keys(names).forEach(function (id) {
+      var t = document.getElementById('t-' + id); if (!t) return;
+      var s = document.createElement('section'); s.innerHTML = '<h2><span class="lang-zh">' + names[id][0] + '</span><span class="lang-en">' + names[id][1] + '</span></h2>';
+      s.appendChild(t.content.cloneNode(true)); r.appendChild(s);
+    });
+    b.classList.add('read', 'nogl'); var l = document.getElementById('loader'); if (l) l.classList.add('done');
+  };
+  setTimeout(function () { if (!window.__deskReady) window.__deskFallback(); }, 7000);
 </script>
 </body>
 </html>
