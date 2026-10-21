@@ -192,7 +192,7 @@
     <button class="btn" id="btnMode" type="button" aria-pressed="false"><span class="lang-zh">阅读模式</span><span class="lang-en">Reader</span></button>
     <button class="btn" id="btnSound" type="button" aria-pressed="false"><span class="lang-zh">拍子木</span><span class="lang-en">Sound</span></button>
     <button class="btn" id="btnLang" type="button"><span class="lang-zh">EN</span><span class="lang-en">中文</span></button>
-    <a class="btn red" href="CV_Yusong_Wang.docx"><span class="lang-zh">简历</span><span class="lang-en">CV</span></a>
+    <a class="btn red" href="CV_Yusong_Wang.pdf"><span class="lang-zh">简历</span><span class="lang-en">CV</span></a>
   </div>
 </header>
 
@@ -222,9 +222,9 @@
 <template id="t-about">
   <img class="portrait" src="assets/yusong_portrait.webp" alt="Yusong Wang" width="110" />
   <h3><span class="lang-zh">自己紹介 · 王钰淞</span><span class="lang-en">About · Yusong Wang</span></h3>
-  <p><span class="lang-zh">香港科技大学（广州）计算媒体与艺术 MPhil，前中科院上海微系统所嵌入式工程师。关注 GIS 可视化、知识图谱、多模态检索与文化遗产计算。</span><span class="lang-en">MPhil student in Computational Media &amp; Arts at HKUST(GZ), formerly an embedded engineer at CAS SIMIT. I work across GIS visualization, knowledge graphs, multimodal retrieval, and computational heritage.</span></p>
-  <div class="tags"><span class="tag">HKUST(GZ) · MPhil</span><span class="tag">VINCI 2025 · 1st author</span><span class="tag">CHI 2025 · co-author</span><span class="tag">4 patents + 1 SW©</span></div>
-  <p class="dim"><span class="lang-zh">状态：寻找全职机会 · 多模态 Agent 落地 · 遗产叙事 · 可解释 RAG</span><span class="lang-en">Status: open to full-time roles · multimodal agents · heritage storytelling · explainable RAG</span></p>
+  <p><span class="lang-zh">香港科技大学（广州）计算媒体与艺术 MPhil，前中科院上海微系统所嵌入式工程师。关注 GIS 可视化、知识图谱、多模态检索与文化遗产计算；2026 年起以 Claude Code / Codex 多 Agent 协作，独立交付了 15 个企业业务系统和一套 LLM 网关。</span><span class="lang-en">MPhil student in Computational Media &amp; Arts at HKUST(GZ), formerly an embedded engineer at CAS SIMIT. I work across GIS visualization, knowledge graphs, multimodal retrieval, and computational heritage. Since 2026 I have used Claude Code / Codex multi-agent workflows to ship 15 business systems and an in-house LLM gateway on my own.</span></p>
+  <div class="tags"><span class="tag">HKUST(GZ) · MPhil</span><span class="tag">VINCI 2025 · 1st author</span><span class="tag">CHI 2025 · co-author</span><span class="tag">4 patents + 1 SW©</span><span class="tag">15 systems · AI-native</span></div>
+  <p class="dim"><span class="lang-zh">状态：寻找全职机会 · AI Agent 工程化落地 · 多模态 RAG · 全栈系统</span><span class="lang-en">Status: open to full-time roles · agentic engineering · multimodal RAG · full-stack systems</span></p>
 </template>
 
 <template id="t-heritage">
@@ -261,6 +261,21 @@
     <div><b>4</b><span class="lang-zh">发明专利</span><span class="lang-en">patents</span></div>
     <div><b>1</b><span class="lang-zh">软件著作权</span><span class="lang-en">software copyright</span></div>
   </div>
+  <h3><span class="lang-zh">企业系统 · AI 原生交付（2026）</span><span class="lang-en">Business systems · AI-native delivery (2026)</span></h3>
+  <p class="dim"><span class="lang-zh">以 Claude Code / Codex 为主力，独立承担调研、设计评审、实现、测试、部署与运维；协作规范按“宪法—路由—Skills—Hooks 门禁—评测”五层组织，每个里程碑都有真测证据和独立盲审。</span><span class="lang-en">Claude Code / Codex do most of the typing; I own research, design review, implementation, testing, deployment and operations. The workflow is layered as constitution → router → skills → hook gates → evals, with real-run evidence and a blind review at every milestone.</span></p>
+  <div class="stats">
+    <div><b>15</b><span class="lang-zh">在用系统</span><span class="lang-en">systems in use</span></div>
+    <div><b>16</b><span class="lang-zh">主力仓库</span><span class="lang-en">main repos</span></div>
+    <div><b>~2,800</b><span class="lang-zh">次提交</span><span class="lang-en">commits</span></div>
+    <div><b>347</b><span class="lang-zh">例 ERP 测试</span><span class="lang-en">ERP tests</span></div>
+  </div>
+  <img class="shot" src="assets/dipark_overview.webp" alt="DIPARK 智慧云仓运营总览（演示数据）/ DIPARK operations overview (demo data)" width="2000" height="1105" loading="lazy" />
+  <div class="row"><span class="k">2026.08</span><div><b><span class="lang-zh">AI 中台 · LLM 网关</span><span class="lang-en">AI hub · LLM gateway</span></b><small><span class="lang-zh">零依赖 Node 22，作为全部系统唯一的大模型出口：18 个系统独立 Key、模型别名路由、9 类引擎巡检、逐笔计费与钱包续航告警。</span><span class="lang-en">Zero-dependency Node 22 service and the only LLM exit for every system: per-system keys for 18 apps, model alias routing, health probes for 9 engines, per-call cost ledger and budget alerts.</span></small></div></div>
+  <div class="row"><span class="k">2026.07</span><div><b><span class="lang-zh">智慧云仓 DIPARK</span><span class="lang-en">DIPARK smart park</span></b><small><span class="lang-zh">Spring Boot 3 + Vue 3 园区运营系统：招商—合同—账单—收款闭环，收款幂等与领域事件，3D 楼宇运营总览（上图为演示数据）。</span><span class="lang-en">Spring Boot 3 + Vue 3 park operations: leasing → contract → billing → payment, idempotent receipts and domain events, a 3D building overview (demo data above).</span></small></div></div>
+  <div class="row"><span class="k">2026.08</span><div><b><span class="lang-zh">售卖机 ERP · 租赁业务</span><span class="lang-en">Vending ERP · Leasing</span></b><small><span class="lang-zh">业财一体进销存：40 张表、22 个模块、347 例自动化测试，(R,S) 补货引擎，历史流水导入分毫不差；租赁板块含 IRR 报价与租金计划勾稽。</span><span class="lang-en">Inventory + finance in one: 40 tables, 22 modules, 347 automated tests, an (R,S) replenishment engine and exact legacy import; the leasing module adds IRR quotes and reconciled rent schedules.</span></small></div></div>
+  <div class="row"><span class="k">2026.08</span><div><b><span class="lang-zh">知人 · AI 人资中枢</span><span class="lang-en">Zhiren · AI HR hub</span></b><small><span class="lang-zh">合并人事、培训、招聘三套系统并与钉钉同步；AI 写操作必须落成待人确认的流程，LLM 只经中台调用。</span><span class="lang-en">Merges HR, training and recruiting into one system synced with DingTalk; every AI write becomes a step a person confirms, and LLM calls go only through the hub.</span></small></div></div>
+  <div class="row"><span class="k">2026.08</span><div><b><span class="lang-zh">门户 SSO · Ops Monitor</span><span class="lang-en">Portal SSO · Ops Monitor</span></b><small><span class="lang-zh">24 个系统统一入口、按人授权免二次登录；运维总览监控 27 个服务入口、23 个 n8n 定时任务与三条备份链路。</span><span class="lang-en">One door for 24 systems with per-person access and no second login; the ops board watches 27 endpoints, 23 n8n jobs and three backup chains.</span></small></div></div>
+  <div class="row"><span class="k">2026.05</span><div><b><span class="lang-zh">更多独立项目</span><span class="lang-en">More</span></b><small><span class="lang-zh">财务中心工具箱、AI 用量中台、资产罗盘（家庭数字家办 PWA）、洪源润收藏管家（Expo + Supabase）、火星账局（一句话记账 PWA）。</span><span class="lang-en">Finance toolbox, AI usage center, Asset Compass (family-office PWA), a collectibles vault (Expo + Supabase) and a one-sentence ledger PWA.</span></small></div></div>
   <h3><span class="lang-zh">工程项目</span><span class="lang-en">Projects</span></h3>
   <div class="row"><span class="k">2020–22</span><div><b><span class="lang-zh">危化品云数据联动装置</span><span class="lang-en">Hazardous-chemical cloud sensor</span></b><small><span class="lang-zh">上海市科委 19511102801。CH4/CO2/温湿度 + 摄像头多传感器融合。</span><span class="lang-en">STCSM #19511102801. CH4/CO2/T&amp;H sensors fused with camera imagery.</span></small></div></div>
   <div class="row"><span class="k">2020–22</span><div><b><span class="lang-zh">消防管理智能感知设备</span><span class="lang-en">Smart fire-safety sensor</span></b><small><span class="lang-zh">上海市科委 19DZ12020027。场景自适应配置，CSMA/CA 载波侦听。</span><span class="lang-en">STCSM #19DZ12020027. Scene-adaptive configuration, CSMA/CA sensing.</span></small></div></div>
@@ -274,7 +289,8 @@
   <div class="row"><span class="k">2016<br/>—2020</span><div><b><span class="lang-zh">广西大学 · 电气工程本科</span><span class="lang-en">Guangxi University · B.Eng</span></b><small><span class="lang-zh">电气工程及其自动化。参与两届互联网+大赛（智慧农业、光伏运维）。</span><span class="lang-en">Electrical Engineering &amp; Automation. Competed twice in Internet+ (smart agriculture, PV O&amp;M).</span></small></div></div>
   <div class="row"><span class="k">2020<br/>—2022</span><div><b><span class="lang-zh">中科院上海微系统所 · 嵌入式工程师</span><span class="lang-en">CAS SIMIT · Embedded engineer</span></b><small><span class="lang-zh">无线水压表 / LoRa 测力 / 消防感知。原理图、MCU 固件、现场部署全流程，参与标准起草。</span><span class="lang-en">Wireless meters / LoRa sensors / fire-safety, schematic to field deployment; co-authored industry standards.</span></small></div></div>
   <div class="row"><span class="k">2024<br/>—2025</span><div><b><span class="lang-zh">HKUST(GZ) · 计算媒体与艺术 MPhil</span><span class="lang-en">HKUST(GZ) · CMA MPhil</span></b><small><span class="lang-zh">HeritageExplorer 投稿 VINCI 2025；合作 GenColor（CHI 2025）；HeritageExplorer 从 0 到 1 搭建。</span><span class="lang-en">HeritageExplorer at VINCI 2025; co-authored GenColor (CHI 2025); built HeritageExplorer from zero.</span></small></div></div>
-  <div class="row"><span class="k">2026<br/>—</span><div><b><span class="lang-zh">下一站</span><span class="lang-en">What’s next</span></b><small><span class="lang-zh">多模态 Agent 落地 · 遗产叙事 · 可解释 RAG。寻找全职机会。</span><span class="lang-en">Multimodal agents in the wild · heritage storytelling · explainable RAG. Open to full-time roles.</span></small></div></div>
+  <div class="row"><span class="k">2026<br/>—</span><div><b><span class="lang-zh">企业 AI 原生系统矩阵 · 独立负责</span><span class="lang-en">AI-native business systems · solo owner</span></b><small><span class="lang-zh">以 Coding Agent 为主力，从调研、设计评审到部署运维，交付园区、ERP、财务、人资、运维与 LLM 网关等 15 个系统。</span><span class="lang-en">With coding agents doing most of the typing, took 15 systems from research and design review to deployment and operations — park ops, ERP, finance, HR, monitoring and an LLM gateway.</span></small></div></div>
+  <div class="row"><span class="k"><span class="lang-zh">下一站</span><span class="lang-en">Next</span></span><div><b><span class="lang-zh">想做的事</span><span class="lang-en">What’s next</span></b><small><span class="lang-zh">AI Agent 工程化 · 多模态 RAG · 遗产叙事。寻找全职机会。</span><span class="lang-en">Agentic engineering · multimodal RAG · heritage storytelling. Open to full-time roles.</span></small></div></div>
 </template>
 
 <template id="t-portfolio">
@@ -293,6 +309,10 @@
 </template>
 
 <template id="t-toolbox">
+  <h3><span class="lang-zh">Agent 工程</span><span class="lang-en">Agentic engineering</span></h3>
+  <div class="tags"><span class="tag">Claude Code</span><span class="tag">Codex</span><span class="tag">Subagents · worktree</span><span class="tag">Skills / Hooks / MCP</span><span class="tag">CodeGraph</span><span class="tag"><span class="lang-zh">ADR · 设计评审</span><span class="lang-en">ADR · design review</span></span><span class="tag"><span class="lang-zh">独立盲审</span><span class="lang-en">Blind code review</span></span><span class="tag"><span class="lang-zh">LLM 网关</span><span class="lang-en">LLM gateway</span></span></div>
+  <h3><span class="lang-zh">后端 &amp; 数据</span><span class="lang-en">Back end &amp; data</span></h3>
+  <div class="tags"><span class="tag">Java 17 · Spring Boot</span><span class="tag">MyBatis-Plus</span><span class="tag">Node 22 · tRPC</span><span class="tag">Drizzle</span><span class="tag">MySQL 8</span><span class="tag">PostgreSQL · pgvector</span><span class="tag">SQLite</span><span class="tag">Supabase</span><span class="tag">Flyway</span><span class="tag">Redis</span></div>
   <h3><span class="lang-zh">多模态 AI &amp; 大模型</span><span class="lang-en">Multimodal AI &amp; LLMs</span></h3>
   <div class="tags"><span class="tag">Chinese-CLIP</span><span class="tag">BGE</span><span class="tag">Grounding DINO</span><span class="tag">Qwen-VL</span><span class="tag">DeepSeek-V3</span><span class="tag">GPT</span><span class="tag">Claude API</span><span class="tag">Prompt Eng.</span><span class="tag">Agent Workflow</span></div>
   <h3><span class="lang-zh">GIS &amp; 可视化</span><span class="lang-en">GIS &amp; Visualization</span></h3>
@@ -300,7 +320,7 @@
   <h3><span class="lang-zh">图谱 &amp; 检索</span><span class="lang-en">Graph &amp; Retrieval</span></h3>
   <div class="tags"><span class="tag">Neo4j · Cypher</span><span class="tag"><span class="lang-zh">向量索引</span><span class="lang-en">Vector Index</span></span><span class="tag">RAG</span><span class="tag"><span class="lang-zh">多通道融合</span><span class="lang-en">Multi-lane Fusion</span></span></div>
   <h3><span class="lang-zh">Web &amp; 部署</span><span class="lang-en">Web &amp; Deployment</span></h3>
-  <div class="tags"><span class="tag">Vue 3 + Vite</span><span class="tag">TypeScript</span><span class="tag">FastAPI</span><span class="tag">Docker Compose</span><span class="tag">Nginx</span></div>
+  <div class="tags"><span class="tag">Vue 3 + Vite</span><span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">FastAPI</span><span class="tag">Docker Compose</span><span class="tag">Nginx</span><span class="tag">Cloudflare Tunnel</span><span class="tag">Tailscale</span><span class="tag">n8n</span><span class="tag">Uptime Kuma</span></div>
   <h3><span class="lang-zh">编程 &amp; 嵌入式</span><span class="lang-en">Programming &amp; Embedded</span></h3>
   <div class="tags"><span class="tag">Python</span><span class="tag">C / C++</span><span class="tag">TypeScript</span><span class="tag">HTML</span><span class="tag"><span class="lang-zh">汇编</span><span class="lang-en">Assembly</span></span><span class="tag">IAR Workbench</span></div>
   <h3><span class="lang-zh">设计 &amp; 建模</span><span class="lang-en">Design &amp; Modeling</span></h3>
@@ -314,12 +334,13 @@
   <div class="row"><span class="k"><span class="lang-zh">电话</span><span class="lang-en">Phone</span></span><a href="tel:+8618877145317">(+86) 188 7714 5317</a></div>
   <div class="row"><span class="k"><span class="lang-zh">所在地</span><span class="lang-en">Based</span></span><span><span class="lang-zh">广西南宁 / 广州</span><span class="lang-en">Nanning · Guangzhou</span></span></div>
   <p style="margin-top:.8rem"><a class="pxbtn red" href="mailto:ywang677@connect.hkust-gz.edu.cn"><span class="lang-zh">发邮件 →</span><span class="lang-en">Email me →</span></a>
-  <a class="pxbtn" href="CV_Yusong_Wang.docx"><span class="lang-zh">下载简历 (.docx)</span><span class="lang-en">Download CV (.docx)</span></a></p>
+  <a class="pxbtn" href="CV_Yusong_Wang.pdf"><span class="lang-zh">下载简历 (PDF)</span><span class="lang-en">Download CV (PDF)</span></a></p>
 </template>
 
 <template id="t-cv">
-  <p><span class="lang-zh">履歴書 · 简历（Word 文档）</span><span class="lang-en">履歴書 · CV (Word document)</span></p>
-  <p><a class="pxbtn red" href="CV_Yusong_Wang.docx"><span class="lang-zh">下载 CV_Yusong_Wang.docx</span><span class="lang-en">Download CV_Yusong_Wang.docx</span></a></p>
+  <p><span class="lang-zh">履歴書 · 简历（2026 年 10 月版）</span><span class="lang-en">履歴書 · CV (October 2026)</span></p>
+  <p><a class="pxbtn red" href="CV_Yusong_Wang.pdf"><span class="lang-zh">下载 PDF</span><span class="lang-en">Download PDF</span></a>
+  <a class="pxbtn" href="CV_Yusong_Wang.docx"><span class="lang-zh">Word 版</span><span class="lang-en">Word version</span></a></p>
 </template>
 <template id="t-door">
   <p><span class="lang-zh">这扇襖通往经典版主页 —— 适合快速浏览、打印或转发给 HR。</span><span class="lang-en">This door leads to the classic homepage — quicker to skim, print or forward.</span></p>
