@@ -132,6 +132,12 @@
   #reader h2{display:flex;align-items:center;gap:10px;font:900 20px/1.3 var(--serif);margin-bottom:.8rem}
   #reader h2 i{font-style:normal;font:700 18px/1 var(--serif);background:var(--shu);color:var(--washi);padding:6px 7px;border-radius:3px}
   body.nogl #stage{display:none}
+  .glnote{position:absolute;left:50%;top:86px;transform:translateX(-50%);z-index:22;width:min(780px,calc(100vw - 24px));display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:#fff4dc;border:2.5px solid var(--sumi);box-shadow:4px 4px 0 var(--sumi);padding:10px 14px;font:600 13.5px/1.55 var(--serif)}
+  .glnote[hidden]{display:none}
+  .glnote b{color:var(--shu)}
+  .glnote #glWhy{flex:1 1 320px;font-weight:400}
+  .glnote code{display:block;margin-top:4px;font:12px/1.4 ui-monospace,Menlo,monospace;color:#6a5d60;word-break:break-all}
+  body.read.nogl #reader{padding-top:190px}
 
   /* loader */
   #loader{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:var(--grain),var(--washi);transition:opacity .7s,visibility 0s .7s;animation:ldone .6s ease 2.5s forwards;pointer-events:none}
@@ -206,6 +212,7 @@
   </div>
 </aside>
 
+<div id="glNote" class="glnote" hidden><b><span class="lang-zh">3D 书桌没有显示出来</span><span class="lang-en">The 3D desk did not start</span></b><span id="glWhy"></span><button class="btn red" type="button" onclick="location.reload()"><span class="lang-zh">重试 3D</span><span class="lang-en">Retry 3D</span></button></div>
 <main id="reader" class="content"></main>
 
 <div id="loader" aria-hidden="true"><span class="cart"><em>王钰淞</em>の書斎</span></div>
@@ -319,9 +326,8 @@
   <p><a class="pxbtn red" href="classic.html"><span class="lang-zh">打开经典版 →</span><span class="lang-en">Open the classic site →</span></a></p>
 </template>
 
-<script type="importmap">{ "imports": { "three": "./assets/vendor/three.module.min.js" } }</script>
-<script type="module">
-import * as THREE from 'three';
+<script type="module" onerror="window.__deskFallback && window.__deskFallback('load')">
+import * as THREE from './assets/vendor/three.module.min.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -388,8 +394,10 @@ let renderer;
 try {
   renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
 } catch (e) {
-  if (window.__deskFallback) window.__deskFallback();
-  throw e;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true }); } catch (e2) {
+    if (window.__deskFallback) window.__deskFallback('webgl');
+    throw e2;
+  }
 }
 renderer.setPixelRatio(Math.min(devicePixelRatio || 1, mobile() ? 1.75 : 2));
 renderer.shadowMap.enabled = true;
@@ -1141,7 +1149,7 @@ function setReader(on) {
     if (!r.childElementCount) SECTIONS.forEach((s) => { const sec = document.createElement('section'); sec.innerHTML = `<h2><i>${s.k}</i><span class="lang-zh">${s.zh}</span><span class="lang-en">${s.en}</span></h2>`; sec.appendChild($('#t-' + s.id).content.cloneNode(true)); r.appendChild(sec); });
     scrollTo(0, 0);
   } else resize();
-  store.set('reader', on ? '1' : '0');
+  window.__deskUserReader = on;
 }
 $('#btnMode').addEventListener('click', () => setReader(!body.classList.contains('read')));
 $('#brand').addEventListener('click', (e) => { e.preventDefault(); if (body.classList.contains('read')) setReader(false); closeSection(); });
@@ -1226,28 +1234,53 @@ renderer.shadowMap.needsUpdate = true;
 stepCam(performance.now());
 renderer.render(scene, camera);
 $('#loader').classList.add('done');
-if (store.get('reader') === '1') setReader(true);
 { const h = location.hash.slice(1); if (SEC[h]) setTimeout(() => openSection(h), 250); }
 addEventListener('resize', resize);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) { clock.getDelta(); wake(300); } });
 window.__deskReady = true;
+if (window.__deskFell && window.__deskRecover) window.__deskRecover();
 requestAnimationFrame(frame);
 
 </script>
 <script>
-  // if WebGL / modules are unavailable, fall back to the reader view (built without the module)
-  window.__deskFallback = function () {
-    if (window.__deskFell) return; window.__deskFell = true;
-    var b = document.body, r = document.getElementById('reader');
-    var names = { about: ['自己紹介 · 关于我', 'About'], heritage: ['HeritageExplorer', 'HeritageExplorer'], work: ['论文 · 专利 · 项目', 'Papers · Patents · Projects'], exp: ['经历', 'Timeline'], portfolio: ['AI 作品集', 'AI Portfolio'], toolbox: ['技能 · 工具链', 'Toolbox'], contact: ['联系', 'Contact'], cv: ['简历', 'CV'], door: ['经典版主页', 'Classic site'] };
-    if (!r.childElementCount) Object.keys(names).forEach(function (id) {
-      var t = document.getElementById('t-' + id); if (!t) return;
-      var s = document.createElement('section'); s.innerHTML = '<h2><span class="lang-zh">' + names[id][0] + '</span><span class="lang-en">' + names[id][1] + '</span></h2>';
-      s.appendChild(t.content.cloneNode(true)); r.appendChild(s);
-    });
-    b.classList.add('read', 'nogl'); var l = document.getElementById('loader'); if (l) l.classList.add('done');
-  };
-  setTimeout(function () { if (!window.__deskReady) window.__deskFallback(); }, 7000);
+  // If the 3D desk cannot start, show the reader view and say why. A slow load
+  // is not a failure: the desk takes over again as soon as it is ready.
+  (function () {
+    if (/[?&]nogl\b/.test(location.search)) { var gc = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function (k) { return /webgl/.test(k) ? null : gc.apply(this, arguments); }; }
+    var WHY = {
+      webgl: ['这个浏览器没有开启 WebGL，常见原因是关闭了「硬件加速」。在浏览器设置里打开「使用硬件加速」并重启浏览器后，再点「重试」。', 'WebGL is turned off in this browser — usually because hardware acceleration is disabled. Turn it on in the browser settings, restart, then retry.'],
+      load: ['三维组件没有下载下来，可能是网络问题。', 'The 3D component failed to download — probably a network issue.'],
+      timeout: ['三维组件加载得比较慢，先给你看文字版；加载完成后会自动切回书桌。', 'The 3D desk is loading slowly, so here is the text version; it will switch back once ready.'],
+      error: ['三维场景启动时出错了。', 'The 3D scene hit an error while starting.']
+    };
+    function build() {
+      var r = document.getElementById('reader');
+      var names = { about: ['自己紹介 · 关于我', 'About'], heritage: ['HeritageExplorer', 'HeritageExplorer'], work: ['论文 · 专利 · 项目', 'Papers · Patents · Projects'], exp: ['经历', 'Timeline'], portfolio: ['AI 作品集', 'AI Portfolio'], toolbox: ['技能 · 工具链', 'Toolbox'], contact: ['联系', 'Contact'], cv: ['简历', 'CV'], door: ['经典版主页', 'Classic site'] };
+      if (r.childElementCount) return;
+      Object.keys(names).forEach(function (id) {
+        var tp = document.getElementById('t-' + id); if (!tp) return;
+        var s = document.createElement('section'); s.innerHTML = '<h2><span class="lang-zh">' + names[id][0] + '</span><span class="lang-en">' + names[id][1] + '</span></h2>';
+        s.appendChild(tp.content.cloneNode(true)); r.appendChild(s);
+      });
+    }
+    window.__deskFallback = function (reason, detail) {
+      if (window.__deskReady && reason === 'timeout') return;
+      if (window.__deskFell === 'webgl' || window.__deskFell === 'load') return;
+      window.__deskFell = reason || 'error';
+      var w = WHY[window.__deskFell] || WHY.error, n = document.getElementById('glNote');
+      document.getElementById('glWhy').innerHTML = '<span class="lang-zh">' + w[0] + '</span><span class="lang-en">' + w[1] + '</span>' + (detail ? '<code>' + String(detail).slice(0, 160).replace(/</g, '&lt;') + '</code>' : '');
+      n.hidden = false; build();
+      document.body.classList.add('read', 'nogl');
+      var l = document.getElementById('loader'); if (l) l.classList.add('done');
+    };
+    window.__deskRecover = function () {
+      if (window.__deskFell !== 'timeout' || window.__deskUserReader) return;
+      window.__deskFell = false; document.getElementById('glNote').hidden = true;
+      document.body.classList.remove('read', 'nogl'); window.dispatchEvent(new Event('resize'));
+    };
+    window.addEventListener('error', function (e) { if (!window.__deskReady && e && e.message) window.__deskFallback('error', e.message); });
+    setTimeout(function () { if (!window.__deskReady) window.__deskFallback('timeout'); }, 20000);
+  })();
 </script>
 </body>
 </html>
