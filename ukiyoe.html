@@ -168,6 +168,13 @@
   }
 </style>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23151615'/%3E%3Ccircle cx='32' cy='32' r='21' fill='%23dfff57'/%3E%3Cpath d='M17 22h7l8 12 8-12h7L35 42v7h-7v-7z' fill='%23151615'/%3E%3C/svg%3E" />
+<style>
+#sceneSwitcher{position:fixed;z-index:24;left:50%;bottom:20px;transform:translateX(-50%);display:flex;gap:4px;padding:5px;background:var(--washi);color:var(--sumi);border:2px solid var(--sumi);box-shadow:3px 3px 0 rgba(0,0,0,.3);white-space:nowrap}
+#sceneSwitcher a,#sceneSwitcher button{display:flex;align-items:center;justify-content:center;text-decoration:none;font:600 12px/1.3 var(--sans);padding:9px 12px;min-height:36px}
+#sceneSwitcher a[aria-current="page"]{background:var(--sumi);color:var(--washi)}#sceneSwitcher button{border-left:1px solid var(--sumi);color:var(--sumi);font-weight:700}#sceneSwitcher a:hover,#sceneSwitcher button:hover{background:var(--shu);color:var(--sumi)}#sceneSwitcher :focus-visible{outline:3px solid var(--shu);outline-offset:1px}
+#hint{bottom:83px}body.zoomed #sceneSwitcher{display:none}
+@media(max-width:760px){#sceneSwitcher{bottom:calc(66px + env(safe-area-inset-bottom));gap:2px;padding:3px;max-width:calc(100vw - 20px)}#sceneSwitcher a,#sceneSwitcher button{font-size:11px;padding:8px 9px;min-height:36px}#hint{bottom:124px}body.read #reader{padding-bottom:140px}}
+</style>
 </head>
 <body data-lang="zh" data-theme="nishiki">
 
@@ -199,6 +206,7 @@
   </div>
 </header>
 
+<nav id="sceneSwitcher" aria-label="场景切换 / Switch scenes"><a href="ukiyoe.html" aria-current="page"><span class="lang-zh">浮世绘书斋</span><span class="lang-en">Ukiyo-e</span></a><a href="retro-future.html"><span class="lang-zh">科幻工作站</span><span class="lang-en">Sci-fi</span></a><button id="btnWork" type="button"><span class="lang-zh">我的工作 ↗</span><span class="lang-en">My work ↗</span></button></nav>
 <div id="hint"><span class="lang-zh">书案上的东西，都可以拿起来看看</span><span class="lang-en">Everything on the desk can be picked up</span></div>
 <div id="index">
   <button id="indexBtn" type="button" aria-expanded="false" aria-controls="indexList"><i>目録</i><span class="lang-zh">目录</span><span class="lang-en">Index</span><small id="indexCount"></small></button>
@@ -1100,6 +1108,7 @@ function activate(key) {
   if (key === 'wave') return toast(T({ zh: '葛饰北斋《神奈川冲浪里》，公有领域。', en: 'Hokusai, The Great Wave off Kanagawa (public domain).' }));
   if (key === 'window') return toast(T({ zh: '窗外是北斋的《凯风快晴》。', en: 'Outside: Hokusai’s Red Fuji.' }));
 }
+$('#btnWork').addEventListener('click',()=>activate('portfolio'));
 $('#panelClose').addEventListener('click', closeSection);
 addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeSection(); $('#index').classList.remove('open'); } });
 addEventListener('hashchange', () => { const k = location.hash.slice(1); if (SEC[k]) openSection(k); });
@@ -1273,6 +1282,7 @@ requestAnimationFrame(frame);
       timeout: ['三维组件加载得比较慢，先给你看文字版；加载完成后会自动切回书桌。', 'The 3D desk is loading slowly, so here is the text version; it will switch back once ready.'],
       error: ['三维场景启动时出错了。', 'The 3D scene hit an error while starting.']
     };
+    document.getElementById('btnWork').addEventListener('click',function(){if(window.__deskReady)return;var first=document.querySelector('#reader [data-project="dipark"]');if(first)first.scrollIntoView({block:'start'});});
     function build() {
       var r = document.getElementById('reader');
       var names = { about: ['自己紹介 · 关于我', 'About'], heritage: ['HeritageExplorer', 'HeritageExplorer'], work: ['论文 · 专利 · 项目', 'Papers · Patents · Projects'], exp: ['经历', 'Timeline'], portfolio: ['我的工作', 'Selected work'], toolbox: ['技能 · 工具链', 'Toolbox'], contact: ['联系', 'Contact'], cv: ['简历', 'CV'], door: ['版本总览', 'Version portal'] };

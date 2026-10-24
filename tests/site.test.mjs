@@ -48,21 +48,24 @@ test('both retained homepages use the interactive WebGL scene architecture', asy
       assert.ok(source.includes(marker), `${page} missing scene marker: ${marker}`);
     }
     assert.match(source, /href=["'](?:\.\/)?index\.html["']/, `${page} cannot return to portal`);
+    assert.match(source, /id=["']btnWork["']/, `${page} needs a direct work entry`);
+    const switcher = source.match(/<(?:nav|div)[^>]*id=["']sceneSwitcher["'][^>]*>([\s\S]*?)<\/(?:nav|div)>/)?.[1];
+    assert.ok(switcher, `${page} needs a visible scene switcher`);
+    for (const target of pages.slice(1)) assert.match(switcher, new RegExp(`href=["'](?:\\./)?${target.replace('.', '\\.')}["']`), `${page} needs a direct link to ${target}`);
     assert.match(source, /prefers-reduced-motion/);
   }
 });
 
-test('second scene presents five real projects in the retro workstation', async () => {
+test('both original scenes retain nine entries and the five real projects', async () => {
   const source = await html('retro-future.html');
   assert.ok(source.includes('YW/OS 98'), 'missing workstation identity');
   for (const page of ['index.html', 'retro-future.html']) {
     assert.doesNotMatch(await html(page), /СТУДИЯ|MOSCOW|concrete study|constructivis[mt]|rotary telephone|drafting table|radiator|苏联|苏维埃|劳动\s*[·・]\s*1974/i, `${page} retains Soviet styling`);
   }
   const sections = ['about', 'heritage', 'work', 'exp', 'portfolio', 'toolbox', 'contact', 'cv', 'door'];
-  const templates = [...source.matchAll(/<template\s+id=["']t-([^"']+)["']/g)].map((match) => match[1]);
-  assert.deepEqual(templates.sort(), sections.sort(), 'all nine content entries need one unique template');
-  const portfolio = source.match(/<template\s+id=["']t-portfolio["']\s*>([\s\S]*?)<\/template>/)?.[1];
-  assert.ok(portfolio, 'missing real-project portfolio');
+  assert.match(source, /\bROOM\b/, 'the original retro room must remain');
+  assert.match(source, /const\s+room\s*=\s*new THREE\.Group\(/, 'the retro room geometry must remain');
+  for (const id of sections) assert.match(source, new RegExp(`register\\(['"]${id}['"]\\s*,`), `retro scene lost interactive object: ${id}`);
   const projects = [
     ['dipark', /DIPARK/i],
     ['ai-gateway', /AI\s*(?:Gateway|网关|中台)|LLM\s*(?:Gateway|网关)/i],
@@ -70,13 +73,16 @@ test('second scene presents five real projects in the retro workstation', async 
     ['ops-monitor', /Ops\s*Monitor|运维/i],
     ['enterprise-portal', /Enterprise(?:\s+application)?\s*Portal|企业(?:应用)?门户|企业应用|工作门户|Workspace/i],
   ];
-  const imagePaths = [...portfolio.matchAll(/<img\b[^>]*\bsrc=["']([^"']+)["']/g)].map((match) => match[1]);
-  assert.deepEqual(imagePaths.sort(), projects.map(([slug]) => `assets/work/${slug}.webp`).sort(), 'portfolio must show each of the five real project screenshots once');
-  for (const [slug, name] of projects) {
-    assert.match(portfolio, name, `${slug} needs a readable project name`);
+  for (const page of pages.slice(1)) {
+    const scene = await html(page);
+    const templates = [...scene.matchAll(/<template\s+id=["']t-([^"']+)["']/g)].map((match) => match[1]);
+    assert.deepEqual(templates.sort(), [...sections].sort(), `${page}: all nine content entries need one unique template`);
+    const portfolio = scene.match(/<template\s+id=["']t-portfolio["']\s*>([\s\S]*?)<\/template>/)?.[1];
+    assert.ok(portfolio, `${page}: missing real-project portfolio`);
+    const imagePaths = [...portfolio.matchAll(/<img\b[^>]*\bsrc=["']([^"']+)["']/g)].map((match) => match[1]);
+    assert.deepEqual(imagePaths.sort(), projects.map(([slug]) => `assets/work/${slug}.webp`).sort(), `${page}: portfolio must show each of the five real project screenshots once`);
+    for (const [slug, name] of projects) assert.match(portfolio, name, `${page}: ${slug} needs a readable project name`);
   }
-  assert.match(source, /id=["']btnWork["']/, 'missing primary work entry');
-  assert.match(source, /id=["']projectPicker["']/, 'missing monitor project switcher');
   for (const text of ['HeritageExplorer', 'VINCI 2025', 'CHI 2025', '15', 'ywang677@connect.hkust-gz.edu.cn']) {
     assert.ok(source.includes(text), `missing real content: ${text}`);
   }
