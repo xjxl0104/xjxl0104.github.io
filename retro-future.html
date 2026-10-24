@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>王钰淞的混凝土研究室 · Yusong Wang — СТУДИЯ 1974</title>
-<meta name="description" content="王钰淞 Yusong Wang 的苏联粗野主义互动主页：在 1974 年混凝土研究室里翻阅档案、制图、转动拨号电话，探索研究、项目和作品。" />
-<meta property="og:title" content="王钰淞的混凝土研究室 · Yusong Wang — СТУДИЯ 1974" />
-<meta property="og:description" content="GIS × Multimodal AI — a Soviet brutalist concrete study to explore." />
+<title>王钰淞的个人研究终端 · Yusong Wang — YW/OS 98</title>
+<meta name="description" content="王钰淞 Yusong Wang 的 Y2K 复古科幻互动主页：在高密度琥珀 CRT 工作站中探索 GIS、研究、项目与作品。" />
+<meta property="og:title" content="王钰淞的个人研究终端 · Yusong Wang — YW/OS 98" />
+<meta property="og:description" content="GIS × Multimodal AI — a dense retro-future personal research terminal." />
 <meta property="og:image" content="assets/ai_portfolio/ai_star.jpg" />
-<meta name="theme-color" content="#77766c" />
+<meta name="theme-color" content="#090b0b" />
 <link rel="modulepreload" href="assets/vendor/three.module.min.js" />
 <style>
   :root{
@@ -165,66 +165,84 @@
     *{animation:none !important;transition-duration:.01s !important}
     #loader{display:none}
   }
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+  .tools .btn{font-size:12px;min-height:36px;padding:8px 11px}
+  #indexBtn{min-height:40px;font-size:12px}#indexBtn small{color:#d1ad71;opacity:1}
+  #indexList button{min-height:36px;font-size:12px}#indexList button.seen{color:#bda780}
+  #indexList button.seen i{background:#59482a;color:#f1d6a5}
+  .btn:focus-visible,#indexList button:focus-visible,#indexBtn:focus-visible{outline:2px solid #72c6b7;outline-offset:3px}
+  @media(max-width:760px){.tools .btn{font-size:11px;min-height:36px;padding:6px 8px}.tools{max-width:72vw}.content{font-size:14px}#hint{bottom:67px;font-size:10px;max-width:calc(100vw - 24px);white-space:normal;text-align:center}}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
 <style>
-  /* СТУДИЯ 1974 — Soviet brutalist concrete study UI */
+  /* YW/OS 98 — dense amber CRT workstation + Poolsuite windows */
   :root{
-    --sumi:#252621;--sumi2:#5c5b50;--washi:#ded8c8;--washi2:#c5beac;
-    --ai:#4d5545;--bero:#a88c4d;--shu:#8f2d24;--kin:#c0a154;
-    --serif:'Arial Narrow','Helvetica Neue','PingFang SC','Microsoft YaHei',sans-serif;
+    --sumi:#111413;--sumi2:#4d5149;--washi:#e7e3d5;--washi2:#c8c5b8;
+    --ai:#17464b;--bero:#68c7c4;--shu:#e89a35;--kin:#f3b44b;
+    --serif:ui-monospace,'SFMono-Regular','Courier New',monospace;
     --sans:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
   }
-  body{background:#77766c;color:var(--sumi);font-family:var(--serif);letter-spacing:.015em}
-  #stage{background:radial-gradient(ellipse at 50% 35%,#aaa99e 0,#828177 52%,#5e5e56 100%)}
-  body[data-theme="ai"] #stage{background:radial-gradient(ellipse at 50% 35%,#99998e 0,#6e7066 55%,#4e5149 100%)}
-  body[data-theme="sumi"] #stage{background:radial-gradient(ellipse at 50% 35%,#9b8d78 0,#716b5f 55%,#4e4c45 100%)}
-  body[data-theme="yoru"] #stage{background:radial-gradient(ellipse at 50% 35%,#5b5a50 0,#393b35 55%,#242620 100%)}
-  body[data-theme="ai"] #gl{filter:saturate(.72) contrast(1.04)}
-  body[data-theme="sumi"] #gl{filter:saturate(.68) sepia(.16)}
-  .kasumi{display:none}.grainover{opacity:.24;mix-blend-mode:multiply}
-  .vignette{background:radial-gradient(120% 95% at 50% 45%,transparent 58%,rgba(31,30,25,.34) 100%)}
-  .hud{padding:16px 18px}.brand{gap:0;align-items:stretch}.cart{writing-mode:horizontal-tb;background:var(--shu);border:2px solid var(--sumi);box-shadow:4px 4px 0 rgba(37,38,33,.35);padding:11px 13px;border-radius:0;font:800 12px/1 var(--serif);letter-spacing:.09em;color:#eee8d8}
-  .cart em{font-style:normal;color:#eee8d8}.brand small{margin:0;background:var(--sumi);color:#ded8c8;border:2px solid var(--sumi);border-left:0;border-radius:0;padding:10px 9px;font:600 8px/1.35 var(--serif);letter-spacing:.09em}
-  .tools{gap:6px}.btn{background:var(--washi);border:2px solid var(--sumi);box-shadow:3px 3px 0 var(--sumi);padding:7px 11px;border-radius:0;font:700 11px/1.2 var(--serif);transition:background .18s,color .18s,transform .18s}
-  .btn:hover{background:var(--kin);color:var(--sumi);transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--sumi)}.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--sumi)}
-  .btn.red{background:var(--shu);color:#f0e9d7;border-color:var(--sumi)}.btn.ai{background:var(--ai);color:var(--washi);border-color:var(--sumi)}.btn[aria-pressed="true"]{background:var(--kin);color:var(--sumi)}
-  #themeTag{color:#ece5d3;font:600 10px/1.2 var(--serif);letter-spacing:.08em;text-shadow:0 1px 2px #36372f}#themeTag b{background:var(--shu);color:#f0e9d7;border:2px solid var(--sumi);border-radius:0;width:30px;height:30px;display:grid;place-items:center;font:800 10px/1 var(--serif)}
-  #hint{background:rgba(222,216,200,.94);border:2px solid var(--sumi);border-radius:0;color:var(--sumi);font:600 11px/1.4 var(--serif);letter-spacing:.05em;box-shadow:4px 4px 0 rgba(37,38,33,.28)}
-  #indexBtn,#indexList{background:var(--washi);border:2px solid var(--sumi);box-shadow:5px 5px 0 rgba(37,38,33,.35);border-radius:0;font-family:var(--serif)}
-  #indexBtn i,#indexList button i{background:var(--shu);border-radius:0;font-size:10px}#indexList button{border-radius:0;font-family:var(--serif);font-size:11px}#indexList button:hover,#indexList button.on{background:var(--ai)}
-  #tip{background:var(--kin);border:2px solid var(--sumi);border-radius:0;color:var(--sumi);font:700 10px/1.3 var(--serif);padding:5px 10px}
-  #toast{background:var(--washi);border:2px solid var(--sumi);border-radius:0;box-shadow:5px 5px 0 var(--shu);font:600 11px/1.5 var(--serif)}
-  #panel{width:min(600px,48vw)}
-  .psheet{border:3px solid var(--sumi);border-radius:0;box-shadow:10px 10px 0 var(--shu);background:var(--grain),var(--washi);overflow:hidden}
-  .phead{padding:14px 16px 12px;border-bottom:3px solid var(--sumi);background:var(--ai);color:#f0ead9}
-  .phead .seal{width:42px;height:42px;border:2px solid var(--sumi);border-radius:0;background:var(--kin);color:var(--sumi);font:800 13px/1 var(--serif)}
-  .phead h2{font:800 15px/1.35 var(--serif);letter-spacing:.025em}.phead .btn{background:var(--washi);color:var(--sumi);border-color:var(--sumi);box-shadow:2px 2px 0 var(--sumi)}
-  .pbody{padding:18px 22px 28px}.content{font-family:var(--sans);font-size:14px}.content h3{font:800 14px/1.4 var(--serif);border-left:5px solid var(--shu);padding-left:10px;text-transform:uppercase;letter-spacing:.025em}
-  .content .dim{color:#5f5d52}.content .tag{border:1px solid #6d6b5e;border-radius:0;background:#e8e1cf;font:600 10px/1.4 var(--serif);padding:3px 8px}
-  .content .stats{gap:7px}.content .stats div{border:2px solid var(--sumi);border-radius:0;background:var(--ai);padding:10px 6px}.content .stats b{font:800 21px/1.1 var(--serif);color:#d4b567}.content .stats span{font-size:10px}
-  .content .card{border:2px solid var(--sumi);border-radius:0;background:#e9e2d0;box-shadow:4px 4px 0 rgba(37,38,33,.2)}.content .card.hl{background:#d8c9a7;box-shadow:4px 4px 0 var(--shu)}
-  .content .row{border-bottom:1px dashed #878476}.content .row .k{font-family:var(--serif);color:var(--shu)}.content .row small{color:#5f5d52}
-  .content .shot{border:2px solid var(--sumi);border-radius:0;box-shadow:5px 5px 0 rgba(37,38,33,.24);filter:saturate(.75)}
-  .content .portrait{border:3px solid var(--sumi);border-radius:0;box-shadow:5px 5px 0 var(--shu);padding:3px;filter:grayscale(.3) sepia(.12)}
-  .content .pf figure{border:2px solid var(--sumi);border-radius:0;background:#e9e2d0;overflow:hidden}.content .pf figcaption b{color:var(--shu);font-family:var(--serif)}
-  .content .pxbtn{border:2px solid var(--sumi);border-radius:0;box-shadow:3px 3px 0 var(--sumi);font-family:var(--serif)}.content .pxbtn.red{background:var(--shu);color:#f0e9d7}
-  .omikuji .big{font-family:var(--serif);color:var(--shu)}
-  body.read{background:linear-gradient(180deg,#55574e 0,#8f2d24 180px,var(--washi) 480px)}
-  #reader section{border:3px solid var(--sumi);border-radius:0;box-shadow:7px 7px 0 var(--shu)}#reader h2{font-family:var(--serif)}#reader h2 i{background:var(--shu);border-radius:0;font-family:var(--serif)}
-  .glnote{border:3px solid var(--sumi);border-radius:0;box-shadow:6px 6px 0 var(--shu);background:var(--washi)}
-  #loader{background:var(--grain),#77766c;color:var(--sumi)}#loader .cart{background:var(--shu);font-size:13px;box-shadow:8px 8px 0 var(--sumi)}
+  body{background:#090b0b;color:var(--sumi);font-family:var(--serif);letter-spacing:.025em}
+  #stage{background:radial-gradient(ellipse at 50% 38%,#25302c 0,#111917 48%,#070a09 100%)}
+  body[data-theme="ai"] #stage{background:radial-gradient(ellipse at 50% 35%,#153438 0,#0b1d20 55%,#050d0f 100%)}
+  body[data-theme="sumi"] #stage{background:radial-gradient(ellipse at 50% 35%,#3a2c19 0,#1c1710 55%,#0b0a07 100%)}
+  body[data-theme="yoru"] #stage{background:radial-gradient(ellipse at 50% 35%,#182521 0,#0b1210 55%,#040706 100%)}
+  body[data-theme="ai"] #gl{filter:saturate(.85) hue-rotate(12deg) contrast(1.08)}
+  body[data-theme="sumi"] #gl{filter:saturate(.75) sepia(.18)}
+  #stage::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,190,85,.025) 0,rgba(255,190,85,.025) 1px,transparent 1px,transparent 4px);mix-blend-mode:screen}
+  .kasumi{display:none}.grainover{opacity:.1;mix-blend-mode:screen}
+  .vignette{background:radial-gradient(120% 95% at 50% 45%,transparent 52%,rgba(0,0,0,.64) 100%)}
+  .hud{padding:14px 16px}.brand{gap:0;align-items:stretch}.cart{writing-mode:horizontal-tb;background:var(--kin);border:1px solid #f7c66f;box-shadow:4px 4px 0 #000;padding:10px 13px;border-radius:0;font:800 12px/1 var(--serif);letter-spacing:.06em;color:#12130f}
+  .cart em{font-style:normal;color:#12130f}.brand small{margin:0;background:#0a0e0d;color:#d99a3e;border:1px solid #6f542b;border-left:0;border-radius:0;padding:8px 9px;font:600 8px/1.35 var(--serif);letter-spacing:.09em}
+  .tools{gap:5px}.btn{background:rgba(8,12,11,.92);color:#e4ad57;border:1px solid #6c5733;box-shadow:2px 2px 0 #000;padding:7px 10px;border-radius:0;font:700 10px/1.2 var(--serif);transition:background .15s,color .15s,transform .15s}
+  .btn:hover{background:var(--kin);color:#11130f;transform:translateY(-1px);box-shadow:2px 3px 0 #000}.btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 #000}
+  .btn.red{background:var(--kin);color:#12130f;border-color:#f7c66f}.btn.ai{background:#102d30;color:#8fd3cd;border-color:#37666a}.btn[aria-pressed="true"]{background:var(--kin);color:var(--sumi)}
+  #themeTag{color:#c6934c;font:600 9px/1.2 var(--serif);letter-spacing:.08em}#themeTag b{background:#111714;color:#e7a846;border:1px solid #70552c;border-radius:0;width:30px;height:30px;display:grid;place-items:center;font:800 10px/1 var(--serif)}
+  #hint{background:rgba(8,13,11,.92);border:1px solid #6c5733;border-radius:0;color:#e0aa56;font:600 10px/1.4 var(--serif);letter-spacing:.06em;box-shadow:3px 3px 0 #000}
+  #indexBtn,#indexList{background:#0c1210;color:#dfa34e;border:1px solid #6c5733;box-shadow:4px 4px 0 #000;border-radius:0;font-family:var(--serif)}
+  #indexBtn i,#indexList button i{background:#d68d30;color:#11130f;border-radius:0;font-size:9px}#indexList button{border-radius:0;font-family:var(--serif);font-size:10px}#indexList button small{color:#9b875f}#indexList button:hover,#indexList button.on{background:#26342c;color:#f1bd68}
+  #tip{background:#e9a33e;border:1px solid #f6c36c;border-radius:0;color:#11130f;font:700 9px/1.3 var(--serif);padding:5px 9px;box-shadow:2px 2px 0 #000}
+  #toast{background:#111713;color:#ecb25a;border:1px solid #6c5733;border-radius:0;box-shadow:4px 4px 0 #000;font:600 10px/1.5 var(--serif)}
+  #panel{width:min(620px,49vw)}
+  .psheet{position:relative;border:2px solid #111;border-radius:0;box-shadow:10px 10px 0 rgba(0,0,0,.7),12px 12px 0 #b77a2e;background:var(--washi);overflow:hidden}
+  .psheet::after{content:"";position:absolute;left:0;right:0;bottom:0;height:9px;pointer-events:none;background:radial-gradient(#555 1px,transparent 1px);background-size:4px 4px;opacity:.32;border-top:1px solid #777}
+  .phead{padding:10px 12px;border-bottom:2px solid #111;background:repeating-linear-gradient(0deg,#e7e3d5 0,#e7e3d5 3px,#c9c6b9 3px,#c9c6b9 4px);color:#111}
+  .phead .seal{width:34px;height:30px;border:2px solid #111;border-radius:0;background:#e7e3d5;color:#111;font:800 11px/1 var(--serif);box-shadow:inset 0 0 0 2px #e7e3d5,inset 0 0 0 3px #777}
+  .phead h2{font:800 14px/1.25 var(--serif);letter-spacing:-.02em}.phead .btn{background:#e7e3d5;color:#111;border:2px solid #111;box-shadow:2px 2px 0 #777;padding:4px 8px}
+  .pbody{padding:18px 22px 30px;background:linear-gradient(rgba(255,255,255,.18),transparent 90px)}.content{font-family:var(--serif);font-size:13px}.content h3{font:800 13px/1.4 var(--serif);border-left:0;border-top:2px solid #111;border-bottom:1px solid #777;padding:5px 0;text-transform:uppercase;letter-spacing:.015em}
+  .content .dim{color:#55584f}.content .tag{border:1px solid #555;border-radius:0;background:#dedbcf;font:600 10px/1.4 var(--serif);padding:3px 7px;box-shadow:1px 1px 0 #888}
+  .content .stats{gap:7px}.content .stats div{border:2px solid #111;border-radius:0;background:#171c19;color:#e7e3d5;padding:10px 6px;box-shadow:2px 2px 0 #777}.content .stats b{font:800 21px/1.1 var(--serif);color:#efad4b}.content .stats span{font-size:9px}
+  .content .card{border:2px solid #111;border-radius:0;background:#e3e0d3;box-shadow:4px 4px 0 #777}.content .card.hl{background:#d8d4c5;box-shadow:4px 4px 0 #b77a2e}
+  .content .row{border-bottom:1px dashed #777}.content .row .k{font-family:var(--serif);color:#8b4e16}.content .row small{color:#50544b}
+  .content .shot{border:2px solid #111;border-radius:0;box-shadow:5px 5px 0 #777;filter:saturate(.7) contrast(1.06)}
+  .content .portrait{border:2px solid #111;border-radius:0;box-shadow:5px 5px 0 #777;padding:3px;filter:grayscale(1) contrast(1.15)}
+  .content .pf figure{border:2px solid #111;border-radius:0;background:#dedbcf;overflow:hidden}.content .pf figcaption b{color:#8b4e16;font-family:var(--serif)}
+  .content .pxbtn{border:2px solid #111;border-radius:0;box-shadow:3px 3px 0 #777;font-family:var(--serif)}.content .pxbtn.red{background:#171c19;color:#efad4b}
+  .omikuji .big{font-family:var(--serif);color:#9a5c1d}
+  body.read{background:linear-gradient(180deg,#0b100e 0,#3b2c18 180px,var(--washi) 480px)}
+  #reader section{border:2px solid #111;border-radius:0;box-shadow:7px 7px 0 #777}#reader h2{font-family:var(--serif)}#reader h2 i{background:#171c19;color:#efad4b;border-radius:0;font-family:var(--serif)}
+  .glnote{border:2px solid #111;border-radius:0;box-shadow:6px 6px 0 #777;background:var(--washi)}
+  #loader{background:repeating-linear-gradient(0deg,#090d0b 0,#090d0b 3px,#0e1411 3px,#0e1411 4px);color:#efad4b}#loader .cart{background:#efad4b;font-size:13px;box-shadow:7px 7px 0 #000}
   @media(max-width:760px){
-    .hud{padding:9px}.cart{font-size:10px;padding:8px 9px;box-shadow:3px 3px 0 rgba(37,38,33,.35)}.brand small{display:none}
-    .tools{gap:4px}.btn{font-size:10px;padding:6px 7px;box-shadow:2px 2px 0 var(--sumi)}.phead h2{font-size:13px}
-    #panel{width:auto}.psheet{border-radius:0;box-shadow:6px 6px 0 var(--shu)}
+    .hud{padding:9px}.cart{font-size:10px;padding:8px 9px;box-shadow:3px 3px 0 #000}.brand small{display:none}
+    .tools{gap:4px}.btn{font-size:9px;padding:6px;box-shadow:2px 2px 0 #000}.phead h2{font-size:12px}
+    #panel{width:auto}.psheet{border-radius:0;box-shadow:6px 6px 0 #000,8px 8px 0 #b77a2e}
   }
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+  .tools .btn{font-size:12px;min-height:36px;padding:8px 11px}
+  #indexBtn{min-height:40px;font-size:12px}#indexBtn small{color:#d1ad71;opacity:1}
+  #indexList button{min-height:36px;font-size:12px}#indexList button.seen{color:#bda780}
+  #indexList button.seen i{background:#59482a;color:#f1d6a5}
+  .btn:focus-visible,#indexList button:focus-visible,#indexBtn:focus-visible{outline:2px solid #72c6b7;outline-offset:3px}
+  @media(max-width:760px){.tools .btn{font-size:11px;min-height:36px;padding:6px 8px}.tools{max-width:72vw}.content{font-size:14px}#hint{bottom:67px;font-size:10px;max-width:calc(100vw - 24px);white-space:normal;text-align:center}}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23252621'/%3E%3Cpath d='M8 8h48v48H8z' fill='%238f2d24'/%3E%3Cpath d='M18 18h28v7H25v14h21v7H18z' fill='%23ded8c8'/%3E%3C/svg%3E" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23090b0b'/%3E%3Cpath d='M6 12h52v40H6z' fill='%23e89a35'/%3E%3Cpath d='M12 18h40v28H12z' fill='%23111413'/%3E%3Cpath d='M17 24h30v3H17zm0 7h22v3H17zm0 7h27v3H17z' fill='%23e89a35'/%3E%3C/svg%3E" />
 </head>
 <body data-lang="zh" data-theme="nishiki">
 
 <div id="stage">
-  <canvas id="gl" role="img" aria-label="王钰淞的苏联粗野主义混凝土研究室：点击档案终端、制图桌、旋转拨号电话与构成主义雕塑探索内容，也可以用左下角目录浏览 / Yusong Wang's Soviet brutalist study — an interactive WebGL scene with a section index"></canvas>
+  <canvas id="gl" role="img" aria-label="王钰淞的 YW/OS 98 复古科幻工作站：点击琥珀 CRT、矢量雷达、通信阵列与轨道仪探索内容，也可以用左下角目录浏览 / Yusong Wang's YW/OS 98 — an interactive WebGL research terminal"></canvas>
   <div class="kasumi top" aria-hidden="true">
     <svg viewBox="0 0 1440 96" preserveAspectRatio="xMidYMin slice">
       <defs><linearGradient id="kg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2a56a"/><stop offset="1" stop-color="#efc98f" stop-opacity=".85"/></linearGradient></defs>
@@ -237,12 +255,12 @@
 </div>
 
 <header class="hud">
-  <a class="brand" href="#" id="brand" aria-label="СТУДИЯ 1974 · 回到全景 / Back to overview">
-    <span class="cart"><em>СТУДИЯ</em> 1974</span>
-    <small>YUSONG WANG<br>CONCRETE STUDY · MOSCOW</small>
+  <a class="brand" href="#" id="brand" aria-label="YW/OS 98 · 回到全景 / Back to overview">
+    <span class="cart"><em>YW/OS</em> 98</span>
+    <small>PERSONAL RESEARCH TERMINAL<br>NODE 01 · ONLINE</small>
   </a>
   <div class="tools">
-    <button class="btn ai" id="btnTheme" type="button"><span class="lang-zh">光线</span><span class="lang-en">Light</span></button>
+    <button class="btn ai" id="btnTheme" type="button"><span class="lang-zh">显示模式</span><span class="lang-en">Display</span></button>
     <button class="btn" id="btnMode" type="button" aria-pressed="false"><span class="lang-zh">阅读模式</span><span class="lang-en">Reader</span></button>
     <button class="btn" id="btnSound" type="button" aria-pressed="false"><span class="lang-zh">音效</span><span class="lang-en">Sound</span></button>
     <button class="btn" id="btnLang" type="button"><span class="lang-zh">EN</span><span class="lang-en">中文</span></button>
@@ -251,12 +269,12 @@
   </div>
 </header>
 
-<div id="hint"><span class="lang-zh">研究室里的档案与旧物，都可以拿起看看</span><span class="lang-en">Every archive and object in the study can be explored</span></div>
+<div id="hint"><span class="lang-zh">选择一台设备，接入对应的研究档案</span><span class="lang-en">Select a device to access its research archive</span></div>
 <div id="index">
-  <button id="indexBtn" type="button" aria-expanded="false" aria-controls="indexList"><i>IDX</i><span class="lang-zh">档案目录</span><span class="lang-en">Archive index</span><small id="indexCount"></small></button>
+  <button id="indexBtn" type="button" aria-expanded="false" aria-controls="indexList"><i>DIR</i><span class="lang-zh">系统目录</span><span class="lang-en">System directory</span><small id="indexCount"></small></button>
   <nav id="indexList" aria-label="目录 / Sections"></nav>
 </div>
-<div id="themeTag" aria-live="polite"><b id="themeKanji">錦</b><span id="themeName"></span></div>
+<div id="themeTag" aria-live="polite"><b id="themeKanji">A</b><span id="themeName"></span></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <div id="tip" aria-hidden="true"></div>
 
@@ -267,10 +285,10 @@
   </div>
 </aside>
 
-<div id="glNote" class="glnote" hidden><b><span class="lang-zh">3D 书桌没有显示出来</span><span class="lang-en">The 3D desk did not start</span></b><span id="glWhy"></span><button class="btn red" type="button" onclick="location.reload()"><span class="lang-zh">重试 3D</span><span class="lang-en">Retry 3D</span></button></div>
+<div id="glNote" class="glnote" hidden><b><span class="lang-zh">3D 工作站没有显示出来</span><span class="lang-en">The 3D workstation did not start</span></b><span id="glWhy"></span><button class="btn red" type="button" onclick="location.reload()"><span class="lang-zh">重试 3D</span><span class="lang-en">Retry 3D</span></button></div>
 <main id="reader" class="content"></main>
 
-<div id="loader" aria-hidden="true"><span class="cart"><em>СТУДИЯ</em> 1974</span></div>
+<div id="loader" aria-hidden="true"><span class="cart"><em>YW/OS</em> 98</span></div>
 
 <noscript><p style="position:fixed;inset:auto 0 0 0;z-index:60;padding:1rem;background:#f4e9d0;border-top:3px solid #1d1a1f">这个页面需要 JavaScript。<a href="index.html">返回版本总览</a> / This page needs JavaScript — <a href="index.html">back to all versions</a>.</p></noscript>
 
@@ -398,7 +416,7 @@
   <a class="pxbtn" href="CV_Yusong_Wang.docx"><span class="lang-zh">Word 版</span><span class="lang-en">Word version</span></a></p>
 </template>
 <template id="t-door">
-  <p><span class="lang-zh">档案柜里保存着两个互动世界：浮世绘书斋与苏联混凝土研究室。你可以随时返回总览切换场景。</span><span class="lang-en">The archive holds two interactive worlds: the ukiyo-e study and the Soviet concrete study. Return to the portal to switch scenes.</span></p>
+  <p><span class="lang-zh">系统目录里保存着两个互动世界：浮世绘书斋与 YW/OS 98 个人研究终端。你可以随时返回总览切换场景。</span><span class="lang-en">The system directory holds two interactive worlds: the ukiyo-e study and YW/OS 98. Return to the portal to switch scenes.</span></p>
   <p><a class="pxbtn red" href="index.html"><span class="lang-zh">返回版本总览 →</span><span class="lang-en">Back to all versions →</span></a></p>
 </template>
 
@@ -427,40 +445,40 @@ const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
    SECTIONS & THEMES
    ===================================================================== */
 const SECTIONS = [
-  { id: 'about', k: 'ID', zh: '身份档案 · 关于我', en: 'Identity archive · About' },
-  { id: 'heritage', k: 'GIS', zh: 'HeritageExplorer · 制图桌', en: 'HeritageExplorer · Drafting table' },
+  { id: 'about', k: 'ID', zh: '身份终端 · 关于我', en: 'Identity terminal · About' },
+  { id: 'heritage', k: 'GIS', zh: 'HeritageExplorer · 矢量雷达', en: 'HeritageExplorer · Vector radar' },
   { id: 'work', k: 'LAB', zh: '论文 · 专利 · 项目', en: 'Papers · Patents · Projects' },
-  { id: 'exp', k: 'LOG', zh: '经历年表', en: 'Biographical timeline' },
-  { id: 'portfolio', k: 'IMG', zh: 'AI 影像幻灯片', en: 'AI image slides' },
-  { id: 'toolbox', k: 'SYS', zh: '技能 · 工具链', en: 'Toolbox' },
-  { id: 'contact', k: 'COM', zh: '拨号联系', en: 'Telephone contact' },
-  { id: 'cv', k: 'CV', zh: '简历档案夹', en: 'CV folder' },
-  { id: 'door', k: '02', zh: '版本总览', en: 'Version portal' }
+  { id: 'exp', k: 'NAV', zh: '经历路径图', en: 'Experience flight path' },
+  { id: 'portfolio', k: 'IMG', zh: 'AI 影像序列', en: 'AI image sequence' },
+  { id: 'toolbox', k: 'SYS', zh: '系统模块 · 工具链', en: 'System modules · Toolbox' },
+  { id: 'contact', k: 'COM', zh: '通信阵列 · 联系', en: 'Communications · Contact' },
+  { id: 'cv', k: 'CV', zh: '个人数据记录', en: 'Personal data record' },
+  { id: 'door', k: '02', zh: '系统目录', en: 'System directory' }
 ];
 const SEC = Object.fromEntries(SECTIONS.map((s) => [s.id, s]));
 // hover names — only shown when the pointer finds the object
 const NAMES = {
-  about: { zh: '档案终端 · ЭЛЕКТРОНИКА', en: 'Archive terminal · Elektronika' },
-  heritage: { zh: '建筑制图桌 / drafting table', en: 'Architectural drafting table' },
-  work: { zh: '研究剪报墙', en: 'Research pinboard' },
-  exp: { zh: '经历年表', en: 'Biographical timeline' },
-  portfolio: { zh: 'AI 影像幻灯片盒', en: 'AI slide archive' },
-  toolbox: { zh: '军绿色金属工具箱', en: 'Green metal toolbox' },
-  contact: { zh: '旋转拨号电话 / rotary telephone', en: 'Rotary telephone' },
-  cv: { zh: '牛皮纸简历档案夹', en: 'Manila CV folder' },
-  door: { zh: '版本档案夹', en: 'Version archive folders' },
-  lantern: { zh: '绿色钢制台灯', en: 'Green steel desk lamp' },
-  fan: { zh: '老式光线开关', en: 'Vintage light switch' },
-  wave: { zh: '构成主义海报 / constructivist', en: 'Constructivist poster' },
-  window: { zh: '混凝土框景窗', en: 'Concrete-framed window' },
-  tea: { zh: '搪瓷杯', en: 'Enamel mug' },
-  sculpture: { zh: '构成主义雕塑', en: 'Constructivist sculpture' }
+  about: { zh: '琥珀 CRT 身份终端', en: 'Amber CRT identity terminal' },
+  heritage: { zh: 'GIS 矢量雷达 / vector radar', en: 'GIS vector radar' },
+  work: { zh: '研究数据墙 / telemetry', en: 'Research telemetry wall' },
+  exp: { zh: '航空路径年表 / flight path', en: 'Experience flight path' },
+  portfolio: { zh: 'AI 图像序列匣', en: 'AI image sequence cartridge' },
+  toolbox: { zh: '模块化系统工具箱', en: 'Modular system toolbox' },
+  contact: { zh: '通信阵列', en: 'Communication array' },
+  cv: { zh: '个人数据记录卡', en: 'Personal data record' },
+  door: { zh: '系统目录卡带', en: 'System directory cartridges' },
+  lantern: { zh: '琥珀信号灯塔', en: 'Amber signal beacon' },
+  fan: { zh: '显示模式控制器', en: 'Display mode controller' },
+  wave: { zh: '轨道导航主屏', en: 'Navigation master display' },
+  window: { zh: '深空遥测副屏', en: 'Deep-space telemetry display' },
+  tea: { zh: '咖啡 · 系统彩蛋', en: 'Coffee · System easter egg' },
+  orbiter: { zh: '桌面轨道仪', en: 'Desktop orbit instrument' }
 };
 const THEMES = [
-  { id: 'nishiki', k: 'Д', zh: '阴天日光', en: 'Overcast daylight' },
-  { id: 'ai', k: 'Б', zh: '混凝土灰', en: 'Concrete grey' },
-  { id: 'sumi', k: 'С', zh: '旧档案色', en: 'Archive sepia' },
-  { id: 'yoru', k: 'Н', zh: '钨丝灯夜', en: 'Tungsten night' }
+  { id: 'nishiki', k: 'A', zh: '琥珀单色', en: 'Amber monochrome' },
+  { id: 'ai', k: 'C', zh: '磷光青屏', en: 'Cyan phosphor' },
+  { id: 'sumi', k: 'M', zh: '低亮模式', en: 'Low luminance' },
+  { id: 'yoru', k: 'N', zh: '夜间值班', en: 'Night shift' }
 ];
 
 /* =====================================================================
@@ -704,28 +722,40 @@ TEX.wave = ctex(1024, 700, (g, w, h) => { g.fillStyle = '#e7dbc0'; g.fillRect(0,
 TEX.fuji = ctex(512, 512, (g, w, h) => { g.fillStyle = '#9fc4dc'; g.fillRect(0, 0, w, h); });
 TEX.prints = [0, 1, 2].map(() => ctex(512, 360, (g, w, h) => { g.fillStyle = '#fbf6e8'; g.fillRect(0, 0, w, h); }));
 
-/* Soviet material library — raw concrete, terrazzo, walnut and print ink */
-TEX.wood.userData.redraw(woodPaint('#76543a',1024,512,.8));
-TEX.woodDark.userData.redraw(woodPaint('#423c31',512,256,.65));
-TEX.woodPale.userData.redraw(woodPaint('#9b7b52',512,256,.55));
-TEX.plaster.userData.redraw((g,w,h)=>{g.fillStyle='#96958b';g.fillRect(0,0,w,h);for(let i=0;i<90;i++){const x=rand()*w,y=rand()*h,r=20+rand()*90,gr=g.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,rand()>.5?'rgba(45,45,40,.09)':'rgba(235,231,215,.1)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(x-r,y-r,r*2,r*2);}g.strokeStyle='rgba(54,54,48,.3)';g.lineWidth=3;for(let x=0;x<=w;x+=256){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}for(let y=0;y<=h;y+=256){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();}for(let x=32;x<w;x+=256)for(let y=32;y<h;y+=256){g.fillStyle='rgba(50,50,44,.5)';g.beginPath();g.arc(x,y,7,0,Math.PI*2);g.fill();g.fillStyle='rgba(210,205,190,.35)';g.beginPath();g.arc(x-2,y-2,3,0,Math.PI*2);g.fill();}speckle(g,w,h,14000,'45,45,40',.17);speckle(g,w,h,5000,'235,231,215',.16);});
-TEX.tatami.userData.redraw((g,w,h)=>{g.fillStyle='#74756c';g.fillRect(0,0,w,h);for(let i=0;i<18000;i++){const s=1+rand()*5;g.fillStyle=['rgba(220,214,195,.42)','rgba(43,45,40,.32)','rgba(143,45,36,.13)','rgba(192,161,84,.14)'][i%4];g.fillRect(rand()*w,rand()*h,s,s*.65);}g.strokeStyle='rgba(42,43,38,.24)';g.lineWidth=2;for(let x=0;x<w;x+=512){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}for(let y=0;y<h;y+=400){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();}});
-TEX.shoji.userData.redraw((g,w,h)=>{g.fillStyle='#85867c';g.fillRect(0,0,w,h);g.strokeStyle='rgba(45,46,40,.28)';g.lineWidth=3;for(let x=0;x<w;x+=170){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}for(let y=0;y<h;y+=128){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();}speckle(g,w,h,5000,'40,42,36',.13);});
-TEX.ranma.userData.redraw((g,w,h)=>{g.fillStyle='#7f2c25';g.fillRect(0,0,w,h);g.fillStyle='#c0a154';for(let x=0;x<w;x+=128){g.beginPath();g.moveTo(x,0);g.lineTo(x+42,0);g.lineTo(x+96,h);g.lineTo(x+54,h);g.closePath();g.fill();}speckle(g,w,h,1800,'235,225,200',.1);});
-TEX.map.userData.redraw((g,w,h)=>{paperBase(g,w,h,'#d8d0b8','#bfb69e');g.strokeStyle='rgba(77,85,69,.32)';g.lineWidth=1;for(let x=0;x<w;x+=32){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}for(let y=0;y<h;y+=32){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();}g.strokeStyle='#8f2d24';g.lineWidth=4;g.beginPath();g.ellipse(w*.5,h*.48,w*.34,h*.28,-.25,0,Math.PI*2);g.stroke();for(let i=0;i<26;i++){g.fillStyle=i%4?'#4d5545':'#8f2d24';g.fillRect(40+rand()*(w-80),30+rand()*(h-60),5,5);}g.fillStyle='#252621';g.font='bold 24px sans-serif';g.fillText('АРХИТЕКТУРА / 1974',38,46);});
-TEX.news.forEach((tex,k)=>tex.userData.redraw((g,w,h)=>{paperBase(g,w,h,k===2?'#c8b383':'#d9d2bd',k===2?'#b29b68':'#c2baa4');g.fillStyle=k===2?'#8f2d24':'#252621';g.fillRect(22,20,w-44,k?22:38);g.fillStyle='#ded8c8';g.font='bold 20px sans-serif';g.fillText(k===2?'ТРУД':'АРХИВ',34,k?42:48);textLines(g,26,82,w-52,h-120,18,'rgba(37,38,33,.48)',4);for(let i=0;i<5;i++){g.fillStyle=i===k?'#8f2d24':'#4d5545';g.fillRect(28+i*34,h-32,20,6);}}));
-TEX.cv.userData.redraw((g,w,h)=>{paperBase(g,w,h,'#d8c59b','#c2aa78');g.fillStyle='#4d5545';g.fillRect(0,0,120,h);g.fillStyle='#8f2d24';g.fillRect(120,0,18,h);g.fillStyle='#252621';g.fillRect(170,48,w-220,18);g.font='bold 22px sans-serif';g.fillText('ЛИЧНОЕ ДЕЛО',170,94);textLines(g,170,126,w-220,h-176,32,'rgba(37,38,33,.48)',6);for(let y=90;y<h-40;y+=42){g.fillStyle='#c0a154';g.fillRect(36,y,44,6);}});
-TEX.book.forEach((tex,i)=>tex.userData.redraw((g,w,h)=>{g.fillStyle=['#4d5545','#8f2d24','#b3954f'][i];g.fillRect(0,0,w,h);g.fillStyle=i===2?'#252621':'#ded8c8';g.fillRect(34,30,12,h-60);for(let y=48;y<h-30;y+=32)g.fillRect(64,y,w-104,5);speckle(g,w,h,1400,'30,30,25',.1);}));
-TEX.lantern.userData.redraw((g,w,h)=>{const gr=g.createLinearGradient(0,0,w,0);gr.addColorStop(0,'#344334');gr.addColorStop(.5,'#69745a');gr.addColorStop(1,'#344334');g.fillStyle=gr;g.fillRect(0,0,w,h);g.fillStyle='rgba(222,216,200,.13)';for(let y=0;y<h;y+=48)g.fillRect(0,y,w,3);});
-TEX.lanternGlow.userData.redraw((g,w,h)=>{g.fillStyle='#252620';g.fillRect(0,0,w,h);const gr=g.createRadialGradient(w/2,h/2,4,w/2,h/2,h*.55);gr.addColorStop(0,'#fff0bd');gr.addColorStop(1,'#c28d43');g.fillStyle=gr;g.fillRect(5,5,w-10,h-10);});
-TEX.scroll.userData.redraw((g,w,h)=>{paperBase(g,w,h,'#d5cdb5','#bdb49b');g.fillStyle='#8f2d24';g.fillRect(28,30,6,h-60);for(let y=64;y<h-50;y+=104){g.fillStyle='#8f2d24';g.beginPath();g.arc(31,y,9,0,Math.PI*2);g.fill();textLines(g,58,y-8,w-88,42,13,'rgba(37,38,33,.55)',4);}g.strokeStyle='rgba(37,38,33,.45)';g.lineWidth=3;g.strokeRect(12,12,w-24,h-24);});
-TEX.wave.userData.redraw((g,w,h)=>{g.fillStyle='#d7ceb6';g.fillRect(0,0,w,h);g.fillStyle='#8f2d24';g.beginPath();g.moveTo(0,h);g.lineTo(w*.7,0);g.lineTo(w,0);g.lineTo(w*.3,h);g.closePath();g.fill();g.fillStyle='#252621';g.beginPath();g.arc(w*.62,h*.5,h*.27,0,Math.PI*2);g.fill();g.fillStyle='#c0a154';g.fillRect(w*.12,h*.18,w*.13,h*.68);g.strokeStyle='#d7ceb6';g.lineWidth=18;g.beginPath();g.moveTo(w*.18,h*.85);g.lineTo(w*.84,h*.16);g.stroke();g.fillStyle='#252621';g.font='900 62px sans-serif';g.fillText('ТРУД',42,76);g.font='bold 28px sans-serif';g.fillText('СТРОИТЬ · 1974',44,h-36);speckle(g,w,h,4000,'40,35,25',.12);});
-TEX.fuji.userData.redraw((g,w,h)=>{const gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,'#a8aca6');gr.addColorStop(1,'#d0cbbd');g.fillStyle=gr;g.fillRect(0,0,w,h);g.fillStyle='rgba(239,234,218,.35)';for(let i=0;i<18;i++){g.beginPath();g.ellipse(rand()*w,rand()*h*.55,30+rand()*80,8+rand()*20,0,0,Math.PI*2);g.fill();}g.fillStyle='#747a73';for(let x=0;x<w;){const bw=22+rand()*45,bh=45+rand()*130;g.fillRect(x,h-bh,bw,bh);g.fillStyle='#565e57';for(let wy=h-bh+14;wy<h-12;wy+=20)for(let wx=x+8;wx<x+bw-6;wx+=16)g.fillRect(wx,wy,5,8);g.fillStyle='#747a73';x+=bw+5;}g.fillStyle='#62675f';g.fillRect(0,h-30,w,30);});
+/* YW/OS screen library — dense telemetry, scanline grids and vector radar */
+function screenBase(g,w,h,accent='#e9a33c',title='YW/OS 98 // TELEMETRY'){
+  g.fillStyle='#070d0c';g.fillRect(0,0,w,h);g.strokeStyle=accent;g.globalAlpha=.18;g.lineWidth=1;
+  for(let x=0;x<w;x+=32){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}for(let y=0;y<h;y+=32){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();}
+  g.globalAlpha=1;g.strokeStyle=accent;g.lineWidth=2;g.strokeRect(10,10,w-20,h-20);g.fillStyle=accent;g.fillRect(10,10,w-20,38);
+  g.fillStyle='#07100d';g.font='bold 19px monospace';g.fillText(title,24,36);g.fillStyle=accent;g.font='13px monospace';
+  g.fillText('NODE 01  CH 88.4  SYNC 99.8%',24,h-22);g.fillText('REC ●',w-92,h-22);
+  g.globalAlpha=.1;for(let y=50;y<h-40;y+=4)g.fillRect(12,y,w-24,1);g.globalAlpha=1;
+}
+function microLabel(g,text,x,y,color='#e9a33c',size=13){g.fillStyle=color;g.font=`${size}px monospace`;g.fillText(text,x,y);}
+function crosshair(g,x,y,r,color='#e9a33c'){g.strokeStyle=color;g.lineWidth=1.5;g.beginPath();g.moveTo(x-r,y);g.lineTo(x+r,y);g.moveTo(x,y-r);g.lineTo(x,y+r);g.stroke();g.strokeRect(x-r*.45,y-r*.45,r*.9,r*.9);}
+TEX.wood.userData.redraw((g,w,h)=>{g.fillStyle='#272c28';g.fillRect(0,0,w,h);g.fillStyle='#141916';for(let y=22;y<h;y+=28)for(let x=20;x<w;x+=96)g.fillRect(x,y,62,5);g.fillStyle='#d69235';g.fillRect(0,h-18,w,5);speckle(g,w,h,3200,'190,180,145',.05);});
+TEX.woodDark.userData.redraw((g,w,h)=>{g.fillStyle='#0d1210';g.fillRect(0,0,w,h);g.strokeStyle='#39433a';for(let x=0;x<w;x+=48){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}for(let y=12;y<h;y+=18){g.fillStyle='#050806';g.fillRect(8,y,w-16,5);}});
+TEX.woodPale.userData.redraw((g,w,h)=>{g.fillStyle='#aaa793';g.fillRect(0,0,w,h);g.fillStyle='rgba(20,25,21,.2)';for(let y=0;y<h;y+=18)g.fillRect(0,y,w,1);speckle(g,w,h,1800,'30,35,28',.08);});
+TEX.plaster.userData.redraw((g,w,h)=>{g.fillStyle='#202824';g.fillRect(0,0,w,h);g.strokeStyle='#3d4a42';g.lineWidth=3;for(let x=0;x<=w;x+=256){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}for(let y=0;y<=h;y+=256){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();}g.fillStyle='#0a0f0c';for(let x=18;x<w;x+=256)for(let y=18;y<h;y+=256){g.beginPath();g.arc(x,y,4,0,Math.PI*2);g.fill();}for(let y=70;y<h;y+=256)for(let x=70;x<w;x+=256){g.fillStyle='#111814';g.fillRect(x,y,110,38);g.fillStyle='#3d4a42';for(let k=0;k<6;k++)g.fillRect(x+8,y+6+k*5,94,2);}speckle(g,w,h,4500,'150,160,135',.04);});
+TEX.tatami.userData.redraw((g,w,h)=>{g.fillStyle='#101714';g.fillRect(0,0,w,h);g.strokeStyle='#2f3d34';g.lineWidth=2;const u=80;for(let x=0;x<w;x+=u){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}for(let y=0;y<h;y+=u){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();}g.fillStyle='#755527';for(let x=0;x<w;x+=u*4)for(let y=0;y<h;y+=u*4){g.fillRect(x+8,y+8,24,4);g.fillRect(x+8,y+16,8,4);}});
+TEX.shoji.userData.redraw((g,w,h)=>{g.fillStyle='#111a17';g.fillRect(0,0,w,h);g.strokeStyle='#33483e';g.lineWidth=3;for(let x=0;x<w;x+=128){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}for(let y=0;y<h;y+=96){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();}for(let y=16;y<h;y+=96){g.fillStyle='#b3782d';g.fillRect(12,y,24,3);}});
+TEX.ranma.userData.redraw((g,w,h)=>{g.fillStyle='#0a100e';g.fillRect(0,0,w,h);g.fillStyle='#d89335';for(let x=0;x<w;x+=64)g.fillRect(x,20,36,8);microLabel(g,'YW/OS 98   //   RESEARCH TERMINAL   //   BUS ACTIVE   //   23.2N 108.3E',28,72,'#e9a33c',24);});
+TEX.map.userData.redraw((g,w,h)=>{screenBase(g,w,h,'#e9a33c','HERITAGE GIS // VECTOR RADAR');const cx=w*.47,cy=h*.54;g.strokeStyle='#e9a33c';g.lineWidth=2;for(let r=40;r<250;r+=42){g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.stroke();}for(let a=0;a<Math.PI*2;a+=Math.PI/6){g.beginPath();g.moveTo(cx,cy);g.lineTo(cx+Math.cos(a)*280,cy+Math.sin(a)*280);g.stroke();}g.strokeStyle='#72c6b7';for(let k=0;k<9;k++){g.beginPath();for(let i=0;i<=80;i++){const a=i/80*Math.PI*2,r=55+k*13+Math.sin(a*3+k)*14+Math.cos(a*5-k)*8,x=cx+Math.cos(a)*r*1.25,y=cy+Math.sin(a)*r*.72;i?g.lineTo(x,y):g.moveTo(x,y);}g.closePath();g.stroke();}for(let i=0;i<18;i++){const a=rand()*Math.PI*2,r=50+rand()*175,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r*.7;crosshair(g,x,y,7,i%4===0?'#f0b04c':'#72c6b7');}microLabel(g,'831 NODES',w-190,92);microLabel(g,'RAG 04',w-190,118,'#72c6b7');microLabel(g,'SCAN 023.8',w-190,144);});
+TEX.news.forEach((tex,k)=>tex.userData.redraw((g,w,h)=>{const ac=k===1?'#72c6b7':'#e9a33c';screenBase(g,w,h,ac,['RESEARCH LOG // PAPERS','MULTIMODEL // SIGNAL','SYSTEM // DEPLOY'][k]);if(k===0){for(let j=0;j<4;j++){microLabel(g,['VINCI 2025  /  01','CHI 2025    /  02','PATENTS     /  04','SOFTWARE    /  01'][j],32,92+j*48,ac,18);textLines(g,34,108+j*48,w-68,24,10,'rgba(233,163,60,.5)',2);}}else if(k===1){g.strokeStyle=ac;g.lineWidth=3;g.beginPath();for(let x=26;x<w-26;x+=3){const y=h*.48+Math.sin(x*.07)*42+Math.sin(x*.21)*16;x===26?g.moveTo(x,y):g.lineTo(x,y);}g.stroke();for(let i=0;i<24;i++)g.fillRect(30+i*(w-60)/24,h-100-rand()*90,5,20+rand()*80);}else{for(let i=0;i<15;i++){g.fillStyle=ac;g.fillRect(32,86+i*20,16,7);g.globalAlpha=.25;g.fillRect(60,86+i*20,w-100,7);g.globalAlpha=1;g.fillRect(60,86+i*20,(w-100)*(.3+rand()*.7),7);}}}));
+TEX.cv.userData.redraw((g,w,h)=>{g.fillStyle='#dedbcf';g.fillRect(0,0,w,h);g.strokeStyle='#111';g.lineWidth=3;g.strokeRect(12,12,w-24,h-24);g.fillStyle='#111';g.fillRect(12,12,w-24,62);microLabel(g,'YW/OS // PERSONAL DATA RECORD',32,52,'#e9a33c',25);microLabel(g,'ID: YW-0104  /  ACTIVE',38,118,'#111',20);textLines(g,38,150,w-250,h-230,34,'rgba(20,25,20,.5)',5);for(let x=w-190;x<w-50;x+=6){g.fillStyle=x%12?'#111':'#dedbcf';g.fillRect(x,130,3,210);}microLabel(g,'PDF / DOCX / 2026.10',38,h-48,'#111',18);});
+TEX.book.forEach((tex,i)=>tex.userData.redraw((g,w,h)=>{g.fillStyle=['#152d2c','#3a2b16','#252a25'][i];g.fillRect(0,0,w,h);g.fillStyle=i===1?'#e9a33c':'#72c6b7';g.fillRect(24,24,8,h-48);microLabel(g,['DIR 01','DIR 02','SYS 98'][i],54,62,g.fillStyle,26);for(let y=94;y<h-30;y+=34)g.fillRect(54,y,w-88,4);}));
+TEX.lantern.userData.redraw((g,w,h)=>{const gr=g.createLinearGradient(0,0,w,0);gr.addColorStop(0,'#3d2b12');gr.addColorStop(.5,'#e9a33c');gr.addColorStop(1,'#3d2b12');g.fillStyle=gr;g.fillRect(0,0,w,h);g.fillStyle='rgba(10,15,12,.35)';for(let y=0;y<h;y+=32)g.fillRect(0,y,w,3);});
+TEX.lanternGlow.userData.redraw((g,w,h)=>{g.fillStyle='#080b09';g.fillRect(0,0,w,h);const gr=g.createRadialGradient(w/2,h/2,4,w/2,h/2,h*.55);gr.addColorStop(0,'#ffe2a0');gr.addColorStop(1,'#d57c20');g.fillStyle=gr;g.fillRect(5,5,w-10,h-10);});
+TEX.scroll.userData.redraw((g,w,h)=>{screenBase(g,w,h,'#e9a33c','NAV // FLIGHT PATH');g.strokeStyle='#e9a33c';g.lineWidth=2;g.setLineDash([8,7]);g.beginPath();g.moveTo(w*.18,h*.82);g.bezierCurveTo(w*.85,h*.7,w*.05,h*.35,w*.72,h*.18);g.stroke();g.setLineDash([]);[[.18,.82,'2016'],[.58,.61,'2020'],[.3,.4,'2024'],[.72,.18,'2026']].forEach(([x,y,t])=>{crosshair(g,w*x,h*y,13);microLabel(g,t,w*x+18,h*y+4,'#e9a33c',15);});for(let y=110;y<h-70;y+=72)microLabel(g,`ALT ${Math.round(9000-y*7)}  //  ${y}`,30,y,'#72c6b7',12);});
+TEX.wave.userData.redraw((g,w,h)=>{screenBase(g,w,h,'#e9a33c','YW/OS // ORBITAL NAVIGATION');for(let i=0;i<220;i++){g.fillStyle=`rgba(233,163,60,${.2+rand()*.7})`;g.fillRect(24+rand()*(w-48),58+rand()*(h-120),rand()>.9?3:1,rand()>.9?3:1);}const cx=w*.52,cy=h*.72;g.strokeStyle='#e9a33c';g.lineWidth=3;for(let r=120;r<330;r+=52){g.beginPath();g.arc(cx,cy,r,Math.PI,Math.PI*2);g.stroke();}g.fillStyle='#6c4a20';g.beginPath();g.arc(cx,cy,150,Math.PI,Math.PI*2);g.fill();g.strokeStyle='#72c6b7';g.lineWidth=2;for(let i=0;i<4;i++){g.beginPath();g.ellipse(cx,cy,260+i*34,65+i*12,-.18,0,Math.PI*2);g.stroke();}crosshair(g,cx+120,cy-160,18);microLabel(g,'TARGET / HKUST-GZ',54,96);microLabel(g,'AZ 108.32  EL 23.08',54,122,'#72c6b7');});
+TEX.fuji.userData.redraw((g,w,h)=>{screenBase(g,w,h,'#72c6b7','DEEP SPACE // TELEMETRY');const cx=w/2,cy=h*.52,r=w*.3;g.strokeStyle='#72c6b7';g.lineWidth=2;g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.stroke();for(let i=-3;i<=3;i++){g.beginPath();g.ellipse(cx,cy,r*Math.cos(i*.22),r,0,0,Math.PI*2);g.stroke();g.beginPath();g.ellipse(cx,cy,r,r*Math.cos(i*.22),0,0,Math.PI*2);g.stroke();}crosshair(g,cx,cy,r+28,'#e9a33c');microLabel(g,'SIGNAL  98.72%',32,92,'#e9a33c',16);microLabel(g,'UPLINK  STABLE',32,h-58,'#72c6b7',16);});
+TEX.terminal=ctex(768,480,(g,w,h)=>{screenBase(g,w,h,'#e9a33c','YW/OS 98 // IDENTITY');microLabel(g,'> BOOT YUSONG_WANG',36,98,'#e9a33c',24);microLabel(g,'> ROLE: RESEARCH / ENGINEERING',36,136,'#e9a33c',18);microLabel(g,'> GIS + MULTIMODAL AI',36,168,'#72c6b7',18);for(let i=0;i<8;i++){microLabel(g,`${String(i+1).padStart(2,'0')}  ${['MPhil CMA','VINCI 2025','CHI 2025','PATENT 04','SYSTEM 15','LLM GATEWAY','RAG ONLINE','NODE ACTIVE'][i]}`,42,218+i*27,'#e9a33c',16);}crosshair(g,w-120,h*.55,58);});
+TEX.sweep=ctex(256,256,(g,w,h)=>{const gr=g.createRadialGradient(w/2,h/2,0,w/2,h/2,w/2);gr.addColorStop(0,'rgba(240,177,70,.7)');gr.addColorStop(1,'rgba(240,177,70,0)');g.fillStyle=gr;g.beginPath();g.moveTo(w/2,h/2);g.arc(w/2,h/2,w/2,-.32,.08);g.closePath();g.fill();});
 
 /* =====================================================================
    MATERIALS + helpers
    ===================================================================== */
-const INK = 0x252621, GOLD = 0x8f2d24;
+const INK = 0x050807, GOLD = 0xe9a33c;
 let lanternPaper = null, lanternLight = null;
 const inkMat = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
 const goldMat = new THREE.MeshBasicMaterial({ color: GOLD, side: THREE.BackSide });
@@ -738,10 +768,10 @@ const M = {
   tatami: std({ map: TEX.tatami, roughness: 0.95 }),
   shoji: std({ map: TEX.shoji, roughness: 0.98, emissive: 0x000000, emissiveIntensity: 0 }),
   ranma: std({ map: TEX.ranma }),
-  paperSide: std({ color: 0xcfc5aa }),
-  lacquer: std({ color: 0x292c27, roughness: 0.48, metalness: 0.35 }),
-  lacquerRed: std({ color: 0x8f2d24, roughness: 0.52, metalness: 0.16 }),
-  gold: std({ color: 0xb3954f, roughness: 0.48, metalness: 0.5 })
+  paperSide: std({ color: 0xaaa793 }),
+  lacquer: std({ color: 0x111815, roughness: 0.38, metalness: 0.52 }),
+  lacquerRed: std({ color: 0xd88b2e, roughness: 0.38, metalness: 0.32 }),
+  gold: std({ color: 0xe9a33c, roughness: 0.3, metalness: 0.48 })
 };
 function hull(mesh, t = 0.006) {
   const g = mesh.geometry; g.computeBoundingBox(); const s = new THREE.Vector3(); g.boundingBox.getSize(s);
@@ -782,14 +812,11 @@ const room = new THREE.Group(); scene.add(room);
     const s = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.6), M.shoji); s.rotation.y = x < 0 ? Math.PI / 2 : -Math.PI / 2; s.position.set(x, 1.3, WALL_Z + 1.2); s.receiveShadow = true; s.userData.block = true; room.add(s);
     const sill = boxMesh(0.06, 0.05, 2.4, M.woodDark, { outline: 0.003 }); sill.position.set(x, 0.025, WALL_Z + 1.2); room.add(sill);
   });
-  const ceilingRail=boxMesh(2.5,.09,.18,M.woodDark,{outline:.004});ceilingRail.position.set(0,1.78,.1);room.add(ceilingRail);
-  const ceilingGlow=boxMesh(1.7,.035,.1,new THREE.MeshBasicMaterial({color:0xe5dcc2}),{outline:0,cast:false});ceilingGlow.position.set(0,1.72,.1);room.add(ceilingGlow);
-  [-1.52,1.52].forEach(x=>{const rib=boxMesh(.16,2.6,.18,M.plaster,{outline:.003});rib.position.set(x,1.3,WALL_Z+.08);room.add(rib);});
-  /* cast-iron radiator beneath the concrete-framed window */
-  const radiator=new THREE.Group();radiator.position.set(1.08,.28,WALL_Z+.1);room.add(radiator);
-  const radiatorMat=std({color:0x5c6055,roughness:.72,metalness:.55});
-  for(let i=0;i<8;i++){const fin=boxMesh(.045,.4,.09,radiatorMat,{outline:.003});fin.position.set(-.245+i*.07,0,0);radiator.add(fin);}
-  [-.18,.18].forEach(y=>{const pipe=new THREE.Mesh(new THREE.CylinderGeometry(.022,.022,.62,14),radiatorMat);pipe.rotation.z=Math.PI/2;pipe.position.y=y;radiator.add(pipe);});
+  const ceilingRail=boxMesh(2.7,.09,.18,M.lacquer,{outline:.004});ceilingRail.position.set(0,1.57,WALL_Z+.14);room.add(ceilingRail);
+  const ceilingGlow=boxMesh(2.1,.025,.1,new THREE.MeshBasicMaterial({color:0xd89536}),{outline:0,cast:false});ceilingGlow.position.set(0,1.51,WALL_Z+.14);room.add(ceilingGlow);
+  [-1.52,1.52].forEach(x=>{const rib=boxMesh(.12,2.6,.16,M.lacquer,{outline:.003});rib.position.set(x,1.3,WALL_Z+.08);room.add(rib);for(let y=.18;y<1.55;y+=.18){const bolt=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.012,10),M.gold);bolt.rotation.x=Math.PI/2;bolt.position.set(x,y,WALL_Z+.17);room.add(bolt);}});
+  /* auxiliary equipment racks, vents and status telemetry */
+  [-1,1].forEach(side=>{const rack=boxMesh(.3,.48,.12,M.woodDark,{outline:.004});rack.position.set(side*1.34,.34,WALL_Z+.12);room.add(rack);for(let i=0;i<5;i++){const unit=boxMesh(.24,.055,.018,M.lacquer,{outline:.002});unit.position.set(side*1.34,.17+i*.075,WALL_Z+.19);room.add(unit);const led=boxMesh(.025,.012,.008,i%2?M.gold:M.lacquerRed,{outline:0,cast:false});led.position.set(side*1.34-.08,.17+i*.075,WALL_Z+.204);room.add(led);}});
 }
 
 /* =====================================================================
@@ -818,65 +845,77 @@ function onDesk(x, z, rotDeg) { const g = new THREE.Group(); g.position.set(x, D
     const leg = boxMesh(0.12, DESK_Y - 0.05, 1.12, M.woodDark, { outline: 0.004 }); leg.position.set(x, (DESK_Y - 0.05) / 2, -0.01); scene.add(leg);
     const foot = boxMesh(0.16, 0.03, 1.2, M.wood, { outline: 0.003 }); foot.position.set(x, 0.015, -0.01); scene.add(foot);
   });
-  const drawer=boxMesh(.82,.11,.045,M.woodDark,{outline:.003});drawer.position.set(0,DESK_Y-.095,.615);scene.add(drawer);
-  const inventoryTag=boxMesh(.22,.052,.008,M.gold,{outline:.002});inventoryTag.position.set(0,DESK_Y-.09,.642);scene.add(inventoryTag);
-  const drawerPull=new THREE.Mesh(new THREE.TorusGeometry(.045,.008,8,24,Math.PI),M.lacquer);drawerPull.position.set(0,DESK_Y-.11,.65);drawerPull.rotation.x=Math.PI;scene.add(drawerPull);
+  const consolePanel=boxMesh(1.45,.14,.055,M.lacquer,{outline:.003});consolePanel.position.set(0,DESK_Y-.09,.615);scene.add(consolePanel);
+  const statusScreen=boxMesh(.3,.065,.008,new THREE.MeshBasicMaterial({color:0x5e431d}),{outline:.002});statusScreen.position.set(-.48,DESK_Y-.085,.648);scene.add(statusScreen);
+  for(let i=0;i<4;i++){const readout=boxMesh(.2-i*.025,.006,.004,new THREE.MeshBasicMaterial({color:0xf0ae45}),{outline:0,cast:false});readout.position.set(-.49,DESK_Y-.06-i*.015,.654);scene.add(readout);}
+  for(let i=0;i<10;i++){const key=boxMesh(.055,.035,.018,i%4===0?M.gold:M.woodPale,{outline:.002});key.position.set(-.18+i*.075,DESK_Y-.07,.65);scene.add(key);}
+  const inventoryTag=boxMesh(.24,.045,.008,M.gold,{outline:.002});inventoryTag.position.set(.72,DESK_Y-.115,.648);scene.add(inventoryTag);
   const sh = blob(2.9, 1.8, 0.75); sh.position.set(0.05, 0.002, 0.0); scene.add(sh);
 }
 
-/* Soviet Elektronika archive terminal — about */
+/* amber CRT identity terminal — about */
 {
-  const [g, v] = onDesk(-0.666, -0.02, -6);
-  const shell = std({ color: 0xb8b29e, roughness: .72, metalness: .12 });
-  const bodyMesh = boxMesh(.54,.34,.39,shell,{outline:.006}); bodyMesh.position.set(0,.22,0); v.add(bodyMesh);
-  const bezel = boxMesh(.46,.27,.025,M.lacquer,{outline:.004}); bezel.position.set(0,.23,.207); v.add(bezel);
-  const screenMat = std({color:0x24271f,emissive:0xb8893f,emissiveIntensity:.2,roughness:.42});
-  const screen = new THREE.Mesh(new THREE.PlaneGeometry(.38,.2),screenMat); screen.position.set(0,.23,.221); v.add(screen);
-  for(let i=0;i<6;i++){const line=boxMesh(.27-(i%3)*.035,.008,.003,new THREE.MeshBasicMaterial({color:i===0?0xd0aa5b:0x8f936e}),{outline:0,cast:false,recv:false});line.position.set(-.025,.29-i*.025,.225);v.add(line);}
-  const keyboard = boxMesh(.48,.028,.19,shell,{outline:.004}); keyboard.position.set(0,.035,.32); keyboard.rotation.x=-.08; v.add(keyboard);
-  for(let r=0;r<3;r++)for(let c=0;c<7;c++){const key=boxMesh(.043,.009,.032,c===6?M.lacquerRed:M.lacquer,{outline:0});key.position.set(-.15+c*.05,.055,.265+r*.045);v.add(key);}
-  const led=new THREE.Mesh(new THREE.SphereGeometry(.012,10,8),new THREE.MeshBasicMaterial({color:0x9b3c27}));led.position.set(.2,.08,.205);v.add(led);
-  const b = blob(.82,.72); b.position.y=.001;g.add(b);
-  register('about',g,v,[.62,.46,.64],[0,.23,.12],'desk',{r:.45});
+  const [g, v] = onDesk(-0.666, -0.18, -6);
+  const shell = std({ color: 0x8f8e7e, roughness: .62, metalness: .16 });
+  const bodyMesh = boxMesh(.58,.38,.42,shell,{outline:.006}); bodyMesh.position.set(0,.23,0); v.add(bodyMesh);
+  const bezel = boxMesh(.49,.3,.025,M.lacquer,{outline:.004}); bezel.position.set(0,.245,.222); v.add(bezel);
+  const screenMat=std({map:TEX.terminal,emissive:0xe9a33c,emissiveMap:TEX.terminal,emissiveIntensity:.5,roughness:.32});
+  const screen = new THREE.Mesh(new THREE.PlaneGeometry(.42,.245),screenMat); screen.position.set(0,.245,.237); v.add(screen);
+  const keyboard = boxMesh(.52,.03,.21,shell,{outline:.004}); keyboard.position.set(0,.035,.34); keyboard.rotation.x=-.08; v.add(keyboard);
+  for(let r=0;r<4;r++)for(let c=0;c<9;c++){const key=boxMesh(.038,.009,.029,c===8?M.lacquerRed:M.lacquer,{outline:0});key.position.set(-.18+c*.045,.055,.275+r*.037);v.add(key);}
+  const space=boxMesh(.2,.009,.028,M.lacquer,{outline:0});space.position.set(0,.057,.41);v.add(space);
+  for(let i=0;i<6;i++){const vent=boxMesh(.006,.11,.008,M.lacquer,{outline:0});vent.position.set(.294,.23,-.12+i*.045);v.add(vent);}
+  for(let i=0;i<3;i++){const led=new THREE.Mesh(new THREE.SphereGeometry(.009,10,8),new THREE.MeshBasicMaterial({color:i===0?0xf0ac42:0x467b68}));led.position.set(.16+i*.035,.065,.216);v.add(led);}
+  const b = blob(.86,.76); b.position.y=.001;g.add(b);
+  register('about',g,v,[.66,.5,.68],[0,.24,.12],'desk',{r:.45});
 }
-/* architectural drafting table — heritage */
-let mapMat;
+/* GIS vector radar console — heritage */
+let mapMat, radarSweep;
 {
   const [g,v]=onDesk(.16,-.25,2.5);
-  const base=boxMesh(.72,.045,.5,M.woodDark,{outline:.005});base.position.y=.025;base.rotation.x=.06;v.add(base);
-  mapMat=std({map:TEX.map,side:THREE.DoubleSide,roughness:.94});
-  const mapTop=new THREE.Mesh(new THREE.PlaneGeometry(.64,.4),mapMat);mapTop.rotation.x=-Math.PI/2+.06;mapTop.position.y=.056;v.add(mapTop);
-  const ruler=boxMesh(.6,.009,.026,std({color:0xb3954f,roughness:.55,metalness:.25}),{outline:.002});ruler.position.set(0,.072,.13);ruler.rotation.y=-.06;v.add(ruler);
-  const pencil=boxMesh(.22,.012,.012,M.lacquerRed,{outline:.001});pencil.position.set(.17,.078,-.08);pencil.rotation.y=.65;v.add(pencil);
-  const clip=boxMesh(.07,.014,.035,M.lacquer,{outline:.002});clip.position.set(-.25,.077,-.17);v.add(clip);
-  const b=blob(.92,.68,.8);b.position.y=.001;g.add(b);
-  register('heritage',g,v,[.76,.16,.56],[0,.07,0],'desk',{r:.46});
+  const base=boxMesh(.76,.075,.5,M.lacquer,{outline:.005});base.position.y=.04;v.add(base);
+  const consoleFace=boxMesh(.68,.025,.18,M.woodDark,{outline:.003});consoleFace.position.set(0,.09,.13);v.add(consoleFace);
+  mapMat=std({map:TEX.map,emissive:0xd89032,emissiveMap:TEX.map,emissiveIntensity:.42,side:THREE.DoubleSide,roughness:.4});
+  const frame=boxMesh(.7,.42,.045,M.lacquer,{outline:.005});frame.position.set(0,.29,-.15);v.add(frame);
+  const radar=new THREE.Mesh(new THREE.PlaneGeometry(.64,.36),mapMat);radar.position.set(0,.29,-.124);v.add(radar);
+  radarSweep=new THREE.Mesh(new THREE.PlaneGeometry(.31,.31),new THREE.MeshBasicMaterial({map:TEX.sweep,transparent:true,opacity:.55,depthWrite:false,blending:THREE.AdditiveBlending}));radarSweep.position.set(-.065,.29,-.117);v.add(radarSweep);
+  [-1,1].forEach(s=>{const post=boxMesh(.035,.2,.035,M.woodDark,{outline:.002});post.position.set(s*.27,.14,-.15);v.add(post);});
+  for(let i=0;i<9;i++){const key=boxMesh(.04,.018,.04,i%3===0?M.gold:M.woodPale,{outline:.002});key.position.set(-.22+i*.055,.115,.14);v.add(key);}
+  for(let i=0;i<5;i++){const node=new THREE.Mesh(new THREE.SphereGeometry(.008,8,6),new THREE.MeshBasicMaterial({color:i===0?0x72c6b7:0xe9a33c}));node.position.set(-.19+i*.095,.08,.255);v.add(node);}
+  const b=blob(.94,.7,.8);b.position.y=.001;g.add(b);
+  register('heritage',g,v,[.8,.54,.58],[0,.25,0],'desk',{r:.46});
 }
 /* modular toolbox */
 {
   const [g,v]=onDesk(.79,-.318,-5);
-  const caseMesh=boxMesh(.4,.13,.38,std({color:0x59604d,roughness:.65,metalness:.42}),{outline:.005});caseMesh.position.y=.075;v.add(caseMesh);
-  const lid=boxMesh(.42,.035,.4,std({color:0x454c3e,roughness:.65,metalness:.42}),{outline:.004});lid.position.y=.155;v.add(lid);
+  const caseMesh=boxMesh(.4,.13,.38,std({color:0x202a25,roughness:.48,metalness:.58}),{outline:.005});caseMesh.position.y=.075;v.add(caseMesh);
+  const lid=boxMesh(.42,.035,.4,std({color:0x303c34,roughness:.48,metalness:.58}),{outline:.004});lid.position.y=.155;v.add(lid);
   const handle=new THREE.Mesh(new THREE.TorusGeometry(.07,.012,10,28,Math.PI),M.lacquer);handle.position.set(0,.19,0);v.add(handle);
   for(let i=0;i<3;i++){const module=boxMesh(.075,.045,.16,i===1?M.gold:M.lacquer,{outline:.002});module.position.set(-.1+i*.1,.19,.02);v.add(module);}
   const b=blob(.58,.55);b.position.y=.001;g.add(b);
   register('toolbox',g,v,[.46,.25,.44],null,'desk',{r:.36});
 }
-/* constructivist geometric sculpture — interactive decor */
+/* desktop orbit instrument — interactive decor */
+let orbitAssembly;
 {
-  const [g,v]=onDesk(1.036,-.36,0);
-  const plinth=boxMesh(.22,.045,.2,M.woodDark,{outline:.003});plinth.position.y=.025;v.add(plinth);
-  const stem=boxMesh(.035,.34,.035,M.lacquerRed,{outline:.002});stem.position.set(-.025,.22,0);stem.rotation.z=-.22;v.add(stem);
-  const ring=new THREE.Mesh(new THREE.TorusGeometry(.105,.018,12,40),M.gold);ring.position.set(.035,.31,.005);ring.rotation.y=.35;ring.castShadow=true;v.add(ring);
-  const block=boxMesh(.1,.1,.1,M.lacquer,{outline:.003});block.position.set(-.07,.13,.015);block.rotation.set(.2,.35,.4);v.add(block);
-  const disc=new THREE.Mesh(new THREE.CylinderGeometry(.055,.055,.018,28),M.lacquerRed);disc.rotation.x=Math.PI/2;disc.position.set(.075,.43,0);v.add(disc);
-  const b=blob(.3,.28);b.position.y=.001;g.add(b);
-  register('sculpture',g,v,[.28,.5,.26],[0,.25,0],'desk',{r:.34});
+  const [g,v]=onDesk(1.04,-.36,0);
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(.14,.15,.055,48),M.lacquer);base.position.y=.03;v.add(base);
+  const stem=boxMesh(.026,.14,.026,M.gold,{outline:.002});stem.position.y=.12;v.add(stem);
+  orbitAssembly=new THREE.Group();orbitAssembly.position.y=.31;v.add(orbitAssembly);
+  const core=new THREE.Mesh(new THREE.SphereGeometry(.065,16,10),new THREE.MeshBasicMaterial({color:0x72c6b7,wireframe:true}));orbitAssembly.add(core);
+  [0,1,2].forEach(i=>{
+    const orbit=new THREE.Mesh(new THREE.TorusGeometry(.14+i*.013,.004,8,64),i===1?M.gold:M.woodPale);
+    orbit.rotation.set(i*.85,.5+i*.5,i*.4);orbitAssembly.add(orbit);
+    const satellite=new THREE.Mesh(new THREE.SphereGeometry(.012,10,8),new THREE.MeshBasicMaterial({color:i===1?0x72c6b7:0xe9a33c}));
+    satellite.position.x=.14+i*.013;orbit.add(satellite);
+  });
+  const b=blob(.34,.32);b.position.y=.001;g.add(b);
+  register('orbiter',g,v,[.36,.51,.36],[0,.25,0],'desk',{r:.34});
 }
-/* stitched books — door (classic site) */
+/* removable data cartridges — system directory */
 {
-  const [g, v] = onDesk(-0.59, -0.464, -4);
-  const pageSide = std({ map: ctex(256, 32, (gg, w, h) => { gg.fillStyle = '#f2e8cf'; gg.fillRect(0, 0, w, h); gg.fillStyle = 'rgba(150,120,80,.35)'; for (let y = 2; y < h; y += 3) gg.fillRect(0, y, w, 1); }) });
+  const [g, v] = onDesk(.36, .47, -4);
+  const pageSide = std({ map: ctex(256, 32, (gg, w, h) => { gg.fillStyle = '#202c28'; gg.fillRect(0, 0, w, h); gg.fillStyle = 'rgba(114,198,183,.45)'; for (let y = 2; y < h; y += 3) gg.fillRect(0, y, w, 1); }) });
   [[0, 0.036, 0, 0], [0.012, 0.03, -0.006, 5], [0.004, 0.03, 0.004, -3]].reduce((y, [dx, hgt, dz, rot], i) => {
     const bk = boxMesh(0.37, hgt, 0.25, [pageSide, pageSide, std({ map: TEX.book[i], roughness: 0.8 }), std({ map: TEX.book[i] }), pageSide, pageSide], { outline: 0.004 });
     bk.position.set(dx, y + hgt / 2, dz); bk.rotation.y = -rot * D2R; v.add(bk); return y + hgt;
@@ -905,26 +944,36 @@ let printMats = [];
   const b = blob(0.6, 0.46, 0.7); b.position.y = 0.001; g.add(b);
   register('cv', g, v, [0.47, 0.04, 0.34], null, 'desk', { r: 0.3 });
 }
-/* rotary telephone — contact */
+/* black communications console — contact */
 {
   const [g,v]=onDesk(.402,.148,7);
-  const phoneMat=std({color:0x343b32,roughness:.5,metalness:.12});
-  const phone=boxMesh(.38,.09,.28,phoneMat,{outline:.005});phone.position.y=.055;v.add(phone);
-  const dial=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,.018,40),std({color:0xb9b39e,roughness:.42,metalness:.55}));dial.position.set(0,.113,.015);v.add(dial);
-  const dialCenter=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,.021,28),M.lacquerRed);dialCenter.position.set(0,.126,.015);v.add(dialCenter);
-  for(let i=0;i<10;i++){const a=i*Math.PI*2/10,hole=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.02,12),M.lacquer);hole.position.set(Math.sin(a)*.063,.126,.015+Math.cos(a)*.063);v.add(hole);}
-  const handset=new THREE.Mesh(new THREE.TorusGeometry(.12,.026,14,40,Math.PI),phoneMat);handset.position.set(0,.185,-.075);handset.rotation.z=0;v.add(handset);
-  [-1,1].forEach(s=>{const ear=new THREE.Mesh(new THREE.CylinderGeometry(.045,.052,.055,24),phoneMat);ear.position.set(s*.12,.17,-.075);ear.rotation.z=s*.18;v.add(ear);});
-  const cord=new THREE.Mesh(new THREE.TorusGeometry(.07,.006,8,32,Math.PI*1.5),M.lacquer);cord.position.set(.18,.04,.08);cord.rotation.x=Math.PI/2;v.add(cord);
+  const housing=std({color:0x101916,roughness:.5,metalness:.4});
+  const consoleMesh=boxMesh(.42,.105,.31,housing,{outline:.005});consoleMesh.position.y=.058;v.add(consoleMesh);
+  const commTex=ctex(384,160,(ctx,w,h)=>{
+    screenBase(ctx,w,h,'#72c6b7','COM // UPLINK');
+    microLabel(ctx,'CH 01  /  OPEN',26,83,'#e9a33c',20);
+    ctx.strokeStyle='#72c6b7';ctx.beginPath();
+    for(let x=24;x<w-24;x++){const y=112+Math.sin(x*.12)*8+Math.sin(x*.27)*4;x===24?ctx.moveTo(x,y):ctx.lineTo(x,y);}ctx.stroke();
+  });
+  const readout=new THREE.Mesh(new THREE.PlaneGeometry(.24,.1),new THREE.MeshBasicMaterial({map:commTex}));
+  readout.rotation.x=-Math.PI/2;readout.position.set(-.045,.114,-.065);v.add(readout);
+  for(let row=0;row<2;row++)for(let col=0;col<5;col++){
+    const key=boxMesh(.038,.014,.031,col===4?M.gold:M.woodPale,{outline:.001});key.position.set(-.145+col*.052,.119,.04+row*.05);v.add(key);
+  }
+  const knob=new THREE.Mesh(new THREE.CylinderGeometry(.028,.03,.028,24),M.gold);knob.position.set(.16,.125,-.065);v.add(knob);
+  for(let i=0;i<2;i++){
+    const antenna=new THREE.Mesh(new THREE.CylinderGeometry(.005,.008,.24+i*.05,10),M.woodPale);antenna.position.set(-.15+i*.3,.24,-.12);v.add(antenna);
+    const tip=new THREE.Mesh(new THREE.SphereGeometry(.01,10,8),new THREE.MeshBasicMaterial({color:0x72c6b7}));tip.position.set(-.15+i*.3,.36+i*.025,-.12);v.add(tip);
+  }
   const b=blob(.58,.44,.75);b.position.y=.001;g.add(b);
-  register('contact',g,v,[.48,.3,.36],[0,.13,0],'desk',{r:.36});
+  register('contact',g,v,[.48,.42,.36],[0,.20,0],'desk',{r:.36});
 }
 /* coffee cup — omikuji */
 let steam;
 {
   const [g, v] = onDesk(0.774, 0.02, 0);
   const pts = [[0, 0], [0.048, 0], [0.05, 0.006], [0.058, 0.04], [0.064, 0.09], [0.066, 0.1], [0.06, 0.1], [0.056, 0.05], [0.04, 0.012], [0, 0.012]].map(([x, y]) => new THREE.Vector2(x, y));
-  const cupTex = ctex(512, 128, (gg, w, h) => { gg.fillStyle = '#ddd7c4'; gg.fillRect(0, 0, w, h); gg.fillStyle = '#8f2d24'; gg.fillRect(0, 0, w, 10); gg.fillRect(0, h - 8, w, 8); gg.fillStyle = '#4d5545'; gg.fillRect(0, h * .62, w, 5); speckle(gg, w, h, 500, '70,65,50', 0.16); });
+  const cupTex = ctex(512, 128, (gg, w, h) => { gg.fillStyle = '#ddd7c4'; gg.fillRect(0, 0, w, h); gg.fillStyle = '#d89536'; gg.fillRect(0, 0, w, 10); gg.fillRect(0, h - 8, w, 8); gg.fillStyle = '#4d5545'; gg.fillRect(0, h * .62, w, 5); speckle(gg, w, h, 500, '70,65,50', 0.16); });
   const cup = new THREE.Mesh(new THREE.LatheGeometry(pts, 40), std({ map: cupTex, roughness: 0.28, side: THREE.DoubleSide })); cup.castShadow = true; cup.receiveShadow = true; v.add(cup);
   const tea = new THREE.Mesh(new THREE.CircleGeometry(0.057, 32), std({ color: 0x321d17, roughness: 0.15 })); tea.rotation.x = -Math.PI / 2; tea.position.y = 0.085; v.add(tea);
   const sau = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.09, 0.012, 32), M.woodDark); sau.position.y = -0.002; sau.castShadow = true; sau.receiveShadow = true; hull(sau, 0.003); v.add(sau);
@@ -945,75 +994,71 @@ let steam;
   const b=blob(.48,.4,.6);b.position.y=.001;g.add(b);
   register('fan',g,v,[.42,.14,.4],null,'desk',{r:.3});
 }
-/* green steel desk lamp — tungsten night */
+/* caged amber signal beacon — night-shift switch */
 {
-  const [g,v]=onDesk(-.944,-.36,0);
-  const base=new THREE.Mesh(new THREE.CylinderGeometry(.12,.14,.04,32),M.lacquer);base.position.y=.025;base.castShadow=true;hull(base,.003);v.add(base);
-  const arm=boxMesh(.025,.32,.025,M.lacquer,{outline:.002});arm.position.set(.055,.2,0);arm.rotation.z=-.35;v.add(arm);
-  const joint=new THREE.Mesh(new THREE.SphereGeometry(.035,16,12),M.gold);joint.position.set(.11,.35,0);v.add(joint);
-  lanternPaper=std({map:TEX.lantern,emissive:0xd7a551,emissiveMap:TEX.lanternGlow,emissiveIntensity:.05,roughness:.55,metalness:.25,side:THREE.DoubleSide});
-  const shade=new THREE.Mesh(new THREE.CylinderGeometry(.055,.12,.1,32,1,true),lanternPaper);shade.position.set(.14,.37,0);shade.rotation.z=-.22;shade.castShadow=true;hull(shade,.003);v.add(shade);
-  const bulb=new THREE.Mesh(new THREE.SphereGeometry(.035,16,12),new THREE.MeshBasicMaterial({color:0xe8c77d}));bulb.position.set(.15,.325,0);v.add(bulb);
-  lanternLight=new THREE.PointLight(0xe2ae62,0,4,1.7);lanternLight.position.set(.15,.31,0);lanternLight.castShadow=!mobile();lanternLight.shadow.mapSize.set(512,512);lanternLight.shadow.bias=-.004;lanternLight.shadow.radius=4;v.add(lanternLight);
-  const b=blob(.36,.36);b.position.y=.001;g.add(b);
-  register('lantern',g,v,[.34,.46,.24],[.08,0,0],'desk',{r:.32});
+  const [g,v]=onDesk(-1.015,-.37,0);
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(.105,.12,.06,32),M.lacquer);base.position.y=.035;v.add(base);
+  lanternPaper=std({map:TEX.lantern,emissive:0xf4ab3c,emissiveMap:TEX.lanternGlow,emissiveIntensity:.5,roughness:.3});
+  const lens=new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,.26,32),lanternPaper);lens.position.y=.21;v.add(lens);
+  [0,.08,.26,.35].forEach(y=>{const rim=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,.022,32),M.lacquer);rim.position.y=y+.025;v.add(rim);});
+  for(let i=0;i<4;i++){const a=i*Math.PI/2;const guard=boxMesh(.009,.3,.009,M.lacquer,{outline:0});guard.position.set(Math.cos(a)*.078,.2,Math.sin(a)*.078);v.add(guard);}
+  lanternLight=new THREE.PointLight(0xf0aa43,1.1,3,1.7);lanternLight.position.set(0,.24,.12);v.add(lanternLight);
+  const b=blob(.3,.3);b.position.y=.001;g.add(b);
+  register('lantern',g,v,[.25,.4,.25],[0,.2,0],'desk',{r:.32});
 }
-
 /* wall pieces */
 function onWall(x, y) { const g = new THREE.Group(); g.position.set(x, y, WALL_Z + 0.006); scene.add(g); const v = new THREE.Group(); g.add(v); return [g, v]; }
-/* vertical biographical archive chart — exp */
+/* vertical flight-path screen — experience */
 {
-  const [g, v] = onWall(-1.13, 0.74);
-  const s = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.84), std({ map: TEX.scroll, roughness: 0.9 })); s.position.z = 0.012; s.receiveShadow = true; v.add(s);
-  [0.43, -0.43].forEach((y) => { const r = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.36, 12), M.woodDark); r.rotation.z = Math.PI / 2; r.position.set(0, y, 0.02); r.castShadow = true; hull(r, 0.003); v.add(r); });
-  const cord = new THREE.Mesh(new THREE.TorusGeometry(0.09, 0.003, 6, 30, Math.PI), std({ color: 0x3a3030 })); cord.position.set(0, 0.43, 0.02); v.add(cord);
-  register('exp', g, v, [0.36, 0.92, 0.05], [0, 0, 0.02], 'wall', { r: 0.5 });
+  const [g,v]=onWall(-1.13,.8);
+  const frame=boxMesh(.35,.9,.07,M.lacquer,{outline:.004});frame.position.z=.04;v.add(frame);
+  const screen=new THREE.Mesh(new THREE.PlaneGeometry(.3,.82),new THREE.MeshBasicMaterial({map:TEX.scroll}));screen.position.z=.078;v.add(screen);
+  register('exp',g,v,[.37,.92,.09],[0,0,.05],'wall',{r:.5});
 }
-/* constructivist print — decorative wall poster */
+/* orbital navigation master display */
 let waveMat;
 {
-  const [g, v] = onWall(-0.34, 0.66);
-  const frame = boxMesh(0.92, 0.65, 0.035, M.lacquer, { outline: 0.004 }); frame.position.z = 0.018; v.add(frame);
-  const mat = new THREE.Mesh(new THREE.PlaneGeometry(0.86, 0.59), std({ color: 0xc9a046, roughness: 0.4, metalness: 0.5 })); mat.position.z = 0.0365; v.add(mat);
-  waveMat = std({ map: TEX.wave, roughness: 0.85 });
-  const art = new THREE.Mesh(new THREE.PlaneGeometry(0.82, 0.55), waveMat); art.position.z = 0.037; art.receiveShadow = true; v.add(art);
-  register('wave', g, v, [0.94, 0.67, 0.06], [0, 0, 0.02], 'wall', { r: 0.48 });
+  const [g,v]=onWall(-.35,.9);
+  const frame=boxMesh(.99,.7,.095,M.lacquer,{outline:.004});frame.position.z=.05;v.add(frame);
+  waveMat=new THREE.MeshBasicMaterial({map:TEX.wave});
+  const screen=new THREE.Mesh(new THREE.PlaneGeometry(.88,.6),waveMat);screen.position.set(-.015,.015,.101);v.add(screen);
+  for(let i=0;i<8;i++){const key=boxMesh(.052,.016,.012,i===0?M.gold:M.woodPale,{outline:0});key.position.set(-.34+i*.082,-.318,.105);v.add(key);}
+  register('wave',g,v,[1.01,.72,.12],[0,0,.06],'wall',{r:.5});
 }
-/* research paper pinboard — work */
+/* instrument rack — papers, waveforms and deployment telemetry */
 {
-  const [g, v] = onWall(0.46, 0.64);
-  [[0, -0.06, 0.06, -0.06, 0.4, 0.5, 0], [0.24, 0.12, 0.08, 0.08, 0.3, 0.28, 1], [0.21, -0.17, 0.09, -0.03, 0.32, 0.26, 2]].forEach(([x, y, z, rot, w, h, k]) => {
-    const p = new THREE.Mesh(new THREE.PlaneGeometry(w, h), std({ map: TEX.news[k], roughness: 0.92 })); p.position.set(x - 0.1, y, 0.004 + k * 0.003); p.rotation.z = rot; p.castShadow = true; p.receiveShadow = true; v.add(p);
-    const tape = new THREE.Mesh(new THREE.PlaneGeometry(0.08, 0.026), new THREE.MeshStandardMaterial({ color: 0xb8aa80, roughness: 0.9 })); tape.position.set(x - 0.1 + (k ? 0.05 : -0.08), y + h / 2 - 0.006, 0.014 + k * 0.003); tape.rotation.z = rot + (k % 2 ? 0.3 : -0.25); v.add(tape);
+  const [g,v]=onWall(.46,.87);
+  const rack=boxMesh(.65,.77,.08,M.woodDark,{outline:.004});rack.position.z=.045;v.add(rack);
+  [[-.145,0,.29,.64,0],[.16,.17,.27,.3,1],[.16,-.17,.27,.3,2]].forEach(([x,y,w,h,k])=>{
+    const bezel=boxMesh(w+.018,h+.018,.02,M.lacquer,{outline:.002});bezel.position.set(x,y,.095);v.add(bezel);
+    const screen=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:TEX.news[k]}));screen.position.set(x,y,.107);v.add(screen);
   });
-  // news photo on the main sheet, filled in once the image loads
-  register('work', g, v, [0.66, 0.66, 0.05], [0.0, -0.02, 0.02], 'wall', { r: 0.5 });
+  register('work',g,v,[.67,.79,.12],[0,0,.06],'wall',{r:.5});
 }
-/* deep concrete-framed window with an overcast city view */
+/* deep-space telemetry auxiliary monitor */
 let fujiMat;
 {
-  const [g, v] = onWall(1.09, 0.92);
-  fujiMat = new THREE.MeshBasicMaterial({ map: TEX.fuji, toneMapped: false });
-  const view = new THREE.Mesh(new THREE.PlaneGeometry(.52,.52), fujiMat); view.position.z = 0.002; v.add(view);
-  const frameMat=std({color:0x77796f,roughness:.96});
-  [-1,1].forEach(s=>{const upright=boxMesh(.055,.64,.1,frameMat,{outline:.003});upright.position.set(s*.29,0,.025);v.add(upright);const horizontal=boxMesh(.64,.055,.1,frameMat,{outline:.003});horizontal.position.set(0,s*.29,.025);v.add(horizontal);});
-  const mullion=boxMesh(.025,.52,.045,M.woodDark,{outline:.002});mullion.position.set(0,0,.04);v.add(mullion);
-  const cross=boxMesh(.52,.025,.045,M.woodDark,{outline:.002});cross.position.set(0,0,.04);v.add(cross);
-  const sill=boxMesh(.72,.055,.22,M.plaster,{outline:.003});sill.position.set(0,-.34,.07);v.add(sill);
-  register('window', g, v, [0.7, 0.72, 0.16], [0, 0, 0.04], 'wall', { r: 0.45 });
+  const [g,v]=onWall(1.11,.95);
+  const housing=boxMesh(.58,.67,.14,M.lacquer,{outline:.005});housing.position.z=.075;v.add(housing);
+  fujiMat=new THREE.MeshBasicMaterial({map:TEX.fuji,toneMapped:false});
+  const view=new THREE.Mesh(new THREE.PlaneGeometry(.5,.52),fujiMat);view.position.set(0,.025,.147);v.add(view);
+  for(let i=0;i<5;i++){const key=boxMesh(.05,.026,.012,i===0?M.gold:M.woodPale,{outline:.001});key.position.set(-.19+i*.095,-.285,.153);v.add(key);}
+  const bracket=boxMesh(.16,.08,.16,M.woodDark,{outline:.003});bracket.position.set(0,-.365,.05);v.add(bracket);
+  register('window',g,v,[.6,.72,.18],[0,-.015,.08],'wall',{r:.45});
 }
 
+
 /* =====================================================================
-   LIGHTS — overcast window light, concrete bounce and a tungsten desk lamp.
+   LIGHTS — amber instruments with a restrained cyan equipment fill.
    ===================================================================== */
-const hemi = new THREE.HemisphereLight(0xd8d8ca, 0x575346, 0.72); scene.add(hemi);
-const sun = new THREE.DirectionalLight(0xeee6d2, 2.7);
+const hemi = new THREE.HemisphereLight(0xb4c6ba, 0x151c18, 0.8); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffd294, 1.8);
 sun.position.set(3.2, 3.4, 1.4); sun.target.position.set(-0.1, 0.3, -0.25); scene.add(sun, sun.target);
 sun.castShadow = true; sun.shadow.mapSize.set(mobile() ? 1024 : 2048, mobile() ? 1024 : 2048);
 Object.assign(sun.shadow.camera, { left: -1.9, right: 1.9, top: 1.6, bottom: -1.6, near: 0.5, far: 9 });
 sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.015; sun.shadow.radius = 3;
-const fill = new THREE.DirectionalLight(0xc8c9bd, 0.35); fill.position.set(-3, 2.2, 2.6); scene.add(fill);
-const winSpot = new THREE.SpotLight(0xe6dcc2, 7, 6, 0.48, 0.85, 1.6);
+const fill = new THREE.DirectionalLight(0x72c6b7, 0.55); fill.position.set(-3, 2.2, 2.6); scene.add(fill);
+const winSpot = new THREE.SpotLight(0x79c6b8, 3, 6, 0.48, 0.85, 1.6);
 winSpot.position.set(1.12, 0.98, WALL_Z - 0.2); winSpot.target.position.set(0.25, DESK_Y, 0.15); scene.add(winSpot, winSpot.target);
 winSpot.castShadow = !mobile(); winSpot.shadow.mapSize.set(1024, 1024); winSpot.shadow.bias = -0.0006; winSpot.shadow.radius = 5;
 // light shaft + floating dust inside it
@@ -1036,15 +1081,17 @@ const dust = (() => {
    ===================================================================== */
 let theme = THEMES.some((t) => t.id === store.get('dtheme')) ? store.get('dtheme') : 'nishiki';
 const LIGHTING = {
-  day: { hemi: [0xd8d8ca, 0x575346, 0.9], sun: 2.45, fill: 0.42, spot: [0xe6dcc2, 7], shaft: 0.09, dust: 0.58, shoji: 0, lantern: 0, paper: 0.03, exposure: 1.0, view: 0xffffff, glint: 0.13 },
-  night: { hemi: [0x6a6b60, 0x26271f, 0.32], sun: 0.16, fill: 0.14, spot: [0xc59a5c, 2.5], shaft: 0.035, dust: 0.24, shoji: 0, lantern: 3.0, paper: 1.2, exposure: 1.05, view: 0x77786e, glint: 0.06 }
+  day: { hemi: [0xb4c6ba,0x151c18,.9], sun: 1.9, fill: .55, spot: [0x79c6b8,2.3], shaft: .025, dust: .16, shoji: 0, lantern: .7, paper: .45, exposure: 1.1, view: 0xffffff, glint: .13 },
+  cyan: { hemi: [0x99cec7,0x0d201c,.8], sun: 1.3, fill: 1.0, spot: [0x72c6b7,3.1], shaft: .035, dust: .18, shoji: 0, lantern: .5, paper: .3, exposure: 1.05, view: 0xd0fff0, glint: .12 },
+  low: { hemi: [0xb4b59b,0x111812,.55], sun: .8, fill: .32, spot: [0xc4954d,1], shaft: .012, dust: .08, shoji: 0, lantern: .4, paper: .25, exposure: .9, view: 0x929e8e, glint: .08 },
+  night: { hemi: [0x89a99a,0x0a100d,.42], sun: .45, fill: .4, spot: [0x72c6b7,1.2], shaft: .02, dust: .1, shoji: 0, lantern: 2, paper: 1.1, exposure: 1.05, view: 0xb8c9b9, glint: .08 }
 };
 let lightNow = { ...LIGHTING.day }, lightFrom = null, lightTo = null, lightT0 = 0;
 function setTheme(id, instant) {
   theme = id; store.set('dtheme', id); body.dataset.theme = id;
   const th = THEMES.find((t) => t.id === id);
   $('#themeKanji').textContent = th.k; $('#themeName').textContent = T(th);
-  const target = LIGHTING[id === 'yoru' ? 'night' : 'day'];
+  const target = LIGHTING[{ nishiki: 'day', ai: 'cyan', sumi: 'low', yoru: 'night' }[id]];
   lightFrom = { ...lightNow }; lightTo = target; lightT0 = performance.now();
   if (instant || RM) { applyLight(target); lightFrom = null; }
   startRain(id === 'sumi');
@@ -1081,7 +1128,7 @@ function fitDist(halfW, halfH, fov) {
 }
 function homeState() {
   const mob = mobile(), fov = mob ? 34 : 26;
-  return { tx: 0, ty: mob ? 0.36 : 0.42, tz: mob ? -0.16 : -0.3, dist: fitDist(mob ? 0.86 : 1.62, mob ? 1.2 : 1.02, fov), elev: mob ? 58 : 46, azim: 0, ox: 0, oy: mob ? -0.07 : 0, fov };
+  return { tx: 0, ty: mob ? 0.36 : 0.42, tz: mob ? -0.16 : -0.3, dist: fitDist(mob ? 0.86 : 1.62, mob ? 1.2 : 1.02, fov), elev: mob ? 48 : 36, azim: 0, ox: 0, oy: mob ? -0.07 : 0, fov };
 }
 function focusState(key) {
   const o = OBJS[key], wp = new THREE.Vector3(); o.proxy.getWorldPosition(wp);
@@ -1146,7 +1193,7 @@ function setHover(key, x, y) {
   if (key !== hovered) {
     if (hovered && OBJS[hovered]) { OBJS[hovered].liftT = 0; OBJS[hovered].hulls.forEach((h) => (h.material = inkMat)); }
     hovered = key;
-    if (key && OBJS[key] && !focused) { OBJS[key].liftT = 1; OBJS[key].hulls.forEach((h) => (h.material = goldMat)); clack(0.45); }
+    if (key && OBJS[key] && !focused) { OBJS[key].liftT = RM ? 0 : 1; OBJS[key].hulls.forEach((h) => (h.material = goldMat)); clack(0.45); }
     canvas.style.cursor = key && !focused ? 'pointer' : '';
     wake(600);
   }
@@ -1163,7 +1210,7 @@ const fortunes = [
   ['中吉', 'Good luck', 'Docker Compose 一次 up 成功。', 'docker compose up works on the first try.'],
   ['小吉', 'Small luck', '图谱里会冒出一个意外的好关联。', 'The graph surfaces a pleasant surprise link.'],
   ['吉', 'Luck', '今天的 Prompt 不会被模型误解。', 'The model will understand your prompt today.'],
-  ['末吉', 'Future luck', '先喝口茶，bug 自己会现形。', 'Drink tea first; the bug will reveal itself.']
+  ['末吉', 'Future luck', '先喝口咖啡，bug 自己会现形。', 'Drink coffee first; the bug will reveal itself.']
 ];
 let fi = Math.floor(Math.random() * fortunes.length);
 function openSection(key) {
@@ -1186,23 +1233,24 @@ function closeSection() {
   camGo(homeState(), 700); wake(900);
   if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   renderIndex();
+  $('#indexBtn').focus({ preventScroll: true });
 }
 let toastTimer = 0;
 function toast(s) { const el = $('#toast'); el.textContent = s; el.classList.add('on'); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('on'), 2800); }
 function activate(key) {
   if (!key) return;
   lastInteract = performance.now(); explored.add(key); hideHint();
-  const o = OBJS[key]; if (o) { o.pop = performance.now(); }
+  const o = OBJS[key]; if (o && !RM) { o.pop = performance.now(); }
   if (SEC[key] || key === 'tea') return openSection(key);
   if (focused) closeSection();
-  if (key === 'lantern') { const night = theme !== 'yoru'; if (night) store.set('dayTheme', theme); setTheme(night ? 'yoru' : store.get('dayTheme') || 'nishiki'); return toast(night ? T({ zh: '钨丝台灯已点亮，研究室入夜。', en: 'The tungsten desk lamp is on; night falls in the study.' }) : T({ zh: '台灯已关闭，恢复阴天日光。', en: 'Desk lamp off — overcast daylight returns.' })); }
-  if (key === 'fan') { const i = THEMES.findIndex((t) => t.id === theme), n = THEMES[(i + 1) % THEMES.length]; if (n.id !== 'yoru') store.set('dayTheme', n.id); setTheme(n.id); return toast(T({ zh: '光线：' + n.zh, en: 'Light: ' + n.en })); }
-  if (key === 'wave') return toast(T({ zh: '《劳动 · 1974》——斜线、圆与套色印刷构成的墙面海报。', en: 'Labour, 1974 — a wall print built from diagonals, circles and flat ink.' }));
-  if (key === 'window') return toast(T({ zh: '厚混凝土窗框外，是阴天下的板式住宅。', en: 'Beyond the deep concrete frame lies an overcast city of panel housing.' }));
-  if (key === 'sculpture') return toast(T({ zh: '圆环、方块与斜杆：一件桌面构成主义练习。', en: 'Ring, block and diagonal: a tabletop study in Constructivism.' }));
+  if (key === 'lantern') { const night = theme !== 'yoru'; if (night) store.set('dayTheme', theme); setTheme(night ? 'yoru' : store.get('dayTheme') || 'nishiki'); return toast(night ? T({ zh: '夜间值班模式：信号灯亮起，屏幕保持在线。', en: 'Night shift: beacon on, instruments online.' }) : T({ zh: '信号灯恢复待机，返回之前的显示模式。', en: 'Beacon on standby. Previous display mode restored.' })); }
+  if (key === 'fan') { const i = THEMES.findIndex((t) => t.id === theme), n = THEMES[(i + 1) % THEMES.length]; if (n.id !== 'yoru') store.set('dayTheme', n.id); setTheme(n.id); return toast(T({ zh: '显示模式：' + n.zh, en: 'Display mode: ' + n.en })); }
+  if (key === 'wave') return toast(T({ zh: '轨道导航主屏：参考航空进近图的矢量轨道演示。', en: 'Orbital navigation: a vector display inspired by flight approach charts.' }));
+  if (key === 'window') return toast(T({ zh: '深空遥测副屏：线框地球、十字准星与模拟上行信号。', en: 'Deep-space telemetry: a wireframe globe and simulated uplink signal.' }));
+  if (key === 'orbiter') return toast(T({ zh: '桌面轨道仪：三个倾斜轨道围绕磷光地球缓慢运行。', en: 'Desktop orbit instrument: three inclined orbits around a phosphor globe.' }));
 }
 $('#panelClose').addEventListener('click', closeSection);
-addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeSection(); $('#index').classList.remove('open'); } });
+addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeSection(); setIndexOpen(false); } });
 addEventListener('hashchange', () => { const k = location.hash.slice(1); if (SEC[k]) openSection(k); });
 
 /* index (collapsed by default — the desk is meant to be explored) */
@@ -1212,8 +1260,9 @@ function renderIndex() {
   list.innerHTML = SECTIONS.map((s) => `<button type="button" data-id="${s.id}" class="${focused === s.id ? 'on' : ''}${explored.has(s.id) ? ' seen' : ''}"><i>${s.k}</i>${T(s)}</button>`).join('');
   $('#indexCount').textContent = `${SECTIONS.filter((s) => explored.has(s.id)).length}/${SECTIONS.length}`;
 }
-$('#indexBtn').addEventListener('click', () => { const on = !$('#index').classList.contains('open'); $('#index').classList.toggle('open', on); $('#indexBtn').setAttribute('aria-expanded', String(on)); });
-$('#indexList').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; $('#index').classList.remove('open'); activate(b.dataset.id); });
+function setIndexOpen(on) { $('#index').classList.toggle('open', on); $('#indexBtn').setAttribute('aria-expanded', String(on)); }
+$('#indexBtn').addEventListener('click', () => setIndexOpen(!$('#index').classList.contains('open')));
+$('#indexList').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; setIndexOpen(false); activate(b.dataset.id); });
 
 /* hint — one quiet line, gone after the first discovery */
 let hintTimer = setTimeout(() => $('#hint').classList.add('on'), 1600);
@@ -1230,7 +1279,7 @@ canvas.addEventListener('pointermove', (e) => {
     return;
   }
   if (e.pointerType !== 'mouse') return;
-  par.tx = (e.clientX / innerWidth - 0.5) * 2; par.ty = (e.clientY / innerHeight - 0.5) * 2; wake(500);
+  par.tx = RM ? 0 : (e.clientX / innerWidth - 0.5) * 2; par.ty = RM ? 0 : (e.clientY / innerHeight - 0.5) * 2; wake(500);
   setHover(focused ? null : pickAt(e.clientX, e.clientY, false), e.clientX, e.clientY);
 });
 function endPointer(e, cancel) {
@@ -1245,7 +1294,7 @@ canvas.addEventListener('pointerup', (e) => endPointer(e, false));
 canvas.addEventListener('pointercancel', (e) => endPointer(e, true));
 canvas.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') { setHover(null); par.tx = par.ty = 0; } });
 
-/* sound: wooden clapper */
+/* sound: two-tone terminal acknowledgement */
 let actx = null, soundOn = store.get('sound') === '1';
 function clack(gain = 1) {
   if (!soundOn) return;
@@ -1275,35 +1324,44 @@ function setReader(on) {
 $('#btnMode').addEventListener('click', () => setReader(!body.classList.contains('read')));
 $('#brand').addEventListener('click', (e) => { e.preventDefault(); if (body.classList.contains('read')) setReader(false); closeSection(); });
 
-/* rain for 墨摺 (screen-space, on its own canvas) */
+/* slow CRT scan sweep; static scanlines remain in reduced-motion mode */
 const rc = $('#rain'), rx = rc.getContext('2d');
-let drops = [], rainOn = false;
+let scanY = 0, rainOn = false;
 function sizeRain() { rc.width = innerWidth; rc.height = innerHeight; }
-function startRain(on) { rainOn = on && !RM; if (rainOn) { sizeRain(); drops = Array.from({ length: Math.round((innerWidth * innerHeight) / 3600) }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, l: 24 + Math.random() * 46, v: 9 + Math.random() * 9 })); } else rx.clearRect(0, 0, rc.width, rc.height); }
-function drawRain() {
+function startRain(on) { rainOn = on && !RM; if (rainOn) sizeRain(); else rx.clearRect(0,0,rc.width,rc.height); }
+function drawRain(dt) {
   if (!rainOn) return;
-  rx.clearRect(0, 0, rc.width, rc.height); rx.strokeStyle = 'rgba(222,216,200,.45)'; rx.lineWidth = 1.2; rx.beginPath();
-  for (const d of drops) { rx.moveTo(d.x, d.y); rx.lineTo(d.x - d.l * 0.12, d.y + d.l); d.y += d.v; d.x -= d.v * 0.12; if (d.y > rc.height) { d.y = -d.l; d.x = Math.random() * (rc.width + 80); } }
-  rx.stroke();
+  rx.clearRect(0,0,rc.width,rc.height);
+  scanY = (scanY + dt * 24) % (rc.height + 80);
+  const band=rx.createLinearGradient(0,scanY-80,0,scanY);
+  band.addColorStop(0,'rgba(233,163,60,0)');band.addColorStop(1,'rgba(233,163,60,.045)');
+  rx.fillStyle=band;rx.fillRect(0,scanY-80,rc.width,80);
+  rx.fillStyle='rgba(233,163,60,.11)';rx.fillRect(0,scanY,rc.width,1);
 }
 
+
 /* =====================================================================
-   LATE IMAGES — public-domain prints + the author's own work
+   LATE IMAGES — the author's image archive
    ===================================================================== */
-Promise.all(['assets/gisauto_hero.webp', 'assets/interface.jpg',
-  'assets/ai_portfolio/ai_star.jpg', 'assets/ai_portfolio/ai_qingming.jpg', 'assets/ai_portfolio/ai_twodimensional.jpg'].map(loadImg)).then(([gis, iface, star, qm, two]) => {
-  TEX.map.userData.redraw((g,w,h)=>{g.fillStyle='#c9c0a7';g.fillRect(0,0,w,h);g.save();g.filter='grayscale(1) sepia(.25) contrast(.9)';cover(g,gis,24,24,w-48,h-48,.35,.4);g.restore();g.fillStyle='rgba(201,192,167,.18)';g.fillRect(24,24,w-48,h-48);g.strokeStyle='#8f2d24';g.lineWidth=4;g.strokeRect(20,20,w-40,h-40);});
-  TEX.news[0].userData.redraw((g,w,h)=>{g.save();g.filter='grayscale(1) sepia(.15) contrast(1.05)';cover(g,iface,26,h*.46,w-120,h*.32);g.restore();g.strokeStyle='#8f2d24';g.lineWidth=3;g.strokeRect(26,h*.46,w-120,h*.32);});
-  [star,qm,two].forEach((im,i)=>TEX.prints[i].userData.redraw((g,w,h)=>{g.fillStyle='#d8d0ba';g.fillRect(0,0,w,h);g.save();g.filter='grayscale(.55) sepia(.15)';cover(g,im,20,20,w-40,h-40);g.restore();g.strokeStyle='rgba(37,38,33,.65)';g.lineWidth=2;g.strokeRect(20,20,w-40,h-40);}));
+// The radar and telemetry are procedural displays. Only the image cartridges
+// receive late photographs; loading an image must never overwrite an instrument.
+Promise.all(['assets/ai_portfolio/ai_star.jpg', 'assets/ai_portfolio/ai_qingming.jpg', 'assets/ai_portfolio/ai_twodimensional.jpg'].map(loadImg)).then((images) => {
+  images.forEach((im,i)=>TEX.prints[i].userData.redraw((g,w,h)=>{
+    g.fillStyle='#101916';g.fillRect(0,0,w,h);
+    g.save();g.filter='saturate(.75) contrast(1.1)';cover(g,im,18,38,w-36,h-64);g.restore();
+    g.strokeStyle='#e9a33c';g.lineWidth=2;g.strokeRect(18,38,w-36,h-64);
+    microLabel(g,`IMG / 0${i+1}  //  AI ARCHIVE`,18,26,'#e9a33c',15);
+  }));
   renderer.shadowMap.needsUpdate = true; wake(500);
 });
+
 
 /* =====================================================================
    LOOP — full rate while something moves, ~24 fps when idle
    ===================================================================== */
 const clock = new THREE.Clock();
 let lastRender = 0, glintAt = performance.now() + 5000, glintKey = null;
-const GLINT_KEYS = ['about', 'heritage', 'work', 'exp', 'portfolio', 'toolbox', 'contact', 'cv', 'door', 'lantern', 'fan', 'sculpture'];
+const GLINT_KEYS = ['about', 'heritage', 'work', 'exp', 'portfolio', 'toolbox', 'contact', 'cv', 'door', 'lantern', 'fan', 'orbiter'];
 function frame(now) {
   requestAnimationFrame(frame);
   if (body.classList.contains('read')) return;
@@ -1333,7 +1391,9 @@ function frame(now) {
     dust.userData.seed.forEach(([u, r, ph, sp2], i) => { const s = (u + t * 0.008 * sp2) % 1, p = A.clone().lerp(B, s), rad = lerp(0.2, 0.5, s) * r; dp.setXYZ(i, p.x + Math.cos(ph + t * 0.3 * sp2) * rad, p.y + Math.sin(ph * 1.7 + t * 0.21) * rad * 0.6, p.z + Math.sin(ph + t * 0.25 * sp2) * rad); });
     dp.needsUpdate = true;
     if (theme === 'yoru') { lanternLight.intensity = lightNow.lantern * (1 + Math.sin(t * 9) * 0.035 + Math.sin(t * 23) * 0.02); }
-    drawRain();
+    radarSweep.rotation.z = -t * 0.7;
+    orbitAssembly.rotation.y = t * 0.16;
+    drawRain(dt);
   }
   const active = busy || now < activeUntil || rainOn;
   if (!active && now - lastRender < 42) return;
@@ -1369,18 +1429,34 @@ requestAnimationFrame(frame);
     var WHY = {
       webgl: ['这个浏览器没有开启 WebGL，常见原因是关闭了「硬件加速」。在浏览器设置里打开「使用硬件加速」并重启浏览器后，再点「重试」。', 'WebGL is turned off in this browser — usually because hardware acceleration is disabled. Turn it on in the browser settings, restart, then retry.'],
       load: ['三维组件没有下载下来，可能是网络问题。', 'The 3D component failed to download — probably a network issue.'],
-      timeout: ['三维组件加载得比较慢，先给你看文字版；加载完成后会自动切回书桌。', 'The 3D desk is loading slowly, so here is the text version; it will switch back once ready.'],
+      timeout: ['三维组件加载得比较慢，先给你看文字版；加载完成后会自动切回工作站。', 'The 3D workstation is loading slowly, so here is the text version; it will switch back once ready.'],
       error: ['三维场景启动时出错了。', 'The 3D scene hit an error while starting.']
     };
     function build() {
       var r = document.getElementById('reader');
-      var names = { about: ['自己紹介 · 关于我', 'About'], heritage: ['HeritageExplorer', 'HeritageExplorer'], work: ['论文 · 专利 · 项目', 'Papers · Patents · Projects'], exp: ['经历', 'Timeline'], portfolio: ['AI 作品集', 'AI Portfolio'], toolbox: ['技能 · 工具链', 'Toolbox'], contact: ['联系', 'Contact'], cv: ['简历', 'CV'], door: ['版本总览', 'Version portal'] };
+      var names = { about: ['身份终端 · 关于我', 'About'], heritage: ['HeritageExplorer', 'HeritageExplorer'], work: ['论文 · 专利 · 项目', 'Papers · Patents · Projects'], exp: ['经历', 'Timeline'], portfolio: ['AI 作品集', 'AI Portfolio'], toolbox: ['技能 · 工具链', 'Toolbox'], contact: ['联系', 'Contact'], cv: ['简历', 'CV'], door: ['版本总览', 'Version portal'] };
       if (r.childElementCount) return;
       Object.keys(names).forEach(function (id) {
         var tp = document.getElementById('t-' + id); if (!tp) return;
         var s = document.createElement('section'); s.innerHTML = '<h2><span class="lang-zh">' + names[id][0] + '</span><span class="lang-en">' + names[id][1] + '</span></h2>';
         s.appendChild(tp.content.cloneNode(true)); r.appendChild(s);
       });
+    }
+    function fallbackLanguage(lang) {
+      document.body.dataset.lang = lang;
+      document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
+    }
+    document.getElementById('btnLang').addEventListener('click', function () {
+      if (!window.__deskFell || window.__deskReady) return;
+      var lang = document.body.dataset.lang === 'en' ? 'zh' : 'en';
+      fallbackLanguage(lang);
+      try { localStorage.setItem('lang', lang); } catch (e) {}
+    });
+    function fallbackControls(on) {
+      ['btnTheme', 'btnMode', 'btnSound'].forEach(function (id) {
+        document.getElementById(id).disabled = on;
+      });
+      document.getElementById('btnMode').setAttribute('aria-pressed', String(on));
     }
     window.__deskFallback = function (reason, detail) {
       if (window.__deskReady && reason === 'timeout') return;
@@ -1389,12 +1465,16 @@ requestAnimationFrame(frame);
       var w = WHY[window.__deskFell] || WHY.error, n = document.getElementById('glNote');
       document.getElementById('glWhy').innerHTML = '<span class="lang-zh">' + w[0] + '</span><span class="lang-en">' + w[1] + '</span>' + (detail ? '<code>' + String(detail).slice(0, 160).replace(/</g, '&lt;') + '</code>' : '');
       n.hidden = false; build();
+      var lang; try { lang = localStorage.getItem('lang'); } catch (e) {}
+      fallbackLanguage(lang === 'zh' || lang === 'en' ? lang : (navigator.language || '').toLowerCase().startsWith('zh') ? 'zh' : 'en');
+      fallbackControls(true);
       document.body.classList.add('read', 'nogl');
       var l = document.getElementById('loader'); if (l) l.classList.add('done');
     };
     window.__deskRecover = function () {
       if (window.__deskFell !== 'timeout' || window.__deskUserReader) return;
       window.__deskFell = false; document.getElementById('glNote').hidden = true;
+      fallbackControls(false);
       document.body.classList.remove('read', 'nogl'); window.dispatchEvent(new Event('resize'));
     };
     window.addEventListener('error', function (e) { if (!window.__deskReady && e && e.message) window.__deskFallback('error', e.message); });

@@ -52,12 +52,17 @@ test('both retained homepages use the interactive WebGL scene architecture', asy
   }
 });
 
-test('second scene is a Soviet concrete study without sci-fi objects', async () => {
+test('second scene is a dense retro-future workstation without Soviet styling', async () => {
   const source = await html('retro-future.html');
-  for (const marker of ['СТУДИЯ 1974', 'concrete', 'constructivist', 'rotary telephone', 'drafting table', 'radiator', "register('about'", "register('heritage'", "register('contact'"]) {
-    assert.ok(source.includes(marker), `missing Soviet study detail: ${marker}`);
+  for (const marker of ['YW/OS 98', 'amber CRT', 'vector radar', 'flight path', 'Poolsuite', 'scanline', 'telemetry']) {
+    assert.ok(source.includes(marker), `missing retro workstation detail: ${marker}`);
   }
-  assert.doesNotMatch(source, /HABITAT|ORBITAL|hologram|rocket|communicator|orbital/i, 'sci-fi scene language remains');
+  for (const page of ['index.html', 'retro-future.html']) {
+    assert.doesNotMatch(await html(page), /СТУДИЯ|MOSCOW|concrete study|constructivis[mt]|rotary telephone|drafting table|radiator|苏联|苏维埃|劳动\s*[·・]\s*1974/i, `${page} retains Soviet styling`);
+  }
+  const sections = ['about', 'heritage', 'work', 'exp', 'portfolio', 'toolbox', 'contact', 'cv', 'door'];
+  const templates = [...source.matchAll(/<template\s+id=["']t-([^"']+)["']/g)].map((match) => match[1]);
+  assert.deepEqual(templates.sort(), sections.sort(), 'all nine content entries need one unique template');
   for (const text of ['HeritageExplorer', 'VINCI 2025', 'CHI 2025', '15', 'ywang677@connect.hkust-gz.edu.cn']) {
     assert.ok(source.includes(text), `missing real content: ${text}`);
   }
