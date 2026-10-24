@@ -52,11 +52,12 @@ test('both retained homepages use the interactive WebGL scene architecture', asy
   }
 });
 
-test('retro-future scene has futuristic objects and real portfolio content', async () => {
+test('second scene is a Soviet concrete study without sci-fi objects', async () => {
   const source = await html('retro-future.html');
-  for (const marker of ['HABITAT 86', 'CRT', 'rocket', 'hologram', 'communicator', 'orbital', "register('about'", "register('heritage'", "register('contact'"]) {
-    assert.ok(source.includes(marker), `missing futuristic scene detail: ${marker}`);
+  for (const marker of ['СТУДИЯ 1974', 'concrete', 'constructivist', 'rotary telephone', 'drafting table', 'radiator', "register('about'", "register('heritage'", "register('contact'"]) {
+    assert.ok(source.includes(marker), `missing Soviet study detail: ${marker}`);
   }
+  assert.doesNotMatch(source, /HABITAT|ORBITAL|hologram|rocket|communicator|orbital/i, 'sci-fi scene language remains');
   for (const text of ['HeritageExplorer', 'VINCI 2025', 'CHI 2025', '15', 'ywang677@connect.hkust-gz.edu.cn']) {
     assert.ok(source.includes(text), `missing real content: ${text}`);
   }

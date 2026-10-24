@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>王钰淞 · Yusong Wang — Two Interactive Worlds</title>
-<meta name="description" content="王钰淞 Yusong Wang 的两个互动场景式主页：浮世绘书斋与 HABITAT 86 复古未来居住舱。" />
+<meta name="description" content="王钰淞 Yusong Wang 的两个互动场景式主页：浮世绘书斋与苏联粗野主义混凝土研究室。" />
 <meta name="theme-color" content="#151615" />
 <style>
   :root{--bg:#151615;--ink:#f4f1e8;--muted:#a5a69f;--acid:#dfff57;--line:#343632;--radius:30px}
@@ -25,9 +25,9 @@
   .hero-note .count{display:flex;align-items:baseline;gap:8px;margin-top:22px;color:var(--ink);font:500 38px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.06em}.hero-note .count small{color:var(--muted);font-size:10px;letter-spacing:.12em}
   #version-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding-bottom:30px}
   .card{position:relative;isolation:isolate;display:flex;flex-direction:column;min-height:430px;padding:30px;overflow:hidden;border-radius:var(--radius);color:#191a17;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
-  .card:hover{transform:translateY(-5px);box-shadow:0 18px 45px rgba(0,0,0,.22)}.card.ukiyoe{background:#e9bf53}.card.future{background:#ef8069}
+  .card:hover{transform:translateY(-5px);box-shadow:0 18px 45px rgba(0,0,0,.22)}.card.ukiyoe{background:#e9bf53}.card.future{background:#a3a297}
   .card-head{display:flex;align-items:center;gap:10px;font:650 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase}.version{opacity:.62}
-  .badge{padding:6px 9px;border:1px solid rgba(25,26,23,.3);border-radius:99px}.badge.new{border:0;background:#19221c;color:var(--acid)}
+  .badge{padding:6px 9px;border:1px solid rgba(25,26,23,.3);border-radius:99px}.badge.new{border:0;background:#8f2d24;color:#eee7d6}
   .arrow{position:absolute;top:24px;right:24px;display:grid;place-items:center;width:48px;height:48px;border:1px solid rgba(25,26,23,.28);border-radius:50%;font-size:22px;transition:background .2s,transform .25s}.card:hover .arrow{background:#191a17;color:#fff;transform:rotate(45deg)}
   .card-body{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:20px;align-items:center;flex:1;padding-top:38px}
   .card h2{font-size:clamp(30px,3.3vw,48px);font-weight:650;line-height:1.13;letter-spacing:-.045em}.mobile-break{display:none}.card h2 small{display:block;margin-bottom:11px;font:650 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;opacity:.64}
@@ -49,7 +49,7 @@
 <main class="shell">
   <section class="hero" aria-labelledby="page-title">
     <div><div class="eyebrow">One person · Two worlds · 2026</div><h1 id="page-title">两种宇宙，<br><span>同一个人。</span></h1></div>
-    <div class="hero-note"><b>选择一扇门，走进场景。</b>一张和式书案，一座来自 1986 年的未来居住舱。所有设备与摆件，都通往同一份真实的经历、研究与作品。<div class="count">02 <small>WORLDS / 场景</small></div></div>
+    <div class="hero-note"><b>选择一扇门，走进场景。</b>一张和式书案，一间 1974 年的混凝土研究室。所有旧物与摆件，都通往同一份真实的经历、研究与作品。<div class="count">02 <small>WORLDS / 场景</small></div></div>
   </section>
   <section id="version-grid" aria-label="两个互动主页">
     <a class="card ukiyoe" href="ukiyoe.html" aria-label="进入浮世绘书斋互动场景">
@@ -57,10 +57,10 @@
       <div class="card-body"><div><h2><small>Ukiyo-e Study</small>浮世绘书斋</h2><p>光影落在和式书案上。拿起地图、笔记与信件，阅读 HeritageExplorer、论文和作品。</p></div><div class="art" aria-hidden="true"><svg viewBox="0 0 220 200" fill="none"><path d="M23 157 106 110l91 43-91 43z" fill="#1d1a1f" opacity=".15"/><path d="m42 103 76-40 65 35-76 43z" fill="#f4e9d0" stroke="#1d1a1f" stroke-width="4"/><path d="m42 103 65 38v32l-65-37z" fill="#c8392b" stroke="#1d1a1f" stroke-width="4"/><path d="m107 141 76-43v32l-76 43z" fill="#1f3a63" stroke="#1d1a1f" stroke-width="4"/><path d="m86 91 35-18 29 15-35 20z" fill="#2f5f93" stroke="#1d1a1f" stroke-width="4"/><path d="M64 67V29m0 0c-25 3-26 28 0 30 25-3 25-27 0-30Z" fill="#f4e9d0" stroke="#1d1a1f" stroke-width="4"/><path d="M64 29V12" stroke="#1d1a1f" stroke-width="4"/></svg></div></div>
       <div class="card-foot"><span>WebGL</span><span>昼夜光影</span><span>摆件交互</span></div>
     </a>
-    <a class="card future" href="retro-future.html" aria-label="进入 HABITAT 86 复古未来互动居住舱">
-      <div class="card-head"><span class="version">02</span><span class="badge new">NEW · HABITAT 86</span></div><span class="arrow" aria-hidden="true">↗</span>
-      <div class="card-body"><div><h2><small>Retro-future Habitat</small>复古未来<br class="mobile-break">居住舱</h2><p>启动 CRT 身份终端、GIS 全息地图和轨道通信器。点击舱内设备，让研究沿轨道展开。</p></div><div class="art" aria-hidden="true"><svg viewBox="0 0 220 200" fill="none"><ellipse cx="111" cy="103" rx="92" ry="39" transform="rotate(-20 111 103)" stroke="#19221c" stroke-width="3"/><path d="m37 139 76-40 69 36-76 43z" fill="#ede6cf" stroke="#19221c" stroke-width="4"/><path d="m37 139 69 39v14l-69-38z" fill="#1b5058" stroke="#19221c" stroke-width="4"/><path d="m106 178 76-43v14l-76 43z" fill="#dfff57" stroke="#19221c" stroke-width="4"/><rect x="64" y="72" width="62" height="50" rx="7" fill="#ede6cf" stroke="#19221c" stroke-width="4"/><rect x="74" y="81" width="42" height="27" rx="3" fill="#17343b"/><path d="M80 89h28m-28 7h20m-20 7h25" stroke="#dfff57" stroke-width="3"/><path d="M77 122v14h37v-14" stroke="#19221c" stroke-width="4"/><path d="M153 99V43" stroke="#19221c" stroke-width="12"/><path d="m153 20 16 28h-32z" fill="#dfff57" stroke="#19221c" stroke-width="4"/><path d="m143 82-12 22 15-3m17-19 12 22-15-3" fill="#ef8069" stroke="#19221c" stroke-width="4"/><circle cx="153" cy="59" r="6" fill="#8bcbd0" stroke="#19221c" stroke-width="3"/><circle cx="184" cy="46" r="8" fill="#ede6cf" stroke="#19221c" stroke-width="3"/></svg></div></div>
-      <div class="card-foot"><span>WebGL</span><span>设备交互</span><span>轨道昼夜</span></div>
+    <a class="card future" href="retro-future.html" aria-label="进入苏联粗野主义混凝土研究室互动场景">
+      <div class="card-head"><span class="version">02</span><span class="badge new">СТУДИЯ · 1974</span></div><span class="arrow" aria-hidden="true">↗</span>
+      <div class="card-body"><div><h2><small>Soviet Concrete Study</small>混凝土<br class="mobile-break">研究室</h2><p>翻开牛皮纸档案，在制图桌前研究地图，或用旋转拨号电话取得联系。厚重混凝土，收藏轻盈的思想。</p></div><div class="art" aria-hidden="true"><svg viewBox="0 0 220 200" fill="none"><circle cx="166" cy="48" r="34" fill="#8f2d24"/><path d="m25 154 92-49 78 40-92 50z" fill="#252621" opacity=".14"/><path d="M48 62h82v105H48z" fill="#d8d2c1" stroke="#252621" stroke-width="4"/><path d="M130 89h43v78h-43z" fill="#77796f" stroke="#252621" stroke-width="4"/><path d="M62 76h20v24H62zm35 0h20v24H97zm-35 39h20v24H62zm35 0h20v24H97z" fill="#4d5545"/><path d="M139 105h25v10h-25zm0 20h25v10h-25zm0 20h25v10h-25z" fill="#c0a154"/><path d="M39 167h143" stroke="#252621" stroke-width="5"/><path d="m30 55 73-39 45 24-73 40z" fill="#c0a154" stroke="#252621" stroke-width="4"/><path d="M103 16v38L48 87V62" fill="#a3a297" stroke="#252621" stroke-width="4"/></svg></div></div>
+      <div class="card-foot"><span>WebGL</span><span>旧物交互</span><span>粗野主义</span></div>
     </a>
   </section>
 </main>
