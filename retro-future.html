@@ -4,10 +4,10 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>王钰淞的个人研究终端 · Yusong Wang — YW/OS 98</title>
-<meta name="description" content="王钰淞 Yusong Wang 的 Y2K 复古科幻互动主页：在高密度琥珀 CRT 工作站中探索 GIS、研究、项目与作品。" />
+<meta name="description" content="王钰淞 Yusong Wang 的 Y2K 复古科幻互动主页：探索园区数字孪生、AI 中台、数据可视化与企业应用。" />
 <meta property="og:title" content="王钰淞的个人研究终端 · Yusong Wang — YW/OS 98" />
-<meta property="og:description" content="GIS × Multimodal AI — a dense retro-future personal research terminal." />
-<meta property="og:image" content="assets/ai_portfolio/ai_star.jpg" />
+<meta property="og:description" content="Selected work in spatial systems, AI infrastructure and data visualization." />
+<meta property="og:image" content="assets/work/dipark.webp" />
 <meta name="theme-color" content="#090b0b" />
 <link rel="modulepreload" href="assets/vendor/three.module.min.js" />
 <style>
@@ -175,7 +175,7 @@
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
 <style>
-  /* YW/OS 98 — dense amber CRT workstation + Poolsuite windows */
+  /* YW/OS 98 — focused amber CRT workstation + Poolsuite windows */
   :root{
     --sumi:#111413;--sumi2:#4d5149;--washi:#e7e3d5;--washi2:#c8c5b8;
     --ai:#17464b;--bero:#68c7c4;--shu:#e89a35;--kin:#f3b44b;
@@ -238,11 +238,40 @@
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23090b0b'/%3E%3Cpath d='M6 12h52v40H6z' fill='%23e89a35'/%3E%3Cpath d='M12 18h40v28H12z' fill='%23111413'/%3E%3Cpath d='M17 24h30v3H17zm0 7h22v3H17zm0 7h27v3H17z' fill='%23e89a35'/%3E%3C/svg%3E" />
+<style>
+/* Editorial hierarchy: identity left, one physical exhibit right, work below. */
+#stage,#stage::after{background:#151c1b}#stage::after,.grainover,.vignette,#rain{display:none}
+body[data-theme] #gl{filter:none}body{background:#151c1b}
+.hud{padding:24px 34px}.cart{box-shadow:none;background:none;color:#e3cda5;border:1px solid #7b8072;font-size:14px;padding:11px 13px}.cart em{color:inherit}.brand small{border:0;background:none;color:#aeb5a8;font-size:9px;padding:7px 14px}
+.tools .btn{border-color:#454e46;background:#1c2421;color:#c7cdc0;box-shadow:none;font-weight:500}.tools .btn.red{background:#dac5a0;color:#202723;border-color:#dac5a0}.tools .btn:hover{background:#d9c39d;color:#202723;box-shadow:none;transform:none}
+#intro{position:fixed;z-index:4;left:5.1vw;top:25%;width:31vw;color:#e3e5d9;pointer-events:none;letter-spacing:0}#intro button{pointer-events:auto}.eyebrow{font:10px/1.6 var(--serif);letter-spacing:.09em;color:#a6ae9e;margin-bottom:24px}
+#intro h1{font:500 clamp(30px,3.15vw,50px)/1.35 var(--sans);letter-spacing:-.035em}#intro .lang-en{line-height:1.12}
+.intro-copy{font:14px/1.9 var(--sans);color:#a9b2a4;margin-top:22px}.intro-actions{display:flex;align-items:center;gap:24px;margin-top:32px}.work-cta{font:600 13px/1.5 var(--sans);padding:12px 18px;background:#ddc8a3;color:#222a23;border:1px solid #ddc8a3;border-radius:3px}.work-cta:hover{background:#eee0c7}.about-link{font:13px/1.5 var(--sans);color:#c7cebe;border-bottom:1px solid #687463;padding:5px 0}
+#projectDock{position:fixed;z-index:5;left:40%;right:5%;bottom:85px;color:#d9ded0} .project-meta{display:flex;gap:16px;align-items:center;margin-bottom:20px}#projectCategory{font:9px/1.5 var(--serif);letter-spacing:.1em;color:#94a28e}#projectTitle{font:500 19px/1.4 var(--sans);margin-top:5px}#projectDescription{font:12px/1.7 var(--sans);color:#9eaa97;margin-top:4px}#projectFull{font:11px/1.5 var(--sans);color:#c8cbb9;white-space:nowrap;margin-left:auto;text-underline-offset:4px}#projectNumber{font:10px/1 var(--serif);color:#94a28e;white-space:nowrap}
+#projectPicker{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}#projectPicker button{min-width:0;text-align:left;border-top:2px solid #3f4a40;padding-top:8px;color:#a6b19d;transition:color .2s,border-color .2s}#projectPicker img{display:block;width:100%;height:clamp(40px,4.5vw,68px);object-fit:contain;background:#0f1513;opacity:.46;transition:opacity .2s}#projectPicker button>span{display:flex;gap:6px;align-items:baseline;margin-top:8px;font:11px/1.4 var(--sans);white-space:nowrap}#projectPicker small{font:9px/1 var(--serif);color:#82927c}#projectPicker button[aria-pressed="true"]{color:#e4d4b6;border-color:#d9b87d}#projectPicker button[aria-pressed="true"] img,#projectPicker button:hover img{opacity:1}#projectPicker button:focus-visible,.work-cta:focus-visible,.about-link:focus-visible{outline:2px solid #eed3a4;outline-offset:5px}
+body.zoomed #intro,body.zoomed #projectDock,body.read #intro,body.read #projectDock{display:none}#hint{display:none}#index{left:34px;bottom:25px}#indexBtn{background:transparent;border-color:#525f50;color:#c6cbb9;box-shadow:none}#indexBtn i{background:#c8b28b}#themeTag{right:34px;bottom:30px;color:#9ca890}#themeTag b{color:#c8b28b;border-color:#485443;background:none}
+.content .pf{display:grid;grid-template-columns:1fr;gap:28px}.content .pf figure{padding:0;border:0;background:none;overflow:visible}.content .pf img{width:100%;height:auto;border:1px solid #b8bbad}.content .pf figcaption{display:block;font:13px/1.7 var(--sans);padding-top:12px}.content .pf figcaption b{font-size:11px;display:block;margin-bottom:4px}.content .pf figcaption p{margin:4px 0 0;color:#50574d}.content .pf figcaption strong{font-weight:650}.content .shot{filter:none}
+#panel{top:90px;bottom:35px}.psheet{box-shadow:6px 6px 0 rgba(0,0,0,.3);border:1px solid #a7ac9a}.psheet::after{display:none}.content{font-family:var(--sans);font-size:14px}.phead{background:#d8dacb;border-bottom:1px solid #a4aa98}.phead h2{font-family:var(--sans);font-size:16px}.pbody{padding:24px 26px}.content h3{font-family:var(--sans);font-size:15px}
+@media(min-width:761px) and (max-height:750px){#intro{top:23%}#intro h1{font-size:34px}.eyebrow{margin-bottom:14px}.intro-copy{margin-top:16px}.intro-actions{margin-top:22px}#projectDock{bottom:70px}.project-meta{margin-bottom:12px}#projectDescription{display:none}#projectPicker img{height:42px}}
+@media(max-width:760px){.hud{padding:14px 16px}.cart{font-size:11px;padding:10px}.tools{gap:4px;max-width:75vw}.tools .btn{font-size:10px;padding:7px;min-height:32px}#btnSound,.tools a[href="index.html"]{display:none}#btnTheme{display:inline-flex}.brand small{display:none}#intro{top:94px;left:24px;width:calc(100% - 48px)}.eyebrow{font-size:8px;margin-bottom:11px}#intro h1{font-size:29px;line-height:1.35}#intro h1 br{display:none}.intro-copy{font-size:12px;line-height:1.7;margin-top:10px}.intro-copy br{display:none}.intro-actions{gap:22px;margin-top:16px}.work-cta{font-size:12px;padding:9px 13px}.about-link{font-size:12px}#projectDock{left:24px;right:24px;bottom:80px}.project-meta{margin-bottom:14px;gap:10px}#projectCategory{font-size:8px}#projectTitle{font-size:17px}#projectDescription{display:none}#projectNumber{display:none}#projectPicker{gap:8px}#projectPicker img{height:35px}#projectPicker button>span{font-size:9px;gap:0;margin-top:7px;white-space:normal}#projectPicker small{display:none}#projectFull{font-size:10px}#index{left:20px;bottom:20px}#themeTag{right:20px;bottom:24px;font-size:8px}#themeTag b{width:24px;height:24px}#panel{top:auto;bottom:8px;height:70dvh} .pbody{padding:18px}body.read #reader{padding-top:88px}}
+@media(max-width:760px) and (max-height:720px){#intro{top:78px}.eyebrow{display:none}#intro h1{font-size:25px}.intro-copy{font-size:11px}.intro-actions{margin-top:12px}#projectDock{bottom:73px}#projectPicker img{height:28px}#projectTitle{font-size:15px}}
+</style>
+<style>
+body{color:#dce1d4}.psheet,#reader,.glnote{color:#202820}#loader .cart{color:#161d18}
+.tools .btn,#indexBtn i,#indexList button i,.glnote .btn{font-size:11px;min-height:34px}#indexBtn i{min-height:0}#projectCategory,#projectNumber,#projectFull,#themeTag,.eyebrow{font-size:11px}#projectPicker small{font-size:10px}.brand small{font-size:10px}
+@media(max-width:760px){.tools .btn{font-size:11px;padding:7px 6px}#projectPicker button>span{font-size:11px}#projectCategory,#projectFull,#themeTag{font-size:11px}.eyebrow{font-size:9px}#projectTitle{font-size:16px}}
+</style>
+<style>
+@media(max-height:500px) and (orientation:landscape) and (max-width:999px){
+ .hud{padding:12px 20px}.brand small{display:none}#intro{top:92px;left:24px;width:34%}.eyebrow,.intro-copy{display:none}#intro h1{font-size:24px;line-height:1.35}#intro h1 br{display:block}.intro-actions{margin-top:20px;gap:16px;flex-wrap:wrap}.work-cta{font-size:12px;padding:9px 12px}.about-link{font-size:12px}
+ #projectDock{left:45%;right:24px;bottom:62px}.project-meta{margin-bottom:9px;gap:8px}#projectTitle{font-size:14px}#projectDescription,#projectNumber,#projectCategory{display:none}#projectFull{font-size:11px}#projectPicker{gap:7px}#projectPicker img{height:25px}#projectPicker button>span{font-size:11px;margin-top:5px}#projectPicker small{display:none}#index{left:24px;bottom:14px}#themeTag{right:24px;bottom:19px}
+}
+</style>
 </head>
 <body data-lang="zh" data-theme="nishiki">
 
 <div id="stage">
-  <canvas id="gl" role="img" aria-label="王钰淞的 YW/OS 98 复古科幻工作站：点击琥珀 CRT、矢量雷达、通信阵列与轨道仪探索内容，也可以用左下角目录浏览 / Yusong Wang's YW/OS 98 — an interactive WebGL research terminal"></canvas>
+  <canvas id="gl" role="img" aria-label="王钰淞的 YW/OS 98 复古科幻工作站：主显示器展示实际工作项目，点击设备探索内容，也可以用左下角目录浏览 / Yusong Wang's YW/OS 98 — an interactive WebGL research terminal"></canvas>
   <div class="kasumi top" aria-hidden="true">
     <svg viewBox="0 0 1440 96" preserveAspectRatio="xMidYMin slice">
       <defs><linearGradient id="kg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2a56a"/><stop offset="1" stop-color="#efc98f" stop-opacity=".85"/></linearGradient></defs>
@@ -257,7 +286,7 @@
 <header class="hud">
   <a class="brand" href="#" id="brand" aria-label="YW/OS 98 · 回到全景 / Back to overview">
     <span class="cart"><em>YW/OS</em> 98</span>
-    <small>PERSONAL RESEARCH TERMINAL<br>NODE 01 · ONLINE</small>
+    <small>YUSONG WANG<br>RESEARCH & ENGINEERING</small>
   </a>
   <div class="tools">
     <button class="btn ai" id="btnTheme" type="button"><span class="lang-zh">显示模式</span><span class="lang-en">Display</span></button>
@@ -269,7 +298,17 @@
   </div>
 </header>
 
-<div id="hint"><span class="lang-zh">选择一台设备，接入对应的研究档案</span><span class="lang-en">Select a device to access its research archive</span></div>
+<section id="intro" aria-labelledby="introTitle">
+ <p class="eyebrow">YUSONG WANG / SELECTED WORK</p>
+ <h1 id="introTitle"><span class="lang-zh">从研究，<br>到可用的系统。</span><span class="lang-en">Research.<br>Made real.</span></h1>
+ <p class="intro-copy"><span class="lang-zh">我是王钰淞。关注空间、数据与 AI，<br>也把它们做成日常使用的工具。</span><span class="lang-en">I'm Yusong. I turn spatial data and AI<br>into tools people can use.</span></p>
+ <div class="intro-actions"><button id="btnWork" class="work-cta" type="button"><span class="lang-zh">查看我的工作</span><span class="lang-en">Explore my work</span> ↗</button><button id="btnAbout" class="about-link" type="button"><span class="lang-zh">关于我</span><span class="lang-en">About me</span></button></div>
+</section>
+<section id="projectDock" aria-label="工作项目 / Selected projects">
+ <div class="project-meta" aria-live="polite"><div><span id="projectCategory"></span><h2 id="projectTitle"></h2><p id="projectDescription"></p></div><a id="projectFull" href="assets/work/dipark.webp" target="_blank" rel="noopener"><span class="lang-zh">查看原图</span><span class="lang-en">Full image</span> ↗</a><span id="projectNumber">01 / 05</span></div>
+ <div id="projectPicker" role="group" aria-label="切换主屏项目 / Switch featured project"><button type="button" data-project="dipark" aria-pressed="true"><img src="assets/work/dipark.webp" alt="" width="160" height="90"/><span><small>01</small><span class="lang-zh">DIPARK</span><span class="lang-en">DIPARK</span></span></button><button type="button" data-project="ai-gateway" aria-pressed="false"><img src="assets/work/ai-gateway.webp" alt="" width="160" height="90"/><span><small>02</small><span class="lang-zh">AI 中台</span><span class="lang-en">AI Gateway</span></span></button><button type="button" data-project="tunan-data-lab" aria-pressed="false"><img src="assets/work/tunan-data-lab.webp" alt="" width="160" height="90"/><span><small>03</small><span class="lang-zh">图南数据</span><span class="lang-en">TUNAN Data</span></span></button><button type="button" data-project="ops-monitor" aria-pressed="false"><img src="assets/work/ops-monitor.webp" alt="" width="160" height="90"/><span><small>04</small><span class="lang-zh">运维总控</span><span class="lang-en">Ops Monitor</span></span></button><button type="button" data-project="enterprise-portal" aria-pressed="false"><img src="assets/work/enterprise-portal.webp" alt="" width="160" height="90"/><span><small>05</small><span class="lang-zh">应用门户</span><span class="lang-en">Workspace</span></span></button></div></section>
+
+<div id="hint"><span class="lang-zh">切换下方项目，或点击主屏打开作品集</span><span class="lang-en">Switch projects below, or click the main display to explore</span></div>
 <div id="index">
   <button id="indexBtn" type="button" aria-expanded="false" aria-controls="indexList"><i>DIR</i><span class="lang-zh">系统目录</span><span class="lang-en">System directory</span><small id="indexCount"></small></button>
   <nav id="indexList" aria-label="目录 / Sections"></nav>
@@ -342,7 +381,7 @@
     <div><b>~2,800</b><span class="lang-zh">次提交</span><span class="lang-en">commits</span></div>
     <div><b>347</b><span class="lang-zh">例 ERP 测试</span><span class="lang-en">ERP tests</span></div>
   </div>
-  <img class="shot" src="assets/dipark_overview.webp" alt="DIPARK 智慧云仓运营总览（演示数据）/ DIPARK operations overview (demo data)" width="2000" height="1105" loading="lazy" />
+  <img class="shot" src="assets/work/dipark.webp" alt="DIPARK 智慧云仓运营总览（演示数据）/ DIPARK operations overview (demo data)" width="2000" height="1105" loading="lazy" />
   <div class="row"><span class="k">2026.08</span><div><b><span class="lang-zh">AI 中台 · LLM 网关</span><span class="lang-en">AI hub · LLM gateway</span></b><small><span class="lang-zh">零依赖 Node 22，作为全部系统唯一的大模型出口：18 个系统独立 Key、模型别名路由、9 类引擎巡检、逐笔计费与钱包续航告警。</span><span class="lang-en">Zero-dependency Node 22 service and the only LLM exit for every system: per-system keys for 18 apps, model alias routing, health probes for 9 engines, per-call cost ledger and budget alerts.</span></small></div></div>
   <div class="row"><span class="k">2026.07</span><div><b><span class="lang-zh">智慧云仓 DIPARK</span><span class="lang-en">DIPARK smart park</span></b><small><span class="lang-zh">Spring Boot 3 + Vue 3 园区运营系统：招商—合同—账单—收款闭环，收款幂等与领域事件，3D 楼宇运营总览（上图为演示数据）。</span><span class="lang-en">Spring Boot 3 + Vue 3 park operations: leasing → contract → billing → payment, idempotent receipts and domain events, a 3D building overview (demo data above).</span></small></div></div>
   <div class="row"><span class="k">2026.08</span><div><b><span class="lang-zh">售卖机 ERP · 租赁业务</span><span class="lang-en">Vending ERP · Leasing</span></b><small><span class="lang-zh">业财一体进销存：40 张表、22 个模块、347 例自动化测试，(R,S) 补货引擎，历史流水导入分毫不差；租赁板块含 IRR 报价与租金计划勾稽。</span><span class="lang-en">Inventory + finance in one: 40 tables, 22 modules, 347 automated tests, an (R,S) replenishment engine and exact legacy import; the leasing module adds IRR quotes and reconciled rent schedules.</span></small></div></div>
@@ -367,17 +406,13 @@
 </template>
 
 <template id="t-portfolio">
-  <p><span class="lang-zh">AI 叙事影像与生成媒介作品集 —— 图片按原始比例完整展示，点击在新标签页查看大图。</span><span class="lang-en">AI narrative &amp; generative media. Images are shown uncropped; click to open full size.</span></p>
+  <p><span class="lang-zh">我的工作：从园区运营、AI 接入到数据可视化与运维工具。以下为实际工作界面，图片按原始比例完整展示，点击在新标签页查看大图。</span><span class="lang-en">Selected work across park operations, AI integration, data visualization and operational tools. These are actual project screenshots, shown uncropped. Select an image to open it full size in a new tab.</span></p>
   <div class="pf">
-    <figure><a href="assets/ai_portfolio/ai_cover.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_cover.jpg" width="1600" height="900" loading="lazy" alt="Cover" /></a><figcaption><b>COVER</b><span class="lang-zh">作品集封面</span><span class="lang-en">Portfolio cover</span></figcaption></figure>
-    <figure><a href="assets/ai_portfolio/ai_method.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_method.jpg" width="1280" height="936" loading="lazy" alt="Method map" /></a><figcaption><b>PPT·02 METHOD</b><span class="lang-zh">创作方法地图</span><span class="lang-en">Creative method map</span></figcaption></figure>
-    <figure><a href="assets/ai_portfolio/ai_lishishi.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_lishishi.jpg" width="1280" height="752" loading="lazy" alt="Li Shishi" /></a><figcaption><b>PPT·03 STORYBOARD</b>Li Shishi</figcaption></figure>
-    <figure><a href="assets/ai_portfolio/ai_straw_boats.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_straw_boats.jpg" width="1280" height="874" loading="lazy" alt="Straw Boats" /></a><figcaption><b>PPT·04 NARRATIVE</b><span class="lang-zh">草船借箭</span><span class="lang-en">Straw Boats</span></figcaption></figure>
-    <figure><a href="assets/ai_portfolio/ai_star.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_star.jpg" width="1280" height="714" loading="lazy" alt="The Star" /></a><figcaption><b>PPT·05 REWRITE</b>The Star</figcaption></figure>
-    <figure><a href="assets/ai_portfolio/ai_twodimensional.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_twodimensional.jpg" width="1280" height="720" loading="lazy" alt="Two-dimensional foil" /></a><figcaption><b>PPT·06 ARTWORK</b><span class="lang-zh">二向箔</span><span class="lang-en">Two-Dimensional Foil</span></figcaption></figure>
-    <figure><a href="assets/ai_portfolio/ai_qingming.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_qingming.jpg" width="1280" height="954" loading="lazy" alt="Qingming RPG" /></a><figcaption><b>PPT·07 INTERACTION</b><span class="lang-zh">清明上河图 RPG</span><span class="lang-en">Qingming RPG</span></figcaption></figure>
-    <figure><a href="assets/ai_portfolio/ai_boat_style.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_boat_style.jpg" width="1280" height="712" loading="lazy" alt="Style transfer" /></a><figcaption><b>PPT·08 STYLE</b><span class="lang-zh">训练与风格转译</span><span class="lang-en">Training &amp; style transfer</span></figcaption></figure>
-    <figure><a href="assets/ai_portfolio/ai_touchdesigner.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_touchdesigner.jpg" width="1280" height="720" loading="lazy" alt="TouchDesigner" /></a><figcaption><b>PPT·09 REAL-TIME</b>TouchDesigner</figcaption></figure>
+    <figure data-project="dipark"><a href="assets/work/dipark.webp" target="_blank" rel="noopener"><img src="assets/work/dipark.webp" width="2400" height="1327" loading="lazy" alt="DIPARK 三维园区与运营总览，演示数据 / DIPARK 3D park operations overview with demo data" /></a><figcaption><b><span class="lang-zh">DIPARK · 智慧云仓</span><span class="lang-en">DIPARK · Smart park</span></b><span class="lang-zh">以三维楼宇总览连接空间出租、租金收缴、物业工单与能源信息。截图中的运营指标为演示数据。</span><span class="lang-en">A 3D building overview brings together occupancy, rent collection, property work orders and energy information. Operational metrics shown here are demo data.</span></figcaption></figure>
+    <figure data-project="ai-gateway"><a href="assets/work/ai-gateway.webp" target="_blank" rel="noopener"><img src="assets/work/ai-gateway.webp" width="2400" height="1342" loading="lazy" alt="AI 中台总控室的用量、调用监控与费用流向界面 / AI gateway console showing usage, call monitoring and cost flows" /></a><figcaption><b><span class="lang-zh">AI 中台 · LLM 网关</span><span class="lang-en">AI hub · LLM gateway</span></b><span class="lang-zh">统一管理模型接入与调用，集中呈现调用日志、引擎巡检、费用流向和钱包续航。</span><span class="lang-en">A shared console for model access and calls, with call logs, engine probes, cost flows and wallet budget estimates.</span></figcaption></figure>
+    <figure data-project="tunan-data-lab"><a href="assets/work/tunan-data-lab.webp" target="_blank" rel="noopener"><img src="assets/work/tunan-data-lab.webp" width="2400" height="1339" loading="lazy" alt="图南 Data Lab 数据源关系图、供应商探针与分析维度界面 / Tunan Data Lab with data-source relationships, provider probes and analysis dimensions" /></a><figcaption><b><span class="lang-zh">图南 · Data Lab</span><span class="lang-en">Tunan · Data Lab</span></b><span class="lang-zh">以径向关系图组织数据源与分析维度，结合供应商探针、财报接口和抓取流水视图。截图中的流水、股价与持仓因子为 DEMO 模拟。</span><span class="lang-en">A radial view connects data sources with analysis dimensions, alongside provider probes, financial-data APIs and a fetch feed. The feed, prices and portfolio factors shown are DEMO simulations.</span></figcaption></figure>
+    <figure data-project="ops-monitor"><a href="assets/work/ops-monitor.webp" target="_blank" rel="noopener"><img src="assets/work/ops-monitor.webp" width="2400" height="1471" loading="lazy" alt="Ops Monitor 服务拓扑、任务、备份与待处理事项界面 / Ops Monitor service topology, jobs, backups and attention queue" /></a><figcaption><b><span class="lang-zh">运维总控 · Ops Monitor</span><span class="lang-en">Operations console · Ops Monitor</span></b><span class="lang-zh">将服务入口、自动化任务、备份与通知链路放到同一张拓扑视图，配合待处理事项和延迟趋势定位问题。</span><span class="lang-en">Service endpoints, scheduled jobs, backups and notification paths share a topology view, supported by an attention queue and latency trends.</span></figcaption></figure>
+    <figure data-project="enterprise-portal"><a href="assets/work/enterprise-portal.webp" target="_blank" rel="noopener"><img src="assets/work/enterprise-portal.webp" width="2400" height="1096" loading="lazy" alt="企业应用门户按类别组织业务系统、运维与文档入口 / Enterprise portal organizing business applications, operations and documentation" /></a><figcaption><b><span class="lang-zh">企业应用门户</span><span class="lang-en">Enterprise application portal</span></b><span class="lang-zh">按企业管理、园区运营与技术服务组织应用，并提供运维中心、文档、产品资料与代码仓库入口。</span><span class="lang-en">Applications grouped by enterprise management, park operations and technical services, with links to operations, documentation, product materials and repositories.</span></figcaption></figure>
   </div>
 </template>
 
@@ -446,25 +481,25 @@ const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
    ===================================================================== */
 const SECTIONS = [
   { id: 'about', k: 'ID', zh: '身份终端 · 关于我', en: 'Identity terminal · About' },
-  { id: 'heritage', k: 'GIS', zh: 'HeritageExplorer · 矢量雷达', en: 'HeritageExplorer · Vector radar' },
+  { id: 'heritage', k: 'GIS', zh: 'HeritageExplorer · 遗产研究', en: 'HeritageExplorer · Research' },
   { id: 'work', k: 'LAB', zh: '论文 · 专利 · 项目', en: 'Papers · Patents · Projects' },
-  { id: 'exp', k: 'NAV', zh: '经历路径图', en: 'Experience flight path' },
-  { id: 'portfolio', k: 'IMG', zh: 'AI 影像序列', en: 'AI image sequence' },
+  { id: 'exp', k: 'NAV', zh: '经历与方向', en: 'Experience & direction' },
+  { id: 'portfolio', k: 'WORK', zh: '我的工作 · 项目展览', en: 'Selected work · Projects' },
   { id: 'toolbox', k: 'SYS', zh: '系统模块 · 工具链', en: 'System modules · Toolbox' },
-  { id: 'contact', k: 'COM', zh: '通信阵列 · 联系', en: 'Communications · Contact' },
+  { id: 'contact', k: 'COM', zh: '联系我', en: 'Contact' },
   { id: 'cv', k: 'CV', zh: '个人数据记录', en: 'Personal data record' },
-  { id: 'door', k: '02', zh: '系统目录', en: 'System directory' }
+  { id: 'door', k: '02', zh: '版本总览', en: 'Version portal' }
 ];
 const SEC = Object.fromEntries(SECTIONS.map((s) => [s.id, s]));
 // hover names — only shown when the pointer finds the object
 const NAMES = {
   about: { zh: '琥珀 CRT 身份终端', en: 'Amber CRT identity terminal' },
-  heritage: { zh: 'GIS 矢量雷达 / vector radar', en: 'GIS vector radar' },
-  work: { zh: '研究数据墙 / telemetry', en: 'Research telemetry wall' },
-  exp: { zh: '航空路径年表 / flight path', en: 'Experience flight path' },
-  portfolio: { zh: 'AI 图像序列匣', en: 'AI image sequence cartridge' },
-  toolbox: { zh: '模块化系统工具箱', en: 'Modular system toolbox' },
-  contact: { zh: '通信阵列', en: 'Communication array' },
+  heritage: { zh: '研究手册 · HeritageExplorer', en: 'Research notebook · HeritageExplorer' },
+  work: { zh: '论文 · 专利 · 项目', en: 'Papers · Patents · Projects' },
+  exp: { zh: '经历与方向', en: 'Experience & direction' },
+  portfolio: { zh: '我的工作 · 项目主屏', en: 'Selected work · Project monitor' },
+  toolbox: { zh: '开发工具与技能', en: 'Tools & skills' },
+  contact: { zh: '联系我', en: 'Contact' },
   cv: { zh: '个人数据记录卡', en: 'Personal data record' },
   door: { zh: '系统目录卡带', en: 'System directory cartridges' },
   lantern: { zh: '琥珀信号灯塔', en: 'Amber signal beacon' },
@@ -475,8 +510,8 @@ const NAMES = {
   orbiter: { zh: '桌面轨道仪', en: 'Desktop orbit instrument' }
 };
 const THEMES = [
-  { id: 'nishiki', k: 'A', zh: '琥珀单色', en: 'Amber monochrome' },
-  { id: 'ai', k: 'C', zh: '磷光青屏', en: 'Cyan phosphor' },
+  { id: 'nishiki', k: 'A', zh: '工作室', en: 'Studio' },
+  { id: 'ai', k: 'C', zh: '冷光', en: 'Cool light' },
   { id: 'sumi', k: 'M', zh: '低亮模式', en: 'Low luminance' },
   { id: 'yoru', k: 'N', zh: '夜间值班', en: 'Night shift' }
 ];
@@ -506,614 +541,122 @@ const MAX_ANISO = renderer.capabilities.getMaxAnisotropy();
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(26, 1, 0.1, 60);
 
-/* =====================================================================
-   TEXTURES — everything painted on canvases; no readable words on the desk
-   ===================================================================== */
-const hex = (c) => [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16));
-const shade = (c, f) => { const [r, g, b] = hex(c), t = f < 0 ? 0 : 255, p = Math.abs(f); return `rgb(${Math.round(r + (t - r) * p)},${Math.round(g + (t - g) * p)},${Math.round(b + (t - b) * p)})`; };
-function ctex(w, h, draw, opt = {}) {
-  const c = document.createElement('canvas'); c.width = w; c.height = h;
-  const g = c.getContext('2d'); draw(g, w, h);
-  const t = new THREE.CanvasTexture(c);
-  t.colorSpace = opt.linear ? THREE.NoColorSpace : THREE.SRGBColorSpace;
-  t.anisotropy = MAX_ANISO;
-  if (opt.repeat) { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(opt.repeat[0], opt.repeat[1]); }
-  t.userData.redraw = (fn) => { fn(g, w, h); t.needsUpdate = true; };
-  return t;
+/* A quiet product studio: one work display, one amber CRT, one instrument. */
+const PROJECTS = [
+  {id:'dipark',zh:'DIPARK · 园区数字孪生',en:'DIPARK · Digital twin',category:'SPATIAL SYSTEMS',descZh:'把空间、租赁与园区运营放进同一个视图。',descEn:'Space, leasing and park operations in one view.',ratio:2400/1327},
+  {id:'ai-gateway',zh:'AI 中台 · 总控室',en:'AI Gateway · Control room',category:'AI INFRASTRUCTURE',descZh:'连接模型、业务系统与每一次调用。',descEn:'Connecting models, business systems and every call.',ratio:2400/1342},
+  {id:'tunan-data-lab',zh:'图南 · 数据实验室',en:'TUNAN · Data Lab',category:'DATA VISUALIZATION',descZh:'让数据来源、流向与覆盖关系可见。',descEn:'Making data sources, flows and coverage visible.',ratio:2400/1339},
+  {id:'ops-monitor',zh:'运维总控 · Ops Monitor',en:'Ops Monitor',category:'OBSERVABILITY',descZh:'从服务拓扑到任务、备份与告警。',descEn:'Service topology, scheduled tasks, backups and alerts.',ratio:2400/1471},
+  {id:'enterprise-portal',zh:'企业应用 · 工作门户',en:'Enterprise · Workspace',category:'BUSINESS SOFTWARE',descZh:'企业管理、园区运营与技术服务的统一入口。',descEn:'One entry for business, park operations and technical services.',ratio:2400/1096}
+];
+let selectedProject = 0;
+const textures = new Map();
+const texLoader = new THREE.TextureLoader();
+function ctex(w,h,draw){const c=document.createElement('canvas');c.width=w;c.height=h;draw(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=MAX_ANISO;return t;}
+const std = o => new THREE.MeshStandardMaterial({roughness:.46,metalness:.22,envMapIntensity:.45,...o});
+const M={shell:std({color:0xbdb9aa,roughness:.38,metalness:.32}),dark:std({color:0x252b2a,roughness:.44,metalness:.35}),black:std({color:0x101515,roughness:.6}),aluminum:std({color:0x737e7b,roughness:.27,metalness:.8}),amber:std({color:0xc38d47,roughness:.38,metalness:.5})};
+const inkMat=new THREE.MeshBasicMaterial({color:0x181b1a}),goldMat=new THREE.MeshBasicMaterial({color:0xd8a65d});
+function roundedGeometry(w,h,d,r=.025){
+ const bevel=Math.min(r*.28,d*.22),rr=Math.min(r,w*.24,h*.24),x=-w/2+bevel,y=-h/2+bevel,W=w-2*bevel,H=h-2*bevel,s=new THREE.Shape();
+ s.moveTo(x+rr,y);s.lineTo(x+W-rr,y);s.quadraticCurveTo(x+W,y,x+W,y+rr);s.lineTo(x+W,y+H-rr);s.quadraticCurveTo(x+W,y+H,x+W-rr,y+H);s.lineTo(x+rr,y+H);s.quadraticCurveTo(x,y+H,x,y+H-rr);s.lineTo(x,y+rr);s.quadraticCurveTo(x,y,x+rr,y);
+ const g=new THREE.ExtrudeGeometry(s,{depth:d-2*bevel,bevelEnabled:true,bevelThickness:bevel,bevelSize:bevel,bevelSegments:3,steps:1,curveSegments:10});g.translate(0,0,-d/2+bevel);g.computeVertexNormals();return g;
 }
-function speckle(g, w, h, n, col, a) {
-  for (let i = 0; i < n; i++) { g.fillStyle = `rgba(${col},${(rand() * a).toFixed(3)})`; const s = 0.6 + rand() * 1.8; g.fillRect(rand() * w, rand() * h, s, s); }
-}
-function paperBase(g, w, h, c1 = '#fbf4e3', c2 = '#efe1bf') {
-  const gr = g.createLinearGradient(0, 0, w, h); gr.addColorStop(0, c1); gr.addColorStop(1, c2); g.fillStyle = gr; g.fillRect(0, 0, w, h);
-  speckle(g, w, h, w * h / 60, '120,90,50', 0.12);
-  for (let i = 0; i < w * h / 900; i++) { g.strokeStyle = `rgba(150,120,80,${(rand() * 0.12).toFixed(3)})`; g.lineWidth = 0.5; g.beginPath(); const x = rand() * w, y = rand() * h; g.moveTo(x, y); g.lineTo(x + (rand() - 0.5) * 16, y + (rand() - 0.5) * 16); g.stroke(); }
-}
-function woodPaint(base, w, h, density = 1) {
-  return (g) => {
-    const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, shade(base, 0.07)); gr.addColorStop(0.5, base); gr.addColorStop(1, shade(base, -0.07)); g.fillStyle = gr; g.fillRect(0, 0, w, h);
-    for (let i = 0; i < 160 * density; i++) {
-      const y0 = rand() * h, amp = 1.5 + rand() * 7, f = 0.003 + rand() * 0.009, ph = rand() * 6;
-      g.strokeStyle = `rgba(80,42,16,${(0.06 + rand() * 0.2).toFixed(3)})`; g.lineWidth = 0.5 + rand() * 2.4;
-      g.beginPath(); for (let x = 0; x <= w; x += 6) { const y = y0 + Math.sin(x * f + ph) * amp + Math.sin(x * f * 3.3 + ph * 2) * amp * 0.25; x ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke();
-    }
-    for (let k = 0; k < 3 * density; k++) {
-      const x = rand() * w, y = rand() * h;
-      for (let r = 3; r < 26; r += 3) { g.strokeStyle = `rgba(80,42,16,${0.18 - r * 0.005})`; g.lineWidth = 1.2; g.beginPath(); g.ellipse(x, y, r * 2.6, r * 0.55, 0, 0, Math.PI * 2); g.stroke(); }
-    }
-    speckle(g, w, h, w * h / 80, '60,30,10', 0.12);
-  };
-}
-const TEX = {};
-TEX.wood = ctex(1024, 512, woodPaint('#c4823f', 1024, 512));
-TEX.woodDark = ctex(512, 256, woodPaint('#7a4321', 512, 256, 0.6));
-TEX.woodPale = ctex(512, 256, woodPaint('#d2a46a', 512, 256, 0.6));
-TEX.plaster = ctex(1024, 512, (g, w, h) => {
-  g.fillStyle = '#e4cf9f'; g.fillRect(0, 0, w, h);
-  for (let i = 0; i < 260; i++) { const x = rand() * w, y = rand() * h, r = 10 + rand() * 60; const gr = g.createRadialGradient(x, y, 0, x, y, r); const a = rand() * 0.07; gr.addColorStop(0, rand() > 0.5 ? `rgba(255,248,225,${a})` : `rgba(150,110,60,${a})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); }
-  speckle(g, w, h, 9000, '110,80,40', 0.22); speckle(g, w, h, 3000, '255,250,235', 0.25);
-}, { repeat: [2.2, 1.1] });
-TEX.tatami = ctex(2048, 1600, (g, w, h) => {
-  g.fillStyle = '#2b3048'; g.fillRect(0, 0, w, h);
-  const U = w / 3.2; // px per world unit
-  const mats = [[-1.6, -1.1, 1.8, 0.9], [0.2, -1.1, 1.4, 0.9], [-1.6, -0.2, 0.9, 1.8], [-0.7, -0.2, 1.8, 0.9], [1.1, -0.2, 0.5, 1.8], [-0.7, 0.7, 1.8, 0.7], [-1.6, 1.6, 3.2, 0.3]];
-  mats.forEach(([x, z, mw, md], i) => {
-    const X = (x + 1.6) * U, Y = (z + 1.1) * U, Wd = mw * U, Hd = md * U, hz = mw >= md;
-    const gr = g.createLinearGradient(X, Y, X + Wd, Y + Hd); gr.addColorStop(0, i % 2 ? '#cdb56c' : '#c6ad62'); gr.addColorStop(1, i % 2 ? '#c2a85f' : '#bda258'); g.fillStyle = gr; g.fillRect(X + 2, Y + 2, Wd - 4, Hd - 4);
-    g.strokeStyle = 'rgba(110,90,40,.22)'; g.lineWidth = 1.2;
-    if (hz) for (let yy = Y + 5; yy < Y + Hd - 4; yy += 5) { g.beginPath(); g.moveTo(X + 2, yy); g.lineTo(X + Wd - 2, yy); g.stroke(); }
-    else for (let xx = X + 5; xx < X + Wd - 4; xx += 5) { g.beginPath(); g.moveTo(xx, Y + 2); g.lineTo(xx, Y + Hd - 2); g.stroke(); }
-    g.fillStyle = '#272a3f'; const b = 16;
-    if (hz) { g.fillRect(X, Y, Wd, b); g.fillRect(X, Y + Hd - b, Wd, b); } else { g.fillRect(X, Y, b, Hd); g.fillRect(X + Wd - b, Y, b, Hd); }
-    g.fillStyle = 'rgba(210,190,140,.18)'; for (let q = 0; q < (hz ? Wd : Hd); q += 14) { if (hz) { g.fillRect(X + q, Y + 6, 6, 3); g.fillRect(X + q, Y + Hd - 9, 6, 3); } else { g.fillRect(X + 6, Y + q, 3, 6); g.fillRect(X + Wd - 9, Y + q, 3, 6); } }
-  });
-  speckle(g, w, h, 20000, '80,60,20', 0.12);
-});
-TEX.shoji = ctex(512, 512, (g, w, h) => {
-  paperBase(g, w, h, '#fbf6e8', '#f1e7cc');
-  g.fillStyle = '#8a5a33'; for (let x = 0; x <= w; x += 128) g.fillRect(x - 5, 0, 10, h); for (let y = 0; y <= h; y += 96) g.fillRect(0, y - 4, w, 8);
-}, { repeat: [3, 3] });
-TEX.ranma = ctex(1024, 128, (g, w, h) => {
-  g.fillStyle = '#4a2a14'; g.fillRect(0, 0, w, h);
-  g.fillStyle = '#e8d7ad';
-  for (let x = 0; x < w; x += 64) { g.beginPath(); g.ellipse(x + 32, h * 0.55, 22, 28, 0, 0, Math.PI * 2); g.fill(); }
-  g.fillStyle = '#4a2a14'; for (let x = 0; x < w; x += 64) { g.beginPath(); g.ellipse(x + 32, h * 0.55, 10, 30, 0, 0, Math.PI * 2); g.fill(); }
-}, { repeat: [3, 1] });
-TEX.blob = ctex(128, 128, (g, w) => { const gr = g.createRadialGradient(64, 64, 4, 64, 64, 62); gr.addColorStop(0, 'rgba(0,0,0,.55)'); gr.addColorStop(0.55, 'rgba(0,0,0,.22)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, w, w); });
-TEX.dot = ctex(64, 64, (g) => { const gr = g.createRadialGradient(32, 32, 0, 32, 32, 30); gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.4, 'rgba(255,245,220,.45)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64); });
-TEX.shaft = ctex(64, 256, (g, w, h) => { const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, 'rgba(255,240,205,.9)'); gr.addColorStop(0.6, 'rgba(255,236,200,.35)'); gr.addColorStop(1, 'rgba(255,236,200,0)'); g.fillStyle = gr; g.fillRect(0, 0, w, h); });
-
-// handwriting-like strokes (deliberately unreadable)
-function scribbleColumns(g, x0, y0, x1, y1, colW, cell, ink = 'rgba(30,24,30,.78)') {
-  g.strokeStyle = ink; g.lineCap = 'round';
-  for (let cx = x1 - colW / 2; cx > x0; cx -= colW) {
-    let y = y0 + rand() * cell; const end = y1 - rand() * cell * 3;
-    while (y < end) {
-      const n = 2 + Math.floor(rand() * 4);
-      for (let k = 0; k < n; k++) {
-        g.lineWidth = 1 + rand() * 2.2; g.beginPath();
-        const ax = cx + (rand() - 0.5) * cell * 0.7, ay = y + rand() * cell * 0.8;
-        g.moveTo(ax, ay); g.quadraticCurveTo(ax + (rand() - 0.5) * cell * 0.6, ay + (rand() - 0.5) * cell * 0.6, ax + (rand() - 0.5) * cell * 0.8, ay + (rand() - 0.3) * cell * 0.7); g.stroke();
-      }
-      y += cell * (0.9 + rand() * 0.3);
-    }
-  }
-}
-function textLines(g, x, y, w, h, gap, col = 'rgba(40,34,40,.55)', lw = 3) {
-  g.fillStyle = col;
-  for (let yy = y; yy < y + h; yy += gap) { let xx = x; while (xx < x + w - 8) { const L = 8 + rand() * 40; g.fillRect(xx, yy, Math.min(L, x + w - xx), lw); xx += L + 4 + rand() * 6; } }
-}
-function seigaiha(g, x, y, w, h, r, c1, c2) {
-  g.save(); g.beginPath(); g.rect(x, y, w, h); g.clip();
-  for (let row = 0, yy = y + h + r; yy > y - r; row++, yy -= r / 2) {
-    for (let xx = x - r + (row % 2) * r; xx < x + w + r; xx += r * 2) {
-      for (let k = 4; k >= 1; k--) { g.beginPath(); g.arc(xx, yy, (r * k) / 4, Math.PI, 0); g.fillStyle = k % 2 ? c1 : c2; g.fill(); }
-    }
-  }
-  g.restore();
-}
-const images = {};
-function loadImg(src) { return new Promise((res) => { const im = new Image(); im.onload = () => { images[src] = im; res(im); }; im.onerror = () => res(null); im.src = src; }); }
-function cover(g, im, x, y, w, h, fx = 0.5, fy = 0.5) {
-  if (!im) return; const s = Math.max(w / im.width, h / im.height), sw = w / s, sh = h / s;
-  g.drawImage(im, (im.width - sw) * fx, (im.height - sh) * fy, sw, sh, x, y, w, h);
-}
-
-TEX.pageL = ctex(512, 680, (g, w, h) => {
-  paperBase(g, w, h);
-  g.strokeStyle = 'rgba(200,57,43,.28)'; g.lineWidth = 1.4; for (let x = 40; x < w - 20; x += 44) { g.beginPath(); g.moveTo(x, 30); g.lineTo(x, h - 30); g.stroke(); }
-  scribbleColumns(g, 50, 46, w - 30, h - 60, 44, 34);
-  g.fillStyle = 'rgba(200,57,43,.85)'; g.fillRect(56, h - 104, 46, 46); g.strokeStyle = 'rgba(255,240,220,.85)'; g.lineWidth = 3; g.strokeRect(64, h - 96, 30, 30); g.beginPath(); g.moveTo(79, h - 96); g.lineTo(79, h - 66); g.stroke();
-  const gr = g.createLinearGradient(w - 50, 0, w, 0); gr.addColorStop(0, 'rgba(110,70,30,0)'); gr.addColorStop(1, 'rgba(110,70,30,.22)'); g.fillStyle = gr; g.fillRect(w - 50, 0, 50, h);
-});
-TEX.pageR = ctex(512, 680, (g, w, h) => {
-  paperBase(g, w, h);
-  const gr = g.createLinearGradient(0, 0, 50, 0); gr.addColorStop(0, 'rgba(110,70,30,.22)'); gr.addColorStop(1, 'rgba(110,70,30,0)'); g.fillStyle = gr; g.fillRect(0, 0, 50, h);
-  g.strokeStyle = 'rgba(29,26,31,.85)'; g.lineWidth = 3; g.lineJoin = 'round'; g.lineCap = 'round';
-  const L = (pts) => { g.beginPath(); pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.stroke(); };
-  L([[70, 300], [130, 280], [256, 200], [382, 280], [442, 300]]); L([[96, 296], [86, 278]]); L([[416, 296], [426, 278]]);
-  L([[120, 300], [392, 300], [392, 330], [120, 330], [120, 300]]);
-  [150, 210, 300, 362].forEach((x) => L([[x, 330], [x, 520]]));
-  L([[110, 520], [402, 520], [402, 546], [110, 546], [110, 520]]); L([[230, 430], [282, 430], [282, 520], [230, 520], [230, 430]]);
-  L([[256, 200], [256, 160]]); L([[226, 168], [286, 168]]);
-  g.lineWidth = 1.6; L([[170, 262], [256, 214], [342, 262]]);
-  g.setLineDash([10, 9]); g.strokeStyle = 'rgba(47,95,147,.8)'; g.lineWidth = 2; L([[60, 600], [452, 600]]); L([[60, 628], [330, 628]]); g.setLineDash([]);
-  g.fillStyle = 'rgba(200,57,43,.9)'; g.beginPath(); g.arc(256, 456, 7, 0, Math.PI * 2); g.fill();
-  scribbleColumns(g, 300, 560, 470, 670, 30, 22, 'rgba(30,24,30,.5)');
-});
-TEX.cover = ctex(256, 256, (g, w, h) => { g.fillStyle = '#233a64'; g.fillRect(0, 0, w, h); seigaiha(g, 0, 0, w, h, 26, '#233a64', '#2f5287'); speckle(g, w, h, 900, '0,0,0', 0.2); });
-TEX.map = ctex(1024, 600, (g, w, h) => {
-  g.fillStyle = '#1f3a63'; g.fillRect(0, 0, w, h); seigaiha(g, 0, 0, w, h, 34, '#1f3a63', '#e9dcc0');
-  g.fillStyle = '#f1e4c4'; g.fillRect(34, 30, w - 68, h - 60);
-  g.fillStyle = '#1d1a1f'; g.fillRect(42, 38, w - 84, h - 76);
-  g.fillStyle = '#efe4c8'; g.fillRect(46, 42, w - 92, h - 84);
-});
-TEX.news = [0, 1, 2].map((k) => ctex(k ? 512 : 640, k ? 480 : 820, (g, w, h) => {
-  paperBase(g, w, h, k === 2 ? '#f1d9c6' : '#efe3c4', k === 2 ? '#e4c8b0' : '#e2d2ab');
-  g.fillStyle = '#1d1a1f'; g.fillRect(22, 20, w - 44, k ? 30 : 46);
-  g.fillStyle = 'rgba(239,227,196,.9)'; for (let x = 36; x < w - 60; x += 46 + rand() * 30) g.fillRect(x, 32, 22 + rand() * 18, k ? 8 : 16);
-  if (k === 2) { g.fillStyle = '#c8392b'; g.fillRect(w - 120, 20, 98, k ? 30 : 46); }
-  g.fillStyle = '#1d1a1f'; const hx = w - 86; for (let y = 80; y < h * (k ? 0.75 : 0.62); y += 64 + rand() * 18) g.fillRect(hx, y, 52, 50);
-  textLines(g, 26, 82, w - 140, k ? h - 110 : h * 0.38, 12);
-  if (!k) textLines(g, 26, h * 0.82, w - 52, h * 0.15, 12);
-}));
-TEX.cv = ctex(720, 512, (g, w, h) => {
-  paperBase(g, w, h, '#fbf6e8', '#f1e7d0');
-  g.strokeStyle = 'rgba(58,51,54,.75)'; g.lineWidth = 2.4; g.strokeRect(30, 30, w - 60, h - 60);
-  g.lineWidth = 1.4; for (let y = 96; y < h - 40; y += 42) { g.beginPath(); g.moveTo(30, y); g.lineTo(w - 30, y); g.stroke(); }
-  g.beginPath(); g.moveTo(170, 96); g.lineTo(170, h - 30); g.stroke(); g.beginPath(); g.moveTo(w - 190, 30); g.lineTo(w - 190, 96); g.stroke();
-  g.strokeStyle = 'rgba(58,51,54,.6)'; g.lineWidth = 2; g.beginPath(); g.moveTo(50, 74); g.lineTo(190, 74); g.stroke();
-  textLines(g, 186, 110, w - 240, h - 160, 42, 'rgba(40,34,40,.42)', 4);
-  g.strokeStyle = 'rgba(200,57,43,.85)'; g.lineWidth = 5; g.beginPath(); g.arc(w - 112, 63, 22, 0, Math.PI * 2); g.stroke(); g.beginPath(); g.moveTo(w - 124, 63); g.lineTo(w - 100, 63); g.moveTo(w - 112, 51); g.lineTo(w - 112, 75); g.stroke();
-});
-TEX.envelope = ctex(720, 450, (g, w, h) => {
-  paperBase(g, w, h, '#f6ecd3', '#e7d4ad');
-  g.strokeStyle = 'rgba(120,90,60,.45)'; g.lineWidth = 2; g.beginPath(); g.moveTo(0, 0); g.lineTo(w / 2, h * 0.58); g.lineTo(w, 0); g.stroke();
-  g.fillStyle = 'rgba(80,60,40,.06)'; g.beginPath(); g.moveTo(0, 0); g.lineTo(w / 2, h * 0.58); g.lineTo(w, 0); g.fill();
-  textLines(g, w - 230, h - 92, 190, 40, 16, 'rgba(60,50,60,.4)', 3);
-});
-TEX.form = ctex(256, 64, (g, w, h) => { g.fillStyle = '#c8392b'; g.fillRect(0, 0, w, h); speckle(g, w, h, 400, '255,220,200', 0.3); g.fillStyle = 'rgba(255,230,210,.35)'; for (let x = 8; x < w; x += 18) g.fillRect(x, 6, 2, h - 12); });
-TEX.book = [['#233a64', '#2f5287'], ['#a83a2a', '#c4513d'], ['#55663a', '#6e8048']].map(([a, b]) => ctex(512, 360, (g, w, h) => {
-  g.fillStyle = a; g.fillRect(0, 0, w, h); for (let i = 0; i < 2200; i++) { g.fillStyle = `rgba(${rand() > 0.5 ? '255,255,255' : '0,0,0'},${(rand() * 0.06).toFixed(3)})`; g.fillRect(rand() * w, rand() * h, 2, 2); }
-  g.strokeStyle = b; g.lineWidth = 3; g.strokeRect(14, 14, w - 28, h - 28);
-  g.fillStyle = '#f6efdc'; g.fillRect(56, 34, 70, h - 68); g.strokeStyle = 'rgba(29,26,31,.35)'; g.lineWidth = 1.5; g.strokeRect(56, 34, 70, h - 68);
-  g.fillStyle = '#efe6cf'; for (let y = 40; y < h; y += (h - 80) / 4) g.fillRect(w - 26, y, 8, 8);
-}));
-TEX.fan = ctex(512, 512, (g, w, h) => {
-  g.fillStyle = '#1f3a63'; g.fillRect(0, 0, w, h);
-  seigaiha(g, 0, 0, w, h, 30, '#1f3a63', '#e9e1cc');
-  g.fillStyle = '#c8392b'; g.beginPath(); g.arc(w * 0.62, h * 0.32, 52, 0, Math.PI * 2); g.fill();
-  g.strokeStyle = 'rgba(90,50,20,.55)'; g.lineWidth = 3; for (let a = -1.6; a <= 1.6; a += 0.2) { g.beginPath(); g.moveTo(w / 2, h); g.lineTo(w / 2 + Math.sin(a) * w, h - Math.cos(a) * w); g.stroke(); }
-});
-TEX.lantern = ctex(256, 512, (g, w, h) => {
-  const gr = g.createRadialGradient(w / 2, h / 2, 10, w / 2, h / 2, h * 0.6); gr.addColorStop(0, '#fff9e8'); gr.addColorStop(1, '#efe0bd'); g.fillStyle = gr; g.fillRect(0, 0, w, h);
-  speckle(g, w, h, 1500, '150,110,60', 0.12);
-  g.fillStyle = '#5c3216'; g.fillRect(w / 2 - 4, 0, 8, h); g.fillRect(0, h / 3 - 4, w, 8); g.fillRect(0, (2 * h) / 3 - 4, w, 8);
-});
-TEX.lanternGlow = ctex(256, 512, (g, w, h) => { g.fillStyle = '#000'; g.fillRect(0, 0, w, h); const gr = g.createRadialGradient(w / 2, h / 2, 10, w / 2, h / 2, h * 0.55); gr.addColorStop(0, '#fff2c8'); gr.addColorStop(1, '#ffb455'); g.fillStyle = gr; g.fillRect(6, 6, w - 12, h - 12); g.fillStyle = '#000'; g.fillRect(w / 2 - 4, 0, 8, h); g.fillRect(0, h / 3 - 4, w, 8); g.fillRect(0, (2 * h) / 3 - 4, w, 8); });
-TEX.scroll = ctex(300, 820, (g, w, h) => {
-  g.fillStyle = '#7d8a49'; g.fillRect(0, 0, w, h);
-  for (let i = 0; i < 1800; i++) { g.fillStyle = `rgba(${rand() > 0.5 ? '230,220,160' : '40,50,20'},${(rand() * 0.09).toFixed(3)})`; g.fillRect(rand() * w, rand() * h, 3, 1); }
-  g.fillStyle = '#c6b27c'; g.fillRect(18, 120, w - 36, h - 240);
-  g.fillStyle = '#d9b44a'; g.fillRect(0, 112, w, 4); g.fillRect(0, h - 116, w, 4);
-  g.save(); g.translate(34, 136); paperBase(g, w - 68, h - 272, '#f7efda', '#ecdfbf'); g.restore();
-  // ensō — a single brush circle, not a word
-  const cx = w / 2, cy = 360, R = 82, a0 = -1.9, a1 = a0 + Math.PI * 1.86;
-  for (let k = 0; k < 220; k++) {
-    const t = k / 219, a = a0 + (a1 - a0) * t, wdt = 4 + 15 * Math.sin(Math.PI * Math.min(1, t * 1.15)) * (1 - t * 0.35);
-    const r = R + Math.sin(t * 9) * 2.5;
-    g.fillStyle = `rgba(22,18,22,${(0.08 + 0.06 * (1 - t)).toFixed(3)})`;
-    for (let q = 0; q < 3; q++) { g.beginPath(); g.ellipse(cx + Math.cos(a) * r + (rand() - 0.5) * 2, cy + Math.sin(a) * r + (rand() - 0.5) * 2, wdt * (0.6 + rand() * 0.5), wdt * 0.42, a + Math.PI / 2, 0, Math.PI * 2); g.fill(); }
-  }
-  for (let k = 0; k < 40; k++) { const t = 0.86 + rand() * 0.14, a = a0 + (a1 - a0) * t; g.fillStyle = 'rgba(22,18,22,.25)'; g.fillRect(cx + Math.cos(a) * (R + (rand() - 0.5) * 18), cy + Math.sin(a) * (R + (rand() - 0.5) * 18), 2, 2); }
-  g.fillStyle = 'rgba(200,57,43,.9)'; g.fillRect(cx + 46, 560, 24, 24); g.fillStyle = 'rgba(255,235,220,.5)'; g.fillRect(cx + 51, 565, 14, 2); g.fillRect(cx + 51, 571, 14, 2); g.fillRect(cx + 51, 577, 9, 2);
-});
-TEX.ink = ctex(512, 640, (g, w, h) => {
-  g.fillStyle = '#17131a'; g.fillRect(0, 0, w, h);
-  g.strokeStyle = '#a3291f'; g.lineWidth = 16; g.strokeRect(22, 22, w - 44, h - 44);
-  g.strokeStyle = 'rgba(255,255,255,.06)'; g.lineWidth = 2; g.strokeRect(40, 40, w - 80, h - 80);
-});
-TEX.stone = ctex(256, 384, (g, w, h) => {
-  g.fillStyle = '#3e3a3b'; g.fillRect(0, 0, w, h); speckle(g, w, h, 6000, '200,200,200', 0.08);
-  const gr = g.createRadialGradient(w / 2, h * 0.24, 5, w / 2, h * 0.24, w * 0.4); gr.addColorStop(0, '#050406'); gr.addColorStop(0.8, '#0c0a0e'); gr.addColorStop(1, 'rgba(12,10,14,0)'); g.fillStyle = gr; g.beginPath(); g.ellipse(w / 2, h * 0.24, w * 0.36, h * 0.15, 0, 0, Math.PI * 2); g.fill();
-});
-// images that arrive later
-TEX.wave = ctex(1024, 700, (g, w, h) => { g.fillStyle = '#e7dbc0'; g.fillRect(0, 0, w, h); });
-TEX.fuji = ctex(512, 512, (g, w, h) => { g.fillStyle = '#9fc4dc'; g.fillRect(0, 0, w, h); });
-TEX.prints = [0, 1, 2].map(() => ctex(512, 360, (g, w, h) => { g.fillStyle = '#fbf6e8'; g.fillRect(0, 0, w, h); }));
-
-/* YW/OS screen library — dense telemetry, scanline grids and vector radar */
-function screenBase(g,w,h,accent='#e9a33c',title='YW/OS 98 // TELEMETRY'){
-  g.fillStyle='#070d0c';g.fillRect(0,0,w,h);g.strokeStyle=accent;g.globalAlpha=.18;g.lineWidth=1;
-  for(let x=0;x<w;x+=32){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}for(let y=0;y<h;y+=32){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();}
-  g.globalAlpha=1;g.strokeStyle=accent;g.lineWidth=2;g.strokeRect(10,10,w-20,h-20);g.fillStyle=accent;g.fillRect(10,10,w-20,38);
-  g.fillStyle='#07100d';g.font='bold 19px monospace';g.fillText(title,24,36);g.fillStyle=accent;g.font='13px monospace';
-  g.fillText('NODE 01  CH 88.4  SYNC 99.8%',24,h-22);g.fillText('REC ●',w-92,h-22);
-  g.globalAlpha=.1;for(let y=50;y<h-40;y+=4)g.fillRect(12,y,w-24,1);g.globalAlpha=1;
-}
-function microLabel(g,text,x,y,color='#e9a33c',size=13){g.fillStyle=color;g.font=`${size}px monospace`;g.fillText(text,x,y);}
-function crosshair(g,x,y,r,color='#e9a33c'){g.strokeStyle=color;g.lineWidth=1.5;g.beginPath();g.moveTo(x-r,y);g.lineTo(x+r,y);g.moveTo(x,y-r);g.lineTo(x,y+r);g.stroke();g.strokeRect(x-r*.45,y-r*.45,r*.9,r*.9);}
-TEX.wood.userData.redraw((g,w,h)=>{g.fillStyle='#272c28';g.fillRect(0,0,w,h);g.fillStyle='#141916';for(let y=22;y<h;y+=28)for(let x=20;x<w;x+=96)g.fillRect(x,y,62,5);g.fillStyle='#d69235';g.fillRect(0,h-18,w,5);speckle(g,w,h,3200,'190,180,145',.05);});
-TEX.woodDark.userData.redraw((g,w,h)=>{g.fillStyle='#0d1210';g.fillRect(0,0,w,h);g.strokeStyle='#39433a';for(let x=0;x<w;x+=48){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}for(let y=12;y<h;y+=18){g.fillStyle='#050806';g.fillRect(8,y,w-16,5);}});
-TEX.woodPale.userData.redraw((g,w,h)=>{g.fillStyle='#aaa793';g.fillRect(0,0,w,h);g.fillStyle='rgba(20,25,21,.2)';for(let y=0;y<h;y+=18)g.fillRect(0,y,w,1);speckle(g,w,h,1800,'30,35,28',.08);});
-TEX.plaster.userData.redraw((g,w,h)=>{g.fillStyle='#202824';g.fillRect(0,0,w,h);g.strokeStyle='#3d4a42';g.lineWidth=3;for(let x=0;x<=w;x+=256){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}for(let y=0;y<=h;y+=256){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();}g.fillStyle='#0a0f0c';for(let x=18;x<w;x+=256)for(let y=18;y<h;y+=256){g.beginPath();g.arc(x,y,4,0,Math.PI*2);g.fill();}for(let y=70;y<h;y+=256)for(let x=70;x<w;x+=256){g.fillStyle='#111814';g.fillRect(x,y,110,38);g.fillStyle='#3d4a42';for(let k=0;k<6;k++)g.fillRect(x+8,y+6+k*5,94,2);}speckle(g,w,h,4500,'150,160,135',.04);});
-TEX.tatami.userData.redraw((g,w,h)=>{g.fillStyle='#101714';g.fillRect(0,0,w,h);g.strokeStyle='#2f3d34';g.lineWidth=2;const u=80;for(let x=0;x<w;x+=u){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}for(let y=0;y<h;y+=u){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();}g.fillStyle='#755527';for(let x=0;x<w;x+=u*4)for(let y=0;y<h;y+=u*4){g.fillRect(x+8,y+8,24,4);g.fillRect(x+8,y+16,8,4);}});
-TEX.shoji.userData.redraw((g,w,h)=>{g.fillStyle='#111a17';g.fillRect(0,0,w,h);g.strokeStyle='#33483e';g.lineWidth=3;for(let x=0;x<w;x+=128){g.beginPath();g.moveTo(x,0);g.lineTo(x,h);g.stroke();}for(let y=0;y<h;y+=96){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke();}for(let y=16;y<h;y+=96){g.fillStyle='#b3782d';g.fillRect(12,y,24,3);}});
-TEX.ranma.userData.redraw((g,w,h)=>{g.fillStyle='#0a100e';g.fillRect(0,0,w,h);g.fillStyle='#d89335';for(let x=0;x<w;x+=64)g.fillRect(x,20,36,8);microLabel(g,'YW/OS 98   //   RESEARCH TERMINAL   //   BUS ACTIVE   //   23.2N 108.3E',28,72,'#e9a33c',24);});
-TEX.map.userData.redraw((g,w,h)=>{screenBase(g,w,h,'#e9a33c','HERITAGE GIS // VECTOR RADAR');const cx=w*.47,cy=h*.54;g.strokeStyle='#e9a33c';g.lineWidth=2;for(let r=40;r<250;r+=42){g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.stroke();}for(let a=0;a<Math.PI*2;a+=Math.PI/6){g.beginPath();g.moveTo(cx,cy);g.lineTo(cx+Math.cos(a)*280,cy+Math.sin(a)*280);g.stroke();}g.strokeStyle='#72c6b7';for(let k=0;k<9;k++){g.beginPath();for(let i=0;i<=80;i++){const a=i/80*Math.PI*2,r=55+k*13+Math.sin(a*3+k)*14+Math.cos(a*5-k)*8,x=cx+Math.cos(a)*r*1.25,y=cy+Math.sin(a)*r*.72;i?g.lineTo(x,y):g.moveTo(x,y);}g.closePath();g.stroke();}for(let i=0;i<18;i++){const a=rand()*Math.PI*2,r=50+rand()*175,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r*.7;crosshair(g,x,y,7,i%4===0?'#f0b04c':'#72c6b7');}microLabel(g,'831 NODES',w-190,92);microLabel(g,'RAG 04',w-190,118,'#72c6b7');microLabel(g,'SCAN 023.8',w-190,144);});
-TEX.news.forEach((tex,k)=>tex.userData.redraw((g,w,h)=>{const ac=k===1?'#72c6b7':'#e9a33c';screenBase(g,w,h,ac,['RESEARCH LOG // PAPERS','MULTIMODEL // SIGNAL','SYSTEM // DEPLOY'][k]);if(k===0){for(let j=0;j<4;j++){microLabel(g,['VINCI 2025  /  01','CHI 2025    /  02','PATENTS     /  04','SOFTWARE    /  01'][j],32,92+j*48,ac,18);textLines(g,34,108+j*48,w-68,24,10,'rgba(233,163,60,.5)',2);}}else if(k===1){g.strokeStyle=ac;g.lineWidth=3;g.beginPath();for(let x=26;x<w-26;x+=3){const y=h*.48+Math.sin(x*.07)*42+Math.sin(x*.21)*16;x===26?g.moveTo(x,y):g.lineTo(x,y);}g.stroke();for(let i=0;i<24;i++)g.fillRect(30+i*(w-60)/24,h-100-rand()*90,5,20+rand()*80);}else{for(let i=0;i<15;i++){g.fillStyle=ac;g.fillRect(32,86+i*20,16,7);g.globalAlpha=.25;g.fillRect(60,86+i*20,w-100,7);g.globalAlpha=1;g.fillRect(60,86+i*20,(w-100)*(.3+rand()*.7),7);}}}));
-TEX.cv.userData.redraw((g,w,h)=>{g.fillStyle='#dedbcf';g.fillRect(0,0,w,h);g.strokeStyle='#111';g.lineWidth=3;g.strokeRect(12,12,w-24,h-24);g.fillStyle='#111';g.fillRect(12,12,w-24,62);microLabel(g,'YW/OS // PERSONAL DATA RECORD',32,52,'#e9a33c',25);microLabel(g,'ID: YW-0104  /  ACTIVE',38,118,'#111',20);textLines(g,38,150,w-250,h-230,34,'rgba(20,25,20,.5)',5);for(let x=w-190;x<w-50;x+=6){g.fillStyle=x%12?'#111':'#dedbcf';g.fillRect(x,130,3,210);}microLabel(g,'PDF / DOCX / 2026.10',38,h-48,'#111',18);});
-TEX.book.forEach((tex,i)=>tex.userData.redraw((g,w,h)=>{g.fillStyle=['#152d2c','#3a2b16','#252a25'][i];g.fillRect(0,0,w,h);g.fillStyle=i===1?'#e9a33c':'#72c6b7';g.fillRect(24,24,8,h-48);microLabel(g,['DIR 01','DIR 02','SYS 98'][i],54,62,g.fillStyle,26);for(let y=94;y<h-30;y+=34)g.fillRect(54,y,w-88,4);}));
-TEX.lantern.userData.redraw((g,w,h)=>{const gr=g.createLinearGradient(0,0,w,0);gr.addColorStop(0,'#3d2b12');gr.addColorStop(.5,'#e9a33c');gr.addColorStop(1,'#3d2b12');g.fillStyle=gr;g.fillRect(0,0,w,h);g.fillStyle='rgba(10,15,12,.35)';for(let y=0;y<h;y+=32)g.fillRect(0,y,w,3);});
-TEX.lanternGlow.userData.redraw((g,w,h)=>{g.fillStyle='#080b09';g.fillRect(0,0,w,h);const gr=g.createRadialGradient(w/2,h/2,4,w/2,h/2,h*.55);gr.addColorStop(0,'#ffe2a0');gr.addColorStop(1,'#d57c20');g.fillStyle=gr;g.fillRect(5,5,w-10,h-10);});
-TEX.scroll.userData.redraw((g,w,h)=>{screenBase(g,w,h,'#e9a33c','NAV // FLIGHT PATH');g.strokeStyle='#e9a33c';g.lineWidth=2;g.setLineDash([8,7]);g.beginPath();g.moveTo(w*.18,h*.82);g.bezierCurveTo(w*.85,h*.7,w*.05,h*.35,w*.72,h*.18);g.stroke();g.setLineDash([]);[[.18,.82,'2016'],[.58,.61,'2020'],[.3,.4,'2024'],[.72,.18,'2026']].forEach(([x,y,t])=>{crosshair(g,w*x,h*y,13);microLabel(g,t,w*x+18,h*y+4,'#e9a33c',15);});for(let y=110;y<h-70;y+=72)microLabel(g,`ALT ${Math.round(9000-y*7)}  //  ${y}`,30,y,'#72c6b7',12);});
-TEX.wave.userData.redraw((g,w,h)=>{screenBase(g,w,h,'#e9a33c','YW/OS // ORBITAL NAVIGATION');for(let i=0;i<220;i++){g.fillStyle=`rgba(233,163,60,${.2+rand()*.7})`;g.fillRect(24+rand()*(w-48),58+rand()*(h-120),rand()>.9?3:1,rand()>.9?3:1);}const cx=w*.52,cy=h*.72;g.strokeStyle='#e9a33c';g.lineWidth=3;for(let r=120;r<330;r+=52){g.beginPath();g.arc(cx,cy,r,Math.PI,Math.PI*2);g.stroke();}g.fillStyle='#6c4a20';g.beginPath();g.arc(cx,cy,150,Math.PI,Math.PI*2);g.fill();g.strokeStyle='#72c6b7';g.lineWidth=2;for(let i=0;i<4;i++){g.beginPath();g.ellipse(cx,cy,260+i*34,65+i*12,-.18,0,Math.PI*2);g.stroke();}crosshair(g,cx+120,cy-160,18);microLabel(g,'TARGET / HKUST-GZ',54,96);microLabel(g,'AZ 108.32  EL 23.08',54,122,'#72c6b7');});
-TEX.fuji.userData.redraw((g,w,h)=>{screenBase(g,w,h,'#72c6b7','DEEP SPACE // TELEMETRY');const cx=w/2,cy=h*.52,r=w*.3;g.strokeStyle='#72c6b7';g.lineWidth=2;g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.stroke();for(let i=-3;i<=3;i++){g.beginPath();g.ellipse(cx,cy,r*Math.cos(i*.22),r,0,0,Math.PI*2);g.stroke();g.beginPath();g.ellipse(cx,cy,r,r*Math.cos(i*.22),0,0,Math.PI*2);g.stroke();}crosshair(g,cx,cy,r+28,'#e9a33c');microLabel(g,'SIGNAL  98.72%',32,92,'#e9a33c',16);microLabel(g,'UPLINK  STABLE',32,h-58,'#72c6b7',16);});
-TEX.terminal=ctex(768,480,(g,w,h)=>{screenBase(g,w,h,'#e9a33c','YW/OS 98 // IDENTITY');microLabel(g,'> BOOT YUSONG_WANG',36,98,'#e9a33c',24);microLabel(g,'> ROLE: RESEARCH / ENGINEERING',36,136,'#e9a33c',18);microLabel(g,'> GIS + MULTIMODAL AI',36,168,'#72c6b7',18);for(let i=0;i<8;i++){microLabel(g,`${String(i+1).padStart(2,'0')}  ${['MPhil CMA','VINCI 2025','CHI 2025','PATENT 04','SYSTEM 15','LLM GATEWAY','RAG ONLINE','NODE ACTIVE'][i]}`,42,218+i*27,'#e9a33c',16);}crosshair(g,w-120,h*.55,58);});
-TEX.sweep=ctex(256,256,(g,w,h)=>{const gr=g.createRadialGradient(w/2,h/2,0,w/2,h/2,w/2);gr.addColorStop(0,'rgba(240,177,70,.7)');gr.addColorStop(1,'rgba(240,177,70,0)');g.fillStyle=gr;g.beginPath();g.moveTo(w/2,h/2);g.arc(w/2,h/2,w/2,-.32,.08);g.closePath();g.fill();});
-
-/* =====================================================================
-   MATERIALS + helpers
-   ===================================================================== */
-const INK = 0x050807, GOLD = 0xe9a33c;
-let lanternPaper = null, lanternLight = null;
-const inkMat = new THREE.MeshBasicMaterial({ color: INK, side: THREE.BackSide });
-const goldMat = new THREE.MeshBasicMaterial({ color: GOLD, side: THREE.BackSide });
-const std = (o) => new THREE.MeshStandardMaterial({ roughness: 0.88, metalness: 0, ...o });
-const M = {
-  wood: std({ map: TEX.wood, roughness: 0.62 }),
-  woodDark: std({ map: TEX.woodDark, roughness: 0.7 }),
-  woodPale: std({ map: TEX.woodPale }),
-  plaster: std({ map: TEX.plaster, roughness: 0.97 }),
-  tatami: std({ map: TEX.tatami, roughness: 0.95 }),
-  shoji: std({ map: TEX.shoji, roughness: 0.98, emissive: 0x000000, emissiveIntensity: 0 }),
-  ranma: std({ map: TEX.ranma }),
-  paperSide: std({ color: 0xaaa793 }),
-  lacquer: std({ color: 0x111815, roughness: 0.38, metalness: 0.52 }),
-  lacquerRed: std({ color: 0xd88b2e, roughness: 0.38, metalness: 0.32 }),
-  gold: std({ color: 0xe9a33c, roughness: 0.3, metalness: 0.48 })
-};
-function hull(mesh, t = 0.006) {
-  const g = mesh.geometry; g.computeBoundingBox(); const s = new THREE.Vector3(); g.boundingBox.getSize(s);
-  const c = new THREE.Vector3(); g.boundingBox.getCenter(c);
-  const h = new THREE.Mesh(g, inkMat);
-  h.scale.set(1 + (2 * t) / Math.max(s.x, 0.002), 1 + (2 * t) / Math.max(s.y, 0.002), 1 + (2 * t) / Math.max(s.z, 0.002));
-  h.position.copy(c).multiply(new THREE.Vector3(1 - h.scale.x, 1 - h.scale.y, 1 - h.scale.z));
-  h.userData.hull = true; h.raycast = () => {};
-  mesh.add(h); return mesh;
-}
-function boxMesh(w, hgt, d, mats, { outline = 0.006, cast = true, recv = true } = {}) {
-  const m = new THREE.Mesh(new THREE.BoxGeometry(w, hgt, d), mats); m.castShadow = cast; m.receiveShadow = recv;
-  if (outline) hull(m, outline); return m;
-}
-// top-textured slab: [+x, -x, +y, -y, +z, -z]
-const slabMats = (topMat, side = M.paperSide) => [side, side, topMat, side, side, side];
-function blob(w, d, op = 0.9) {
-  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), new THREE.MeshBasicMaterial({ map: TEX.blob, transparent: true, opacity: op, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }));
-  m.rotation.x = -Math.PI / 2; m.renderOrder = 1; m.raycast = () => {}; return m;
-}
-
-/* =====================================================================
-   ROOM
-   ===================================================================== */
-const WALL_Z = -1.1, DESK_Y = 0.34;
-const room = new THREE.Group(); scene.add(room);
+function part(parent,w,h,d,mat,x=0,y=0,z=0,r=.018){const m=new THREE.Mesh(roundedGeometry(w,h,d,r),mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
+function surface(parent,w,h,map,x,y,z){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map,toneMapped:false}));m.position.set(x,y,z);parent.add(m);return m;}
+function label(text,w=512,h=64,color='#c2c6bd',bg='#202725'){return ctex(w,h,g=>{g.fillStyle=bg;g.fillRect(0,0,w,h);g.fillStyle=color;g.font=`500 ${Math.round(h*.42)}px monospace`;g.textBaseline='middle';g.fillText(text,h*.24,h/2);});}
+const room=new THREE.Group();scene.add(room);
+const OBJS={},proxies=[],blockers=[];
+function register(key,root,vis,size,offset,kind,focus){const proxy=new THREE.Mesh(new THREE.BoxGeometry(...size),new THREE.MeshBasicMaterial({visible:false}));proxy.position.set(...offset);proxy.userData.key=key;root.add(proxy);proxies.push(proxy);OBJS[key]={key,root,vis,proxy,kind,focus,hulls:[],mats:[],lift:0,liftT:0};}
+function assembly(x,y,z,angle=0){const root=new THREE.Group(),vis=new THREE.Group();root.position.set(x,y,z);root.rotation.y=angle;root.add(vis);scene.add(root);return[root,vis];}
+const DESK_Y=.12,WALL_Z=-1.2;
+// Seamless floor and a substantial, softly machined desktop.
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(200,200),new THREE.MeshBasicMaterial({color:0x151c1b,toneMapped:false}));floor.rotation.x=-Math.PI/2;floor.position.y=-.18;floor.receiveShadow=false;room.add(floor);
+const softFloor=new THREE.Mesh(new THREE.PlaneGeometry(12,12),new THREE.ShadowMaterial({opacity:.16}));softFloor.rotation.x=-Math.PI/2;softFloor.position.y=-.174;softFloor.receiveShadow=true;room.add(softFloor);
+part(room,3.25,.13,1.5,std({color:0x3b4642,roughness:.62,metalness:.27}),0,.04,0,.045);
+part(room,3.12,.02,1.38,M.black,0,-.035,0,.008);
+[-1.25,1.25].forEach(x=>part(room,.24,.13,1.1,M.dark,x,-.11,0,.03));
+const shadowTexture=ctex(256,256,(g,w,h)=>{const gr=g.createRadialGradient(w/2,h/2,0,w/2,h/2,w/2);gr.addColorStop(0,'rgba(0,0,0,.7)');gr.addColorStop(.45,'rgba(0,0,0,.35)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,w,h);});
+function contactShadow(x,y,z,w,d,opacity=.5){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshBasicMaterial({map:shadowTexture,transparent:true,opacity,depthWrite:false}));m.rotation.x=-Math.PI/2;m.position.set(x,y,z);m.raycast=()=>{};scene.add(m);}
+contactShadow(0,-.175,.05,4.5,2.6,.7);
+// Main exhibit: glass set into a stepped bezel, supported by a cast metal stand.
+let projectScreen;
 {
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 2.5), M.tatami);
-  floor.rotation.x = -Math.PI / 2; floor.position.set(0, 0, WALL_Z + 1.25); floor.receiveShadow = true; floor.userData.block = true; room.add(floor);
-  const wall = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 2.6), M.plaster);
-  wall.position.set(0, 1.3, WALL_Z); wall.receiveShadow = true; wall.userData.block = true; room.add(wall);
-  const ranma = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 0.26), M.ranma); ranma.position.set(0, 1.49, WALL_Z + 0.004); room.add(ranma);
-  const beam = boxMesh(3.2, 0.06, 0.06, M.wood, { outline: 0.004 }); beam.position.set(0, 1.33, WALL_Z + 0.03); room.add(beam);
-  const skirting = boxMesh(3.2, 0.05, 0.03, M.woodDark, { outline: 0.003 }); skirting.position.set(0, 0.025, WALL_Z + 0.015); room.add(skirting);
-  [-1.5, 1.5].forEach((x) => { const p = boxMesh(0.09, 2.6, 0.08, M.wood, { outline: 0.004 }); p.position.set(x, 1.3, WALL_Z + 0.04); room.add(p); });
-  const beam2 = boxMesh(3.2, 0.07, 0.07, M.woodDark, { outline: 0.004 }); beam2.position.set(0, 1.66, WALL_Z + 0.035); room.add(beam2);
-  [-1.6, 1.6].forEach((x) => {
-    const s = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.6), M.shoji); s.rotation.y = x < 0 ? Math.PI / 2 : -Math.PI / 2; s.position.set(x, 1.3, WALL_Z + 1.2); s.receiveShadow = true; s.userData.block = true; room.add(s);
-    const sill = boxMesh(0.06, 0.05, 2.4, M.woodDark, { outline: 0.003 }); sill.position.set(x, 0.025, WALL_Z + 1.2); room.add(sill);
-  });
-  const ceilingRail=boxMesh(2.7,.09,.18,M.lacquer,{outline:.004});ceilingRail.position.set(0,1.57,WALL_Z+.14);room.add(ceilingRail);
-  const ceilingGlow=boxMesh(2.1,.025,.1,new THREE.MeshBasicMaterial({color:0xd89536}),{outline:0,cast:false});ceilingGlow.position.set(0,1.51,WALL_Z+.14);room.add(ceilingGlow);
-  [-1.52,1.52].forEach(x=>{const rib=boxMesh(.12,2.6,.16,M.lacquer,{outline:.003});rib.position.set(x,1.3,WALL_Z+.08);room.add(rib);for(let y=.18;y<1.55;y+=.18){const bolt=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.012,10),M.gold);bolt.rotation.x=Math.PI/2;bolt.position.set(x,y,WALL_Z+.17);room.add(bolt);}});
-  /* auxiliary equipment racks, vents and status telemetry */
-  [-1,1].forEach(side=>{const rack=boxMesh(.3,.48,.12,M.woodDark,{outline:.004});rack.position.set(side*1.34,.34,WALL_Z+.12);room.add(rack);for(let i=0;i<5;i++){const unit=boxMesh(.24,.055,.018,M.lacquer,{outline:.002});unit.position.set(side*1.34,.17+i*.075,WALL_Z+.19);room.add(unit);const led=boxMesh(.025,.012,.008,i%2?M.gold:M.lacquerRed,{outline:0,cast:false});led.position.set(side*1.34-.08,.17+i*.075,WALL_Z+.204);room.add(led);}});
+ const[g,v]=assembly(.38,DESK_Y,-.23,-.035);
+ part(v,.63,.035,.42,M.aluminum,0,.02,.04,.013);
+ part(v,.15,.26,.13,M.aluminum,0,.155,-.08,.025);
+ part(v,1.94,1.21,.27,M.shell,0,.87,-.035,.055);
+ part(v,1.86,1.13,.06,M.dark,0,.885,.111,.022);
+ part(v,1.76,1.025,.03,M.black,0,.897,.15,.012);
+ projectScreen=surface(v,1.68,.93,null,0,.917,.168);
+ projectScreen.material.color.setHex(0x121919);
+ surface(v,.43,.035,label('YW / DISPLAY 01',512,48,'#4d554e','#bdb9aa'),-.55,.316,.112);
+ const led=new THREE.Mesh(new THREE.SphereGeometry(.009,16,12),new THREE.MeshBasicMaterial({color:0xa4d1b7}));led.position.set(.79,.322,.114);v.add(led);
+ for(let i=0;i<8;i++)part(v,.004,.20,.025,M.black,.972,.85,-.1+i*.022,.001);
+ [[-.84,.36],[.84,.36],[-.84,1.36],[.84,1.36]].forEach(([x,y])=>{const screw=new THREE.Mesh(new THREE.CylinderGeometry(.009,.009,.005,16),M.aluminum);screw.rotation.x=Math.PI/2;screw.position.set(x,y,.115);v.add(screw);});
+ register('portfolio',g,v,[1.98,1.24,.36],[0,.87,0],'wall',{r:.8});contactShadow(.38,.107,-.23,1.3,.8,.6);
 }
-
-/* =====================================================================
-   INTERACTIVE OBJECTS
-   ===================================================================== */
-const OBJS = {};            // key → { root, vis, proxy, hulls, mats, focus, kind }
-const proxies = [], blockers = [];
-function register(key, root, vis, proxySize, proxyOffset, kind, focus) {
-  const proxy = new THREE.Mesh(new THREE.BoxGeometry(...proxySize), new THREE.MeshBasicMaterial({ visible: false }));
-  proxy.position.set(...(proxyOffset || [0, proxySize[1] / 2, 0])); proxy.userData.key = key; root.add(proxy); proxies.push(proxy);
-  const hulls = [], mats = [];
-  // own copies of the materials, so a glint on one object never lights another
-  const own = new Map(), mine = (m) => { if (!m.isMeshStandardMaterial || m === lanternPaper) return m; if (!own.has(m)) { const c = m.clone(); own.set(m, c); mats.push(c); } return own.get(m); };
-  vis.traverse((o) => { if (o.userData.hull) hulls.push(o); else if (o.isMesh && o.material) o.material = Array.isArray(o.material) ? o.material.map(mine) : mine(o.material); });
-  OBJS[key] = { key, root, vis, proxy, hulls, mats, kind, focus, lift: 0, liftT: 0, glow: 0 };
-}
-function onDesk(x, z, rotDeg) { const g = new THREE.Group(); g.position.set(x, DESK_Y, z); g.rotation.y = -rotDeg * D2R; scene.add(g); const v = new THREE.Group(); g.add(v); return [g, v]; }
-
-/* desk */
+// The secondary CRT carries identity, not another competing dashboard.
 {
-  const top = boxMesh(2.24, 0.05, 1.26, [M.wood, M.wood, M.wood, M.woodDark, M.wood, M.wood], { outline: 0.006 });
-  top.position.set(0, DESK_Y - 0.025, -0.01); top.userData.block = true; scene.add(top); blockers.push(top);
-  const apron = boxMesh(2.0, 0.07, 0.05, M.woodDark, { outline: 0.004 }); apron.position.set(0, DESK_Y - 0.085, 0.58); scene.add(apron);
-  const apron2 = apron.clone(); apron2.position.z = -0.6; scene.add(apron2);
-  [-1.0, 1.0].forEach((x) => {
-    const leg = boxMesh(0.12, DESK_Y - 0.05, 1.12, M.woodDark, { outline: 0.004 }); leg.position.set(x, (DESK_Y - 0.05) / 2, -0.01); scene.add(leg);
-    const foot = boxMesh(0.16, 0.03, 1.2, M.wood, { outline: 0.003 }); foot.position.set(x, 0.015, -0.01); scene.add(foot);
-  });
-  const consolePanel=boxMesh(1.45,.14,.055,M.lacquer,{outline:.003});consolePanel.position.set(0,DESK_Y-.09,.615);scene.add(consolePanel);
-  const statusScreen=boxMesh(.3,.065,.008,new THREE.MeshBasicMaterial({color:0x5e431d}),{outline:.002});statusScreen.position.set(-.48,DESK_Y-.085,.648);scene.add(statusScreen);
-  for(let i=0;i<4;i++){const readout=boxMesh(.2-i*.025,.006,.004,new THREE.MeshBasicMaterial({color:0xf0ae45}),{outline:0,cast:false});readout.position.set(-.49,DESK_Y-.06-i*.015,.654);scene.add(readout);}
-  for(let i=0;i<10;i++){const key=boxMesh(.055,.035,.018,i%4===0?M.gold:M.woodPale,{outline:.002});key.position.set(-.18+i*.075,DESK_Y-.07,.65);scene.add(key);}
-  const inventoryTag=boxMesh(.24,.045,.008,M.gold,{outline:.002});inventoryTag.position.set(.72,DESK_Y-.115,.648);scene.add(inventoryTag);
-  const sh = blob(2.9, 1.8, 0.75); sh.position.set(0.05, 0.002, 0.0); scene.add(sh);
+ const[g,v]=assembly(-1.02,DESK_Y,-.12,.2);
+ part(v,.51,.04,.38,M.black,0,.025,0,.015);
+ part(v,.55,.43,.40,M.dark,0,.27,-.03,.05);
+ part(v,.47,.34,.025,M.black,0,.29,.18,.011);
+ const crt=ctex(640,420,(ctx,w,h)=>{ctx.fillStyle='#0e1916';ctx.fillRect(0,0,w,h);ctx.fillStyle='#dcad63';ctx.font='24px monospace';ctx.fillText('YW/OS 98',40,57);ctx.fillStyle='#eee6ce';ctx.font='44px monospace';ctx.fillText('YUSONG',40,137);ctx.fillText('WANG_',40,194);ctx.fillStyle='#9ba797';ctx.font='20px monospace';ctx.fillText('GIS / MULTIMODAL AI',40,260);ctx.fillText('RESEARCH + ENGINEERING',40,296);ctx.fillStyle='#c3904e';ctx.fillRect(40,342,40,5);ctx.fillStyle='#61756d';ctx.fillRect(94,342,440,1);});
+ surface(v,.41,.269,crt,0,.30,.196);
+ surface(v,.16,.028,label('IDENTITY',256,48,'#bbb9a7','#252b2a'),-.12,.091,.177);
+ register('about',g,v,[.57,.5,.46],[0,.25,0],'wall',{r:.38});contactShadow(-1.02,.108,-.12,.8,.7);
 }
-
-/* amber CRT identity terminal — about */
+// Tactile keyboard: repeated geometry, gently dished keys and one amber return.
 {
-  const [g, v] = onDesk(-0.666, -0.18, -6);
-  const shell = std({ color: 0x8f8e7e, roughness: .62, metalness: .16 });
-  const bodyMesh = boxMesh(.58,.38,.42,shell,{outline:.006}); bodyMesh.position.set(0,.23,0); v.add(bodyMesh);
-  const bezel = boxMesh(.49,.3,.025,M.lacquer,{outline:.004}); bezel.position.set(0,.245,.222); v.add(bezel);
-  const screenMat=std({map:TEX.terminal,emissive:0xe9a33c,emissiveMap:TEX.terminal,emissiveIntensity:.5,roughness:.32});
-  const screen = new THREE.Mesh(new THREE.PlaneGeometry(.42,.245),screenMat); screen.position.set(0,.245,.237); v.add(screen);
-  const keyboard = boxMesh(.52,.03,.21,shell,{outline:.004}); keyboard.position.set(0,.035,.34); keyboard.rotation.x=-.08; v.add(keyboard);
-  for(let r=0;r<4;r++)for(let c=0;c<9;c++){const key=boxMesh(.038,.009,.029,c===8?M.lacquerRed:M.lacquer,{outline:0});key.position.set(-.18+c*.045,.055,.275+r*.037);v.add(key);}
-  const space=boxMesh(.2,.009,.028,M.lacquer,{outline:0});space.position.set(0,.057,.41);v.add(space);
-  for(let i=0;i<6;i++){const vent=boxMesh(.006,.11,.008,M.lacquer,{outline:0});vent.position.set(.294,.23,-.12+i*.045);v.add(vent);}
-  for(let i=0;i<3;i++){const led=new THREE.Mesh(new THREE.SphereGeometry(.009,10,8),new THREE.MeshBasicMaterial({color:i===0?0xf0ac42:0x467b68}));led.position.set(.16+i*.035,.065,.216);v.add(led);}
-  const b = blob(.86,.76); b.position.y=.001;g.add(b);
-  register('about',g,v,[.66,.5,.68],[0,.24,.12],'desk',{r:.45});
+ const[g,v]=assembly(.25,DESK_Y,.48,-.035);
+ part(v,1.18,.055,.39,M.shell,0,.032,0,.022);
+ for(let r=0;r<4;r++)for(let c=0;c<14;c++){const k=part(v,.062,.023,.059,c===13?M.amber:M.dark,-.52+c*.08,.075,-.135+r*.082,.006);k.rotation.x=.05;}
+ part(v,.4,.022,.05,M.dark,-.05,.075,.168,.006);
+ register('toolbox',g,v,[1.2,.1,.43],[0,.05,0],'desk',{r:.5});contactShadow(.25,.107,.48,1.4,.6,.55);
 }
-/* GIS vector radar console — heritage */
-let mapMat, radarSweep;
-{
-  const [g,v]=onDesk(.16,-.25,2.5);
-  const base=boxMesh(.76,.075,.5,M.lacquer,{outline:.005});base.position.y=.04;v.add(base);
-  const consoleFace=boxMesh(.68,.025,.18,M.woodDark,{outline:.003});consoleFace.position.set(0,.09,.13);v.add(consoleFace);
-  mapMat=std({map:TEX.map,emissive:0xd89032,emissiveMap:TEX.map,emissiveIntensity:.42,side:THREE.DoubleSide,roughness:.4});
-  const frame=boxMesh(.7,.42,.045,M.lacquer,{outline:.005});frame.position.set(0,.29,-.15);v.add(frame);
-  const radar=new THREE.Mesh(new THREE.PlaneGeometry(.64,.36),mapMat);radar.position.set(0,.29,-.124);v.add(radar);
-  radarSweep=new THREE.Mesh(new THREE.PlaneGeometry(.31,.31),new THREE.MeshBasicMaterial({map:TEX.sweep,transparent:true,opacity:.55,depthWrite:false,blending:THREE.AdditiveBlending}));radarSweep.position.set(-.065,.29,-.117);v.add(radarSweep);
-  [-1,1].forEach(s=>{const post=boxMesh(.035,.2,.035,M.woodDark,{outline:.002});post.position.set(s*.27,.14,-.15);v.add(post);});
-  for(let i=0;i<9;i++){const key=boxMesh(.04,.018,.04,i%3===0?M.gold:M.woodPale,{outline:.002});key.position.set(-.22+i*.055,.115,.14);v.add(key);}
-  for(let i=0;i<5;i++){const node=new THREE.Mesh(new THREE.SphereGeometry(.008,8,6),new THREE.MeshBasicMaterial({color:i===0?0x72c6b7:0xe9a33c}));node.position.set(-.19+i*.095,.08,.255);v.add(node);}
-  const b=blob(.94,.7,.8);b.position.y=.001;g.add(b);
-  register('heritage',g,v,[.8,.54,.58],[0,.25,0],'desk',{r:.46});
-}
-/* modular toolbox */
-{
-  const [g,v]=onDesk(.79,-.318,-5);
-  const caseMesh=boxMesh(.4,.13,.38,std({color:0x202a25,roughness:.48,metalness:.58}),{outline:.005});caseMesh.position.y=.075;v.add(caseMesh);
-  const lid=boxMesh(.42,.035,.4,std({color:0x303c34,roughness:.48,metalness:.58}),{outline:.004});lid.position.y=.155;v.add(lid);
-  const handle=new THREE.Mesh(new THREE.TorusGeometry(.07,.012,10,28,Math.PI),M.lacquer);handle.position.set(0,.19,0);v.add(handle);
-  for(let i=0;i<3;i++){const module=boxMesh(.075,.045,.16,i===1?M.gold:M.lacquer,{outline:.002});module.position.set(-.1+i*.1,.19,.02);v.add(module);}
-  const b=blob(.58,.55);b.position.y=.001;g.add(b);
-  register('toolbox',g,v,[.46,.25,.44],null,'desk',{r:.36});
-}
-/* desktop orbit instrument — interactive decor */
+// A single brass orbital object keeps the research-studio character.
 let orbitAssembly;
 {
-  const [g,v]=onDesk(1.04,-.36,0);
-  const base=new THREE.Mesh(new THREE.CylinderGeometry(.14,.15,.055,48),M.lacquer);base.position.y=.03;v.add(base);
-  const stem=boxMesh(.026,.14,.026,M.gold,{outline:.002});stem.position.y=.12;v.add(stem);
-  orbitAssembly=new THREE.Group();orbitAssembly.position.y=.31;v.add(orbitAssembly);
-  const core=new THREE.Mesh(new THREE.SphereGeometry(.065,16,10),new THREE.MeshBasicMaterial({color:0x72c6b7,wireframe:true}));orbitAssembly.add(core);
-  [0,1,2].forEach(i=>{
-    const orbit=new THREE.Mesh(new THREE.TorusGeometry(.14+i*.013,.004,8,64),i===1?M.gold:M.woodPale);
-    orbit.rotation.set(i*.85,.5+i*.5,i*.4);orbitAssembly.add(orbit);
-    const satellite=new THREE.Mesh(new THREE.SphereGeometry(.012,10,8),new THREE.MeshBasicMaterial({color:i===1?0x72c6b7:0xe9a33c}));
-    satellite.position.x=.14+i*.013;orbit.add(satellite);
-  });
-  const b=blob(.34,.32);b.position.y=.001;g.add(b);
-  register('orbiter',g,v,[.36,.51,.36],[0,.25,0],'desk',{r:.34});
+ const[g,v]=assembly(1.4,DESK_Y,.08);
+ const base=new THREE.Mesh(new THREE.CylinderGeometry(.14,.16,.045,48),M.dark);base.position.y=.024;base.castShadow=true;v.add(base);
+ part(v,.024,.20,.024,M.aluminum,0,.13,0,.007);
+ orbitAssembly=new THREE.Group();orbitAssembly.position.y=.37;v.add(orbitAssembly);
+ [0,1].forEach(i=>{const ring=new THREE.Mesh(new THREE.TorusGeometry(.16+i*.015,.006,12,96),M.amber);ring.rotation.set(.4+i*.9,.3+i*.6,.2);orbitAssembly.add(ring);});
+ const core=new THREE.Mesh(new THREE.SphereGeometry(.075,32,24),std({color:0x4b7066,roughness:.3,metalness:.6}));orbitAssembly.add(core);
+ register('orbiter',g,v,[.39,.58,.39],[0,.27,0],'desk',{r:.35});contactShadow(1.4,.108,.08,.5,.5);
 }
-/* removable data cartridges — system directory */
+// Research notebook — a quiet secondary path into HeritageExplorer.
 {
-  const [g, v] = onDesk(.36, .47, -4);
-  const pageSide = std({ map: ctex(256, 32, (gg, w, h) => { gg.fillStyle = '#202c28'; gg.fillRect(0, 0, w, h); gg.fillStyle = 'rgba(114,198,183,.45)'; for (let y = 2; y < h; y += 3) gg.fillRect(0, y, w, 1); }) });
-  [[0, 0.036, 0, 0], [0.012, 0.03, -0.006, 5], [0.004, 0.03, 0.004, -3]].reduce((y, [dx, hgt, dz, rot], i) => {
-    const bk = boxMesh(0.37, hgt, 0.25, [pageSide, pageSide, std({ map: TEX.book[i], roughness: 0.8 }), std({ map: TEX.book[i] }), pageSide, pageSide], { outline: 0.004 });
-    bk.position.set(dx, y + hgt / 2, dz); bk.rotation.y = -rot * D2R; v.add(bk); return y + hgt;
-  }, 0);
-  const b = blob(0.52, 0.4); b.position.y = 0.001; g.add(b);
-  register('door', g, v, [0.42, 0.13, 0.3], null, 'desk', { r: 0.3 });
+ const[g,v]=assembly(-1.03,DESK_Y,.49,-.13);
+ part(v,.40,.035,.31,M.black,0,.025,0,.008);
+ const note=ctex(512,384,(g,w,h)=>{g.fillStyle='#28332e';g.fillRect(0,0,w,h);g.fillStyle='#c7b48b';g.font='25px monospace';g.fillText('RESEARCH / 01',54,150);g.fillStyle='#9cac9e';g.font='18px monospace';g.fillText('GIS · HERITAGE · HCI',54,200);});
+ const cover=surface(v,.37,.28,note,0,.045,0);cover.rotation.x=-Math.PI/2;
+ part(v,.014,.006,.29,M.amber,-.15,.046,0,.002);
+ register('heritage',g,v,[.43,.08,.34],[0,.04,0],'desk',{r:.32});
 }
-/* AI image cartridge — portfolio */
-let printMats = [];
-{
-  const [g, v] = onDesk(-0.722, 0.384, 3);
-  const tray=boxMesh(.48,.018,.34,M.lacquer,{outline:.004});tray.position.set(.02,-.004,.01);v.add(tray);
-  [[-0.03, 0.012, -9], [0.11, -0.03, 6], [0.04, 0.05, -2]].forEach(([x, z, r], i) => {
-    const m = std({ map: TEX.prints[i], roughness: 0.75 }); printMats.push(m);
-    const p = boxMesh(0.34, 0.004, 0.236, slabMats(m, std({ color: 0xf7f0de })), { outline: 0.003 }); p.position.set(x, 0.002 + i * 0.005, z); p.rotation.y = -r * D2R; v.add(p);
-  });
-  const obi = boxMesh(0.045, 0.006, 0.3, std({ map: TEX.form, roughness: 0.6 }), { outline: 0.003 }); obi.position.set(-0.11, 0.02, 0.05); obi.rotation.y = 0.12; v.add(obi);
-  const b = blob(0.62, 0.5); b.position.y = 0.001; g.add(b);
-  register('portfolio', g, v, [0.5, 0.06, 0.38], null, 'desk', { r: 0.34 });
-}
-/* form — cv */
-{
-  const [g, v] = onDesk(-0.114, 0.304, -3);
-  const p = boxMesh(0.45, 0.004, 0.32, slabMats(std({ map: TEX.cv, roughness: 0.92 }), std({ color: 0xf7efdb })), { outline: 0.003 }); p.position.y = 0.002; v.add(p);
-  const p2 = boxMesh(0.44, 0.004, 0.31, slabMats(std({ color: 0xefe4c8 })), { outline: 0.003 }); p2.position.set(0.012, -0.001, 0.01); p2.rotation.y = 0.04; v.add(p2);
-  const b = blob(0.6, 0.46, 0.7); b.position.y = 0.001; g.add(b);
-  register('cv', g, v, [0.47, 0.04, 0.34], null, 'desk', { r: 0.3 });
-}
-/* black communications console — contact */
-{
-  const [g,v]=onDesk(.402,.148,7);
-  const housing=std({color:0x101916,roughness:.5,metalness:.4});
-  const consoleMesh=boxMesh(.42,.105,.31,housing,{outline:.005});consoleMesh.position.y=.058;v.add(consoleMesh);
-  const commTex=ctex(384,160,(ctx,w,h)=>{
-    screenBase(ctx,w,h,'#72c6b7','COM // UPLINK');
-    microLabel(ctx,'CH 01  /  OPEN',26,83,'#e9a33c',20);
-    ctx.strokeStyle='#72c6b7';ctx.beginPath();
-    for(let x=24;x<w-24;x++){const y=112+Math.sin(x*.12)*8+Math.sin(x*.27)*4;x===24?ctx.moveTo(x,y):ctx.lineTo(x,y);}ctx.stroke();
-  });
-  const readout=new THREE.Mesh(new THREE.PlaneGeometry(.24,.1),new THREE.MeshBasicMaterial({map:commTex}));
-  readout.rotation.x=-Math.PI/2;readout.position.set(-.045,.114,-.065);v.add(readout);
-  for(let row=0;row<2;row++)for(let col=0;col<5;col++){
-    const key=boxMesh(.038,.014,.031,col===4?M.gold:M.woodPale,{outline:.001});key.position.set(-.145+col*.052,.119,.04+row*.05);v.add(key);
-  }
-  const knob=new THREE.Mesh(new THREE.CylinderGeometry(.028,.03,.028,24),M.gold);knob.position.set(.16,.125,-.065);v.add(knob);
-  for(let i=0;i<2;i++){
-    const antenna=new THREE.Mesh(new THREE.CylinderGeometry(.005,.008,.24+i*.05,10),M.woodPale);antenna.position.set(-.15+i*.3,.24,-.12);v.add(antenna);
-    const tip=new THREE.Mesh(new THREE.SphereGeometry(.01,10,8),new THREE.MeshBasicMaterial({color:0x72c6b7}));tip.position.set(-.15+i*.3,.36+i*.025,-.12);v.add(tip);
-  }
-  const b=blob(.58,.44,.75);b.position.y=.001;g.add(b);
-  register('contact',g,v,[.48,.42,.36],[0,.20,0],'desk',{r:.36});
-}
-/* coffee cup — omikuji */
-let steam;
-{
-  const [g, v] = onDesk(0.774, 0.02, 0);
-  const pts = [[0, 0], [0.048, 0], [0.05, 0.006], [0.058, 0.04], [0.064, 0.09], [0.066, 0.1], [0.06, 0.1], [0.056, 0.05], [0.04, 0.012], [0, 0.012]].map(([x, y]) => new THREE.Vector2(x, y));
-  const cupTex = ctex(512, 128, (gg, w, h) => { gg.fillStyle = '#ddd7c4'; gg.fillRect(0, 0, w, h); gg.fillStyle = '#d89536'; gg.fillRect(0, 0, w, 10); gg.fillRect(0, h - 8, w, 8); gg.fillStyle = '#4d5545'; gg.fillRect(0, h * .62, w, 5); speckle(gg, w, h, 500, '70,65,50', 0.16); });
-  const cup = new THREE.Mesh(new THREE.LatheGeometry(pts, 40), std({ map: cupTex, roughness: 0.28, side: THREE.DoubleSide })); cup.castShadow = true; cup.receiveShadow = true; v.add(cup);
-  const tea = new THREE.Mesh(new THREE.CircleGeometry(0.057, 32), std({ color: 0x321d17, roughness: 0.15 })); tea.rotation.x = -Math.PI / 2; tea.position.y = 0.085; v.add(tea);
-  const sau = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.09, 0.012, 32), M.woodDark); sau.position.y = -0.002; sau.castShadow = true; sau.receiveShadow = true; hull(sau, 0.003); v.add(sau);
-  const geo = new THREE.BufferGeometry(); const n = 14; geo.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(n * 3), 3));
-  steam = new THREE.Points(geo, new THREE.PointsMaterial({ map: TEX.dot, size: 0.05, transparent: true, opacity: 0.35, depthWrite: false, color: 0xffffff }));
-  steam.userData.seed = Array.from({ length: n }, () => [rand(), rand(), rand()]); steam.position.y = 0.1; steam.raycast = () => {}; v.add(steam);
-  const b = blob(0.3, 0.3); b.position.y = 0.001; g.add(b);
-  register('tea', g, v, [0.2, 0.14, 0.2], null, 'desk', { r: 0.22 });
-}
-/* scene control dial — style switch */
-{
-  const [g,v]=onDesk(.856,.35,10);
-  const base=new THREE.Mesh(new THREE.CylinderGeometry(.18,.2,.035,40),M.lacquer);base.position.y=.025;base.castShadow=true;hull(base,.003);v.add(base);
-  const ring=new THREE.Mesh(new THREE.TorusGeometry(.14,.012,10,40),M.gold);ring.rotation.x=Math.PI/2;ring.position.y=.05;v.add(ring);
-  const knob=new THREE.Mesh(new THREE.CylinderGeometry(.075,.09,.07,32),std({color:0xd7d5c2,roughness:.35,metalness:.3}));knob.position.y=.075;knob.castShadow=true;hull(knob,.003);v.add(knob);
-  const marker=boxMesh(.012,.008,.055,M.lacquerRed,{outline:0});marker.position.set(0,.114,-.025);v.add(marker);
-  for(let i=0;i<3;i++){const key=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.012,14),i===0?M.lacquerRed:M.gold);key.position.set(-.07+i*.07,.055,.16);v.add(key);}
-  const b=blob(.48,.4,.6);b.position.y=.001;g.add(b);
-  register('fan',g,v,[.42,.14,.4],null,'desk',{r:.3});
-}
-/* caged amber signal beacon — night-shift switch */
-{
-  const [g,v]=onDesk(-1.015,-.37,0);
-  const base=new THREE.Mesh(new THREE.CylinderGeometry(.105,.12,.06,32),M.lacquer);base.position.y=.035;v.add(base);
-  lanternPaper=std({map:TEX.lantern,emissive:0xf4ab3c,emissiveMap:TEX.lanternGlow,emissiveIntensity:.5,roughness:.3});
-  const lens=new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,.26,32),lanternPaper);lens.position.y=.21;v.add(lens);
-  [0,.08,.26,.35].forEach(y=>{const rim=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,.022,32),M.lacquer);rim.position.y=y+.025;v.add(rim);});
-  for(let i=0;i<4;i++){const a=i*Math.PI/2;const guard=boxMesh(.009,.3,.009,M.lacquer,{outline:0});guard.position.set(Math.cos(a)*.078,.2,Math.sin(a)*.078);v.add(guard);}
-  lanternLight=new THREE.PointLight(0xf0aa43,1.1,3,1.7);lanternLight.position.set(0,.24,.12);v.add(lanternLight);
-  const b=blob(.3,.3);b.position.y=.001;g.add(b);
-  register('lantern',g,v,[.25,.4,.25],[0,.2,0],'desk',{r:.32});
-}
-/* wall pieces */
-function onWall(x, y) { const g = new THREE.Group(); g.position.set(x, y, WALL_Z + 0.006); scene.add(g); const v = new THREE.Group(); g.add(v); return [g, v]; }
-/* vertical flight-path screen — experience */
-{
-  const [g,v]=onWall(-1.13,.8);
-  const frame=boxMesh(.35,.9,.07,M.lacquer,{outline:.004});frame.position.z=.04;v.add(frame);
-  const screen=new THREE.Mesh(new THREE.PlaneGeometry(.3,.82),new THREE.MeshBasicMaterial({map:TEX.scroll}));screen.position.z=.078;v.add(screen);
-  register('exp',g,v,[.37,.92,.09],[0,0,.05],'wall',{r:.5});
-}
-/* orbital navigation master display */
-let waveMat;
-{
-  const [g,v]=onWall(-.35,.9);
-  const frame=boxMesh(.99,.7,.095,M.lacquer,{outline:.004});frame.position.z=.05;v.add(frame);
-  waveMat=new THREE.MeshBasicMaterial({map:TEX.wave});
-  const screen=new THREE.Mesh(new THREE.PlaneGeometry(.88,.6),waveMat);screen.position.set(-.015,.015,.101);v.add(screen);
-  for(let i=0;i<8;i++){const key=boxMesh(.052,.016,.012,i===0?M.gold:M.woodPale,{outline:0});key.position.set(-.34+i*.082,-.318,.105);v.add(key);}
-  register('wave',g,v,[1.01,.72,.12],[0,0,.06],'wall',{r:.5});
-}
-/* instrument rack — papers, waveforms and deployment telemetry */
-{
-  const [g,v]=onWall(.46,.87);
-  const rack=boxMesh(.65,.77,.08,M.woodDark,{outline:.004});rack.position.z=.045;v.add(rack);
-  [[-.145,0,.29,.64,0],[.16,.17,.27,.3,1],[.16,-.17,.27,.3,2]].forEach(([x,y,w,h,k])=>{
-    const bezel=boxMesh(w+.018,h+.018,.02,M.lacquer,{outline:.002});bezel.position.set(x,y,.095);v.add(bezel);
-    const screen=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:TEX.news[k]}));screen.position.set(x,y,.107);v.add(screen);
-  });
-  register('work',g,v,[.67,.79,.12],[0,0,.06],'wall',{r:.5});
-}
-/* deep-space telemetry auxiliary monitor */
-let fujiMat;
-{
-  const [g,v]=onWall(1.11,.95);
-  const housing=boxMesh(.58,.67,.14,M.lacquer,{outline:.005});housing.position.z=.075;v.add(housing);
-  fujiMat=new THREE.MeshBasicMaterial({map:TEX.fuji,toneMapped:false});
-  const view=new THREE.Mesh(new THREE.PlaneGeometry(.5,.52),fujiMat);view.position.set(0,.025,.147);v.add(view);
-  for(let i=0;i<5;i++){const key=boxMesh(.05,.026,.012,i===0?M.gold:M.woodPale,{outline:.001});key.position.set(-.19+i*.095,-.285,.153);v.add(key);}
-  const bracket=boxMesh(.16,.08,.16,M.woodDark,{outline:.003});bracket.position.set(0,-.365,.05);v.add(bracket);
-  register('window',g,v,[.6,.72,.18],[0,-.015,.08],'wall',{r:.45});
+// A restrained cable is visible behind the keyboard.
+const cableCurve=new THREE.CatmullRomCurve3([new THREE.Vector3(.78,.13,.30),new THREE.Vector3(1.05,.12,.20),new THREE.Vector3(1.02,.13,-.18),new THREE.Vector3(.43,.25,-.40)]);
+const cable=new THREE.Mesh(new THREE.TubeGeometry(cableCurve,40,.009,8,false),M.black);cable.castShadow=true;scene.add(cable);
+// Large reflection cards give the bevels and metal coherent studio highlights.
+const environmentScene=new THREE.Scene();environmentScene.background=new THREE.Color(0x6c7873);
+[[3,4,4,5,3],[-4,2,1,3,4],[0,4,-4,5,2]].forEach(([x,y,z,w,h])=>{const card=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:0xeef3ef,side:THREE.DoubleSide}));card.position.set(x,y,z);card.lookAt(0,.7,0);environmentScene.add(card);});
+const pmrem=new THREE.PMREMGenerator(renderer),environmentTarget=pmrem.fromScene(environmentScene,.06);scene.environment=environmentTarget.texture;pmrem.dispose();environmentScene.traverse(o=>{if(o.isMesh){o.geometry.dispose();o.material.dispose();}});
+// Broad neutral key, warm edge, and a soft green fill separate material surfaces.
+const hemi=new THREE.HemisphereLight(0xf0f4ff,0x3c4946,1.7);scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xffead0,3.1);sun.position.set(-3,5,4);sun.target.position.set(0,.4,0);scene.add(sun,sun.target);sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-2.6,right:2.6,top:2.4,bottom:-2,near:.1,far:15});sun.shadow.bias=-.0002;sun.shadow.normalBias=.012;sun.shadow.radius=5;
+const fill=new THREE.DirectionalLight(0xa0bfb8,1.1);fill.position.set(4,2,-1);scene.add(fill);
+const rim=new THREE.DirectionalLight(0xf2c18a,1.2);rim.position.set(0,3,-3);scene.add(rim);
+let theme=THEMES.some(t=>t.id===store.get('dtheme'))?store.get('dtheme'):'nishiki';
+function setTheme(id){theme=id;store.set('dtheme',id);body.dataset.theme=id;const th=THEMES.find(t=>t.id===id);$('#themeKanji').textContent=th.k;$('#themeName').textContent=T(th);
+ const modes={nishiki:[2.1,2.8,1.3,1.0,0xf5f4ee],ai:[1.5,2.7,1.6,1.0,0xe2f0ed],sumi:[1.1,1.8,.7,.83,0xf1e2c7],yoru:[.7,1.25,1.0,.85,0xd9e6e1]},m=modes[id];hemi.intensity=m[0];sun.intensity=m[1];fill.intensity=m[2];renderer.toneMappingExposure=m[3];sun.color.setHex(m[4]);renderer.shadowMap.needsUpdate=true;wake(300);}
+function stepLight(){return false;}
+function renderProjectInfo(){const p=PROJECTS[selectedProject];$('#projectTitle').textContent=T(p);$('#projectCategory').textContent=p.category;$('#projectDescription').textContent=isEn()?p.descEn:p.descZh;$('#projectNumber').textContent=`0${selectedProject+1} / 05`;$('#projectFull').href=`assets/work/${p.id}.webp`;document.querySelectorAll('#projectPicker [data-project]').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===selectedProject)));}
+function selectProject(i){selectedProject=i;renderProjectInfo();const p=PROJECTS[i];
+ const apply=t=>{if(selectedProject!==i)return;projectScreen.material.map=t;projectScreen.material.color.setHex(0xffffff);projectScreen.material.needsUpdate=true;const w=1.68,h=.93,ratio=p.ratio;projectScreen.scale.set(Math.min(1,h*ratio/w),Math.min(1,w/ratio/h),1);wake(500);};
+ if(textures.has(p.id))apply(textures.get(p.id));else {projectScreen.material.map=null;projectScreen.material.color.setHex(0x101714);projectScreen.material.needsUpdate=true;wake(300);texLoader.load(`assets/work/${p.id}.webp`,t=>{t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=MAX_ANISO;textures.set(p.id,t);apply(t);},undefined,()=>{if(selectedProject!==i)return;$('#projectDescription').textContent=isEn()?'Preview unavailable. Open the project gallery below.':'预览暂未加载，可打开作品集查看。';});}
 }
 
-
-/* =====================================================================
-   LIGHTS — amber instruments with a restrained cyan equipment fill.
-   ===================================================================== */
-const hemi = new THREE.HemisphereLight(0xb4c6ba, 0x151c18, 0.8); scene.add(hemi);
-const sun = new THREE.DirectionalLight(0xffd294, 1.8);
-sun.position.set(3.2, 3.4, 1.4); sun.target.position.set(-0.1, 0.3, -0.25); scene.add(sun, sun.target);
-sun.castShadow = true; sun.shadow.mapSize.set(mobile() ? 1024 : 2048, mobile() ? 1024 : 2048);
-Object.assign(sun.shadow.camera, { left: -1.9, right: 1.9, top: 1.6, bottom: -1.6, near: 0.5, far: 9 });
-sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.015; sun.shadow.radius = 3;
-const fill = new THREE.DirectionalLight(0x72c6b7, 0.55); fill.position.set(-3, 2.2, 2.6); scene.add(fill);
-const winSpot = new THREE.SpotLight(0x79c6b8, 3, 6, 0.48, 0.85, 1.6);
-winSpot.position.set(1.12, 0.98, WALL_Z - 0.2); winSpot.target.position.set(0.25, DESK_Y, 0.15); scene.add(winSpot, winSpot.target);
-winSpot.castShadow = !mobile(); winSpot.shadow.mapSize.set(1024, 1024); winSpot.shadow.bias = -0.0006; winSpot.shadow.radius = 5;
-// light shaft + floating dust inside it
-const shaftGeo = new THREE.CylinderGeometry(0.24, 0.62, 1, 32, 1, true); shaftGeo.translate(0, -0.5, 0);
-const shaft = new THREE.Mesh(shaftGeo, new THREE.MeshBasicMaterial({ map: TEX.shaft, transparent: true, opacity: 0.11, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, toneMapped: false }));
-{
-  const a = new THREE.Vector3(1.0, 0.86, WALL_Z + 0.16), b = new THREE.Vector3(0.25, DESK_Y + 0.01, 0.15), dir = b.clone().sub(a);
-  shaft.scale.set(1, dir.length(), 1); shaft.position.copy(a); shaft.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), dir.normalize()); shaft.raycast = () => {}; scene.add(shaft);
-}
-const dust = (() => {
-  const n = mobile() ? 50 : 110, pos = new Float32Array(n * 3), seedv = [];
-  for (let i = 0; i < n; i++) { const t = rand(), r = rand() * 0.9; seedv.push([t, r, rand() * 6.28, 0.2 + rand() * 0.8]); }
-  const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  const p = new THREE.Points(geo, new THREE.PointsMaterial({ map: TEX.dot, size: 0.012, transparent: true, opacity: 0.8, depthWrite: false, blending: THREE.AdditiveBlending, color: 0xfff0d0, toneMapped: false }));
-  p.userData.seed = seedv; p.raycast = () => {}; scene.add(p); return p;
-})();
-
-/* =====================================================================
-   THEMES
-   ===================================================================== */
-let theme = THEMES.some((t) => t.id === store.get('dtheme')) ? store.get('dtheme') : 'nishiki';
-const LIGHTING = {
-  day: { hemi: [0xb4c6ba,0x151c18,.9], sun: 1.9, fill: .55, spot: [0x79c6b8,2.3], shaft: .025, dust: .16, shoji: 0, lantern: .7, paper: .45, exposure: 1.1, view: 0xffffff, glint: .13 },
-  cyan: { hemi: [0x99cec7,0x0d201c,.8], sun: 1.3, fill: 1.0, spot: [0x72c6b7,3.1], shaft: .035, dust: .18, shoji: 0, lantern: .5, paper: .3, exposure: 1.05, view: 0xd0fff0, glint: .12 },
-  low: { hemi: [0xb4b59b,0x111812,.55], sun: .8, fill: .32, spot: [0xc4954d,1], shaft: .012, dust: .08, shoji: 0, lantern: .4, paper: .25, exposure: .9, view: 0x929e8e, glint: .08 },
-  night: { hemi: [0x89a99a,0x0a100d,.42], sun: .45, fill: .4, spot: [0x72c6b7,1.2], shaft: .02, dust: .1, shoji: 0, lantern: 2, paper: 1.1, exposure: 1.05, view: 0xb8c9b9, glint: .08 }
-};
-let lightNow = { ...LIGHTING.day }, lightFrom = null, lightTo = null, lightT0 = 0;
-function setTheme(id, instant) {
-  theme = id; store.set('dtheme', id); body.dataset.theme = id;
-  const th = THEMES.find((t) => t.id === id);
-  $('#themeKanji').textContent = th.k; $('#themeName').textContent = T(th);
-  const target = LIGHTING[{ nishiki: 'day', ai: 'cyan', sumi: 'low', yoru: 'night' }[id]];
-  lightFrom = { ...lightNow }; lightTo = target; lightT0 = performance.now();
-  if (instant || RM) { applyLight(target); lightFrom = null; }
-  startRain(id === 'sumi');
-  wake(1200);
-}
-function applyLight(L) {
-  lightNow = L;
-  hemi.color.setHex(L.hemi[0]); hemi.groundColor.setHex(L.hemi[1]); hemi.intensity = L.hemi[2];
-  sun.intensity = L.sun; fill.intensity = L.fill; winSpot.color.setHex(L.spot[0]); winSpot.intensity = L.spot[1];
-  shaft.material.opacity = L.shaft; dust.material.opacity = L.dust; M.shoji.emissiveIntensity = L.shoji;
-  lanternLight.intensity = L.lantern; lanternPaper.emissiveIntensity = L.paper; renderer.toneMappingExposure = L.exposure;
-  fujiMat.color.setHex(L.view);
-  renderer.shadowMap.needsUpdate = true;
-}
-function stepLight(now) {
-  if (!lightFrom) return false;
-  const t = ease(clamp((now - lightT0) / 900, 0, 1)), a = lightFrom, b = lightTo, c = new THREE.Color(), c2 = new THREE.Color();
-  const mixHex = (x, y) => c.setHex(x).lerp(c2.setHex(y), t).getHex();
-  applyLight({ hemi: [mixHex(a.hemi[0], b.hemi[0]), mixHex(a.hemi[1], b.hemi[1]), lerp(a.hemi[2], b.hemi[2], t)], sun: lerp(a.sun, b.sun, t), fill: lerp(a.fill, b.fill, t), spot: [mixHex(a.spot[0], b.spot[0]), lerp(a.spot[1], b.spot[1], t)], shaft: lerp(a.shaft, b.shaft, t), dust: lerp(a.dust, b.dust, t), shoji: lerp(a.shoji, b.shoji, t), lantern: lerp(a.lantern, b.lantern, t), paper: lerp(a.paper, b.paper, t), exposure: lerp(a.exposure, b.exposure, t), view: mixHex(a.view, b.view), glint: lerp(a.glint, b.glint, t) });
-  if (t >= 1) { lightNow = { ...b }; lightFrom = null; }
-  return true;
-}
 
 /* =====================================================================
    CAMERA — home framing + per-object focus, eased; view offset for the panel
@@ -1127,16 +670,17 @@ function fitDist(halfW, halfH, fov) {
   return Math.max(halfW / h, halfH / v);
 }
 function homeState() {
-  const mob = mobile(), fov = mob ? 34 : 26;
-  return { tx: 0, ty: mob ? 0.36 : 0.42, tz: mob ? -0.16 : -0.3, dist: fitDist(mob ? 0.86 : 1.62, mob ? 1.2 : 1.02, fov), elev: mob ? 48 : 36, azim: 0, ox: 0, oy: mob ? -0.07 : 0, fov };
+  const mob=mobile(),fov=mob?34:26;
+  if(innerWidth<1000&&innerHeight<500&&innerWidth>innerHeight)return {tx:-.65,ty:.67,tz:0,dist:fitDist(2.65,1.08,fov),elev:15,azim:-12,ox:0,oy:.15,fov};
+  return {tx:mob?0:-.65,ty:mob?.74:.67,tz:0,dist:fitDist(mob?1.8:2.65,mob?1.5:1.08,fov),elev:mob?18:15,azim:mob?-7:-12,ox:0,oy:mob?-.015:.095,fov};
 }
 function focusState(key) {
-  const o = OBJS[key], wp = new THREE.Vector3(); o.proxy.getWorldPosition(wp);
+  const o = OBJS[key] || OBJS.portfolio, wp = new THREE.Vector3(); o.proxy.getWorldPosition(wp);
   const mob = mobile(), fov = mob ? 34 : 26, r = o.focus.r;
   const share = mob ? 0.8 : 0.5; // fraction of width left for the object
   const dist = fitDist(r / share, r / (mob ? 0.3 : 0.62), fov);
   const wall = o.kind === 'wall';
-  return { tx: wp.x, ty: wp.y, tz: wp.z, dist, elev: wall ? 16 : 66, azim: wall ? 0 : -6, ox: mob ? 0 : 0.24, oy: mob ? 0.27 : 0, fov };
+  return { tx: wp.x, ty: wp.y, tz: wp.z, dist, elev: wall ? 10 : 45, azim: wall ? -5 : -6, ox: mob ? 0 : 0.24, oy: mob ? 0.27 : 0, fov };
 }
 function camGo(to, dur = 750) { camFrom = { ...camS }; camTo = to; camT0 = performance.now(); camDur = RM ? 1 : dur; panT = 0; }
 function stepCam(now) {
@@ -1148,7 +692,7 @@ function stepCam(now) {
   }
   if (Math.abs(panT - pan) > 1e-4) { pan += (panT - pan) * 0.18; moving = true; }
   if (Math.abs(par.tx - par.x) + Math.abs(par.ty - par.y) > 1e-4) { par.x += (par.tx - par.x) * 0.06; par.y += (par.ty - par.y) * 0.06; moving = true; }
-  const el = (camS.elev + (focused ? 0 : par.y * 2.2)) * D2R, az = (camS.azim + (focused ? 0 : par.x * 3.2)) * D2R;
+  const el = (camS.elev + (focused ? 0 : par.y * .4)) * D2R, az = (camS.azim + (focused ? 0 : par.x * .6)) * D2R;
   const tx = camS.tx + (focused ? 0 : pan);
   camera.fov = camS.fov;
   camera.position.set(tx + camS.dist * Math.cos(el) * Math.sin(az), camS.ty + camS.dist * Math.sin(el), camS.tz + camS.dist * Math.cos(el) * Math.cos(az));
@@ -1221,7 +765,8 @@ function openSection(key) {
     fillTitle(key); pBody.innerHTML = '';
     if (key === 'tea') { const f = fortunes[fi++ % fortunes.length]; pBody.innerHTML = `<div class="omikuji"><div class="big">${f[0]}</div><p>${isEn() ? f[3] : f[2]}</p><p class="dim">${f[1]}</p></div><p class="dim">${isEn() ? 'Click the enamel mug again for another daily note.' : '再点一次搪瓷杯，可以重新抽一张工作签。'}</p>`; }
     else pBody.appendChild($('#t-' + key).content.cloneNode(true));
-    pBody.scrollTop = 0; panel.classList.add('open'); panel.setAttribute('aria-hidden', 'false'); $('#panelClose').focus({ preventScroll: true });
+    pBody.scrollTop = 0; panel.classList.add('open');
+    if(key==='portfolio')requestAnimationFrame(()=>{const figure=pBody.querySelector('[data-project="'+PROJECTS[selectedProject].id+'"]');if(figure)pBody.scrollTop=figure.offsetTop-pBody.offsetTop-16;}); panel.setAttribute('aria-hidden', 'false'); $('#panelClose').focus({ preventScroll: true });
   };
   if (panel.classList.contains('open') || RM) show(); else openTimer = setTimeout(show, 480);
   if (SEC[key] && location.hash !== '#' + key) history.replaceState(null, '', '#' + key);
@@ -1247,7 +792,7 @@ function activate(key) {
   if (key === 'fan') { const i = THEMES.findIndex((t) => t.id === theme), n = THEMES[(i + 1) % THEMES.length]; if (n.id !== 'yoru') store.set('dayTheme', n.id); setTheme(n.id); return toast(T({ zh: '显示模式：' + n.zh, en: 'Display mode: ' + n.en })); }
   if (key === 'wave') return toast(T({ zh: '轨道导航主屏：参考航空进近图的矢量轨道演示。', en: 'Orbital navigation: a vector display inspired by flight approach charts.' }));
   if (key === 'window') return toast(T({ zh: '深空遥测副屏：线框地球、十字准星与模拟上行信号。', en: 'Deep-space telemetry: a wireframe globe and simulated uplink signal.' }));
-  if (key === 'orbiter') return toast(T({ zh: '桌面轨道仪：三个倾斜轨道围绕磷光地球缓慢运行。', en: 'Desktop orbit instrument: three inclined orbits around a phosphor globe.' }));
+  if (key === 'orbiter') return toast(T({ zh: '桌面轨道仪：两条倾斜轨道围绕球体缓慢运行。', en: 'Desktop orbit instrument: two inclined orbits around a globe.' }));
 }
 $('#panelClose').addEventListener('click', closeSection);
 addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeSection(); setIndexOpen(false); } });
@@ -1309,7 +854,7 @@ $('#btnSound').addEventListener('click', () => { setSound(!soundOn); clack(1); }
 $('#btnTheme').addEventListener('click', () => activate('fan'));
 
 /* language + reader */
-function setLang(l) { body.dataset.lang = l; document.documentElement.lang = l === 'en' ? 'en' : 'zh-CN'; renderIndex(); const th = THEMES.find((t) => t.id === theme); $('#themeName').textContent = T(th); if (focused) fillTitle(focused); }
+function setLang(l) { body.dataset.lang = l; document.documentElement.lang = l === 'en' ? 'en' : 'zh-CN'; renderIndex(); const th = THEMES.find((t) => t.id === theme); $('#themeName').textContent = T(th); if (focused) fillTitle(focused); renderProjectInfo(); }
 $('#btnLang').addEventListener('click', () => { const n = isEn() ? 'zh' : 'en'; setLang(n); store.set('lang', n); });
 function setReader(on) {
   body.classList.toggle('read', on); $('#btnMode').setAttribute('aria-pressed', String(on));
@@ -1324,88 +869,31 @@ function setReader(on) {
 $('#btnMode').addEventListener('click', () => setReader(!body.classList.contains('read')));
 $('#brand').addEventListener('click', (e) => { e.preventDefault(); if (body.classList.contains('read')) setReader(false); closeSection(); });
 
-/* slow CRT scan sweep; static scanlines remain in reduced-motion mode */
-const rc = $('#rain'), rx = rc.getContext('2d');
-let scanY = 0, rainOn = false;
-function sizeRain() { rc.width = innerWidth; rc.height = innerHeight; }
-function startRain(on) { rainOn = on && !RM; if (rainOn) sizeRain(); else rx.clearRect(0,0,rc.width,rc.height); }
-function drawRain(dt) {
-  if (!rainOn) return;
-  rx.clearRect(0,0,rc.width,rc.height);
-  scanY = (scanY + dt * 24) % (rc.height + 80);
-  const band=rx.createLinearGradient(0,scanY-80,0,scanY);
-  band.addColorStop(0,'rgba(233,163,60,0)');band.addColorStop(1,'rgba(233,163,60,.045)');
-  rx.fillStyle=band;rx.fillRect(0,scanY-80,rc.width,80);
-  rx.fillStyle='rgba(233,163,60,.11)';rx.fillRect(0,scanY,rc.width,1);
-}
-
-
-/* =====================================================================
-   LATE IMAGES — the author's image archive
-   ===================================================================== */
-// The radar and telemetry are procedural displays. Only the image cartridges
-// receive late photographs; loading an image must never overwrite an instrument.
-Promise.all(['assets/ai_portfolio/ai_star.jpg', 'assets/ai_portfolio/ai_qingming.jpg', 'assets/ai_portfolio/ai_twodimensional.jpg'].map(loadImg)).then((images) => {
-  images.forEach((im,i)=>TEX.prints[i].userData.redraw((g,w,h)=>{
-    g.fillStyle='#101916';g.fillRect(0,0,w,h);
-    g.save();g.filter='saturate(.75) contrast(1.1)';cover(g,im,18,38,w-36,h-64);g.restore();
-    g.strokeStyle='#e9a33c';g.lineWidth=2;g.strokeRect(18,38,w-36,h-64);
-    microLabel(g,`IMG / 0${i+1}  //  AI ARCHIVE`,18,26,'#e9a33c',15);
-  }));
-  renderer.shadowMap.needsUpdate = true; wake(500);
-});
-
+function sizeRain() {}
+const rainOn=false;
 
 /* =====================================================================
    LOOP — full rate while something moves, ~24 fps when idle
    ===================================================================== */
 const clock = new THREE.Clock();
-let lastRender = 0, glintAt = performance.now() + 5000, glintKey = null;
-const GLINT_KEYS = ['about', 'heritage', 'work', 'exp', 'portfolio', 'toolbox', 'contact', 'cv', 'door', 'lantern', 'fan', 'orbiter'];
-function frame(now) {
-  requestAnimationFrame(frame);
-  if (body.classList.contains('read')) return;
-  const dt = Math.min(0.05, clock.getDelta()), t = now / 1000;
-  let busy = stepCam(now) | stepLight(now);
-  // hover lift + click pop (visual only — hit boxes stay at rest)
-  for (const k in OBJS) {
-    const o = OBJS[k];
-    const popT = o.pop ? (now - o.pop) / 420 : 1, popY = popT < 1 ? Math.sin(popT * Math.PI) * 0.03 : 0;
-    o.lift += (o.liftT - o.lift) * Math.min(1, dt * 14);
-    const y = o.lift * 0.022 + popY;
-    if (Math.abs(o.vis.position.y - y) > 1e-5) { o.vis.position.y = y; busy = true; renderer.shadowMap.needsUpdate = true; }
-  }
-  // idle glint: one object quietly catches the light, nothing is labelled
-  if (!focused && !hovered && !RM && now > glintAt) { glintKey = GLINT_KEYS.filter((k) => !explored.has(k))[Math.floor(Math.random() * GLINT_KEYS.length)] || GLINT_KEYS[Math.floor(Math.random() * GLINT_KEYS.length)]; glintAt = now + 4200 + Math.random() * 2500; OBJS[glintKey].glowT0 = now; }
-  for (const k in OBJS) {
-    const o = OBJS[k], g = o.glowT0 ? (now - o.glowT0) / 1100 : 1, v = g < 1 ? Math.sin(g * Math.PI) * lightNow.glint : 0, hv = o.lift * lightNow.glint * 0.35;
-    const e = Math.max(v, hv);
-    if (Math.abs((o.glow || 0) - e) > 1e-3) { o.glow = e; o.mats.forEach((m) => { if (m === lanternPaper) return; m.emissive.setRGB(0.62, 0.34, 0.12); m.emissiveIntensity = e; }); busy = true; }
-  }
-  // ambient life
-  if (!RM) {
-    const sp = steam.geometry.attributes.position;
-    steam.userData.seed.forEach(([a, b, c], i) => { const ph = (t * 0.25 + a) % 1; sp.setXYZ(i, Math.sin(t * 1.3 + c * 6) * 0.02 * ph + (b - 0.5) * 0.03, ph * 0.22, (c - 0.5) * 0.03); });
-    sp.needsUpdate = true; steam.material.opacity = theme === 'yoru' ? 0.18 : 0.32;
-    const dp = dust.geometry.attributes.position, A = new THREE.Vector3(1.09, 0.92, WALL_Z + 0.05), B = new THREE.Vector3(0.25, DESK_Y + 0.05, 0.15);
-    dust.userData.seed.forEach(([u, r, ph, sp2], i) => { const s = (u + t * 0.008 * sp2) % 1, p = A.clone().lerp(B, s), rad = lerp(0.2, 0.5, s) * r; dp.setXYZ(i, p.x + Math.cos(ph + t * 0.3 * sp2) * rad, p.y + Math.sin(ph * 1.7 + t * 0.21) * rad * 0.6, p.z + Math.sin(ph + t * 0.25 * sp2) * rad); });
-    dp.needsUpdate = true;
-    if (theme === 'yoru') { lanternLight.intensity = lightNow.lantern * (1 + Math.sin(t * 9) * 0.035 + Math.sin(t * 23) * 0.02); }
-    radarSweep.rotation.z = -t * 0.7;
-    orbitAssembly.rotation.y = t * 0.16;
-    drawRain(dt);
-  }
-  const active = busy || now < activeUntil || rainOn;
-  if (!active && now - lastRender < 42) return;
-  lastRender = now;
-  renderer.render(scene, camera);
+let lastRender=0;
+function frame(now){
+ requestAnimationFrame(frame);if(body.classList.contains('read'))return;
+ const dt=Math.min(.05,clock.getDelta());let busy=stepCam(now);
+ for(const o of Object.values(OBJS)){o.lift+=(o.liftT-o.lift)*Math.min(1,dt*12);const y=o.lift*.006;if(Math.abs(o.vis.position.y-y)>1e-5){o.vis.position.y=y;busy=true;renderer.shadowMap.needsUpdate=true;}}
+ if(!RM)orbitAssembly.rotation.y=now*.00006;
+ if(!busy&&now>activeUntil&&now-lastRender<42)return;lastRender=now;renderer.render(scene,camera);
 }
+$('#btnWork').addEventListener('click',()=>activate('portfolio'));
+$('#btnAbout').addEventListener('click',()=>activate('about'));
+$('#projectPicker').addEventListener('click',e=>{const b=e.target.closest('[data-project]');if(b){selectProject(PROJECTS.findIndex(p=>p.id===b.dataset.project));clack(.5);}});
 
 /* =====================================================================
    BOOT
    ===================================================================== */
 { const l = store.get('lang'); setLang(l === 'en' || l === 'zh' ? l : (navigator.language || '').toLowerCase().startsWith('zh') ? 'zh' : 'en'); }
 setSound(soundOn);
+selectProject(0);
 renderIndex();
 resize();
 setTheme(theme, true);
@@ -1434,7 +922,7 @@ requestAnimationFrame(frame);
     };
     function build() {
       var r = document.getElementById('reader');
-      var names = { about: ['身份终端 · 关于我', 'About'], heritage: ['HeritageExplorer', 'HeritageExplorer'], work: ['论文 · 专利 · 项目', 'Papers · Patents · Projects'], exp: ['经历', 'Timeline'], portfolio: ['AI 作品集', 'AI Portfolio'], toolbox: ['技能 · 工具链', 'Toolbox'], contact: ['联系', 'Contact'], cv: ['简历', 'CV'], door: ['版本总览', 'Version portal'] };
+      var names = { about: ['身份终端 · 关于我', 'About'], heritage: ['HeritageExplorer', 'HeritageExplorer'], work: ['论文 · 专利 · 项目', 'Papers · Patents · Projects'], exp: ['经历', 'Timeline'], portfolio: ['我的工作', 'Selected work'], toolbox: ['技能 · 工具链', 'Toolbox'], contact: ['联系', 'Contact'], cv: ['简历', 'CV'], door: ['版本总览', 'Version portal'] };
       if (r.childElementCount) return;
       Object.keys(names).forEach(function (id) {
         var tp = document.getElementById('t-' + id); if (!tp) return;

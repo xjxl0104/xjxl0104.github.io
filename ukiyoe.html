@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>王钰淞の書斎 · Yusong Wang</title>
-<meta name="description" content="王钰淞 Yusong Wang 的浮世绘风 2.5D 互动主页：俯瞰一张和式书案，在光影里找到可以翻看的东西 —— HeritageExplorer、论文专利、AI 作品集与工具链。" />
+<meta name="description" content="王钰淞 Yusong Wang 的浮世绘风 2.5D 互动主页：俯瞰一张和式书案，探索 HeritageExplorer、论文专利、实际工作项目与工具链。" />
 <meta property="og:title" content="王钰淞の書斎 · Yusong Wang" />
 <meta property="og:description" content="GIS × Multimodal AI — an ukiyo-e study desk to explore." />
 <meta property="og:image" content="assets/ukiyoe/wave.webp" />
@@ -112,11 +112,12 @@
   .content .row small{display:block;color:#5d5254;font-size:13px;line-height:1.55}
   .content .shot{display:block;width:100%;height:auto;border:3px solid var(--sumi);margin:.6rem 0;box-shadow:5px 5px 0 rgba(29,26,31,.2)}
   .content .portrait{float:right;width:118px;height:auto;margin:0 0 .6rem 1rem;border:3px solid var(--sumi);box-shadow:inset 0 0 0 4px var(--washi),5px 6px 0 rgba(29,26,31,.22);padding:4px;background:var(--washi)}
-  .content .pf{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .content .pf{display:grid;grid-template-columns:1fr;gap:22px}
   .content .pf figure{border:2.5px solid var(--sumi);background:#fbf6e6;padding:6px}
+  .content .pf figure>a{display:block}.content .pf figure>a:focus-visible{outline:3px solid var(--shu);outline-offset:3px}
   .content .pf img{display:block;width:100%;height:auto}
-  .content .pf figcaption{font-size:12px;padding-top:5px;display:flex;flex-direction:column}
-  .content .pf figcaption b{color:var(--shu);font-size:11px;letter-spacing:.06em}
+  .content .pf figcaption{font-size:13px;line-height:1.65;padding:10px 8px 8px;display:flex;flex-direction:column;gap:5px}
+  .content .pf figcaption b{color:var(--shu);font-size:16px;letter-spacing:.02em}
   .content .pxbtn{display:inline-flex;margin:.2rem .4rem .2rem 0;background:var(--washi);border:2.5px solid var(--sumi);box-shadow:3px 3px 0 var(--sumi);padding:6px 12px;font:600 13px/1.2 var(--serif);text-decoration:none;border-radius:3px}
   .content .pxbtn.red{background:var(--shu);color:var(--washi)}
   .content a{text-underline-offset:3px}
@@ -271,7 +272,7 @@
     <div><b>~2,800</b><span class="lang-zh">次提交</span><span class="lang-en">commits</span></div>
     <div><b>347</b><span class="lang-zh">例 ERP 测试</span><span class="lang-en">ERP tests</span></div>
   </div>
-  <img class="shot" src="assets/dipark_overview.webp" alt="DIPARK 智慧云仓运营总览（演示数据）/ DIPARK operations overview (demo data)" width="2000" height="1105" loading="lazy" />
+  <a href="assets/work/dipark.webp" target="_blank" rel="noopener"><img class="shot" src="assets/work/dipark.webp" alt="DIPARK 智慧云仓运营总览（演示数据）/ DIPARK operations overview (demo data)" width="2400" height="1327" loading="lazy" /></a>
   <div class="row"><span class="k">2026.08</span><div><b><span class="lang-zh">AI 中台 · LLM 网关</span><span class="lang-en">AI hub · LLM gateway</span></b><small><span class="lang-zh">零依赖 Node 22，作为全部系统唯一的大模型出口：18 个系统独立 Key、模型别名路由、9 类引擎巡检、逐笔计费与钱包续航告警。</span><span class="lang-en">Zero-dependency Node 22 service and the only LLM exit for every system: per-system keys for 18 apps, model alias routing, health probes for 9 engines, per-call cost ledger and budget alerts.</span></small></div></div>
   <div class="row"><span class="k">2026.07</span><div><b><span class="lang-zh">智慧云仓 DIPARK</span><span class="lang-en">DIPARK smart park</span></b><small><span class="lang-zh">Spring Boot 3 + Vue 3 园区运营系统：招商—合同—账单—收款闭环，收款幂等与领域事件，3D 楼宇运营总览（上图为演示数据）。</span><span class="lang-en">Spring Boot 3 + Vue 3 park operations: leasing → contract → billing → payment, idempotent receipts and domain events, a 3D building overview (demo data above).</span></small></div></div>
   <div class="row"><span class="k">2026.08</span><div><b><span class="lang-zh">售卖机 ERP · 租赁业务</span><span class="lang-en">Vending ERP · Leasing</span></b><small><span class="lang-zh">业财一体进销存：40 张表、22 个模块、347 例自动化测试，(R,S) 补货引擎，历史流水导入分毫不差；租赁板块含 IRR 报价与租金计划勾稽。</span><span class="lang-en">Inventory + finance in one: 40 tables, 22 modules, 347 automated tests, an (R,S) replenishment engine and exact legacy import; the leasing module adds IRR quotes and reconciled rent schedules.</span></small></div></div>
@@ -296,17 +297,13 @@
 </template>
 
 <template id="t-portfolio">
-  <p><span class="lang-zh">AI 叙事影像与生成媒介作品集 —— 图片按原始比例完整展示，点击在新标签页查看大图。</span><span class="lang-en">AI narrative &amp; generative media. Images are shown uncropped; click to open full size.</span></p>
+  <p><span class="lang-zh">我的工作：从园区运营、AI 接入到数据可视化与运维工具。以下为实际工作界面，图片按原始比例完整展示，点击在新标签页查看大图。</span><span class="lang-en">Selected work across park operations, AI integration, data visualization and operational tools. These are actual project screenshots, shown uncropped. Select an image to open it full size in a new tab.</span></p>
   <div class="pf">
-    <figure><a href="assets/ai_portfolio/ai_cover.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_cover.jpg" width="1600" height="900" loading="lazy" alt="Cover" /></a><figcaption><b>COVER</b><span class="lang-zh">作品集封面</span><span class="lang-en">Portfolio cover</span></figcaption></figure>
-    <figure><a href="assets/ai_portfolio/ai_method.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_method.jpg" width="1280" height="936" loading="lazy" alt="Method map" /></a><figcaption><b>PPT·02 METHOD</b><span class="lang-zh">创作方法地图</span><span class="lang-en">Creative method map</span></figcaption></figure>
-    <figure><a href="assets/ai_portfolio/ai_lishishi.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_lishishi.jpg" width="1280" height="752" loading="lazy" alt="Li Shishi" /></a><figcaption><b>PPT·03 STORYBOARD</b>Li Shishi</figcaption></figure>
-    <figure><a href="assets/ai_portfolio/ai_straw_boats.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_straw_boats.jpg" width="1280" height="874" loading="lazy" alt="Straw Boats" /></a><figcaption><b>PPT·04 NARRATIVE</b><span class="lang-zh">草船借箭</span><span class="lang-en">Straw Boats</span></figcaption></figure>
-    <figure><a href="assets/ai_portfolio/ai_star.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_star.jpg" width="1280" height="714" loading="lazy" alt="The Star" /></a><figcaption><b>PPT·05 REWRITE</b>The Star</figcaption></figure>
-    <figure><a href="assets/ai_portfolio/ai_twodimensional.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_twodimensional.jpg" width="1280" height="720" loading="lazy" alt="Two-dimensional foil" /></a><figcaption><b>PPT·06 ARTWORK</b><span class="lang-zh">二向箔</span><span class="lang-en">Two-Dimensional Foil</span></figcaption></figure>
-    <figure><a href="assets/ai_portfolio/ai_qingming.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_qingming.jpg" width="1280" height="954" loading="lazy" alt="Qingming RPG" /></a><figcaption><b>PPT·07 INTERACTION</b><span class="lang-zh">清明上河图 RPG</span><span class="lang-en">Qingming RPG</span></figcaption></figure>
-    <figure><a href="assets/ai_portfolio/ai_boat_style.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_boat_style.jpg" width="1280" height="712" loading="lazy" alt="Style transfer" /></a><figcaption><b>PPT·08 STYLE</b><span class="lang-zh">训练与风格转译</span><span class="lang-en">Training &amp; style transfer</span></figcaption></figure>
-    <figure><a href="assets/ai_portfolio/ai_touchdesigner.jpg" target="_blank" rel="noopener"><img src="assets/ai_portfolio/ai_touchdesigner.jpg" width="1280" height="720" loading="lazy" alt="TouchDesigner" /></a><figcaption><b>PPT·09 REAL-TIME</b>TouchDesigner</figcaption></figure>
+    <figure data-project="dipark"><a href="assets/work/dipark.webp" target="_blank" rel="noopener"><img src="assets/work/dipark.webp" width="2400" height="1327" loading="lazy" alt="DIPARK 三维园区与运营总览，演示数据 / DIPARK 3D park operations overview with demo data" /></a><figcaption><b><span class="lang-zh">DIPARK · 智慧云仓</span><span class="lang-en">DIPARK · Smart park</span></b><span class="lang-zh">以三维楼宇总览连接空间出租、租金收缴、物业工单与能源信息。截图中的运营指标为演示数据。</span><span class="lang-en">A 3D building overview brings together occupancy, rent collection, property work orders and energy information. Operational metrics shown here are demo data.</span></figcaption></figure>
+    <figure data-project="ai-gateway"><a href="assets/work/ai-gateway.webp" target="_blank" rel="noopener"><img src="assets/work/ai-gateway.webp" width="2400" height="1342" loading="lazy" alt="AI 中台总控室的用量、调用监控与费用流向界面 / AI gateway console showing usage, call monitoring and cost flows" /></a><figcaption><b><span class="lang-zh">AI 中台 · LLM 网关</span><span class="lang-en">AI hub · LLM gateway</span></b><span class="lang-zh">统一管理模型接入与调用，集中呈现调用日志、引擎巡检、费用流向和钱包续航。</span><span class="lang-en">A shared console for model access and calls, with call logs, engine probes, cost flows and wallet budget estimates.</span></figcaption></figure>
+    <figure data-project="tunan-data-lab"><a href="assets/work/tunan-data-lab.webp" target="_blank" rel="noopener"><img src="assets/work/tunan-data-lab.webp" width="2400" height="1339" loading="lazy" alt="图南 Data Lab 数据源关系图、供应商探针与分析维度界面 / Tunan Data Lab with data-source relationships, provider probes and analysis dimensions" /></a><figcaption><b><span class="lang-zh">图南 · Data Lab</span><span class="lang-en">Tunan · Data Lab</span></b><span class="lang-zh">以径向关系图组织数据源与分析维度，结合供应商探针、财报接口和抓取流水视图。截图中的流水、股价与持仓因子为 DEMO 模拟。</span><span class="lang-en">A radial view connects data sources with analysis dimensions, alongside provider probes, financial-data APIs and a fetch feed. The feed, prices and portfolio factors shown are DEMO simulations.</span></figcaption></figure>
+    <figure data-project="ops-monitor"><a href="assets/work/ops-monitor.webp" target="_blank" rel="noopener"><img src="assets/work/ops-monitor.webp" width="2400" height="1471" loading="lazy" alt="Ops Monitor 服务拓扑、任务、备份与待处理事项界面 / Ops Monitor service topology, jobs, backups and attention queue" /></a><figcaption><b><span class="lang-zh">运维总控 · Ops Monitor</span><span class="lang-en">Operations console · Ops Monitor</span></b><span class="lang-zh">将服务入口、自动化任务、备份与通知链路放到同一张拓扑视图，配合待处理事项和延迟趋势定位问题。</span><span class="lang-en">Service endpoints, scheduled jobs, backups and notification paths share a topology view, supported by an attention queue and latency trends.</span></figcaption></figure>
+    <figure data-project="enterprise-portal"><a href="assets/work/enterprise-portal.webp" target="_blank" rel="noopener"><img src="assets/work/enterprise-portal.webp" width="2400" height="1096" loading="lazy" alt="企业应用门户按类别组织业务系统、运维与文档入口 / Enterprise portal organizing business applications, operations and documentation" /></a><figcaption><b><span class="lang-zh">企业应用门户</span><span class="lang-en">Enterprise application portal</span></b><span class="lang-zh">按企业管理、园区运营与技术服务组织应用，并提供运维中心、文档、产品资料与代码仓库入口。</span><span class="lang-en">Applications grouped by enterprise management, park operations and technical services, with links to operations, documentation, product materials and repositories.</span></figcaption></figure>
   </div>
 </template>
 
@@ -378,7 +375,7 @@ const SECTIONS = [
   { id: 'heritage', k: '図', zh: 'HeritageExplorer', en: 'HeritageExplorer' },
   { id: 'work', k: '報', zh: '论文 · 专利 · 项目', en: 'Papers · Patents · Projects' },
   { id: 'exp', k: '歴', zh: '经历', en: 'Timeline' },
-  { id: 'portfolio', k: '画', zh: 'AI 作品集', en: 'AI Portfolio' },
+  { id: 'portfolio', k: '画', zh: '我的工作', en: 'Selected work' },
   { id: 'toolbox', k: '筆', zh: '技能 · 工具链', en: 'Toolbox' },
   { id: 'contact', k: '文', zh: '联系', en: 'Contact' },
   { id: 'cv', k: '履', zh: '简历', en: 'CV' },
@@ -391,7 +388,7 @@ const NAMES = {
   heritage: { zh: '一卷地图', en: 'A rolled map' },
   work: { zh: '墙上的剪报', en: 'Clippings on the wall' },
   exp: { zh: '挂轴', en: 'A hanging scroll' },
-  portfolio: { zh: '一叠版画', en: 'A stack of prints' },
+  portfolio: { zh: '我的工作 · 项目图册', en: 'Selected work · Project prints' },
   toolbox: { zh: '砚箱', en: 'An inkstone box' },
   contact: { zh: '一封信', en: 'A sealed letter' },
   cv: { zh: '一页表格', en: 'A filled-in form' },
@@ -1193,12 +1190,12 @@ function drawRain() {
    LATE IMAGES — public-domain prints + the author's own work
    ===================================================================== */
 Promise.all(['assets/ukiyoe/wave.webp', 'assets/ukiyoe/fuji.webp', 'assets/gisauto_hero.webp', 'assets/interface.jpg',
-  'assets/ai_portfolio/ai_star.jpg', 'assets/ai_portfolio/ai_qingming.jpg', 'assets/ai_portfolio/ai_twodimensional.jpg'].map(loadImg)).then(([wave, fuji, gis, iface, star, qm, two]) => {
+  'assets/work/dipark.webp', 'assets/work/ai-gateway.webp', 'assets/work/tunan-data-lab.webp'].map(loadImg)).then(([wave, fuji, gis, iface, dipark, gateway, dataLab]) => {
   TEX.wave.userData.redraw((g, w, h) => { cover(g, wave, 0, 0, w, h); });
   TEX.fuji.userData.redraw((g, w, h) => { cover(g, fuji, 0, 0, w, h, 0.78, 0.55); });
   TEX.map.userData.redraw((g, w, h) => { cover(g, gis, 46, 42, w - 92, h - 84, 0.35, 0.4); g.fillStyle = 'rgba(240,226,190,.08)'; g.fillRect(46, 42, w - 92, h - 84); });
   TEX.news[0].userData.redraw((g, w, h) => { g.save(); g.filter = 'grayscale(1) contrast(1.25) sepia(.35)'; cover(g, iface, 26, h * 0.46, w - 120, h * 0.32); g.restore(); g.strokeStyle = '#1d1a1f'; g.lineWidth = 3; g.strokeRect(26, h * 0.46, w - 120, h * 0.32); });
-  [star, qm, two].forEach((im, i) => TEX.prints[i].userData.redraw((g, w, h) => { g.fillStyle = '#fbf6e8'; g.fillRect(0, 0, w, h); cover(g, im, 20, 20, w - 40, h - 40); g.strokeStyle = 'rgba(29,26,31,.6)'; g.lineWidth = 2; g.strokeRect(20, 20, w - 40, h - 40); }));
+  [dipark, gateway, dataLab].forEach((im, i) => TEX.prints[i].userData.redraw((g, w, h) => { g.fillStyle = '#fbf6e8'; g.fillRect(0, 0, w, h); if (im) { const scale = Math.min((w - 40) / im.width, (h - 40) / im.height), iw = im.width * scale, ih = im.height * scale; g.drawImage(im, (w - iw) / 2, (h - ih) / 2, iw, ih); } g.strokeStyle = 'rgba(29,26,31,.6)'; g.lineWidth = 2; g.strokeRect(20, 20, w - 40, h - 40); }));
   renderer.shadowMap.needsUpdate = true; wake(500);
 });
 
@@ -1278,7 +1275,7 @@ requestAnimationFrame(frame);
     };
     function build() {
       var r = document.getElementById('reader');
-      var names = { about: ['自己紹介 · 关于我', 'About'], heritage: ['HeritageExplorer', 'HeritageExplorer'], work: ['论文 · 专利 · 项目', 'Papers · Patents · Projects'], exp: ['经历', 'Timeline'], portfolio: ['AI 作品集', 'AI Portfolio'], toolbox: ['技能 · 工具链', 'Toolbox'], contact: ['联系', 'Contact'], cv: ['简历', 'CV'], door: ['版本总览', 'Version portal'] };
+      var names = { about: ['自己紹介 · 关于我', 'About'], heritage: ['HeritageExplorer', 'HeritageExplorer'], work: ['论文 · 专利 · 项目', 'Papers · Patents · Projects'], exp: ['经历', 'Timeline'], portfolio: ['我的工作', 'Selected work'], toolbox: ['技能 · 工具链', 'Toolbox'], contact: ['联系', 'Contact'], cv: ['简历', 'CV'], door: ['版本总览', 'Version portal'] };
       if (r.childElementCount) return;
       Object.keys(names).forEach(function (id) {
         var tp = document.getElementById('t-' + id); if (!tp) return;
