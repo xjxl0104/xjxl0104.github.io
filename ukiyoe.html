@@ -219,7 +219,7 @@
 
 <div id="loader" aria-hidden="true"><span class="cart"><em>王钰淞</em>の書斎</span></div>
 
-<noscript><p style="position:fixed;inset:auto 0 0 0;z-index:60;padding:1rem;background:#f4e9d0;border-top:3px solid #1d1a1f">这个页面需要 JavaScript。<a href="classic.html">打开经典版主页</a> / This page needs JavaScript — <a href="classic.html">open the classic site</a>.</p></noscript>
+<noscript><p style="position:fixed;inset:auto 0 0 0;z-index:60;padding:1rem;background:#f4e9d0;border-top:3px solid #1d1a1f">这个页面需要 JavaScript。<a href="index.html">返回版本总览</a> / This page needs JavaScript — <a href="index.html">back to all versions</a>.</p></noscript>
 
 <template id="t-about">
   <img class="portrait" src="assets/yusong_portrait.webp" alt="Yusong Wang" width="110" />
@@ -345,8 +345,8 @@
   <a class="pxbtn" href="CV_Yusong_Wang.docx"><span class="lang-zh">Word 版</span><span class="lang-en">Word version</span></a></p>
 </template>
 <template id="t-door">
-  <p><span class="lang-zh">这扇襖通往经典版主页 —— 适合快速浏览、打印或转发给 HR。</span><span class="lang-en">This door leads to the classic homepage — quicker to skim, print or forward.</span></p>
-  <p><a class="pxbtn red" href="classic.html"><span class="lang-zh">打开经典版 →</span><span class="lang-en">Open the classic site →</span></a></p>
+  <p><span class="lang-zh">这扇襖通往双场景总览 —— 可以在浮世绘书斋与 HABITAT 86 复古未来居住舱之间切换。</span><span class="lang-en">This door leads to the two-world portal — switch between the ukiyo-e study and the HABITAT 86 retro-future habitat.</span></p>
+  <p><a class="pxbtn red" href="index.html"><span class="lang-zh">返回版本总览 →</span><span class="lang-en">Back to all versions →</span></a></p>
 </template>
 
 <script type="module" onerror="window.__deskFallback && window.__deskFallback('load')">
@@ -382,7 +382,7 @@ const SECTIONS = [
   { id: 'toolbox', k: '筆', zh: '技能 · 工具链', en: 'Toolbox' },
   { id: 'contact', k: '文', zh: '联系', en: 'Contact' },
   { id: 'cv', k: '履', zh: '简历', en: 'CV' },
-  { id: 'door', k: '門', zh: '经典版主页', en: 'Classic site' }
+  { id: 'door', k: '門', zh: '版本总览', en: 'Version portal' }
 ];
 const SEC = Object.fromEntries(SECTIONS.map((s) => [s.id, s]));
 // hover names — only shown when the pointer finds the object
@@ -1278,7 +1278,7 @@ requestAnimationFrame(frame);
     };
     function build() {
       var r = document.getElementById('reader');
-      var names = { about: ['自己紹介 · 关于我', 'About'], heritage: ['HeritageExplorer', 'HeritageExplorer'], work: ['论文 · 专利 · 项目', 'Papers · Patents · Projects'], exp: ['经历', 'Timeline'], portfolio: ['AI 作品集', 'AI Portfolio'], toolbox: ['技能 · 工具链', 'Toolbox'], contact: ['联系', 'Contact'], cv: ['简历', 'CV'], door: ['经典版主页', 'Classic site'] };
+      var names = { about: ['自己紹介 · 关于我', 'About'], heritage: ['HeritageExplorer', 'HeritageExplorer'], work: ['论文 · 专利 · 项目', 'Papers · Patents · Projects'], exp: ['经历', 'Timeline'], portfolio: ['AI 作品集', 'AI Portfolio'], toolbox: ['技能 · 工具链', 'Toolbox'], contact: ['联系', 'Contact'], cv: ['简历', 'CV'], door: ['版本总览', 'Version portal'] };
       if (r.childElementCount) return;
       Object.keys(names).forEach(function (id) {
         var tp = document.getElementById('t-' + id); if (!tp) return;

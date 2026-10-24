@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const pages = ['index.html', 'ukiyoe.html', 'retro-future.html', 'classic.html', 'pixel-room.html'];
+const pages = ['index.html', 'ukiyoe.html', 'retro-future.html'];
 
 async function html(file) {
   return readFile(path.join(root, file), 'utf8');
@@ -19,33 +19,49 @@ function localLinks(source) {
     .filter(Boolean);
 }
 
-test('version portal links to all four preserved experiences', async () => {
+test('portal contains exactly two interactive scene experiences', async () => {
   const source = await html('index.html');
-  for (const target of ['ukiyoe.html', 'retro-future.html', 'classic.html', 'pixel-room.html']) {
+  for (const target of ['ukiyoe.html', 'retro-future.html']) {
     assert.match(source, new RegExp(`href=["']${target.replace('.', '\\.')}(?:[?#][^"']*)?["']`), `missing ${target}`);
   }
   assert.match(source, /id=["']version-grid["']/);
+  assert.match(source, /02\s*<small>WORLDS/);
   assert.match(source, /prefers-reduced-motion/);
 });
 
-test('every experience has a route back to the version portal', async () => {
+test('classic, pixel and document-style retro versions are removed', async () => {
+  for (const file of ['classic.html', 'pixel-room.html']) {
+    await assert.rejects(readFile(path.join(root, file)), `${file} should be deleted`);
+  }
+  for (const page of pages) {
+    const source = await html(page);
+    assert.doesNotMatch(source, /(?:classic|pixel-room)\.html/, `${page} still links to a removed version`);
+  }
+  const retro = await html('retro-future.html');
+  assert.doesNotMatch(retro, /Personal Orbit Program|orbitctl/);
+});
+
+test('both retained homepages use the interactive WebGL scene architecture', async () => {
   for (const page of pages.slice(1)) {
     const source = await html(page);
+    for (const marker of ['id="gl"', 'id="stage"', 'id="panel"', 'id="reader"', 'type="module"', 'WebGLRenderer', 'function register(', 'function openSection(', 'function setReader(']) {
+      assert.ok(source.includes(marker), `${page} missing scene marker: ${marker}`);
+    }
     assert.match(source, /href=["'](?:\.\/)?index\.html["']/, `${page} cannot return to portal`);
+    assert.match(source, /prefers-reduced-motion/);
   }
 });
 
-test('retro-future page exposes real portfolio content and accessible controls', async () => {
+test('retro-future scene has futuristic objects and real portfolio content', async () => {
   const source = await html('retro-future.html');
-  for (const id of ['top', 'heritage', 'work', 'portfolio', 'toolbox', 'contact']) {
-    assert.match(source, new RegExp(`id=["']${id}["']`), `missing #${id}`);
+  for (const marker of ['HABITAT 86', 'CRT', 'rocket', 'hologram', 'communicator', 'orbital', "register('about'", "register('heritage'", "register('contact'"]) {
+    assert.ok(source.includes(marker), `missing futuristic scene detail: ${marker}`);
   }
   for (const text of ['HeritageExplorer', 'VINCI 2025', 'CHI 2025', '15', 'ywang677@connect.hkust-gz.edu.cn']) {
     assert.ok(source.includes(text), `missing real content: ${text}`);
   }
-  assert.match(source, /id=["']langBtn["']/);
-  assert.match(source, /aria-label=/);
-  assert.match(source, /prefers-reduced-motion/);
+  assert.match(source, /id=["']btnLang["']/);
+  assert.match(source, /id=["']btnMode["']/);
   assert.match(source, /@media\s*\(max-width:/);
 });
 

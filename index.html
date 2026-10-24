@@ -3,163 +3,67 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>王钰淞 · Yusong Wang — Four Worlds</title>
-<meta name="description" content="王钰淞 Yusong Wang 的个人主页版本总览：浮世绘书斋、昭和复古未来、CRT 终端与等距像素小屋。" />
+<title>王钰淞 · Yusong Wang — Two Interactive Worlds</title>
+<meta name="description" content="王钰淞 Yusong Wang 的两个互动场景式主页：浮世绘书斋与 HABITAT 86 复古未来居住舱。" />
 <meta name="theme-color" content="#151615" />
 <style>
-  :root{--bg:#151615;--ink:#f4f1e8;--muted:#a5a69f;--acid:#dfff57;--line:#343632;--radius:28px}
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{color-scheme:dark;scroll-behavior:smooth}
+  :root{--bg:#151615;--ink:#f4f1e8;--muted:#a5a69f;--acid:#dfff57;--line:#343632;--radius:30px}
+  *{box-sizing:border-box;margin:0;padding:0}html{color-scheme:dark;scroll-behavior:smooth}
   body{min-height:100vh;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-  a{color:inherit;text-decoration:none}
-  a:focus-visible{outline:3px solid var(--acid);outline-offset:5px}
-  .shell{width:min(1440px,calc(100% - 64px));margin:auto}
-  .top{height:96px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+  a{color:inherit;text-decoration:none}a:focus-visible{outline:3px solid var(--acid);outline-offset:5px}
+  .shell{width:min(1380px,calc(100% - 64px));margin:auto}
+  .top{height:92px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
   .logo{display:flex;align-items:center;gap:14px;font:700 13px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}
   .logo-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--acid);color:#171813;font-size:12px;letter-spacing:-.04em}
   .logo small{display:block;margin-top:4px;color:var(--muted);font-weight:400;font-size:10px;letter-spacing:.13em}
-  .top-links{display:flex;align-items:center;gap:26px;color:var(--muted);font-size:12px}
-  .top-links a{transition:color .2s}
-  .top-links a:hover{color:var(--acid)}
+  .top-links{display:flex;align-items:center;gap:26px;color:var(--muted);font-size:12px}.top-links a:hover{color:var(--acid)}
   .top-links .cv{padding:10px 16px;border:1px solid #4a4c46;border-radius:99px;color:var(--ink)}
-  .hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.6fr);gap:48px;align-items:end;padding:76px 0 54px}
-  .eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:22px;color:var(--acid);font:600 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase}
-  .eyebrow::before{content:"";width:28px;height:2px;background:currentColor}
-  h1{max-width:900px;font-size:clamp(46px,6.2vw,92px);font-weight:650;line-height:1.08;letter-spacing:-.055em}
-  h1 span{color:var(--muted);font-weight:400}
-  .hero-note{padding-bottom:8px;color:var(--muted);font-size:14px;line-height:1.9}
-  .hero-note b{display:block;margin-bottom:12px;color:var(--ink);font-size:15px;font-weight:500}
-  .hero-note .count{display:flex;align-items:baseline;gap:8px;margin-top:24px;color:var(--ink);font:500 38px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.06em}
-  .hero-note .count small{color:var(--muted);font-size:10px;letter-spacing:.12em}
-  #version-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding-bottom:28px}
-  .card{position:relative;isolation:isolate;display:flex;flex-direction:column;min-height:342px;padding:28px;overflow:hidden;border-radius:var(--radius);color:#191a17;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
-  .card:hover{transform:translateY(-5px);box-shadow:0 18px 45px rgba(0,0,0,.22)}
-  .card.ukiyoe{background:#e9bf53}
-  .card.future{background:#ef8069}
-  .card.terminal{background:#b9a7e8}
-  .card.pixel{background:#8bcbd0}
-  .card-head{position:relative;z-index:2;display:flex;align-items:center;gap:10px;font:650 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase}
-  .version{opacity:.62}
-  .badge{padding:6px 9px;border:1px solid rgba(25,26,23,.3);border-radius:99px;letter-spacing:.08em}
-  .badge.new{border:0;background:#19221c;color:var(--acid)}
-  .arrow{position:absolute;z-index:3;top:22px;right:22px;display:grid;place-items:center;width:46px;height:46px;border:1px solid rgba(25,26,23,.28);border-radius:50%;font-size:22px;transition:background .2s,transform .25s}
-  .card:hover .arrow{background:#191a17;color:#fff;transform:rotate(45deg)}
-  .card-body{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:16px;align-items:end;flex:1;padding-top:42px}
-  .card h2{font-size:clamp(27px,3vw,42px);font-weight:650;line-height:1.13;letter-spacing:-.045em}
-  .card h2 small{display:block;margin-bottom:10px;font:650 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;opacity:.64}
-  .card p{max-width:340px;margin-top:16px;font-size:13px;line-height:1.75;opacity:.72}
-  .art{position:relative;display:grid;place-items:center;height:160px}
-  .art svg{width:100%;max-width:175px;max-height:160px;overflow:visible}
-  .future .art{animation:hover 5s ease-in-out infinite}
-  .pixel .art svg{shape-rendering:crispEdges}
-  .card-foot{position:relative;z-index:2;display:flex;gap:8px;flex-wrap:wrap;margin-top:24px;font:550 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;opacity:.6}
-  .card-foot span+span::before{content:"·";margin-right:8px}
-  .footer{display:flex;justify-content:space-between;gap:24px;padding:22px 0 34px;border-top:1px solid var(--line);color:var(--muted);font:400 10px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase}
-  .footer a:hover{color:var(--acid)}
+  .hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.6fr);gap:48px;align-items:end;padding:64px 0 46px}
+  .eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:20px;color:var(--acid);font:600 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase}.eyebrow::before{content:"";width:28px;height:2px;background:currentColor}
+  h1{font-size:clamp(46px,6vw,86px);font-weight:650;line-height:1.08;letter-spacing:-.055em}h1 span{color:var(--muted);font-weight:400}
+  .hero-note{padding-bottom:8px;color:var(--muted);font-size:14px;line-height:1.9}.hero-note b{display:block;margin-bottom:12px;color:var(--ink);font-size:15px;font-weight:500}
+  .hero-note .count{display:flex;align-items:baseline;gap:8px;margin-top:22px;color:var(--ink);font:500 38px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.06em}.hero-note .count small{color:var(--muted);font-size:10px;letter-spacing:.12em}
+  #version-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding-bottom:30px}
+  .card{position:relative;isolation:isolate;display:flex;flex-direction:column;min-height:430px;padding:30px;overflow:hidden;border-radius:var(--radius);color:#191a17;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+  .card:hover{transform:translateY(-5px);box-shadow:0 18px 45px rgba(0,0,0,.22)}.card.ukiyoe{background:#e9bf53}.card.future{background:#ef8069}
+  .card-head{display:flex;align-items:center;gap:10px;font:650 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase}.version{opacity:.62}
+  .badge{padding:6px 9px;border:1px solid rgba(25,26,23,.3);border-radius:99px}.badge.new{border:0;background:#19221c;color:var(--acid)}
+  .arrow{position:absolute;top:24px;right:24px;display:grid;place-items:center;width:48px;height:48px;border:1px solid rgba(25,26,23,.28);border-radius:50%;font-size:22px;transition:background .2s,transform .25s}.card:hover .arrow{background:#191a17;color:#fff;transform:rotate(45deg)}
+  .card-body{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:20px;align-items:center;flex:1;padding-top:38px}
+  .card h2{font-size:clamp(30px,3.3vw,48px);font-weight:650;line-height:1.13;letter-spacing:-.045em}.mobile-break{display:none}.card h2 small{display:block;margin-bottom:11px;font:650 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;opacity:.64}
+  .card p{max-width:350px;margin-top:18px;font-size:13px;line-height:1.8;opacity:.72}.art{display:grid;place-items:center;height:220px}.art svg{width:100%;max-width:220px;max-height:220px;overflow:visible}.future .art{animation:hover 5s ease-in-out infinite}
+  .card-foot{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px;font:550 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;opacity:.6}.card-foot span+span::before{content:"·";margin-right:8px}
+  .footer{display:flex;justify-content:space-between;gap:24px;padding:22px 0 32px;border-top:1px solid var(--line);color:var(--muted);font:400 10px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase}.footer a:hover{color:var(--acid)}
   @keyframes hover{50%{transform:translateY(-7px) rotate(2deg)}}
-  @media(max-width:900px){
-    .shell{width:min(100% - 36px,720px)}
-    .hero{grid-template-columns:1fr;gap:24px;padding:54px 0 38px}
-    .hero-note{max-width:560px}
-    .hero-note .count{display:none}
-    #version-grid{grid-template-columns:1fr}
-    .card{min-height:320px}
-  }
-  @media(max-width:540px){
-    .shell{width:calc(100% - 28px)}
-    .top{height:76px}
-    .top-links{gap:12px}.top-links>a:first-child{display:none}
-    .top-links .cv{padding:8px 12px}
-    .hero{padding-top:42px}
-    h1{font-size:45px}
-    .card{padding:23px;min-height:330px;border-radius:24px}
-    .arrow{top:17px;right:17px;width:42px;height:42px}
-    .card-body{grid-template-columns:minmax(0,1fr) 105px;padding-top:46px}
-    .card h2{font-size:28px}.card p{font-size:12px}
-    .art{height:120px}.art svg{max-width:120px;max-height:120px}
-    .footer{flex-direction:column;gap:8px}
-  }
+  @media(max-width:960px){.shell{width:min(100% - 36px,720px)}.hero{grid-template-columns:1fr;gap:24px;padding:50px 0 38px}.hero-note .count{display:none}#version-grid{grid-template-columns:1fr}.card{min-height:390px}}
+  @media(max-width:540px){.shell{width:calc(100% - 28px)}.top{height:74px}.top-links>a:first-child{display:none}.top-links .cv{padding:8px 12px}.hero{padding-top:40px}h1{font-size:45px}.card{padding:24px;min-height:400px;border-radius:24px}.arrow{top:18px;right:18px;width:42px;height:42px}.card-body{grid-template-columns:minmax(0,1fr) 118px;gap:10px}.card h2{font-size:29px}.mobile-break{display:block}.card p{font-size:12px}.art{height:150px}.art svg{max-width:135px;max-height:150px}.footer{flex-direction:column;gap:8px}}
   @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.card,.arrow{transition:none}.future .art{animation:none}.card:hover{transform:none}}
 </style>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23151615'/%3E%3Ccircle cx='32' cy='32' r='21' fill='%23dfff57'/%3E%3Cpath d='M17 22h7l8 12 8-12h7L35 42v7h-7v-7z' fill='%23151615'/%3E%3C/svg%3E" />
 </head>
 <body>
 <header class="top shell">
-  <a class="logo" href="index.html" aria-label="Yusong Wang 版本总览">
-    <span class="logo-mark">YW</span>
-    <span>YUSONG WANG<small>PERSONAL HOMEPAGE ARCHIVE</small></span>
-  </a>
-  <nav class="top-links" aria-label="快捷链接">
-    <a href="#version-grid">版本总览 / VERSIONS</a>
-    <a class="cv" href="CV_Yusong_Wang.pdf">下载简历 ↗</a>
-  </nav>
+  <a class="logo" href="index.html" aria-label="Yusong Wang 双场景总览"><span class="logo-mark">YW</span><span>YUSONG WANG<small>TWO INTERACTIVE WORLDS</small></span></a>
+  <nav class="top-links" aria-label="快捷链接"><a href="#version-grid">场景总览 / WORLDS</a><a class="cv" href="CV_Yusong_Wang.pdf">下载简历 ↗</a></nav>
 </header>
 <main class="shell">
   <section class="hero" aria-labelledby="page-title">
-    <div>
-      <div class="eyebrow">One person · Four worlds · 2026</div>
-      <h1 id="page-title">四种宇宙，<br><span>同一个人。</span></h1>
-    </div>
-    <div class="hero-note">
-      <b>选择一种观看方式。</b>
-      从一张和式书案，到一艘想象中的轨道飞船。四个入口，分享同一份真实的经历、研究与作品。
-      <div class="count">04 <small>WORLDS / 版本</small></div>
-    </div>
+    <div><div class="eyebrow">One person · Two worlds · 2026</div><h1 id="page-title">两种宇宙，<br><span>同一个人。</span></h1></div>
+    <div class="hero-note"><b>选择一扇门，走进场景。</b>一张和式书案，一座来自 1986 年的未来居住舱。所有设备与摆件，都通往同一份真实的经历、研究与作品。<div class="count">02 <small>WORLDS / 场景</small></div></div>
   </section>
-
-  <section id="version-grid" aria-label="主页版本">
-    <a class="card ukiyoe" href="ukiyoe.html" aria-label="进入浮世绘书斋">
-      <div class="card-head"><span class="version">01</span><span class="badge">INTERACTIVE 3D</span></div>
-      <span class="arrow" aria-hidden="true">↗</span>
-      <div class="card-body">
-        <div><h2><small>Ukiyo-e Study</small>浮世绘书斋</h2><p>光影落在和式书案上。拿起摆件，阅读 HeritageExplorer、论文与作品。</p></div>
-        <div class="art" aria-hidden="true">
-          <svg viewBox="0 0 180 160" fill="none"><path d="M23 121 89 86l68 33-68 37z" fill="#1d1a1f" opacity=".15"/><path d="m37 82 60-31 51 27-60 34z" fill="#f4e9d0" stroke="#1d1a1f" stroke-width="3"/><path d="m37 82 51 30v24L37 105z" fill="#c8392b" stroke="#1d1a1f" stroke-width="3"/><path d="m88 112 60-34v24l-60 34z" fill="#1f3a63" stroke="#1d1a1f" stroke-width="3"/><path d="m73 72 27-14 23 12-28 16z" fill="#2f5f93" stroke="#1d1a1f" stroke-width="3"/><path d="M55 54V25m0 0c-20 2-21 22 0 24 21-2 20-22 0-24Z" fill="#f4e9d0" stroke="#1d1a1f" stroke-width="3"/><path d="M54 24V10" stroke="#1d1a1f" stroke-width="3"/></svg>
-        </div>
-      </div>
+  <section id="version-grid" aria-label="两个互动主页">
+    <a class="card ukiyoe" href="ukiyoe.html" aria-label="进入浮世绘书斋互动场景">
+      <div class="card-head"><span class="version">01</span><span class="badge">INTERACTIVE 3D</span></div><span class="arrow" aria-hidden="true">↗</span>
+      <div class="card-body"><div><h2><small>Ukiyo-e Study</small>浮世绘书斋</h2><p>光影落在和式书案上。拿起地图、笔记与信件，阅读 HeritageExplorer、论文和作品。</p></div><div class="art" aria-hidden="true"><svg viewBox="0 0 220 200" fill="none"><path d="M23 157 106 110l91 43-91 43z" fill="#1d1a1f" opacity=".15"/><path d="m42 103 76-40 65 35-76 43z" fill="#f4e9d0" stroke="#1d1a1f" stroke-width="4"/><path d="m42 103 65 38v32l-65-37z" fill="#c8392b" stroke="#1d1a1f" stroke-width="4"/><path d="m107 141 76-43v32l-76 43z" fill="#1f3a63" stroke="#1d1a1f" stroke-width="4"/><path d="m86 91 35-18 29 15-35 20z" fill="#2f5f93" stroke="#1d1a1f" stroke-width="4"/><path d="M64 67V29m0 0c-25 3-26 28 0 30 25-3 25-27 0-30Z" fill="#f4e9d0" stroke="#1d1a1f" stroke-width="4"/><path d="M64 29V12" stroke="#1d1a1f" stroke-width="4"/></svg></div></div>
       <div class="card-foot"><span>WebGL</span><span>昼夜光影</span><span>摆件交互</span></div>
     </a>
-
-    <a class="card future" href="retro-future.html" aria-label="进入昭和复古未来新版">
-      <div class="card-head"><span class="version">02</span><span class="badge new">NEW · REV 4.0</span></div>
-      <span class="arrow" aria-hidden="true">↗</span>
-      <div class="card-body">
-        <div><h2><small>Showa Retro Future</small>昭和复古未来</h2><p>启动一台来自 1986 的未来终端。穿过项目星图，抵达下一段研究轨道。</p></div>
-        <div class="art" aria-hidden="true">
-          <svg viewBox="0 0 180 160" fill="none"><ellipse cx="91" cy="83" rx="72" ry="30" transform="rotate(-24 91 83)" stroke="#19221c" stroke-width="3"/><ellipse cx="91" cy="83" rx="54" ry="54" stroke="#19221c" stroke-width="2" stroke-dasharray="4 5"/><circle cx="91" cy="83" r="34" fill="#dfff57" stroke="#19221c" stroke-width="3"/><path d="M74 94V70l34-12v25" stroke="#19221c" stroke-width="4"/><circle cx="74" cy="96" r="8" fill="#19221c"/><circle cx="108" cy="85" r="8" fill="#19221c"/><circle cx="145" cy="48" r="8" fill="#f4f1e8" stroke="#19221c" stroke-width="3"/><path d="m28 37 3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#19221c"/></svg>
-        </div>
-      </div>
-      <div class="card-foot"><span>项目星图</span><span>轨道档案</span><span>双语</span></div>
-    </a>
-
-    <a class="card terminal" href="classic.html" aria-label="进入 CRT 终端档案版">
-      <div class="card-head"><span class="version">03</span><span class="badge">READER FRIENDLY</span></div>
-      <span class="arrow" aria-hidden="true">↗</span>
-      <div class="card-body">
-        <div><h2><small>CRT Archive</small>CRT 终端档案</h2><p>琥珀信号、工程读数与完整履历。信息密度最高，适合快速浏览与转发。</p></div>
-        <div class="art" aria-hidden="true">
-          <svg viewBox="0 0 180 160" fill="none"><rect x="26" y="20" width="128" height="106" rx="8" fill="#1b1b19"/><rect x="37" y="31" width="106" height="72" rx="3" fill="#2a291f" stroke="#f2b33d" stroke-width="2"/><path d="m49 48 9 8-9 8m18 0h25m-43 18h66m-66 10h46" stroke="#f2b33d" stroke-width="3"/><path d="M76 126v15m-25 0h78" stroke="#1b1b19" stroke-width="7"/><path d="M39 38h100M39 44h100M39 50h100M39 56h100M39 62h100M39 68h100M39 74h100M39 80h100M39 86h100M39 92h100" stroke="#f2b33d" stroke-opacity=".12"/></svg>
-        </div>
-      </div>
-      <div class="card-foot"><span>CRT HUD</span><span>完整履历</span><span>图片灯箱</span></div>
-    </a>
-
-    <a class="card pixel" href="pixel-room.html" aria-label="进入等距像素小屋">
-      <div class="card-head"><span class="version">04</span><span class="badge">PIXEL DIORAMA</span></div>
-      <span class="arrow" aria-hidden="true">↗</span>
-      <div class="card-body">
-        <div><h2><small>Pixel Room</small>等距像素小屋</h2><p>回到最初的日式房间。点击闪光的物件，在昼夜里发现彩蛋。</p></div>
-        <div class="art" aria-hidden="true">
-          <svg viewBox="0 0 180 160" fill="none"><path d="m90 22 69 36v70l-69 30-69-30V58z" fill="#fbf3e1" stroke="#2b2230" stroke-width="5"/><path d="m21 58 69 36 69-36M90 94v64" stroke="#2b2230" stroke-width="5"/><path d="m42 74 27 14v27l-27-14z" fill="#34467d"/><path d="m111 77 26-14v27l-26 14z" fill="#d64933"/><path d="m66 124 25 13 25-13-25-13z" fill="#f2c14e" stroke="#2b2230" stroke-width="4"/><path d="M51 43h19v19H51zm60-12h12v12h-12z" fill="#d64933"/><path d="M43 36h8v8h-8zm80 21h8v8h-8z" fill="#2b2230"/></svg>
-        </div>
-      </div>
-      <div class="card-foot"><span>Canvas</span><span>等距场景</span><span>音效彩蛋</span></div>
+    <a class="card future" href="retro-future.html" aria-label="进入 HABITAT 86 复古未来互动居住舱">
+      <div class="card-head"><span class="version">02</span><span class="badge new">NEW · HABITAT 86</span></div><span class="arrow" aria-hidden="true">↗</span>
+      <div class="card-body"><div><h2><small>Retro-future Habitat</small>复古未来<br class="mobile-break">居住舱</h2><p>启动 CRT 身份终端、GIS 全息地图和轨道通信器。点击舱内设备，让研究沿轨道展开。</p></div><div class="art" aria-hidden="true"><svg viewBox="0 0 220 200" fill="none"><ellipse cx="111" cy="103" rx="92" ry="39" transform="rotate(-20 111 103)" stroke="#19221c" stroke-width="3"/><path d="m37 139 76-40 69 36-76 43z" fill="#ede6cf" stroke="#19221c" stroke-width="4"/><path d="m37 139 69 39v14l-69-38z" fill="#1b5058" stroke="#19221c" stroke-width="4"/><path d="m106 178 76-43v14l-76 43z" fill="#dfff57" stroke="#19221c" stroke-width="4"/><rect x="64" y="72" width="62" height="50" rx="7" fill="#ede6cf" stroke="#19221c" stroke-width="4"/><rect x="74" y="81" width="42" height="27" rx="3" fill="#17343b"/><path d="M80 89h28m-28 7h20m-20 7h25" stroke="#dfff57" stroke-width="3"/><path d="M77 122v14h37v-14" stroke="#19221c" stroke-width="4"/><path d="M153 99V43" stroke="#19221c" stroke-width="12"/><path d="m153 20 16 28h-32z" fill="#dfff57" stroke="#19221c" stroke-width="4"/><path d="m143 82-12 22 15-3m17-19 12 22-15-3" fill="#ef8069" stroke="#19221c" stroke-width="4"/><circle cx="153" cy="59" r="6" fill="#8bcbd0" stroke="#19221c" stroke-width="3"/><circle cx="184" cy="46" r="8" fill="#ede6cf" stroke="#19221c" stroke-width="3"/></svg></div></div>
+      <div class="card-foot"><span>WebGL</span><span>设备交互</span><span>轨道昼夜</span></div>
     </a>
   </section>
 </main>
-<footer class="footer shell">
-  <span>© 2026 Yusong Wang · Same story, different interfaces.</span>
-  <a href="https://github.com/xjxl0104/xjxl0104.github.io" target="_blank" rel="noopener">SOURCE / GITHUB ↗</a>
-</footer>
+<footer class="footer shell"><span>© 2026 Yusong Wang · Two scenes, one real story.</span><a href="https://github.com/xjxl0104/xjxl0104.github.io" target="_blank" rel="noopener">SOURCE / GITHUB ↗</a></footer>
 </body>
 </html>
