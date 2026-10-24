@@ -1,0 +1,9 @@
+# Build/working files not needed on the live site
+_build_*.py
+_chunk_*.html
+index_before_codex.html
+
+# OS junk
+Thumbs.db
+.DS_Store
+desktop.ini
