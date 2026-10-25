@@ -20,7 +20,7 @@ html[data-lang="zh"] .lang-en,html[data-lang="en"] .lang-zh{display:none}
 #css iframe{border:0;background:#000;pointer-events:none!important}
 html.at-screen #css iframe{pointer-events:auto!important}
 #gl{z-index:1;pointer-events:none;display:block}
-#grain{position:fixed;inset:-50%;z-index:2;pointer-events:none;opacity:.07;mix-blend-mode:multiply;animation:grain .5s steps(4) infinite}
+#grain{position:fixed;inset:-50%;z-index:2;pointer-events:none;opacity:.04;mix-blend-mode:multiply;animation:grain .5s steps(4) infinite}
 @keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-1%)}}
 #vignette{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,.18) 100%)}
 
@@ -222,7 +222,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setClearColor(0x000000, 0);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
+renderer.toneMappingExposure = 1;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -248,7 +248,7 @@ key.shadow.mapSize.set(2048, 2048);
 key.shadow.camera.left = -2.2; key.shadow.camera.right = 2.2;
 key.shadow.camera.top = 2.2; key.shadow.camera.bottom = -2.2;
 key.shadow.camera.near = 1; key.shadow.camera.far = 14;
-key.shadow.bias = -0.0004; key.shadow.normalBias = 0.02; key.shadow.radius = 4;
+key.shadow.bias = -0.00015; key.shadow.normalBias = 0.006; key.shadow.radius = 4;
 scene.add(key);
 const fill = new THREE.DirectionalLight(0xdfe6ff, 0.55);
 fill.position.set(-4, 2.5, 1.5);
@@ -285,10 +285,29 @@ function rrect(w, h, r) {
   s.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r); s.lineTo(-w / 2, -h / 2 + r); s.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2);
   return s;
 }
+function roundedBoxGeometry(w, h, dd, r, detail = 3) {
+  // ExtrudeGeometry adds its bevel outside the profile: inset that profile so
+  // the finished object's dimensions, and therefore its contact points, are exact.
+  const bevel = Math.min(r, dd / 3, w / 4, h / 4), inset = bevel * 0.9;
+  const corner = Math.max(0.0001, Math.min(r - inset, (w - inset * 2) / 2, (h - inset * 2) / 2));
+  const g = new THREE.ExtrudeGeometry(rrect(w - inset * 2, h - inset * 2, corner), { depth: dd - 2 * bevel, bevelEnabled: true, bevelThickness: bevel, bevelSize: inset, bevelSegments: detail, curveSegments: detail === 1 ? 1 : 5 });
+  return g.center();
+}
 function rbox(w, h, dd, r, mat, x, y, z, p) {
-  const g = new THREE.ExtrudeGeometry(rrect(w, h, r), { depth: dd - 2 * Math.min(r, dd / 3), bevelEnabled: true, bevelThickness: Math.min(r, dd / 3), bevelSize: Math.min(r, dd / 3) * 0.9, bevelSegments: 3, curveSegments: 6 });
-  g.center();
-  return mesh(g, mat, x, y, z, p);
+  return mesh(roundedBoxGeometry(w, h, dd, r), mat, x, y, z, p);
+}
+function label(w, h, text, color, background, x, y, z, parent, size = 25) {
+  const texture = canvasTex(512, Math.round(512 * h / w), (g, cw, ch) => {
+    if (background) { g.fillStyle = background; g.fillRect(0, 0, cw, ch); }
+    g.fillStyle = color; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.font = `${size}px monospace`; g.fillText(text, cw / 2, ch / 2);
+  });
+  const item = mesh(new THREE.PlaneGeometry(w, h), M(0xffffff, { map: texture, transparent: true, roughness: 0.8, depthWrite: false }), x, y, z, parent);
+  item.castShadow = false;
+  return item;
+}
+function tube(points, radius, material, parent = scene, segments = 32) {
+  return mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map((p) => new THREE.Vector3(...p))), segments, radius, 6, false), material, 0, 0, 0, parent);
 }
 
 
@@ -298,55 +317,90 @@ floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
 
 /* ================= 书桌 ================= */
 const TOP = 0.75;
-const desk = new THREE.Group(); scene.add(desk);
-rbox(1.62, 0.036, 0.82, 0.008, deskTop, 0, TOP - 0.018, 0, desk);
+const desk = new THREE.Group(); desk.name = 'desk'; scene.add(desk);
+rbox(1.62, 0.036, 0.82, 0.008, deskTop, 0, TOP - 0.018, 0, desk).name = 'desk-top';
+rbox(1.596, 0.008, 0.796, 0.003, M(0x202124), 0, TOP - 0.035, 0, desk);
 box(1.5, 0.06, 0.03, darkMetal, 0.04, TOP - 0.07, -0.37, desk); // 背板横梁
 for (const z of [-0.36, 0.36]) {
   box(0.04, TOP - 0.036, 0.04, metal, 0.76, (TOP - 0.036) / 2, z, desk);
+  rbox(0.044, 0.012, 0.046, 0.003, black, 0.76, 0.006, z, desk);
 }
 box(0.04, 0.04, 0.72, metal, 0.76, 0.12, 0, desk);
 // 左侧抽屉柜
 const ped = new THREE.Group(); ped.position.set(-0.55, 0, 0); desk.add(ped);
 box(0.44, TOP - 0.036 - 0.03, 0.76, M(0xb8bbc0, { roughness: 0.45, metalness: 0.35 }), 0, (TOP - 0.066) / 2 + 0.03, 0, ped);
 for (const [y, h] of [[0.58, 0.16], [0.3, 0.36]]) {
-  box(0.4, h - 0.012, 0.012, M(0xc9ccd1, { roughness: 0.4, metalness: 0.3 }), 0, y, 0.385, ped);
-  box(0.12, 0.016, 0.02, darkMetal, 0, y + h / 2 - 0.05, 0.4, ped);
+  rbox(0.4, h - 0.012, 0.012, 0.004, M(0xc9ccd1, { roughness: 0.4, metalness: 0.3 }), 0, y, 0.385, ped);
+  box(0.132, 0.025, 0.002, M(0x92969c), 0, y + h / 2 - 0.05, 0.392, ped);
+  for (const x of [-0.052, 0.052]) box(0.012, 0.012, 0.026, darkMetal, x, y + h / 2 - 0.05, 0.404, ped);
+  rbox(0.12, 0.012, 0.012, 0.003, darkMetal, 0, y + h / 2 - 0.05, 0.417, ped);
 }
+mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.003, 16), metal, 0.15, 0.62, 0.394, ped).rotation.x = Math.PI / 2;
+box(0.0015, 0.008, 0.001, black, 0.15, 0.62, 0.396, ped);
 for (const x of [-0.2, 0.2]) box(0.03, 0.03, 0.74, darkMetal, x, 0.015, 0, ped);
 
 ld.loaded('deskModel');
 /* ================= 电脑主机 ================= */
-const pc = new THREE.Group(); pc.position.set(0, TOP, -0.12); scene.add(pc);
-rbox(0.46, 0.13, 0.42, 0.012, beige, 0, 0.065, 0, pc);
-box(0.13, 0.012, 0.004, black, 0.12, 0.075, 0.211, pc);       // 软驱口
-box(0.15, 0.03, 0.004, beigeDark, 0.12, 0.045, 0.211, pc);    // 光驱面板
-box(0.022, 0.012, 0.006, beigeDark, -0.17, 0.08, 0.211, pc);  // 电源键
-mesh(new THREE.SphereGeometry(0.0035, 8, 8), new THREE.MeshBasicMaterial({ color: 0x3dff6a }), -0.13, 0.08, 0.212, pc);
-// 显示器底座
-mesh(new THREE.CylinderGeometry(0.1, 0.12, 0.02, 32), beigeDark, 0, 0.14, 0, pc);
-box(0.08, 0.04, 0.08, beigeDark, 0, 0.165, -0.01, pc);
+const pc = new THREE.Group(); pc.name = 'computer-case'; pc.position.set(0, TOP, -0.12); scene.add(pc);
+for (const x of [-0.18, 0.18]) for (const z of [-0.16, 0.16]) rbox(0.036, 0.012, 0.034, 0.004, black, x, 0.006, z, pc);
+rbox(0.47, 0.128, 0.42, 0.009, beige, 0, 0.076, 0, pc);
+rbox(0.474, 0.004, 0.418, 0.001, beigeDark, 0, 0.042, 0, pc); // 壳体接缝
+rbox(0.454, 0.105, 0.009, 0.004, beige, 0, 0.078, 0.211, pc);
+// 两个不同年代的驱动器：凹入的面板、盘槽和退盘钮。
+rbox(0.158, 0.036, 0.006, 0.002, beigeDark, 0.125, 0.1, 0.218, pc);
+box(0.119, 0.006, 0.002, black, 0.121, 0.102, 0.222, pc);
+box(0.015, 0.006, 0.004, beige, 0.185, 0.092, 0.223, pc);
+rbox(0.158, 0.029, 0.006, 0.002, beigeDark, 0.125, 0.058, 0.218, pc);
+box(0.125, 0.0015, 0.002, M(0x8d897e), 0.119, 0.061, 0.222, pc);
+box(0.009, 0.004, 0.003, beige, 0.185, 0.05, 0.223, pc);
+for (let i = 0; i < 13; i++) box(0.0025, 0.032, 0.001, M(0x777569), -0.205 + i * 0.008, 0.063, 0.2165, pc);
+rbox(0.022, 0.018, 0.006, 0.003, beigeDark, -0.052, 0.059, 0.219, pc);
+mesh(new THREE.SphereGeometry(0.0025, 8, 8), new THREE.MeshBasicMaterial({ color: 0x6cbd73 }), -0.03, 0.059, 0.221, pc);
+label(0.105, 0.014, 'YW / SYSTEM 26', '#5b5b53', null, -0.155, 0.105, 0.217, pc, 42);
+for (let i = 0; i < 9; i++) box(0.001, 0.033, 0.005, M(0x888477), 0.2355, 0.091, -0.15 + i * 0.012, pc);
+// 圆形转盘、短颈与显示器下壳相接。
+mesh(new THREE.CylinderGeometry(0.106, 0.118, 0.017, 40), beigeDark, 0, 0.1485, -0.012, pc);
+mesh(new THREE.CylinderGeometry(0.089, 0.102, 0.01, 40), beige, 0, 0.162, -0.012, pc);
+rbox(0.078, 0.05, 0.082, 0.009, beigeDark, 0, 0.186, -0.025, pc);
 
 ld.loaded('computerCaseModel');
 /* ================= 显示器 ================= */
-const mon = new THREE.Group(); mon.position.set(0, TOP + 0.13 + 0.235, -0.04); scene.add(mon);
+const mon = new THREE.Group(); mon.name = 'monitor'; mon.position.set(0, TOP + 0.375, -0.04); scene.add(mon);
 const BW = 0.43, BH = 0.375, SW = 0.32, SH = 0.24, SY = 0.018; // 外框与屏幕（4:3）
 {
-  const outer = rrect(BW, BH, 0.018);
-  const hole = rrect(SW + 0.024, SH + 0.022, 0.012); // 屏幕开口
+  const outer = rrect(BW - 0.012, BH - 0.012, 0.016);
+  const hole = rrect(SW + 0.036, SH + 0.036, 0.009); // 倒角后的净开口比玻璃略大
   const holePath = new THREE.Path(); holePath.setFromPoints(hole.getPoints(8).map((p) => new THREE.Vector2(p.x, p.y + SY)).reverse());
   outer.holes.push(holePath);
   const g = new THREE.ExtrudeGeometry(outer, { depth: 0.045, bevelEnabled: true, bevelThickness: 0.006, bevelSize: 0.006, bevelSegments: 3, curveSegments: 8 });
   g.translate(0, 0, -0.045);
-  mesh(g, beige, 0, 0, 0, mon);
-  // 屏幕四周向内收的斜边（显像管外沿）
-  const tunnel = new THREE.Mesh(new THREE.CylinderGeometry(Math.SQRT2 * (SW / 2 + 0.012), Math.SQRT2 * (SW / 2 + 0.002), 0.03, 4, 1, true, Math.PI / 4), M(0x2a2a2a, { roughness: 0.7, side: THREE.DoubleSide }));
-  tunnel.rotation.set(Math.PI / 2, 0, 0); tunnel.scale.set(1, 1, (SH + 0.022) / (SW + 0.024));
-  tunnel.position.set(0, SY, -0.02); mon.add(tunnel);
-  // 机身：后部收窄的显像管外壳
-  const back = new THREE.Mesh(new THREE.CylinderGeometry(Math.SQRT2 * 0.2, Math.SQRT2 * 0.12, 0.3, 4, 1, false, Math.PI / 4), beige);
-  back.rotation.set(Math.PI / 2, 0, 0); back.scale.set(1, 1, 0.86);
-  back.position.set(0, 0.0, -0.2); back.castShadow = back.receiveShadow = true; mon.add(back);
-  box(0.24, 0.16, 0.06, beigeDark, 0, -0.01, -0.37, mon);
+  mesh(g, beige, 0, 0, 0, mon).name = 'monitor-bezel';
+  // 直接连接两个矩形环；宽高始终在屏幕平面内，避免旋转圆柱后的轴混淆。
+  const rectangularShell = (fw, fh, rw, rh, front, back, radius, material, y = 0) => {
+    const a = rrect(fw, fh, radius).getPoints(8), b = rrect(rw, rh, radius).getPoints(8);
+    const vertices = [], indices = [];
+    for (let i = 0; i < a.length; i++) vertices.push(a[i].x, a[i].y + y, front, b[i].x, b[i].y + y, back);
+    for (let i = 0; i < a.length - 1; i++) { const j = i * 2; indices.push(j, j + 1, j + 2, j + 2, j + 1, j + 3); }
+    const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3)); geo.setIndex(indices); geo.computeVertexNormals();
+    return mesh(geo, material, 0, 0, 0, mon);
+  };
+  rectangularShell(SW + 0.024, SH + 0.024, SW + 0.001, SH + 0.001, -0.003, -0.0305, 0.002, M(0x383a36, { roughness: 0.75, side: THREE.DoubleSide }), SY).name = 'screen-tunnel';
+  rectangularShell(0.416, 0.361, 0.282, 0.244, -0.05, -0.31, 0.014, beige).name = 'monitor-rear-shell';
+  // 接缝在后壳表面围一圈；末端盖板远在玻璃之后。
+  rectangularShell(0.417, 0.362, 0.414, 0.359, -0.052, -0.057, 0.014, beigeDark);
+  rbox(0.282, 0.244, 0.045, 0.01, beigeDark, 0, 0, -0.3325, mon);
+  rbox(0.254, 0.214, 0.004, 0.006, beige, 0, 0, -0.357, mon);
+  const vent = M(0x827f73, { roughness: 0.85 });
+  for (const side of [-1, 1]) for (let i = 0; i < 10; i++) {
+    const z = -0.105 - i * 0.016, x = side * (0.208 + (z + 0.05) * (0.067 / 0.26));
+    const slit = box(0.0015, 0.062, 0.006, vent, x + side * 0.001, 0.036, z, mon);
+    slit.rotation.y = -side * Math.atan(0.067 / 0.26);
+  }
+  for (let i = 0; i < 12; i++) {
+    const z = -0.125, y = 0.1805 + (z + 0.05) * (0.0585 / 0.26);
+    const slit = box(0.005, 0.0015, 0.065, vent, -0.105 + i * 0.019, y + 0.001, z, mon);
+    slit.rotation.x = Math.atan(0.0585 / 0.26);
+  }
   // 铭牌、电源灯
   const badge = new THREE.Mesh(new THREE.PlaneGeometry(0.075, 0.022), new THREE.MeshStandardMaterial({ map: canvasTex(300, 88, (g, w, h) => {
     g.fillStyle = '#d9d4c6'; g.fillRect(0, 0, w, h);
@@ -355,13 +409,17 @@ const BW = 0.43, BH = 0.375, SW = 0.32, SH = 0.24, SY = 0.018; // 外框与屏�
     g.fillStyle = '#2b2b2b'; g.textAlign = 'left'; g.font = 'italic bold 34px Georgia, serif'; g.fillText('Yusong', 62, 34);
     g.font = '18px Georgia, serif'; g.fillText('Systems Lab', 64, 66);
   }), roughness: 0.6 }));
-  badge.position.set(-0.15, -0.165, 0.0062); mon.add(badge);
-  mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.006, 20), beigeDark, 0.17, -0.165, 0.004, mon).rotation.x = Math.PI / 2;
-  mesh(new THREE.SphereGeometry(0.003, 8, 8), new THREE.MeshBasicMaterial({ color: 0x3dff6a }), 0.15, -0.165, 0.006, mon);
+  badge.position.set(-0.145, -0.155, 0.0062); mon.add(badge);
+  rbox(0.088, 0.022, 0.002, 0.003, beigeDark, 0.123, -0.156, 0.0065, mon);
+  for (const x of [0.096, 0.118]) mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.003, 16), beige, x, -0.156, 0.009, mon).rotation.x = Math.PI / 2;
+  mesh(new THREE.CylinderGeometry(0.007, 0.007, 0.004, 20), beige, 0.148, -0.156, 0.009, mon).rotation.x = Math.PI / 2;
+  mesh(new THREE.SphereGeometry(0.0025, 8, 8), new THREE.MeshBasicMaterial({ color: 0x7ecf86 }), 0.175, -0.156, 0.007, mon);
+  label(0.052, 0.008, 'BRIGHT  CONTRAST', '#777569', null, 0.105, -0.137, 0.0065, mon, 32);
+  for (let i = 0; i < 8; i++) box(0.016, 0.0015, 0.001, beigeDark, -0.051 + i * 0.014, -0.174, 0.0065, mon);
 }
 // 屏幕：在 WebGL 里“挖洞”，让后面的网页透出来
 const screenMesh = new THREE.Mesh(new THREE.PlaneGeometry(SW, SH), new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 0, blending: THREE.NoBlending }));
-screenMesh.position.set(0, SY, -0.03); mon.add(screenMesh);
+screenMesh.name = 'screen'; screenMesh.position.set(0, SY, -0.03); mon.add(screenMesh);
 // 玻璃反光
 const glass = new THREE.Mesh(new THREE.PlaneGeometry(SW, SH), new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, map: canvasTex(256, 192, (g, w, h) => {
   const r = g.createRadialGradient(w * 0.5, h * 0.5, h * 0.25, w * 0.5, h * 0.5, w * 0.62);
@@ -369,117 +427,213 @@ const glass = new THREE.Mesh(new THREE.PlaneGeometry(SW, SH), new THREE.MeshBasi
   const l = g.createLinearGradient(0, 0, w, h); l.addColorStop(0, 'rgba(255,255,255,0.10)'); l.addColorStop(0.3, 'rgba(255,255,255,0.015)'); l.addColorStop(1, 'rgba(255,255,255,0)');
   g.fillStyle = l; g.fillRect(0, 0, w, h);
 }) }));
-glass.position.set(0, SY, -0.029); mon.add(glass);
+glass.name = 'screen-glass'; glass.position.set(0, SY, -0.029); mon.add(glass);
 
 ld.loaded('monitorModel');
 /* ================= 键盘与鼠标 ================= */
-const kb = new THREE.Group(); kb.position.set(-0.02, TOP, 0.2); kb.rotation.set(0.05, 0, 0); scene.add(kb);
-rbox(0.47, 0.026, 0.165, 0.006, beige, 0, 0.013, 0, kb);
+const kb = new THREE.Group(); kb.name = 'keyboard'; kb.position.set(-0.025, TOP, 0.242); scene.add(kb);
+for (const x of [-0.2, 0.2]) for (const z of [-0.06, 0.06]) box(0.02, 0.004, 0.016, black, x, 0.002, z, kb);
+rbox(0.478, 0.014, 0.171, 0.005, beigeDark, 0, 0.011, 0, kb);
+// 底面保持水平；只让上盖和键帽倾斜，前脚不再压进桌面。
+const kbSlope = 0.075;
+const kbCover = rbox(0.478, 0.016, 0.171, 0.005, beige, 0, 0.022, 0, kb); kbCover.rotation.x = kbSlope;
+const well = rbox(0.448, 0.002, 0.132, 0.002, M(0x8d8a7e), 0, 0.0307, -0.006, kb); well.rotation.x = kbSlope;
 {
-  const keyGeo = new THREE.BoxGeometry(0.0155, 0.009, 0.0155);
-  const keys = new THREE.InstancedMesh(keyGeo, M(0xe6e1d4, { roughness: 0.5 }), 120);
-  const keys2 = new THREE.InstancedMesh(keyGeo, M(0xb9b4a6, { roughness: 0.5 }), 40);
-  keys.castShadow = keys2.castShadow = true;
-  const m4 = new THREE.Matrix4(); let n1 = 0, n2 = 0;
-  const put = (x, z, sx = 1, dark = false) => { m4.makeScale(sx, 1, 1).setPosition(x, 0.031, z); if (dark) keys2.setMatrixAt(n2++, m4); else keys.setMatrixAt(n1++, m4); };
-  for (let r = 0; r < 5; r++) for (let c = 0; c < 14; c++) put(-0.215 + c * 0.0185 + (r % 2) * 0.004, -0.045 + r * 0.0185, 1, c === 0 || c === 13);
-  put(-0.09, 0.048, 7.2);                                                           // 空格
-  for (let c = 0; c < 12; c++) put(-0.215 + c * 0.0195, -0.07, 1, true);            // 功能键
-  for (let r = 0; r < 5; r++) for (let c = 0; c < 4; c++) put(0.105 + c * 0.0185, -0.045 + r * 0.0185, 1, c === 3); // 小键盘
+  const keyGeo = roundedBoxGeometry(0.0149, 0.008, 0.0148, 0.0016, 1);
+  const keys = new THREE.InstancedMesh(keyGeo, M(0xe9e5da, { roughness: 0.56 }), 120);
+  const keys2 = new THREE.InstancedMesh(keyGeo, M(0xbfb9aa, { roughness: 0.57 }), 60);
+  keys.name = 'letter-keycaps'; keys2.name = 'modifier-keycaps'; keys.castShadow = keys2.castShadow = true;
+  const m4 = new THREE.Matrix4(), q = new THREE.Quaternion().setFromEuler(new THREE.Euler(kbSlope, 0, 0));
+  const legends = []; let n1 = 0, n2 = 0;
+  const put = (text, x, z, units = 1, dark = false) => {
+    m4.compose(new THREE.Vector3(x, 0.037 - z * Math.tan(kbSlope), z), q, new THREE.Vector3((units * 0.0172 - 0.0023) / 0.0149, 1, 1));
+    if (dark) keys2.setMatrixAt(n2++, m4); else keys.setMatrixAt(n1++, m4);
+    legends.push({ text, x, z, units });
+  };
+  const row = (items, z) => {
+    let x = -0.218;
+    for (const item of items) { const [text, units = 1, dark = false] = Array.isArray(item) ? item : [item]; put(text, x + units * 0.0172 / 2, z, units, dark); x += units * 0.0172; }
+  };
+  put('ESC', -0.2094, -0.061, 1, true);
+  for (let i = 0; i < 12; i++) put(`F${i + 1}`, -0.174 + i * 0.0172 + Math.floor(i / 4) * 0.007, -0.061, 1, true);
+  row(['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', ['BACK', 2, true]], -0.038);
+  row([['TAB', 1.5, true], ...'QWERTYUIOP', '[', ']', ['\\', 1.5, true]], -0.018);
+  row([['CAPS', 1.75, true], ...'ASDFGHJKL', ';', "'", ['ENTER', 2.25, true]], 0.002);
+  row([['SHIFT', 2.25, true], ...'ZXCVBNM', ',', '.', '/', ['SHIFT', 2.75, true]], 0.022);
+  row([['CTRL', 1.5, true], ['◇', 1, true], ['ALT', 1.5, true], ['', 6], ['ALT', 1.5, true], ['◇', 1, true], ['▤', 1, true], ['CTRL', 1.5, true]], 0.042);
+  for (let r = 0; r < 2; r++) for (let c = 0; c < 3; c++) put(['INS', 'HOME', 'PGU', 'DEL', 'END', 'PGD'][r * 3 + c], 0.072 + c * 0.018, -0.038 + r * 0.02, 1, true);
+  put('↑', 0.09, 0.022); for (let c = 0; c < 3; c++) put(['←', '↓', '→'][c], 0.072 + c * 0.018, 0.042);
+  for (let r = 0; r < 5; r++) for (let c = 0; c < 4; c++) put(['NUM', '/', '*', '-', '7', '8', '9', '+', '4', '5', '6', '+', '1', '2', '3', '↵', '0', '0', '.', '↵'][r * 4 + c], 0.147 + c * 0.018, -0.038 + r * 0.02, 1, r === 0 || c === 3);
   keys.count = n1; keys2.count = n2; kb.add(keys, keys2);
+  // 所有键面共用一张透明字图，保持近景可读又不为每个字增加绘制调用。
+  const legendMap = canvasTex(1536, 512, (g, w, h) => {
+    g.fillStyle = '#5d5c55'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    for (const key of legends) {
+      g.font = `${key.text.length > 2 ? 12 : 17}px monospace`;
+      g.fillText(key.text, (key.x / 0.478 + 0.5) * w, (key.z / 0.171 + 0.5) * h);
+    }
+    g.fillStyle = '#73a36c'; for (let i = 0; i < 3; i++) g.fillRect((0.161 / 0.478 + 0.5) * w + i * 29, 40, 10, 5);
+  });
+  const legend = mesh(new THREE.PlaneGeometry(0.478, 0.171), M(0xffffff, { map: legendMap, transparent: true, depthWrite: false }), 0, 0.0412, 0, kb);
+  legend.rotation.x = -Math.PI / 2 + kbSlope; legend.castShadow = false;
 }
 ld.loaded('keyboardModel');
-const mouse = mesh(new THREE.SphereGeometry(1, 24, 16), beige, 0.33, TOP + 0.012, 0.22);
-mouse.scale.set(0.032, 0.018, 0.05);
-box(0.003, 0.004, 0.03, beigeDark, 0.33, TOP + 0.03, 0.2);
-function cable(points, r = 0.0035) {
-  const g = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map((p) => new THREE.Vector3(...p))), 48, r, 6, false);
-  return mesh(g, M(0x2a2a2a, { roughness: 0.7 }));
-}
-cable([[0.33, TOP + 0.006, 0.172], [0.32, TOP + 0.004, 0.06], [0.26, TOP + 0.004, -0.06], [0.2, TOP + 0.006, -0.32]]);
-cable([[-0.02, TOP + 0.006, 0.115], [-0.03, TOP + 0.004, 0.05], [-0.08, TOP + 0.004, -0.33]]);
-cable([[0.0, TOP + 0.3, -0.42], [0.06, TOP + 0.08, -0.4], [0.18, TOP + 0.004, -0.36], [0.6, TOP + 0.004, -0.38], [0.79, 0.4, -0.42], [0.82, 0.02, -0.45]], 0.004);
+const mouse = new THREE.Group(); mouse.name = 'mouse'; mouse.position.set(0.328, TOP, 0.229); mouse.rotation.y = -0.12; scene.add(mouse);
+mesh(new THREE.CylinderGeometry(1, 0.97, 0.004, 40), beigeDark, 0, 0.003, 0, mouse).scale.set(0.0325, 1, 0.047);
+const mouseTop = mesh(new THREE.SphereGeometry(1, 28, 14, 0, Math.PI * 2, 0, Math.PI / 2), beige, 0, 0.005, 0, mouse);
+mouseTop.scale.set(0.033, 0.024, 0.049);
+const mouseSeam = M(0x9a9688, { roughness: 0.8 });
+tube([[-0.027, 0.018, -0.014], [0, 0.028, -0.014], [0.027, 0.018, -0.014]], 0.0007, mouseSeam, mouse, 16);
+tube([[0, 0.028, -0.014], [0, 0.024, -0.03], [0, 0.01, -0.047]], 0.00065, mouseSeam, mouse, 12);
+function cable(points, r = 0.0026) { return tube(points, r, M(0x383a37, { roughness: 0.85 })); }
+// 两条输入线从机箱两侧绕到背面，桌面段保留线径的离地间隙。
+cable([[0.334, TOP + 0.009, 0.181], [0.347, TOP + 0.006, 0.12], [0.313, TOP + 0.006, 0.047], [0.283, TOP + 0.006, -0.17], [0.267, TOP + 0.012, -0.355], [0.18, TOP + 0.04, -0.34]]);
+cable([[-0.225, TOP + 0.019, 0.158], [-0.27, TOP + 0.008, 0.139], [-0.266, TOP + 0.006, 0.06], [-0.259, TOP + 0.006, -0.14], [-0.259, TOP + 0.009, -0.36], [-0.14, TOP + 0.041, -0.34]]);
+cable([[0.02, TOP + 0.33, -0.403], [0.035, TOP + 0.24, -0.42], [0.067, TOP + 0.073, -0.39], [0.06, TOP + 0.06, -0.34]], 0.0034);
+cable([[0.15, TOP + 0.06, -0.34], [0.23, TOP + 0.045, -0.385], [0.38, TOP + 0.006, -0.397], [0.7, TOP + 0.006, -0.4], [0.785, TOP - 0.035, -0.455], [0.79, 0.15, -0.46], [0.83, 0.012, -0.46]], 0.0034);
 
 ld.loaded('mouseModel');
 /* ================= 桌上的东西 ================= */
-// 纸堆
-for (const [x, z, n, r] of [[-0.62, -0.18, 5, 0.03], [-0.38, -0.2, 3, -0.05]]) {
-  for (let i = 0; i < n; i++) {
-    const s = box(0.22, 0.045, 0.29, paper, x + (Math.random() - 0.5) * 0.008, TOP + 0.0225 + i * 0.046, z + (Math.random() - 0.5) * 0.008);
-    s.rotation.y = r + (Math.random() - 0.5) * 0.03;
-  }
+// 每册书都保留独立的封面、书页和书脊，叠放高度不再像实心白砖。
+const bookColors = [0x6c7571, 0xa98a66, 0xd2c9b5];
+for (let i = 0; i < 3; i++) {
+  const book = new THREE.Group(); book.name = `book-${i}`; book.position.set(-0.61 + [0, 0.006, -0.003][i], TOP + i * 0.034, -0.235); book.rotation.y = [0.025, -0.035, 0.012][i]; scene.add(book);
+  const cover = M(bookColors[i], { roughness: 0.86 });
+  for (const y of [0.0015, 0.0325]) rbox(0.238, 0.003, 0.274, 0.001, cover, 0, y, 0, book);
+  box(0.226, 0.027, 0.263, paper, 0, 0.017, -0.001, book);
+  rbox(0.238, 0.034, 0.004, 0.001, cover, 0, 0.017, 0.135, book);
+  label(0.176, 0.016, ['SPATIAL SYSTEMS', 'FIELD NOTES / 02', 'DESIGN & RESEARCH'][i], i === 0 ? '#dddcd4' : '#5e594f', null, 0, 0.017, 0.1372, book, 32);
+  for (const y of [0.009, 0.016, 0.024]) box(0.0008, 0.0006, 0.249, M(0xd7d3c7), 0.1133, y, -0.003, book);
+}
+{
+  const stack = new THREE.Group(); stack.position.set(-0.365, TOP, -0.226); stack.rotation.y = -0.035; scene.add(stack);
+  for (let i = 0; i < 9; i++) box(0.172, 0.0014, 0.244, i === 8 ? paper : M(0xe1ded3), (i % 3) * 0.0008, 0.0007 + i * 0.00155, 0, stack);
+  const cover = label(0.172, 0.244, 'RESEARCH / 2026', '#7a776b', '#f1efe8', 0, 0.0148, 0, stack, 34); cover.rotation.x = -Math.PI / 2;
+  box(0.018, 0.002, 0.035, M(0x8c4e40), 0.052, 0.015, -0.096, stack);
 }
 // 两层文件盘
 {
-  const tray = new THREE.Group(); tray.position.set(-0.64, TOP, 0.12); tray.rotation.y = 0.12; scene.add(tray);
-  const tm = M(0xbdb6a6, { roughness: 0.6 });
-  for (const y of [0.012, 0.085]) {
-    box(0.25, 0.006, 0.32, tm, 0, y, 0, tray);
-    box(0.25, 0.04, 0.006, tm, 0, y + 0.02, 0.16, tray);
-    for (const x of [-0.125, 0.125]) box(0.006, 0.05, 0.32, tm, x, y + 0.025, 0, tray);
-    box(0.23, 0.012, 0.3, paper, 0, y + 0.012, -0.005, tray);
+  const tray = new THREE.Group(); tray.name = 'document-trays'; tray.position.set(-0.644, TOP, 0.133); tray.rotation.y = 0.035; scene.add(tray);
+  const tm = M(0xa6a497, { roughness: 0.5, metalness: 0.3 });
+  for (const x of [-0.118, 0.118]) for (const z of [-0.122, 0.122]) mesh(new THREE.CylinderGeometry(0.003, 0.003, 0.091, 8), tm, x, 0.0455, z, tray);
+  for (const y of [0.01, 0.073]) {
+    rbox(0.247, 0.0035, 0.278, 0.001, tm, 0, y, 0, tray);
+    box(0.247, 0.019, 0.003, tm, 0, y + 0.01, -0.138, tray);
+    for (const x of [-0.122, 0.122]) box(0.003, 0.019, 0.278, tm, x, y + 0.01, 0, tray);
+    for (let i = 0; i < 4; i++) box(0.218, 0.0012, 0.253, paper, (i % 2) * 0.001, y + 0.0027 + i * 0.0014, 0.001, tray);
+    for (const x of [-0.083, 0.083]) box(0.073, 0.009, 0.003, tm, x, y + 0.005, 0.138, tray);
   }
 }
 // 桌上散页（简历）
 {
-  const sheet = new THREE.Mesh(new THREE.PlaneGeometry(0.21, 0.297), new THREE.MeshStandardMaterial({ roughness: 0.9, map: canvasTex(420, 594, (g, w, h) => {
+  const sheet = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.254), new THREE.MeshStandardMaterial({ roughness: 0.9, map: canvasTex(420, 594, (g, w, h) => {
     g.fillStyle = '#f6f5f1'; g.fillRect(0, 0, w, h);
     g.fillStyle = '#a40000'; g.font = 'bold 34px "Songti SC","SimSun",serif'; g.fillText('王钰淞', 36, 64);
     g.fillStyle = '#555'; g.font = '18px Georgia, serif'; g.fillText('Yusong Wang · CV 2026', 36, 92);
     g.fillStyle = '#a40000'; g.fillRect(36, 108, w - 72, 2);
-    g.fillStyle = '#9a9a9a'; for (let y = 130; y < h - 40; y += 14) g.fillRect(36, y, (w - 72) * (0.55 + Math.random() * 0.45), 4);
+    g.fillStyle = '#9a9a9a'; for (let y = 130; y < h - 40; y += 14) g.fillRect(36, y, (w - 72) * (0.62 + ((y * 7) % 31) / 100), 4);
   }) }));
-  sheet.rotation.set(-Math.PI / 2, 0, 0.32); sheet.position.set(-0.45, TOP + 0.0015, 0.24); sheet.receiveShadow = true; scene.add(sheet);
+  sheet.rotation.set(-Math.PI / 2, 0, -0.08); sheet.position.set(-0.385, TOP + 0.0015, 0.22); sheet.receiveShadow = true; scene.add(sheet);
 }
 // 文件夹
-for (const [x, r] of [[0.52, 0], [0.585, 0.02]]) {
-  const b = rbox(0.055, 0.3, 0.26, 0.004, M(0x4a3a33, { roughness: 0.55 }), x, TOP + 0.15, -0.26);
-  b.rotation.y = Math.PI / 2 + r; b.rotation.z = 0;
-  const ring = mesh(new THREE.TorusGeometry(0.012, 0.003, 8, 20), metal, x + 0.028, TOP + 0.08, -0.26);
-  ring.rotation.y = Math.PI / 2;
+for (let i = 0; i < 2; i++) {
+  const binder = new THREE.Group(); binder.name = `binder-${i}`; binder.position.set(0.526 + i * 0.078, TOP, -0.243); binder.rotation.y = i * 0.025; scene.add(binder);
+  const cloth = M(i ? 0x776151 : 0x4e4941, { roughness: 0.9 });
+  box(0.046, 0.285, 0.225, paper, 0, 0.149, -0.002, binder);
+  for (const x of [-0.026, 0.026]) rbox(0.003, 0.3, 0.243, 0.001, cloth, x, 0.15, 0, binder);
+  rbox(0.055, 0.3, 0.005, 0.002, cloth, 0, 0.15, 0.122, binder);
+  box(0.031, 0.065, 0.001, M(0xe0d8c4), 0, 0.219, 0.125, binder);
+  label(0.029, 0.036, i ? '02' : '01', '#5f594e', null, 0, 0.225, 0.1256, binder, 160);
+  box(0.022, 0.001, 0.001, M(0x99907e), 0, 0.201, 0.1258, binder);
+  mesh(new THREE.CircleGeometry(0.009, 20), black, 0, 0.058, 0.125, binder);
+  mesh(new THREE.TorusGeometry(0.009, 0.0012, 6, 20), metal, 0, 0.058, 0.1256, binder);
 }
 // 马克杯
 {
+  const ceramic = M(0xe8e5dc, { roughness: 0.3 });
+  mesh(new THREE.CylinderGeometry(0.058, 0.058, 0.004, 40), M(0x9a8364, { roughness: 0.95 }), 0.602, TOP + 0.002, 0.065);
   const prof = [[0, 0], [0.038, 0], [0.04, 0.004], [0.041, 0.095], [0.036, 0.095], [0.035, 0.008], [0, 0.008]].map(([x, y]) => new THREE.Vector2(x, y));
-  const mug = mesh(new THREE.LatheGeometry(prof, 32), M(0xf2f1ee, { roughness: 0.25 }), 0.6, TOP, 0.04);
-  const h = mesh(new THREE.TorusGeometry(0.025, 0.007, 10, 24, Math.PI), M(0xf2f1ee, { roughness: 0.25 }), 0.64, TOP + 0.05, 0.04);
+  mesh(new THREE.LatheGeometry(prof, 40), ceramic, 0.602, TOP + 0.004, 0.065);
+  const h = mesh(new THREE.TorusGeometry(0.025, 0.006, 10, 24, Math.PI), ceramic, 0.64, TOP + 0.054, 0.065);
   h.rotation.z = -Math.PI / 2;
-  mesh(new THREE.CircleGeometry(0.035, 24), M(0x3b2416, { roughness: 0.2 }), 0.6, TOP + 0.075, 0.04).rotation.x = -Math.PI / 2;
+  mesh(new THREE.CircleGeometry(0.0355, 32), M(0x382b1f, { roughness: 0.22 }), 0.602, TOP + 0.081, 0.065).rotation.x = -Math.PI / 2;
+  mesh(new THREE.TorusGeometry(0.0377, 0.0012, 6, 40), M(0xc9c3b5), 0.602, TOP + 0.099, 0.065).rotation.x = Math.PI / 2;
+  label(0.025, 0.017, 'YW', '#8a7460', null, 0.602, TOP + 0.051, 0.1061, scene, 160);
 }
 
 ld.loaded('deskPropsModels');
 /* ================= 椅子 ================= */
 {
-  const ch = new THREE.Group(); ch.position.set(0.12, 0, 0.72); ch.rotation.y = -0.35; scene.add(ch);
-  const leather = M(0x93613a, { roughness: 0.55 });
-  rbox(0.46, 0.07, 0.44, 0.03, leather, 0, 0.47, 0, ch);
-  const backrest = rbox(0.42, 0.3, 0.06, 0.03, leather, 0, 0.8, 0.24, ch); backrest.rotation.x = -0.12;
-  box(0.05, 0.3, 0.03, darkMetal, 0, 0.6, 0.25, ch).rotation.x = -0.25;
-  mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.28, 16), darkMetal, 0, 0.3, 0, ch);
+  const ch = new THREE.Group(); ch.name = 'chair'; ch.position.set(0.10, 0, 0.76); ch.rotation.y = -0.35; scene.add(ch);
+  const leather = M(0x8e6849, { roughness: 0.72 }), piping = M(0x6e4d35, { roughness: 0.8 }), shell = M(0x655344, { roughness: 0.65 });
+  rbox(0.445, 0.016, 0.415, 0.007, shell, 0, 0.443, 0, ch);
+  rbox(0.46, 0.066, 0.44, 0.025, leather, 0, 0.48, 0, ch);
+  const seatSeam = rrect(0.443, 0.423, 0.046).getPoints(8).map((p) => [p.x, 0.466, p.y]);
+  tube(seatSeam, 0.0014, piping, ch, 64);
+  const back = new THREE.Group(); back.position.set(0, 0.805, 0.236); back.rotation.x = -0.12; ch.add(back);
+  rbox(0.422, 0.306, 0.028, 0.013, shell, 0, 0, 0.019, back);
+  rbox(0.42, 0.3, 0.051, 0.024, leather, 0, 0, -0.014, back);
+  tube(rrect(0.401, 0.281, 0.035).getPoints(8).map((p) => [p.x, p.y, 0.007]), 0.00135, piping, back, 64);
+  for (const x of [-0.135, 0.135]) mesh(new THREE.SphereGeometry(0.006, 10, 8), piping, x, 0.027, 0.034, back).scale.z = 0.3;
+  box(0.049, 0.31, 0.025, darkMetal, 0, 0.605, 0.247, ch).rotation.x = -0.25;
+  rbox(0.16, 0.035, 0.15, 0.008, darkMetal, 0, 0.415, 0, ch);
+  mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.18, 20), metal, 0, 0.323, 0, ch);
+  mesh(new THREE.CylinderGeometry(0.03, 0.033, 0.17, 20), darkMetal, 0, 0.17, 0, ch);
+  tube([[0.065, 0.414, 0.02], [0.13, 0.402, 0.02], [0.18, 0.402, 0.055]], 0.005, metal, ch, 12);
+  rbox(0.045, 0.014, 0.025, 0.006, black, 0.18, 0.402, 0.055, ch);
+  mesh(new THREE.CylinderGeometry(0.055, 0.065, 0.035, 24), darkMetal, 0, 0.091, 0, ch);
   for (let i = 0; i < 5; i++) {
     const a = (i / 5) * Math.PI * 2, arm = new THREE.Group(); arm.rotation.y = a; ch.add(arm);
-    box(0.3, 0.025, 0.035, darkMetal, 0.15, 0.07, 0, arm);
-    mesh(new THREE.SphereGeometry(0.028, 12, 10), black, 0.29, 0.03, 0, arm);
+    const spoke = rbox(0.28, 0.025, 0.037, 0.007, darkMetal, 0.15, 0.078, 0, arm); spoke.rotation.z = -0.1;
+    mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.027, 10), metal, 0.283, 0.057, 0, arm);
+    rbox(0.04, 0.025, 0.037, 0.005, darkMetal, 0.29, 0.044, 0, arm);
+    for (const z of [-0.024, 0.024]) {
+      mesh(new THREE.CylinderGeometry(0.027, 0.027, 0.015, 20), black, 0.292, 0.027, z, arm).rotation.x = Math.PI / 2;
+      mesh(new THREE.CylinderGeometry(0.011, 0.011, 0.016, 16), M(0x66686a, { metalness: 0.3, roughness: 0.6 }), 0.292, 0.027, z, arm).rotation.x = Math.PI / 2;
+    }
   }
 }
 
 ld.loaded('officeChairModel');
 /* ================= 盆栽 ================= */
 {
-  const pl = new THREE.Group(); pl.position.set(1.08, 0, -0.18); scene.add(pl);
-  const pot = [[0, 0], [0.13, 0], [0.155, 0.3], [0.165, 0.32], [0.15, 0.32], [0.14, 0.04], [0, 0.04]].map(([x, y]) => new THREE.Vector2(x, y));
-  mesh(new THREE.LatheGeometry(pot, 32), M(0xf0efec, { roughness: 0.4 }), 0, 0, 0, pl);
-  mesh(new THREE.CircleGeometry(0.145, 24), M(0x3a2a1e, { roughness: 1 }), 0, 0.3, 0, pl).rotation.x = -Math.PI / 2;
-  const leafShape = new THREE.Shape(); leafShape.moveTo(0, 0); leafShape.bezierCurveTo(0.09, 0.08, 0.08, 0.28, 0, 0.36); leafShape.bezierCurveTo(-0.08, 0.28, -0.09, 0.08, 0, 0);
-  const leafGeo = new THREE.ShapeGeometry(leafShape, 10);
-  { const p = leafGeo.attributes.position; for (let i = 0; i < p.count; i++) { const y = p.getY(i), x = p.getX(i); p.setZ(i, -y * y * 0.9 + Math.abs(x) * 0.35); } leafGeo.computeVertexNormals(); }
-  const leafMat = M(0x4f9a58, { roughness: 0.5, side: THREE.DoubleSide });
-  const stemMat = M(0x3f7d45, { roughness: 0.6 });
-  for (let i = 0; i < 13; i++) {
-    const a = i * 2.4, h = 0.42 + (i % 5) * 0.1, tilt = 0.25 + (i % 4) * 0.16;
-    const st = new THREE.Group(); st.position.set(0, 0.3, 0); st.rotation.set(tilt * Math.cos(a), a, tilt * Math.sin(a)); pl.add(st);
-    mesh(new THREE.CylinderGeometry(0.005, 0.007, h, 6), stemMat, 0, h / 2, 0, st);
-    const lf = mesh(leafGeo, leafMat, 0, h - 0.02, 0, st); lf.rotation.set(-0.9, 0, 0); lf.scale.setScalar(0.55 + (i % 3) * 0.08);
+  const pl = new THREE.Group(); pl.name = 'plant'; pl.position.set(1.225, 0, -0.16); scene.add(pl);
+  mesh(new THREE.CylinderGeometry(0.145, 0.138, 0.014, 40), M(0xc9c7bc, { roughness: 0.7 }), 0, 0.007, 0, pl);
+  const pot = [[0, 0.014], [0.119, 0.014], [0.128, 0.023], [0.153, 0.3], [0.157, 0.309], [0.156, 0.322], [0.147, 0.322], [0.143, 0.307], [0.122, 0.045], [0, 0.045]].map(([x, y]) => new THREE.Vector2(x, y));
+  mesh(new THREE.LatheGeometry(pot, 48), M(0xe5e3db, { roughness: 0.68 }), 0, 0, 0, pl);
+  mesh(new THREE.TorusGeometry(0.151, 0.002, 6, 48), M(0xd2cfc3), 0, 0.308, 0, pl).rotation.x = Math.PI / 2;
+  mesh(new THREE.CircleGeometry(0.142, 40), M(0x49392a, { roughness: 1 }), 0, 0.302, 0, pl).rotation.x = -Math.PI / 2;
+  const soilMat = M(0x6c5d47, { roughness: 1 });
+  for (let i = 0; i < 18; i++) {
+    const a = i * 2.4, r = 0.028 + (i % 5) * 0.021;
+    mesh(new THREE.IcosahedronGeometry(0.004 + (i % 3) * 0.0015, 0), soilMat, Math.cos(a) * r, 0.303, Math.sin(a) * r, pl).scale.y = 0.4;
+  }
+  const leafMaterials = [0x557e4d, 0x638b53, 0x718e59].map((color) => M(color, { roughness: 0.8, side: THREE.DoubleSide }));
+  const stemMat = M(0x5c7747, { roughness: 0.85 }), veinMat = M(0x829765, { roughness: 0.9 });
+  for (let i = 0; i < 11; i++) {
+    const a = i * 2.399, reach = 0.10 + (i % 3) * 0.028, height = 0.54 + (i % 5) * 0.105;
+    const direction = new THREE.Vector3(Math.cos(a), 0, Math.sin(a));
+    const end = direction.clone().multiplyScalar(reach); end.y = height;
+    const curve = new THREE.CatmullRomCurve3([direction.clone().multiplyScalar(0.018).setY(0.3), direction.clone().multiplyScalar(0.035).setY(0.43), direction.clone().multiplyScalar(reach * 0.65).setY(height - 0.07), end]);
+    const stem = new THREE.TubeGeometry(curve, 24, 0.004, 6, false), sp = stem.attributes.position;
+    for (let j = 0; j < sp.count; j++) {
+      const t = Math.floor(j / 7) / 24, center = curve.getPointAt(t), p = new THREE.Vector3().fromBufferAttribute(sp, j).sub(center).multiplyScalar(1 - t * 0.58).add(center);
+      sp.setXYZ(j, p.x, p.y, p.z);
+    }
+    stem.computeVertexNormals(); mesh(stem, stemMat, 0, 0, 0, pl);
+    // 中脉与左右叶面共用控制点；折面而非一张无厚度的平片。
+    const blade = new THREE.Group(); blade.position.copy(end); blade.rotation.y = -a; pl.add(blade);
+    const length = 0.22 + (i % 3) * 0.026, width = 0.062 + (i % 2) * 0.012;
+    const vertices = [], indices = [], vein = [];
+    for (let j = 0; j <= 8; j++) {
+      const t = j / 8, x = length * t, y = Math.sin(t * Math.PI) * 0.067 - t * t * 0.056, w = Math.sin(Math.PI * t) * width;
+      vertices.push(x, y - w * 0.19, -w, x, y + 0.006 * Math.sin(Math.PI * t), 0, x, y - w * 0.19, w);
+      vein.push([x, y + 0.0015 + 0.006 * Math.sin(Math.PI * t), 0]);
+      if (j < 8) { const k = j * 3; indices.push(k, k + 3, k + 1, k + 1, k + 3, k + 4, k + 1, k + 4, k + 2, k + 2, k + 4, k + 5); }
+    }
+    const leaf = new THREE.BufferGeometry(); leaf.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3)); leaf.setIndex(indices); leaf.computeVertexNormals();
+    mesh(leaf, leafMaterials[i % 3], 0, 0, 0, blade);
+    tube(vein, 0.0008, veinMat, blade, 20);
   }
 }
 ld.loaded('plantModel');
@@ -568,10 +722,26 @@ $('#btnSound').addEventListener('click', (e) => { e.stopPropagation(); sfx.start
 
 /* ================= 镜头 ================= */
 const target = new THREE.Vector3(), camPos = new THREE.Vector3();
+// 根据完成后的模型包围盒留出边距，窄屏和轨道两端都不会裁掉植物。
+const overviewBounds = new THREE.Box3();
+for (const object of scene.children) if (object !== floor) overviewBounds.expandByObject(object, true);
+const overviewCenter = overviewBounds.getCenter(new THREE.Vector3());
+const overviewCorners = [];
+for (const x of [overviewBounds.min.x, overviewBounds.max.x]) for (const y of [overviewBounds.min.y, overviewBounds.max.y]) for (const z of [overviewBounds.min.z, overviewBounds.max.z]) overviewCorners.push(new THREE.Vector3(x, y, z));
 const views = {
   overview(t) {
-    const a = 0.5 + (reduce ? 0 : Math.sin(t * 0.06) * 0.45), r = small() ? 8.2 : 5.6;
-    return { pos: new THREE.Vector3(Math.sin(a) * r, small() ? 3.6 : 2.9, Math.cos(a) * r), look: new THREE.Vector3(0.12, 0.5, 0.05) };
+    const a = 0.5 + (reduce ? 0 : Math.sin(t * 0.06) * 0.45);
+    const look = camera.aspect < 0.9 ? overviewCenter.clone() : new THREE.Vector3(0.18, 0.54, 0.08);
+    const direction = new THREE.Vector3(Math.sin(a), 0.46, Math.cos(a)).normalize();
+    const right = new THREE.Vector3(Math.cos(a), 0, -Math.sin(a));
+    const up = new THREE.Vector3().crossVectors(direction, right);
+    const tangent = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+    let distance = 5.7;
+    for (const corner of overviewCorners) {
+      const offset = corner.clone().sub(look), front = offset.dot(direction);
+      distance = Math.max(distance, front + Math.abs(offset.dot(right)) / (tangent * camera.aspect * 0.84), front + Math.abs(offset.dot(up)) / (tangent * 0.82));
+    }
+    return { pos: look.clone().addScaledVector(direction, distance), look };
   },
   desk() {
     // 竖屏要退远才装得下显示器，镜头抬高从椅背上方看过去

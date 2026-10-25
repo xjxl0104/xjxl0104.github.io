@@ -5,8 +5,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const pages = ['index.html', 'os.html', 'dos.html', 'worlds.html', 'ukiyoe.html', 'retro-future.html'];
-const scenes = ['ukiyoe.html', 'retro-future.html'];
+const pages = ['index.html', 'os.html', 'dos.html'];
 
 async function html(file) {
   return readFile(path.join(root, file), 'utf8');
@@ -51,7 +50,7 @@ test('YSDOS archive keeps all nine files', async () => {
     assert.equal(source.match(new RegExp(`<section class="doc" id="s-${id}"`, 'g'))?.length, 1, `missing file ${id}`);
     assert.match(source, new RegExp(`data-sec="${id}"`), `menu misses ${id}`);
   }
-  for (const target of ['index.html', 'os.html', 'worlds.html', 'ukiyoe.html', 'retro-future.html', 'CV_Yusong_Wang.pdf']) {
+  for (const target of ['index.html', 'os.html', 'CV_Yusong_Wang.pdf']) {
     assert.match(source, new RegExp(`href=["']${target.replace('.', '\\.')}["']`), `archive must link to ${target}`);
   }
   for (const text of ['HeritageExplorer', 'VINCI 2025', 'CHI 2025', 'DIPARK', 'ywang677@connect.hkust-gz.edu.cn']) {
@@ -65,76 +64,22 @@ test('YSDOS archive keeps all nine files', async () => {
   assert.match(source, /@media\s*\(max-width:/);
 });
 
-test('worlds overview contains exactly two interactive scene experiences', async () => {
-  const source = await html('worlds.html');
-  for (const target of ['ukiyoe.html', 'retro-future.html']) {
-    assert.match(source, new RegExp(`href=["']${target.replace('.', '\\.')}(?:[?#][^"']*)?["']`), `missing ${target}`);
+test('retired standalone versions are absent from the published tree', async () => {
+  for (const file of ['classic.html', 'pixel-room.html', 'worlds.html', 'ukiyoe.html', 'retro-future.html']) {
+    await assert.rejects(readFile(path.join(root, file)), { code: 'ENOENT' }, `${file} must stay off the live site`);
   }
-  assert.match(source, /id=["']version-grid["']/);
-  assert.match(source, /02\s*<small>WORLDS/);
-  assert.match(source, /prefers-reduced-motion/);
 });
 
-test('classic, pixel and document-style retro versions are removed', async () => {
-  for (const file of ['classic.html', 'pixel-room.html']) {
-    await assert.rejects(readFile(path.join(root, file)), `${file} should be deleted`);
-  }
+test('portfolio and DOS navigation expose only the current desk', async () => {
   for (const page of pages) {
     const source = await html(page);
-    assert.doesNotMatch(source, /(?:classic|pixel-room)\.html/, `${page} still links to a removed version`);
-  }
-  const retro = await html('retro-future.html');
-  assert.doesNotMatch(retro, /Personal Orbit Program|orbitctl/);
-});
-
-test('both retained homepages use the interactive WebGL scene architecture', async () => {
-  for (const page of scenes) {
-    const source = await html(page);
-    for (const marker of ['id="gl"', 'id="stage"', 'id="panel"', 'id="reader"', 'type="module"', 'WebGLRenderer', 'function register(', 'function openSection(', 'function setReader(']) {
-      assert.ok(source.includes(marker), `${page} missing scene marker: ${marker}`);
+    for (const target of localLinks(source).filter((link) => link.endsWith('.html'))) {
+      assert.ok(pages.includes(target), `${page} exposes a retired route: ${target}`);
     }
-    assert.match(source, /href=["'](?:\.\/)?worlds\.html["']/, `${page} cannot return to the worlds overview`);
-    assert.match(source, /id=["']btnWork["']/, `${page} needs a direct work entry`);
-    const switcher = source.match(/<(?:nav|div)[^>]*id=["']sceneSwitcher["'][^>]*>([\s\S]*?)<\/(?:nav|div)>/)?.[1];
-    assert.ok(switcher, `${page} needs a visible scene switcher`);
-    for (const target of scenes) assert.match(switcher, new RegExp(`href=["'](?:\\./)?${target.replace('.', '\\.')}["']`), `${page} needs a direct link to ${target}`);
-    assert.match(source, /prefers-reduced-motion/);
+    assert.doesNotMatch(source, /(?:worlds|ukiyoe|retro-future|classic|pixel-room)\.html/, `${page} still contains an alternate navigation handler`);
   }
-});
-
-test('both original scenes retain nine entries and the five real projects', async () => {
-  const source = await html('retro-future.html');
-  assert.ok(source.includes('YW/OS 98'), 'missing workstation identity');
-  for (const page of ['index.html', 'retro-future.html']) {
-    assert.doesNotMatch(await html(page), /СТУДИЯ|MOSCOW|concrete study|constructivis[mt]|rotary telephone|drafting table|radiator|苏联|苏维埃|劳动\s*[·・]\s*1974/i, `${page} retains Soviet styling`);
-  }
-  const sections = ['about', 'heritage', 'work', 'exp', 'portfolio', 'toolbox', 'contact', 'cv', 'door'];
-  assert.match(source, /\bROOM\b/, 'the original retro room must remain');
-  assert.match(source, /const\s+room\s*=\s*new THREE\.Group\(/, 'the retro room geometry must remain');
-  for (const id of sections) assert.match(source, new RegExp(`register\\(['"]${id}['"]\\s*,`), `retro scene lost interactive object: ${id}`);
-  const projects = [
-    ['dipark', /DIPARK/i],
-    ['ai-gateway', /AI\s*(?:Gateway|网关|中台)|LLM\s*(?:Gateway|网关)/i],
-    ['tunan-data-lab', /Tunan|图南/i],
-    ['ops-monitor', /Ops\s*Monitor|运维/i],
-    ['enterprise-portal', /Enterprise(?:\s+application)?\s*Portal|企业(?:应用)?门户|企业应用|工作门户|Workspace/i],
-  ];
-  for (const page of scenes) {
-    const scene = await html(page);
-    const templates = [...scene.matchAll(/<template\s+id=["']t-([^"']+)["']/g)].map((match) => match[1]);
-    assert.deepEqual(templates.sort(), [...sections].sort(), `${page}: all nine content entries need one unique template`);
-    const portfolio = scene.match(/<template\s+id=["']t-portfolio["']\s*>([\s\S]*?)<\/template>/)?.[1];
-    assert.ok(portfolio, `${page}: missing real-project portfolio`);
-    const imagePaths = [...portfolio.matchAll(/<img\b[^>]*\bsrc=["']([^"']+)["']/g)].map((match) => match[1]);
-    assert.deepEqual(imagePaths.sort(), projects.map(([slug]) => `assets/work/${slug}.webp`).sort(), `${page}: portfolio must show each of the five real project screenshots once`);
-    for (const [slug, name] of projects) assert.match(portfolio, name, `${page}: ${slug} needs a readable project name`);
-  }
-  for (const text of ['HeritageExplorer', 'VINCI 2025', 'CHI 2025', '15', 'ywang677@connect.hkust-gz.edu.cn']) {
-    assert.ok(source.includes(text), `missing real content: ${text}`);
-  }
-  assert.match(source, /id=["']btnLang["']/);
-  assert.match(source, /id=["']btnMode["']/);
-  assert.match(source, /@media\s*\(max-width:/);
+  const os = await html('os.html');
+  assert.doesNotMatch(os, /data-open=["']views["']|views:function/, 'the other-versions launcher must be removed, including the start menu');
 });
 
 test('all local HTML and asset references resolve', async () => {

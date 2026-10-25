@@ -229,7 +229,6 @@ html.embed body{cursor:default}
     <button class="icon" data-open="heritage" role="listitem"><svg><use href="#i-globe"/></svg><span>Heritage Explorer</span></button>
     <button class="icon" data-open="dos" role="listitem"><svg><use href="#i-dos"/></svg><span>YSDOS</span></button>
     <button class="icon" data-open="mail" role="listitem"><svg><use href="#i-mail"/></svg><span><span class="lang-zh">写信给我</span><span class="lang-en">Mail Me</span></span></button>
-    <button class="icon" data-open="views" role="listitem"><svg><use href="#i-link"/></svg><span><span class="lang-zh">其他版本</span><span class="lang-en">Other Views</span></span></button>
     <button class="icon" data-open="credits" role="listitem"><svg><use href="#i-note"/></svg><span><span class="lang-zh">关于本站.txt</span><span class="lang-en">Credits.txt</span></span></button>
   </div>
 </div>
@@ -251,7 +250,6 @@ html.embed body{cursor:default}
     <li><button role="menuitem" data-open="cv"><svg><use href="#i-pdf"/></svg><span><span class="lang-zh">简历</span><span class="lang-en">Resume</span></span></button></li>
     <li><button role="menuitem" data-open="works"><svg><use href="#i-folder"/></svg><span><span class="lang-zh">实际作品</span><span class="lang-en">Real Work</span></span></button></li>
     <li><button role="menuitem" data-open="dos"><svg><use href="#i-dos"/></svg><span>YSDOS</span></button></li>
-    <li><button role="menuitem" data-open="views"><svg><use href="#i-link"/></svg><span><span class="lang-zh">其他版本</span><span class="lang-en">Other Views</span></span></button></li>
     <li><button role="menuitem" data-open="credits"><svg><use href="#i-note"/></svg><span><span class="lang-zh">关于本站</span><span class="lang-en">Credits</span></span></button></li>
     <li class="sep" role="separator"></li>
     <li><button role="menuitem" data-open="off"><svg><use href="#i-off"/></svg><span><span class="lang-zh">离开电脑……</span><span class="lang-en">Step away…</span></span></button></li>
@@ -569,9 +567,6 @@ var OPEN={
   mail:function(){openShow('#contact')},
   dos:function(){var f=document.createElement('iframe');f.className='frame';f.src='dos.html?noboot';f.title='YSDOS';var c=div('');c.style.cssText='position:absolute;inset:0';c.appendChild(f);
     makeWin('dos',{icon:'i-dos',title:'YSDOS 6.0',content:c,w:720,h:470})},
-  views:function(){openDialog('views','i-link',L('其他版本','Other Views'),
-    L('同一份经历，还有这些看法：','The same story, other ways to see it:')+'<br /><a href="worlds.html" target="_top">'+L('两个世界总览','Two worlds overview')+'</a> · <a href="ukiyoe.html" target="_top">'+L('浮世绘书斋','Ukiyo-e study')+'</a> · <a href="retro-future.html" target="_top">YW/OS 98 '+L('工作站','workstation')+'</a> · <a href="dos.html" target="_top">YSDOS</a>',
-    '<button type="button" data-close>'+L('确定','OK')+'</button>')},
   credits:function(){openNote('credits',L('关于本站.txt - 记事本','Credits.txt - Notepad'),d.dataset.lang==='en'
     ?'YW/OS 98 — Yusong Wang, 2026\r\n\r\nThis homepage is a desk you can walk up to: a 3D studio scene (three.js) with a computer whose screen runs this little operating system.\r\n\r\nInspired by Henry Heffernan\'s portfolio (henryheffernan.com). The scene, models, icons, operating system and words here are my own.\r\n\r\nType: Fusion Pixel 12px (SIL Open Font License 1.1)\r\n3D: three.js (MIT)\r\n\r\nContact: ywang677@connect.hkust-gz.edu.cn'
     :'YW/OS 98 —— 王钰淞，2026\r\n\r\n这个主页是一张可以走近的书桌：three.js 搭的三维摄影棚里放着一台电脑，屏幕里运行的就是这个小小的操作系统。\r\n\r\n灵感来自 Henry Heffernan 的作品集（henryheffernan.com）。这里的场景、模型、图标、系统界面和文字都是我自己做的。\r\n\r\n字体：Fusion Pixel 12px（SIL 开源字体许可 1.1）\r\n三维：three.js（MIT）\r\n\r\n联系：ywang677@connect.hkust-gz.edu.cn')},
