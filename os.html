@@ -442,6 +442,7 @@ tick();setInterval(tick,10000);
 addEventListener('message',function(e){
   if(e.origin!==location.origin||!e.data||!e.data.yw)return;
   if(e.data.type==='power')powerOn();
+  if(e.data.type==='ping')post({type:'ready'});
   if(e.data.type==='lang'&&e.data.lang!==d.dataset.lang){d.dataset.lang=e.data.lang;tick()}
   if(e.data.type==='sound'){sound=e.data.on;paintSnd()}
 });

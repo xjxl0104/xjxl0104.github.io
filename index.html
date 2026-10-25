@@ -45,20 +45,40 @@ html.at-screen #hud .row{gap:0}
 @keyframes blink{50%{opacity:0}}
 
 /* 开场加载框 */
-#loader{position:fixed;inset:0;z-index:10;background:#000;color:#fff;display:grid;place-items:center;padding:20px;transition:opacity .6s}
-#loader.out{opacity:0;pointer-events:none}
-#loader .box{border:4px solid #fff;padding:22px 26px;min-width:min(520px,92vw);max-width:92vw}
-#loader pre{margin:0 0 6px;font:inherit;white-space:pre-wrap;color:#bdbdbd;min-height:6.5em}
-#loader .title{color:#fff}
-#start{display:block;margin:16px auto 2px;padding:4px 18px;border:2px solid #fff;background:#000;color:#fff;font:inherit;cursor:pointer}
-#start:hover,#start:focus-visible{background:#fff;color:#000;outline:0}
-#start[disabled]{opacity:.35;cursor:wait}
-#loader .alt{margin-top:14px;font-size:12px;color:#8a8a8a;text-align:center}
-#loader .alt a{color:#bdbdbd}
+/* 开场 BIOS 加载屏：照参考站的结构与节奏（16px 等宽、白字黑底、48px 边距） */
+#loader{position:fixed;inset:0;z-index:10;background:#000;color:#fff;font:16px/1.15 monospace;letter-spacing:.8px;transition:opacity .2s ease-in-out,transform .2s ease-in-out}
+#loader.out{opacity:0;transform:scale(1.1);pointer-events:none}
+#loader p{margin:0;color:#fff;font:inherit;white-space:pre}
+#loader b{font-weight:700}
+#loader .g{color:#00ff00}
+#loader .sp{height:16px}
+#bios{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between}
+#bios .hdr{display:flex;padding:48px}
+#bios .hdr .info{margin-left:64px}
+#bios .body{flex:1;display:flex;flex-direction:column;padding:0 48px;min-height:0;overflow:hidden}
+#ldList{display:flex;flex-direction:column;padding:0 0 32px 32px}
+#bios .ftr{padding:48px 48px 64px}
+.loading::after{display:inline-block;content:'';white-space:pre;animation:dotty 1s steps(1,end) infinite}
+@keyframes dotty{0%{content:'   '}25%{content:'.  '}50%{content:'.. '}75%{content:'...'}100%{content:'   '}}
+.bcur{display:inline-block;width:.8em;height:.15em;background:#fff;animation:bblink .65s step-end infinite;align-self:flex-start}
+@keyframes bblink{from,to{background:transparent}50%{background:#fff}}
+#lone{position:absolute;inset:0;padding:48px;display:flex}
+#pop{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:16px}
+#pop .popup{background:#000;padding:24px;border:7px solid #fff;display:flex;flex-direction:column;justify-content:center;max-width:500px}
+#pop .row{display:flex;align-items:flex-end}
+#pop .row .bcur{align-self:flex-end;margin-bottom:.12em}
+#pop .warn{color:yellow;white-space:normal}
+#start{margin:16px auto 0;padding:0;background:#000;border:solid #fff;border-width:4px 3px;color:#fff;font:inherit;letter-spacing:inherit;cursor:pointer}
+#start p{padding:8px}
+#start:hover p,#start:focus-visible p{background:#fff;color:#000}
+#start:focus-visible{outline:0}
+#glerr .popup p{white-space:normal}
+#glerr a{color:#fff}
 
 .skip{position:fixed;left:8px;top:8px;z-index:20;padding:6px 10px;background:#000;color:#fff;transform:translateY(-200%)}
 .skip:focus{transform:none}
 
+@media (max-width:768px){#loader{font-size:10px}#loader .sp{height:10px}#bios .hdr{padding:24px}#bios .hdr .info{margin-left:32px}#bios .body{padding:0 24px}#ldList{padding-left:16px}#bios .ftr{padding:24px 24px 40px}#lone{padding:24px}}
 @media (max-width:700px){
   body{font-size:14px}
   #hud{left:14px;top:14px}
@@ -91,15 +111,85 @@ html.at-screen #hud .row{gap:0}
 </div>
 <div id="hint"><span id="hintText"></span><span class="cur">_</span></div>
 
-<div id="loader" role="dialog" aria-modal="true" aria-labelledby="ldTitle">
-  <div class="box">
-    <pre id="ldLog" aria-hidden="true"></pre>
-    <div class="title" id="ldTitle"><span class="lang-zh">王钰淞 作品集 2026</span><span class="lang-en">Yusong Wang Portfolio Showcase 2026</span></div>
-    <div><span class="lang-zh">点击开始</span><span class="lang-en">Click start to begin</span> <span class="cur">_</span></div>
-    <button type="button" id="start" disabled><span class="lang-zh">开 始</span><span class="lang-en">START</span></button>
-    <div class="alt"><a href="os.html"><span class="lang-zh">设备较旧？直接打开作品集</span><span class="lang-en">Older device? Open the portfolio directly</span></a> · <a href="#" id="langLd">EN / 中文</a></div>
+<div id="loader" role="dialog" aria-modal="true" aria-label="Loading">
+  <div id="bios" aria-hidden="true">
+    <div class="hdr">
+      <div><p class="g"><b>Wang,</b></p><p class="g"><b>Yusong Lab.</b></p></div>
+      <div class="info"><p>Released: 10/24/2026</p><p>YWBIOS (C)2026 Wang Yusong Lab.,</p></div>
+    </div>
+    <div class="body">
+      <p>YWS G26 2016-2026 Special GIS-AI</p>
+      <div class="sp"></div>
+      <p>YW Showcase(tm) XX 2026</p>
+      <p>Checking RAM : 16384 OK</p>
+      <div class="sp"></div><div class="sp"></div>
+      <p id="ldState" class="loading">WAIT</p>
+      <div class="sp"></div>
+      <div id="ldList"></div>
+      <div class="sp"></div>
+      <p id="ldDone" hidden>All Content Loaded, launching <b class="g">'Yusong Wang Portfolio Showcase'</b> V2026</p>
+      <div class="sp"></div>
+      <span class="bcur"></span>
+    </div>
+    <div class="ftr"><p>Press <b>DEL</b> to enter SETUP , <b>ESC</b> to skip memory test</p><p id="ldDate"></p></div>
+  </div>
+  <div id="lone" hidden><span class="bcur"></span></div>
+  <div id="pop" hidden>
+    <div class="popup">
+      <p>Yusong Wang Portfolio Showcase 2026</p>
+      <div id="ldWarn" hidden><div class="sp"></div><p class="warn"><b>WARNING: This experience is best viewed on a desktop or laptop computer.</b></p><div class="sp"></div></div>
+      <div class="row"><p>Click start to begin </p><span class="bcur"></span></div>
+      <button type="button" id="start"><p>START</p></button>
+    </div>
+  </div>
+  <div id="glerr" hidden>
+    <div id="pop2" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:16px"><div class="popup" style="background:#000;padding:24px;border:7px solid #fff;max-width:500px">
+      <p style="white-space:normal"><b style="color:red">CRITICAL ERROR:</b> No WebGL Detected</p><div class="sp"></div><div class="sp"></div>
+      <p style="white-space:normal">WebGL is required to run this site.</p><p style="white-space:normal">Please enable it, or <a href="os.html">open the portfolio without 3D</a>.</p>
+    </div></div>
   </div>
 </div>
+<script>
+/* 加载屏：先于三维模块运行。模块每完成一项就调用 ywLoad.loaded(名字)，这里按参考站的格式逐行打印 */
+window.ywLoad = (function () {
+  var $ = function (s) { return document.querySelector(s); };
+  var TOTAL = 15, shown = 0, queue = [], lines = [], busy = false, fast = false, finished = false;
+  var t = new Date(), p = function (n) { return (n < 10 ? '0' : '') + n; };
+  $('#ldDate').textContent = p(t.getMonth() + 1) + '/' + p(t.getDate()) + '/' + t.getFullYear();
+  if (innerWidth < 768) $('#ldWarn').hidden = false;
+  var gl = null; try { var c = document.createElement('canvas'); gl = c.getContext('webgl2') || c.getContext('webgl'); } catch (e) {}
+  if (!gl) { $('#bios').hidden = true; $('#glerr').hidden = false; }
+  function pad(n) { var s = ''; for (var i = n.length; i < 24; i++) s += '\u00a0'; return s; }
+  function pump() {
+    if (busy || !queue.length) return;
+    busy = true;
+    setTimeout(function () {
+      var name = queue.shift(); shown++;
+      lines.push('Loaded ' + name + pad(name) + ' ... ' + Math.round(shown / TOTAL * 100) + '%');
+      if (lines.length > 8) lines.shift();
+      $('#ldList').innerHTML = lines.map(function (l) { return '<p>' + l + '</p>'; }).join('');
+      $('#ldState').textContent = 'LOADING RESOURCES (' + shown + '/' + TOTAL + ')';
+      busy = false;
+      if (shown >= TOTAL) done(); else pump();
+    }, fast ? 0 : 70 + Math.random() * 190);
+  }
+  function done() {
+    if (finished) return; finished = true;
+    var st = $('#ldState'); st.classList.remove('loading'); st.textContent = 'FINISHED LOADING RESOURCES';
+    $('#ldDone').hidden = false;
+    setTimeout(function () {
+      $('#bios').hidden = true; $('#lone').hidden = false;
+      setTimeout(function () { $('#lone').hidden = true; $('#pop').hidden = false; $('#start').focus(); }, fast ? 0 : 500);
+    }, fast ? 200 : 1000);
+  }
+  addEventListener('keydown', function (e) { if (e.key === 'Escape' && !finished) { fast = true; pump(); } });
+  setTimeout(function () { if (!shown) $('#ldState').textContent = 'LOADING RESOURCES (0/' + TOTAL + ')'; }, 350);
+  return {
+    loaded: function (name) { if (!gl) return; queue.push(name); pump(); },
+    error: function () { $('#bios').hidden = true; $('#pop').hidden = true; $('#glerr').hidden = false; }
+  };
+})();
+</script>
 
 <noscript><div style="position:fixed;inset:0;z-index:30;background:#000;color:#fff;display:grid;place-items:center;text-align:center;padding:20px">这个页面的三维书桌需要 JavaScript。<br /><a style="color:#fff" href="os.html">直接打开作品集 / Open the portfolio</a></div></noscript>
 
@@ -113,12 +203,11 @@ const $ = (s) => document.querySelector(s);
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = () => innerWidth < 700;
 const L = (zh, en) => (d.dataset.lang === 'en' ? en : zh);
-const log = $('#ldLog');
-const say = (s, nl = true) => { log.textContent += s + (nl ? '\n' : ''); };
+const ld = window.ywLoad;
 const store = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
 
-say(L('YW 作品集加载器 v2026', 'YW Portfolio Loader v2026'));
-say(L('正在载入 three.js ………… 完成', 'Loading three.js ............ OK'));
+ld.loaded('threeModule'); ld.loaded('css3dRenderer'); ld.loaded('roomEnvironment');
+document.fonts.load('16px "YS Pixel"').finally(() => ld.loaded('pixelFont'));
 
 /* ================= 渲染器 ================= */
 const canvas = $('#gl');
@@ -126,9 +215,7 @@ let renderer;
 try {
   renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
 } catch (e) {
-  say(L('这台设备打不开 WebGL。', 'WebGL is not available here.'));
-  $('#start').hidden = true;
-  $('.alt a').textContent = L('→ 直接打开作品集', '→ Open the portfolio');
+  ld.error();
   throw e;
 }
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -166,6 +253,7 @@ scene.add(key);
 const fill = new THREE.DirectionalLight(0xdfe6ff, 0.55);
 fill.position.set(-4, 2.5, 1.5);
 scene.add(fill);
+ld.loaded('studioLighting');
 
 /* ================= 材质与小工具 ================= */
 const M = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.6, metalness: 0, ...o });
@@ -203,7 +291,6 @@ function rbox(w, h, dd, r, mat, x, y, z, p) {
   return mesh(g, mat, x, y, z, p);
 }
 
-say(L('正在搭建书桌 ………………… ', 'Building the desk ........... '), false);
 
 /* ================= 地面（只接影子，透出 CSS 背景） ================= */
 const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.ShadowMaterial({ opacity: 0.22 }));
@@ -227,6 +314,7 @@ for (const [y, h] of [[0.58, 0.16], [0.3, 0.36]]) {
 }
 for (const x of [-0.2, 0.2]) box(0.03, 0.03, 0.74, darkMetal, x, 0.015, 0, ped);
 
+ld.loaded('deskModel');
 /* ================= 电脑主机 ================= */
 const pc = new THREE.Group(); pc.position.set(0, TOP, -0.12); scene.add(pc);
 rbox(0.46, 0.13, 0.42, 0.012, beige, 0, 0.065, 0, pc);
@@ -238,6 +326,7 @@ mesh(new THREE.SphereGeometry(0.0035, 8, 8), new THREE.MeshBasicMaterial({ color
 mesh(new THREE.CylinderGeometry(0.1, 0.12, 0.02, 32), beigeDark, 0, 0.14, 0, pc);
 box(0.08, 0.04, 0.08, beigeDark, 0, 0.165, -0.01, pc);
 
+ld.loaded('computerCaseModel');
 /* ================= 显示器 ================= */
 const mon = new THREE.Group(); mon.position.set(0, TOP + 0.13 + 0.235, -0.04); scene.add(mon);
 const BW = 0.43, BH = 0.375, SW = 0.32, SH = 0.24, SY = 0.018; // 外框与屏幕（4:3）
@@ -282,6 +371,7 @@ const glass = new THREE.Mesh(new THREE.PlaneGeometry(SW, SH), new THREE.MeshBasi
 }) }));
 glass.position.set(0, SY, -0.029); mon.add(glass);
 
+ld.loaded('monitorModel');
 /* ================= 键盘与鼠标 ================= */
 const kb = new THREE.Group(); kb.position.set(-0.02, TOP, 0.2); kb.rotation.set(0.05, 0, 0); scene.add(kb);
 rbox(0.47, 0.026, 0.165, 0.006, beige, 0, 0.013, 0, kb);
@@ -298,6 +388,7 @@ rbox(0.47, 0.026, 0.165, 0.006, beige, 0, 0.013, 0, kb);
   for (let r = 0; r < 5; r++) for (let c = 0; c < 4; c++) put(0.105 + c * 0.0185, -0.045 + r * 0.0185, 1, c === 3); // 小键盘
   keys.count = n1; keys2.count = n2; kb.add(keys, keys2);
 }
+ld.loaded('keyboardModel');
 const mouse = mesh(new THREE.SphereGeometry(1, 24, 16), beige, 0.33, TOP + 0.012, 0.22);
 mouse.scale.set(0.032, 0.018, 0.05);
 box(0.003, 0.004, 0.03, beigeDark, 0.33, TOP + 0.03, 0.2);
@@ -309,6 +400,7 @@ cable([[0.33, TOP + 0.006, 0.172], [0.32, TOP + 0.004, 0.06], [0.26, TOP + 0.004
 cable([[-0.02, TOP + 0.006, 0.115], [-0.03, TOP + 0.004, 0.05], [-0.08, TOP + 0.004, -0.33]]);
 cable([[0.0, TOP + 0.3, -0.42], [0.06, TOP + 0.08, -0.4], [0.18, TOP + 0.004, -0.36], [0.6, TOP + 0.004, -0.38], [0.79, 0.4, -0.42], [0.82, 0.02, -0.45]], 0.004);
 
+ld.loaded('mouseModel');
 /* ================= 桌上的东西 ================= */
 // 纸堆
 for (const [x, z, n, r] of [[-0.62, -0.18, 5, 0.03], [-0.38, -0.2, 3, -0.05]]) {
@@ -355,6 +447,7 @@ for (const [x, r] of [[0.52, 0], [0.585, 0.02]]) {
   mesh(new THREE.CircleGeometry(0.035, 24), M(0x3b2416, { roughness: 0.2 }), 0.6, TOP + 0.075, 0.04).rotation.x = -Math.PI / 2;
 }
 
+ld.loaded('deskPropsModels');
 /* ================= 椅子 ================= */
 {
   const ch = new THREE.Group(); ch.position.set(0.12, 0, 0.72); ch.rotation.y = -0.35; scene.add(ch);
@@ -370,6 +463,7 @@ for (const [x, r] of [[0.52, 0], [0.585, 0.02]]) {
   }
 }
 
+ld.loaded('officeChairModel');
 /* ================= 盆栽 ================= */
 {
   const pl = new THREE.Group(); pl.position.set(1.08, 0, -0.18); scene.add(pl);
@@ -388,7 +482,7 @@ for (const [x, r] of [[0.52, 0], [0.585, 0.02]]) {
     const lf = mesh(leafGeo, leafMat, 0, h - 0.02, 0, st); lf.rotation.set(-0.9, 0, 0); lf.scale.setScalar(0.55 + (i % 3) * 0.08);
   }
 }
-say(L('完成', 'OK'));
+ld.loaded('plantModel');
 
 /* ================= 屏幕网页（CSS3D） ================= */
 const SCREEN_PX = { w: 1024, h: 768 };
@@ -406,12 +500,13 @@ cssObj.position.copy(screenPos).multiplyScalar(CSS_SCALE);
 cssObj.quaternion.copy(screenQuat);
 cssObj.scale.setScalar((SW * CSS_SCALE) / SCREEN_PX.w);
 let osReady = false;
-say(L('正在接通显示器 …………… ', 'Connecting the monitor ...... '), false);
-const readyTimer = setTimeout(() => { if (!osReady) { osReady = true; say(L('完成', 'OK')); enableStart(); } }, 6000);
+const readyTimer = setTimeout(() => { if (!osReady) { osReady = true; ld.loaded('monitorOperatingSystem'); } }, 5000);
+// iframe 加载完后主动问一次，防止它在监听器就位前就发出了 ready
+frame.addEventListener('load', () => toOS({ type: 'ping' }));
 addEventListener('message', (e) => {
   if (e.origin !== location.origin || !e.data || !e.data.yw) return;
   const m = e.data;
-  if (m.type === 'ready' && !osReady) { osReady = true; clearTimeout(readyTimer); say(L('完成', 'OK')); enableStart(); }
+  if (m.type === 'ready' && !osReady) { osReady = true; clearTimeout(readyTimer); ld.loaded('monitorOperatingSystem'); }
   else if (m.type === 'click') sfx.click();
   else if (m.type === 'key') sfx.key();
   else if (m.type === 'boot') sfx.boot();
@@ -461,6 +556,7 @@ const sfx = (() => {
     },
   };
 })();
+ld.loaded('audioEngine');
 function paintSound() {
   $('#sndIcon').innerHTML = sfx.on
     ? '<path d="M2 6h3l4-4v12l-4-4H2z"/><path d="M11 5c1.2 1.2 1.2 4.8 0 6M13 3c2.4 2.4 2.4 7.6 0 10" stroke="currentColor" fill="none" stroke-width="1.4"/>'
@@ -567,12 +663,10 @@ function tick() { const t = new Date(), p = (n) => String(n).padStart(2, '0'); $
 tick(); setInterval(tick, 1000);
 
 /* ================= 开场 ================= */
-function enableStart() { const b = $('#start'); b.disabled = false; b.focus(); }
-$('#langLd').addEventListener('click', (e) => { e.preventDefault(); d.dataset.lang = d.dataset.lang === 'en' ? 'zh' : 'en'; store('yw-lang', d.dataset.lang); toOS({ type: 'lang', lang: d.dataset.lang }); });
 $('#start').addEventListener('click', () => {
   sfx.start(); sfx.click();
   toOS({ type: 'lang', lang: d.dataset.lang }); toOS({ type: 'sound', on: sfx.on }); toOS({ type: 'power' });
-  $('#loader').classList.add('out'); setTimeout(() => { $('#loader').hidden = true; }, 700);
+  $('#loader').classList.add('out'); setTimeout(() => { $('#loader').hidden = true; }, 260);
   $('#hud').classList.add('on'); typeHud(false);
   clock0 = performance.now(); state = 'overview'; $('#hint').classList.add('on');
   if (/[#&]desk\b/.test(location.hash)) setTimeout(() => go('desk'), 300);
