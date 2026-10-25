@@ -608,33 +608,77 @@ ld.loaded('officeChairModel');
     const a = i * 2.4, r = 0.028 + (i % 5) * 0.021;
     mesh(new THREE.IcosahedronGeometry(0.004 + (i % 3) * 0.0015, 0), soilMat, Math.cos(a) * r, 0.303, Math.sin(a) * r, pl).scale.y = 0.4;
   }
-  const leafMaterials = [0x557e4d, 0x638b53, 0x718e59].map((color) => M(color, { roughness: 0.8, side: THREE.DoubleSide }));
-  const stemMat = M(0x5c7747, { roughness: 0.85 }), veinMat = M(0x829765, { roughness: 0.9 });
-  for (let i = 0; i < 11; i++) {
-    const a = i * 2.399, reach = 0.10 + (i % 3) * 0.028, height = 0.54 + (i % 5) * 0.105;
-    const direction = new THREE.Vector3(Math.cos(a), 0, Math.sin(a));
-    const end = direction.clone().multiplyScalar(reach); end.y = height;
-    const curve = new THREE.CatmullRomCurve3([direction.clone().multiplyScalar(0.018).setY(0.3), direction.clone().multiplyScalar(0.035).setY(0.43), direction.clone().multiplyScalar(reach * 0.65).setY(height - 0.07), end]);
-    const stem = new THREE.TubeGeometry(curve, 24, 0.004, 6, false), sp = stem.attributes.position;
-    for (let j = 0; j < sp.count; j++) {
-      const t = Math.floor(j / 7) / 24, center = curve.getPointAt(t), p = new THREE.Vector3().fromBufferAttribute(sp, j).sub(center).multiplyScalar(1 - t * 0.58).add(center);
-      sp.setXYZ(j, p.x, p.y, p.z);
+  // 松树：露出弯曲的木质主干，枝条承托错落的针叶层，避免整块绿色球体。
+  const bark = M(0x8c7960, { roughness: 1, map: canvasTex(256, 128, (g, w, h) => {
+    g.fillStyle = '#847260'; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 310; i++) {
+      g.fillStyle = ['#665645', '#77624d', '#9b8972', '#a08c70'][i % 4];
+      g.fillRect((i * 47) % w, (i * 29) % h, 5 + i % 17, 1 + i % 4);
     }
-    stem.computeVertexNormals(); mesh(stem, stemMat, 0, 0, 0, pl);
-    // 中脉与左右叶面共用控制点；折面而非一张无厚度的平片。
-    const blade = new THREE.Group(); blade.position.copy(end); blade.rotation.y = -a; pl.add(blade);
-    const length = 0.22 + (i % 3) * 0.026, width = 0.062 + (i % 2) * 0.012;
-    const vertices = [], indices = [], vein = [];
-    for (let j = 0; j <= 8; j++) {
-      const t = j / 8, x = length * t, y = Math.sin(t * Math.PI) * 0.067 - t * t * 0.056, w = Math.sin(Math.PI * t) * width;
-      vertices.push(x, y - w * 0.19, -w, x, y + 0.006 * Math.sin(Math.PI * t), 0, x, y - w * 0.19, w);
-      vein.push([x, y + 0.0015 + 0.006 * Math.sin(Math.PI * t), 0]);
-      if (j < 8) { const k = j * 3; indices.push(k, k + 3, k + 1, k + 1, k + 3, k + 4, k + 1, k + 4, k + 2, k + 2, k + 4, k + 5); }
+  }) });
+  const wood = (points, baseRadius, tipRadius, segments = 16, sides = 7) => {
+    const curve = new THREE.CatmullRomCurve3(points.map((p) => Array.isArray(p) ? new THREE.Vector3(...p) : p));
+    const geometry = new THREE.TubeGeometry(curve, segments, 1, sides, false), positions = geometry.attributes.position;
+    for (let i = 0; i < positions.count; i++) {
+      const t = Math.floor(i / (sides + 1)) / segments, center = curve.getPointAt(t);
+      const radius = THREE.MathUtils.lerp(baseRadius, tipRadius, t) * (1 + Math.sin(((i % (sides + 1)) % sides) * 2.7 + t * 11) * 0.055);
+      const point = new THREE.Vector3().fromBufferAttribute(positions, i).sub(center).multiplyScalar(radius).add(center);
+      positions.setXYZ(i, point.x, point.y, point.z);
     }
-    const leaf = new THREE.BufferGeometry(); leaf.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3)); leaf.setIndex(indices); leaf.computeVertexNormals();
-    mesh(leaf, leafMaterials[i % 3], 0, 0, 0, blade);
-    tube(vein, 0.0008, veinMat, blade, 20);
+    geometry.computeVertexNormals(); mesh(geometry, bark, 0, 0, 0, pl);
+    return curve;
+  };
+  const trunk = wood([[0, 0.3, 0], [-0.018, 0.42, 0.014], [0.015, 0.61, 0.008], [0.046, 0.78, -0.008], [0.024, 0.94, 0.012], [0.061, 1.105, 0.022]], 0.025, 0.005, 36, 10);
+  for (let i = 0; i < 4; i++) {
+    const a = i * 1.55 + 0.3;
+    wood([[0, 0.337, 0], [Math.cos(a) * 0.035, 0.31, Math.sin(a) * 0.035], [Math.cos(a) * 0.079, 0.303, Math.sin(a) * 0.079]], 0.009, 0.0017, 10, 6);
   }
+  const pads = [
+    { at: 0.27, center: [-0.205, 0.642, 0.082], rx: 0.125, rz: 0.077, shoots: 43 },
+    { at: 0.39, center: [0.207, 0.728, 0.035], rx: 0.139, rz: 0.09, shoots: 48 },
+    { at: 0.48, center: [-0.035, 0.813, -0.182], rx: 0.122, rz: 0.075, shoots: 43 },
+    { at: 0.6, center: [-0.144, 0.89, -0.015], rx: 0.117, rz: 0.077, shoots: 41 },
+    { at: 0.73, center: [0.17, 0.971, -0.083], rx: 0.103, rz: 0.073, shoots: 38 },
+    { at: 0.8, center: [0.008, 1.014, 0.129], rx: 0.093, rz: 0.073, shoots: 36 },
+    { at: 0.97, center: [0.062, 1.12, 0.022], rx: 0.107, rz: 0.088, shoots: 43 },
+  ];
+  const shootCount = pads.reduce((n, pad) => n + pad.shoots, 0), needlesPerShoot = 26;
+  // 一根细三棱锥针叶只需三个三角形；所有松针共用一次实例绘制。
+  const needleGeo = new THREE.ConeGeometry(1, 1, 3, 1, true); needleGeo.translate(0, 0.5, 0);
+  const needles = new THREE.InstancedMesh(needleGeo, M(0xffffff, { roughness: 0.86 }), shootCount * needlesPerShoot);
+  needles.name = 'pine-needles'; needles.castShadow = needles.receiveShadow = true;
+  const twigs = new THREE.InstancedMesh(needleGeo, M(0x6c6543, { roughness: 1 }), shootCount);
+  twigs.name = 'pine-shoots'; twigs.castShadow = true;
+  const greens = [0x294b32, 0x345e3a, 0x426c43, 0x547b4b].map((color) => new THREE.Color(color));
+  const matrix = new THREE.Matrix4(), rotation = new THREE.Quaternion(), up = new THREE.Vector3(0, 1, 0);
+  let needleIndex = 0, shootIndex = 0;
+  for (let p = 0; p < pads.length; p++) {
+    const pad = pads[p], center = new THREE.Vector3(...pad.center), start = trunk.getPointAt(pad.at), end = center.clone().add(new THREE.Vector3(0, -0.035, 0));
+    const elbow = start.clone().lerp(end, 0.62); elbow.y = Math.min(start.y, end.y) - 0.015;
+    wood([start, elbow, end], p === 6 ? 0.005 : 0.010 - p * 0.0007, 0.0027, 15, 7);
+    for (const direction of [-1, 1]) {
+      const tip = center.clone().add(new THREE.Vector3(direction * pad.rx * 0.72, -0.014, direction * pad.rz * 0.36));
+      wood([end.clone().lerp(elbow, 0.2), end, tip], 0.0038, 0.001, 10, 5);
+    }
+    for (let j = 0; j < pad.shoots; j++) {
+      const angle = j * 2.39996 + p * 0.76, radius = Math.sqrt((j + 0.5) / pad.shoots);
+      const anchor = center.clone().add(new THREE.Vector3(Math.cos(angle) * pad.rx * radius, 0.015 * Math.sin(j * 1.7) + 0.022 * (1 - radius), Math.sin(angle) * pad.rz * radius));
+      const axis = new THREE.Vector3(Math.cos(angle) * (0.35 + radius * 0.45), 0.85, Math.sin(angle) * (0.35 + radius * 0.45)).normalize();
+      const side = new THREE.Vector3().crossVectors(axis, new THREE.Vector3(0, 0, 1)).normalize();
+      const across = new THREE.Vector3().crossVectors(axis, side).normalize();
+      const shootLength = 0.031 + (j % 5) * 0.002;
+      rotation.setFromUnitVectors(up, axis); matrix.compose(anchor, rotation, new THREE.Vector3(0.0012, shootLength, 0.0012)); twigs.setMatrixAt(shootIndex++, matrix);
+      for (let k = 0; k < needlesPerShoot; k++) {
+        const a = k * 2.39996 + j * 0.37, height = 0.12 + (k / needlesPerShoot) * 0.86;
+        const direction = axis.clone().multiplyScalar(0.42 + height * 0.35).addScaledVector(side, Math.cos(a) * 0.8).addScaledVector(across, Math.sin(a) * 0.8).normalize();
+        const origin = anchor.clone().addScaledVector(axis, shootLength * height);
+        const length = 0.027 + ((k * 7 + j * 3) % 13) * 0.0016;
+        rotation.setFromUnitVectors(up, direction); matrix.compose(origin, rotation, new THREE.Vector3(0.00115, length, 0.00115));
+        needles.setMatrixAt(needleIndex, matrix); needles.setColorAt(needleIndex++, greens[(p + j + k % 3) % greens.length]);
+      }
+    }
+  }
+  pl.add(twigs, needles);
 }
 ld.loaded('plantModel');
 

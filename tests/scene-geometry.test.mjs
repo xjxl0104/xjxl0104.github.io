@@ -62,20 +62,29 @@ test('plant foliage and stems do not pass through the tabletop', () => {
   solid.min.add(new THREE.Vector3(0.01, 0.001, 0.01));
   solid.max.sub(new THREE.Vector3(0.01, 0.001, 0.01));
   let crossings = 0;
-  plant.traverse((object) => {
-    if (!object.isMesh) return;
-    const positions = object.geometry.attributes.position;
-    const indices = object.geometry.index;
-    const count = indices ? indices.count : positions.count;
-    const triangle = new THREE.Triangle();
-    for (let i = 0; i < count; i += 3) {
-      for (const [offset, vertex] of [[0, triangle.a], [1, triangle.b], [2, triangle.c]]) {
-        vertex.fromBufferAttribute(positions, indices ? indices.getX(i + offset) : i + offset).applyMatrix4(object.matrixWorld);
-      }
+  for (const object of worldTriangles(plant)) {
+    for (const triangle of object.triangles) {
       if (solid.intersectsTriangle(triangle)) crossings++;
     }
-  });
+  }
   assert.equal(crossings, 0, `${crossings} plant triangles intersect the tabletop solid`);
+});
+
+test('curved pine wood closes the duplicated vertices along each tube seam', () => {
+  const plant = scene.getObjectByName('plant');
+  let checked = 0;
+  plant.traverse((object) => {
+    if (!object.isMesh || object.geometry.type !== 'TubeGeometry') return;
+    const positions = object.geometry.attributes.position;
+    const { radialSegments, tubularSegments } = object.geometry.parameters;
+    for (let ring = 0; ring <= tubularSegments; ring++) {
+      const first = new THREE.Vector3().fromBufferAttribute(positions, ring * (radialSegments + 1));
+      const last = new THREE.Vector3().fromBufferAttribute(positions, ring * (radialSegments + 1) + radialSegments);
+      assert.ok(first.distanceTo(last) < 0.00001, `pine wood has an open longitudinal seam at ring ${ring}`);
+      checked++;
+    }
+  });
+  assert.ok(checked > 0, 'pine wood was exercised');
 });
 
 test('monitor opening leaves the screen center and corners unobstructed', () => {
