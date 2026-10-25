@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const pages = ['index.html', 'worlds.html', 'ukiyoe.html', 'retro-future.html'];
+const pages = ['index.html', 'os.html', 'dos.html', 'worlds.html', 'ukiyoe.html', 'retro-future.html'];
 const scenes = ['ukiyoe.html', 'retro-future.html'];
 
 async function html(file) {
@@ -20,16 +20,39 @@ function localLinks(source) {
     .filter(Boolean);
 }
 
-test('home is the YSDOS retro archive with all nine files', async () => {
+test('home is the 3D desk whose monitor runs the YW/OS portfolio', async () => {
   const source = await html('index.html');
-  assert.ok(source.includes('YSDOS'), 'home must be the retro archive');
+  for (const marker of ['id="loader"', 'id="hud"', 'id="gl"', 'CSS3DRenderer', "'os.html?embed'", 'WebGLRenderer', 'prefers-reduced-motion']) {
+    assert.ok(source.includes(marker), `home missing marker: ${marker}`);
+  }
+  assert.match(source, /class="skip" href="os\.html"/, 'keyboard users need a way past the 3D scene');
+  for (const file of ['assets/vendor/CSS3DRenderer.js', 'assets/vendor/RoomEnvironment.js']) {
+    const addon = await readFile(path.join(root, file), 'utf8');
+    assert.match(addon, /from '\.\/three\.module\.min\.js'/, `${file} must import the vendored three.js`);
+  }
+});
+
+test('YW/OS portfolio has every page and real content, without borrowed branding', async () => {
+  const source = await html('os.html');
+  for (const page of ['home', 'about', 'experience', 'projects', 'contact']) assert.match(source, new RegExp(`data-page="${page}"`), `missing page ${page}`);
+  for (const sub of ['heritage', 'systems', 'papers', 'art', 'early']) assert.match(source, new RegExp(`data-sub="${sub}"`), `missing project ${sub}`);
+  for (const text of ['HeritageExplorer', 'VINCI 2025', 'CHI 2025', 'DIPARK', 'ywang677@connect.hkust-gz.edu.cn', 'CV_Yusong_Wang.pdf', 'dos.html']) {
+    assert.ok(source.includes(text), `missing real content: ${text}`);
+  }
+  assert.match(source, /Henry Heffernan/, 'credits must acknowledge the inspiration');
+  assert.doesNotMatch(source, /\bWindows\b|Microsoft(?! YaHei)/, 'no third-party OS branding (a YaHei font fallback is fine)');
+});
+
+test('YSDOS archive keeps all nine files', async () => {
+  const source = await html('dos.html');
+  assert.ok(source.includes('YSDOS'), 'dos.html must be the retro archive');
   const sections = ['about', 'heritage', 'work', 'portfolio', 'exp', 'toolbox', 'contact', 'cv', 'door'];
   for (const id of sections) {
     assert.equal(source.match(new RegExp(`<section class="doc" id="s-${id}"`, 'g'))?.length, 1, `missing file ${id}`);
     assert.match(source, new RegExp(`data-sec="${id}"`), `menu misses ${id}`);
   }
-  for (const target of ['worlds.html', 'ukiyoe.html', 'retro-future.html', 'CV_Yusong_Wang.pdf']) {
-    assert.match(source, new RegExp(`href=["']${target.replace('.', '\\.')}["']`), `home must link to ${target}`);
+  for (const target of ['index.html', 'os.html', 'worlds.html', 'ukiyoe.html', 'retro-future.html', 'CV_Yusong_Wang.pdf']) {
+    assert.match(source, new RegExp(`href=["']${target.replace('.', '\\.')}["']`), `archive must link to ${target}`);
   }
   for (const text of ['HeritageExplorer', 'VINCI 2025', 'CHI 2025', 'DIPARK', 'ywang677@connect.hkust-gz.edu.cn']) {
     assert.ok(source.includes(text), `missing real content: ${text}`);

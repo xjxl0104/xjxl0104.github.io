@@ -3,570 +3,605 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>王钰淞 · Yusong Wang — YSDOS 档案系统</title>
-<meta name="description" content="王钰淞（Yusong Wang）的个人主页：一台 90 年代中文电脑上的档案系统。HeritageExplorer、企业 AI 原生系统、论文专利与经历。" />
-<meta name="theme-color" content="#0000aa" />
-<link rel="preload" href="assets/retro/fusion-pixel-12-subset.woff2" as="font" type="font/woff2" crossorigin />
+<title>王钰淞 · Yusong Wang — Portfolio 2026</title>
+<meta name="description" content="王钰淞（Yusong Wang）的作品集：走到一张书桌前，打开那台复古电脑。GIS × 多模态 AI × 全栈系统。" />
+<meta name="theme-color" content="#d4d4d8" />
+<link rel="modulepreload" href="assets/vendor/three.module.min.js" />
 <style>
-/* Fusion Pixel 12px（SIL OFL 1.1，见 assets/retro/OFL-fusion-pixel.txt），按本页用字子集化 */
 @font-face{font-family:"YS Pixel";src:url("assets/retro/fusion-pixel-12-subset.woff2") format("woff2");font-display:swap}
-:root{
-  /* 16 色 VGA 调色板 */
-  --blue:#0000aa;--black:#000;--gray:#aaaaaa;--dgray:#555555;--white:#ffffff;
-  --cyan:#00aaaa;--lcyan:#55ffff;--yellow:#ffff55;--brown:#aa5500;--lred:#ff5555;--green:#00aa00;--lgreen:#55ff55;
-  --fs:24px;--px:calc(var(--fs) / 12);--lh:calc(var(--fs) * 4 / 3);--ch:calc(var(--fs) / 2);
-  color-scheme:dark;
-}
+:root{--mono:"YS Pixel","SFMono-Regular",Menlo,Consolas,monospace}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;background:var(--black)}
-body{font:var(--fs)/var(--lh) "YS Pixel","Courier New",monospace;color:var(--gray);-webkit-text-size-adjust:100%;overflow:hidden}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%;overflow:hidden}
+body{background:radial-gradient(ellipse 85% 75% at 50% 46%,#f1f1f3 0%,#d9d9dd 52%,#a9a9b0 100%);font:16px/1.4 var(--mono);color:#000;-webkit-font-smoothing:none}
 html[data-lang="zh"] .lang-en,html[data-lang="en"] .lang-zh{display:none}
-a{color:var(--lcyan);text-decoration:underline;text-underline-offset:calc(var(--px) * 2)}
-a:hover{background:var(--lcyan);color:var(--black);text-decoration:none}
-:focus-visible{outline:var(--px) solid var(--yellow);outline-offset:var(--px)}
-button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
-kbd{font:inherit}
+#css,#gl{position:fixed;inset:0;width:100%;height:100%}
+#css{z-index:0}
+#css iframe{border:0;background:#000;pointer-events:none!important}
+html.at-screen #css iframe{pointer-events:auto!important}
+#gl{z-index:1;pointer-events:none;display:block}
+#grain{position:fixed;inset:-50%;z-index:2;pointer-events:none;opacity:.07;mix-blend-mode:multiply;animation:grain .5s steps(4) infinite}
+@keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-1%)}}
+#vignette{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,.18) 100%)}
 
-/* ===== 整屏 ===== */
-#screen{position:fixed;inset:0;display:grid;grid-template-rows:auto 1fr auto auto;background:var(--blue);
-  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-.bar{display:flex;align-items:center;gap:var(--ch);white-space:nowrap;overflow:hidden;padding:0 var(--ch)}
-#titlebar{background:var(--cyan);color:var(--black)}
-#titlebar .grow{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
-#titlebar button{padding:0 var(--ch);background:var(--black);color:var(--lcyan)}
-#titlebar button:hover{background:var(--white);color:var(--black)}
-#clock{font-variant-numeric:tabular-nums}
+/* 左上角名牌 */
+#hud{position:fixed;left:max(24px,env(safe-area-inset-left));top:max(24px,env(safe-area-inset-top));z-index:5;display:flex;flex-direction:column;align-items:flex-start;gap:6px;opacity:0;transition:opacity .4s}
+#hud.on{opacity:1}
+#hud .tag{background:#000;color:#fff;padding:2px 12px;min-height:26px;white-space:nowrap}
+#hud .row{display:flex;gap:6px}
+#hud button{display:grid;place-items:center;min-width:26px;height:26px;padding:0 6px;border:0;background:#000;color:#fff;font:inherit;cursor:pointer}
+#hud button:hover,#hud button:focus-visible{background:#fff;color:#000;outline:1px solid #000}
+#hud svg{width:14px;height:14px;fill:currentColor}
+#hud #back{display:none}
+html.at-desk #hud #back,html.at-screen #hud #back{display:grid}
+/* 进到屏幕里时名牌让位，只在左下角留“退后” */
+html.at-screen #hud{top:auto;bottom:max(10px,env(safe-area-inset-bottom))}
+html.at-screen #hud .tag,html.at-screen #hud #btnSound,html.at-screen #hud #btnView{display:none}
+html.at-screen #hud .row{gap:0}
 
-#desk{display:grid;grid-template-columns:calc(var(--fs) * 10.5) 1fr;gap:var(--fs);min-height:0;
-  padding:calc(var(--lh) * .75) calc(var(--fs) * 1.5) calc(var(--lh) * 1.1) var(--fs)}
-
-/* 双线框窗口 + 一格黑色投影（文本模式对话框的样子） */
-.win{position:relative;min-height:0;display:flex;flex-direction:column;
-  border:calc(var(--px) * 3) double var(--gray);padding:calc(var(--lh) * .5) var(--ch) calc(var(--lh) * .3);
-  box-shadow:var(--fs) var(--lh) 0 var(--black)}
-.win>.wt{position:absolute;top:calc(var(--lh) * -.5 - var(--px) * 1.5);left:0;right:0;text-align:center;line-height:var(--lh);pointer-events:none}
-.win>.wt span{background:var(--blue);color:var(--white);padding:0 var(--ch)}
-#menu{background:var(--blue)}
-#menu ol{list-style:none;margin:0;padding:0;overflow-y:auto;overflow-x:hidden}
-#menu li button{display:flex;gap:var(--ch);width:100%;padding:0 var(--ch);color:var(--gray);white-space:nowrap}
-#menu li button span{min-width:0;overflow:hidden;text-overflow:ellipsis}
-#menu li button kbd{color:var(--yellow)}
-#menu li button:hover{background:var(--dgray);color:var(--white)}
-#menu li button[aria-current="true"]{background:var(--cyan);color:var(--black)}
-#menu li button[aria-current="true"] kbd{color:var(--black)}
-#menu .sep{border-top:var(--px) solid var(--dgray);margin:calc(var(--lh) * .25) 0}
-#menu .who{margin-top:auto;padding-top:calc(var(--lh) * .5);color:var(--dgray);white-space:pre-line}
-#menu .who img{display:block;width:100%;max-width:calc(var(--fs) * 6);image-rendering:pixelated;border:var(--px) solid var(--gray);margin-bottom:calc(var(--lh) * .25)}
-
-#pane{background:var(--blue)}
-#doc{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:var(--ch);scrollbar-color:var(--white) var(--dgray);scrollbar-width:auto}
-#doc::-webkit-scrollbar{width:var(--fs)}
-#doc::-webkit-scrollbar-track{background:repeating-conic-gradient(var(--gray) 0 25%,var(--blue) 0 50%) 0 0/calc(var(--px) * 2) calc(var(--px) * 2)}
-#doc::-webkit-scrollbar-thumb{background:var(--white)}
-
-/* ===== 文档排版（各页模板里的类） ===== */
-.doc{color:var(--gray)}
-html.js .doc{display:none}
-html.js .doc.on{display:block}
-.doc h2{margin:0 0 calc(var(--lh) * .5);font-size:var(--fs);font-weight:400;color:var(--yellow)}
-.doc h2::before{content:"■ ";color:var(--lcyan)}
-.doc h2 small{color:var(--dgray);font-size:var(--fs)}
-.doc h3{margin:calc(var(--lh) * .75) 0 calc(var(--lh) * .25);font-size:var(--fs);font-weight:400;color:var(--white)}
-.doc h3::before{content:"── ";color:var(--dgray)}
-.doc p{margin:0 0 calc(var(--lh) * .5)}
-.doc b{font-weight:400;color:var(--white)}
-.doc small{font-size:var(--fs)}
-.doc .dim{color:var(--lcyan)}
-.doc .tags{display:flex;flex-wrap:wrap;gap:0 var(--ch);margin:0 0 calc(var(--lh) * .5)}
-.doc .tag{color:var(--white);white-space:nowrap}
-.doc .tag::before{content:"[";color:var(--lcyan)}
-.doc .tag::after{content:"]";color:var(--lcyan)}
-.doc .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(calc(var(--fs) * 6),1fr));gap:var(--ch);margin:calc(var(--lh) * .25) 0 calc(var(--lh) * .75)}
-.doc .stats div{border:var(--px) solid var(--gray);padding:calc(var(--lh) * .25) var(--ch);text-align:center;background:var(--black)}
-.doc .stats b{display:block;color:var(--yellow);font-size:calc(var(--fs) * 2);line-height:calc(var(--lh) * 2)}
-.doc .stats span{color:var(--gray)}
-.doc .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(calc(var(--fs) * 14),1fr));gap:var(--fs);margin:calc(var(--lh) * .5) 0}
-.doc .card{border:var(--px) solid var(--gray);padding:calc(var(--lh) * .25) var(--ch)}
-.doc .card.hl{border-color:var(--yellow);box-shadow:inset 0 0 0 var(--px) var(--yellow)}
-.doc .row{display:grid;grid-template-columns:calc(var(--fs) * 4) 1fr;gap:var(--ch);padding:calc(var(--lh) * .2) 0;border-bottom:var(--px) dashed var(--dgray)}
-.doc .row .k{color:var(--yellow)}
-.doc .row small{display:block;color:var(--gray)}
-.doc .portrait{float:right;width:calc(var(--fs) * 5);margin:0 0 var(--ch) var(--fs);border:var(--px) solid var(--gray);image-rendering:pixelated}
-.vga{display:block;margin:calc(var(--lh) * .5) 0;max-width:calc(var(--fs) * 30);text-decoration:none;border:var(--px) solid var(--gray);background:var(--black)}
-.vga img{display:block;width:100%;height:auto;image-rendering:pixelated}
-.vga .cap{display:flex;justify-content:space-between;gap:var(--ch);padding:0 var(--ch);background:var(--gray);color:var(--black)}
-.vga:hover{background:var(--black)}
-.vga:hover .cap{background:var(--lcyan)}
-.doc .pf{display:grid;grid-template-columns:repeat(auto-fit,minmax(calc(var(--fs) * 15),1fr));gap:var(--fs);margin-top:calc(var(--lh) * .5)}
-.doc .pf figure{margin:0}
-.doc .pf figure .vga{margin:0;max-width:none}
-.doc .pf figcaption{padding-top:calc(var(--lh) * .25)}
-.doc .pf figcaption b{display:block;color:var(--yellow)}
-.pxbtn{display:inline-block;margin:0 var(--fs) calc(var(--lh) * .5) 0;padding:0 var(--fs);background:var(--gray);color:var(--black);text-decoration:none;box-shadow:var(--ch) calc(var(--lh) * .5) 0 var(--black)}
-.pxbtn::before{content:"< "}.pxbtn::after{content:" >"}
-.pxbtn.red{background:var(--cyan)}
-.pxbtn:hover{background:var(--white);color:var(--black)}
-.doc ul.dir{list-style:none;margin:0;padding:0}
-.doc ul.dir li{display:grid;grid-template-columns:calc(var(--fs) * 7) 1fr;gap:var(--ch);padding:calc(var(--lh) * .2) 0}
-.doc ul.dir li a{white-space:nowrap}
-
-/* ===== 状态行与功能键 ===== */
-#status{background:var(--gray);color:var(--black)}
-#status .grow{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
-#fkeys{display:grid;grid-template-columns:repeat(9,1fr);background:var(--black);padding:0}
-#fkeys button{display:flex;min-width:0;white-space:nowrap;overflow:hidden}
-#fkeys kbd{color:var(--white);padding:0 calc(var(--px) * 2) 0 var(--ch)}
-#fkeys span{flex:1;min-width:0;background:var(--cyan);color:var(--black);overflow:hidden;text-overflow:ellipsis;padding-left:var(--px)}
-#fkeys button:hover span{background:var(--white)}
-
-/* CRT：只留很淡的扫描线和暗角，不影响阅读 */
-#crt{position:fixed;inset:0;pointer-events:none;z-index:50;
-  background:repeating-linear-gradient(to bottom,rgba(0,0,0,.14) 0 1px,transparent 1px 3px),radial-gradient(ellipse at center,transparent 62%,rgba(0,0,0,.35) 100%)}
-html.flat #crt{display:none}
-
-/* ===== 弹窗、开机、命令行 ===== */
-.dialog{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:rgba(0,0,0,.35)}
-.dialog[hidden]{display:none}
-.dialog .win{background:var(--gray);color:var(--black);border-color:var(--black);width:min(calc(var(--fs) * 26),calc(100vw - var(--fs) * 2));max-height:calc(100dvh - var(--lh) * 4)}
-.dialog .win>.wt span{background:var(--gray);color:var(--black)}
-.dialog dl{display:grid;grid-template-columns:auto 1fr;gap:0 var(--fs);margin:0 0 calc(var(--lh) * .5);overflow:auto}
-.dialog dt{color:var(--blue)}
-.dialog dd{margin:0}
-.dialog .ok{justify-self:center;align-self:center;margin:0 auto;display:block;padding:0 var(--fs);background:var(--blue);color:var(--white);box-shadow:var(--ch) calc(var(--lh) * .5) 0 var(--black)}
-
-#boot,#dos{position:fixed;inset:0;z-index:45;background:var(--black);color:var(--gray);padding:calc(var(--lh) * .5) var(--fs);overflow:hidden}
-#boot[hidden],#dos[hidden]{display:none}
-#boot pre,#dos pre{margin:0;font:inherit;white-space:pre-wrap;word-break:break-all}
-#boot .hi{color:var(--white)}#boot .ok{color:var(--lgreen)}#boot .y{color:var(--yellow)}
-#boot .skip{position:absolute;right:var(--fs);bottom:calc(var(--lh) * .5);color:var(--dgray)}
-#splash{position:absolute;inset:0;display:none;place-content:center;text-align:center;background:var(--blue);color:var(--white)}
-#boot.splash #splash{display:grid}
-#splash .big{font-size:calc(var(--fs) * 4);line-height:calc(var(--lh) * 4);color:var(--yellow);text-shadow:calc(var(--px) * 4) calc(var(--px) * 4) 0 var(--black)}
-#splash .frame{border:calc(var(--px) * 3) double var(--white);padding:calc(var(--lh) * .5) calc(var(--fs) * 2);box-shadow:var(--fs) var(--lh) 0 var(--black)}
-.blink{animation:blink 1s steps(1) infinite}
+#hint{position:fixed;left:50%;bottom:max(36px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:5;background:#000;color:#fff;padding:3px 14px;white-space:nowrap;opacity:0;transition:opacity .4s;pointer-events:none}
+#hint.on{opacity:1}
+.cur{animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
-#dos{overflow:auto}
-#dos form{display:flex;gap:0}
-#dos label{white-space:nowrap}
-#dos input{flex:1;min-width:0;font:inherit;color:var(--white);background:transparent;border:0;outline:0;caret-color:var(--white);padding:0}
 
-/* ===== 窄屏：菜单变成三列编号格，功能键两行 ===== */
-@media (max-width:760px){
-  #desk{grid-template-columns:1fr;grid-template-rows:auto 1fr;gap:calc(var(--lh) * .9);padding:calc(var(--lh) * .7) calc(var(--ch) * 2) calc(var(--lh) * .9) var(--ch)}
-  .win{box-shadow:var(--ch) calc(var(--lh) * .5) 0 var(--black)}
-  #menu ol{display:grid;grid-template-columns:repeat(3,1fr);gap:0 var(--ch)}
-  #menu li button{padding:0 calc(var(--px) * 2);overflow:hidden;text-overflow:ellipsis}
-  #menu .sep,#menu .who{display:none}
-  #fkeys{grid-template-columns:repeat(5,1fr)}
-  #fkeys button:last-child{grid-column:span 2}
-  #titlebar .wide{display:none}
-  .doc .row{grid-template-columns:calc(var(--fs) * 3.5) 1fr}
-  .doc .portrait{width:calc(var(--fs) * 4)}
+/* 开场加载框 */
+#loader{position:fixed;inset:0;z-index:10;background:#000;color:#fff;display:grid;place-items:center;padding:20px;transition:opacity .6s}
+#loader.out{opacity:0;pointer-events:none}
+#loader .box{border:4px solid #fff;padding:22px 26px;min-width:min(520px,92vw);max-width:92vw}
+#loader pre{margin:0 0 6px;font:inherit;white-space:pre-wrap;color:#bdbdbd;min-height:6.5em}
+#loader .title{color:#fff}
+#start{display:block;margin:16px auto 2px;padding:4px 18px;border:2px solid #fff;background:#000;color:#fff;font:inherit;cursor:pointer}
+#start:hover,#start:focus-visible{background:#fff;color:#000;outline:0}
+#start[disabled]{opacity:.35;cursor:wait}
+#loader .alt{margin-top:14px;font-size:12px;color:#8a8a8a;text-align:center}
+#loader .alt a{color:#bdbdbd}
+
+.skip{position:fixed;left:8px;top:8px;z-index:20;padding:6px 10px;background:#000;color:#fff;transform:translateY(-200%)}
+.skip:focus{transform:none}
+
+@media (max-width:700px){
+  body{font-size:14px}
+  #hud{left:14px;top:14px}
+  #hud .tag{min-height:22px;padding:1px 8px}
+  #hud button{height:22px;min-width:22px}
 }
-@media (prefers-reduced-motion:reduce){
-  .blink{animation:none}
-}
-@media print{
-  body{overflow:visible;background:#fff;color:#000}
-  #screen{position:static;display:block;background:#fff}
-  #titlebar,#status,#fkeys,#menu,#crt,#boot,#dos,.dialog{display:none!important}
-  html.js .doc{display:block}
-  .doc,.doc b,.doc h2,.doc h3{color:#000}
-}
+@media (prefers-reduced-motion:reduce){#grain,.cur{animation:none}}
 </style>
 </head>
 <body>
+<a class="skip" href="os.html"><span class="lang-zh">跳过三维场景，直接打开作品集</span><span class="lang-en">Skip the 3D scene and open the portfolio</span></a>
 <script>
-/* 在首帧前决定语言、字号与是否播放开机画面，避免闪动 */
-(function(){
-  var d=document.documentElement;d.classList.add('js');
-  try{var l=localStorage.getItem('ysdos-lang');if(l==='en'||l==='zh')d.dataset.lang=l;if(localStorage.getItem('ysdos-flat')==='1')d.classList.add('flat');}catch(e){}
-  if(/[?&]lang=en\b/.test(location.search))d.dataset.lang='en';
-  function size(){
-    var dpr=window.devicePixelRatio||1,w=innerWidth,h=innerHeight;
-    var small=w<=760,target=small?Math.max(14,Math.min(w/21,18)):Math.max(16,Math.min(w/50,h/27,24)),cap=small?18:24;
-    var step=12/dpr,best=0;
-    /* 点阵字只有在“设备像素整数倍”时才锐利：在 12/dpr 的倍数里挑最接近目标的字号 */
-    for(var fs=step;fs<=cap+0.01;fs+=step){if(fs>=12-0.01&&(!best||Math.abs(fs-target)<Math.abs(best-target)))best=fs}
-    if(!best)best=Math.max(12,Math.round(target));
-    d.style.setProperty('--fs',best+'px');
-  }
-  size();addEventListener('resize',size);
-  window.__ysSize=size;
-})();
+(function(){var d=document.documentElement;try{var l=localStorage.getItem('yw-lang');if(l==='en'||l==='zh')d.dataset.lang=l}catch(e){}if(/[?&]lang=en\b/.test(location.search))d.dataset.lang='en'})();
 </script>
 
-<div id="screen">
-  <header id="titlebar" class="bar">
-    <span class="grow"><span class="lang-zh">钰淞汉字系统 YSDOS 6.0 · 个人档案</span><span class="lang-en">YSDOS 6.0 · Personal Archive</span></span>
-    <span id="clock" class="wide" aria-hidden="true"></span>
-    <button id="btnLang" type="button" aria-label="切换语言 / Switch language"><span class="lang-zh">EN</span><span class="lang-en">中文</span></button>
-  </header>
+<div id="css" aria-hidden="true"></div>
+<canvas id="gl" role="img" aria-label="一张书桌，桌上有一台复古电脑 / A desk with a retro computer"></canvas>
+<div id="vignette" aria-hidden="true"></div>
+<div id="grain" aria-hidden="true"></div>
 
-  <div id="desk">
-    <nav id="menu" class="win" aria-label="主菜单 / Main menu">
-      <div class="wt"><span><span class="lang-zh">主菜单</span><span class="lang-en">MENU</span></span></div>
-      <ol>
-        <li><button type="button" data-sec="about" data-key="1" aria-current="false"><kbd>1</kbd><span><span class="lang-zh">个人简介</span><span class="lang-en">About</span></span></button></li>
-        <li><button type="button" data-sec="heritage" data-key="2" aria-current="false"><kbd>2</kbd><span><span class="lang-zh">遗产图谱</span><span class="lang-en">Heritage</span></span></button></li>
-        <li><button type="button" data-sec="work" data-key="3" aria-current="false"><kbd>3</kbd><span><span class="lang-zh">论文与系统</span><span class="lang-en">Papers</span></span></button></li>
-        <li><button type="button" data-sec="portfolio" data-key="4" aria-current="false"><kbd>4</kbd><span><span class="lang-zh">实际作品</span><span class="lang-en">Real work</span></span></button></li>
-        <li><button type="button" data-sec="exp" data-key="5" aria-current="false"><kbd>5</kbd><span><span class="lang-zh">经历</span><span class="lang-en">Timeline</span></span></button></li>
-        <li><button type="button" data-sec="toolbox" data-key="6" aria-current="false"><kbd>6</kbd><span><span class="lang-zh">技能</span><span class="lang-en">Toolbox</span></span></button></li>
-        <li><button type="button" data-sec="contact" data-key="7" aria-current="false"><kbd>7</kbd><span><span class="lang-zh">联系</span><span class="lang-en">Contact</span></span></button></li>
-        <li><button type="button" data-sec="cv" data-key="8" aria-current="false"><kbd>8</kbd><span><span class="lang-zh">简历</span><span class="lang-en">CV</span></span></button></li>
-        <li class="sep" aria-hidden="true"></li>
-        <li><button type="button" data-sec="door" data-key="9" aria-current="false"><kbd>9</kbd><span><span class="lang-zh">其他版本</span><span class="lang-en">Other views</span></span></button></li>
-      </ol>
-      <div class="who" aria-hidden="true"><span class="lang-zh">基本内存 640K
-扩展内存 15360K
-档案 9 个</span><span class="lang-en">Base memory 640K
-Extended 15360K
-9 files</span>
-C:\YUSONG&gt;<span class="blink">_</span></div>
-    </nav>
-
-    <main id="pane" class="win" aria-live="polite">
-      <div class="wt"><span id="paneTitle">ABOUT.TXT</span></div>
-      <div id="doc" tabindex="0" aria-label="文档 / Document">
-<section class="doc" id="s-about" aria-labelledby="h-about">
-  <h2 id="h-about"><span class="lang-zh">个人简介</span><span class="lang-en">About</span> <small>ABOUT.TXT</small></h2>
-  <img class="portrait" src="assets/retro/portrait-vga.png" width="160" height="240" alt="Yusong Wang" />
-  <h3><span class="lang-zh">王钰淞 · Yusong Wang</span><span class="lang-en">About · Yusong Wang</span></h3>
-  <p><span class="lang-zh">香港科技大学（广州）计算媒体与艺术 MPhil，前中科院上海微系统所嵌入式工程师。关注 GIS 可视化、知识图谱、多模态检索与文化遗产计算；2026 年起以 Claude Code / Codex 多 Agent 协作，独立交付了 15 个企业业务系统和一套 LLM 网关。</span><span class="lang-en">MPhil student in Computational Media &amp; Arts at HKUST(GZ), formerly an embedded engineer at CAS SIMIT. I work across GIS visualization, knowledge graphs, multimodal retrieval, and computational heritage. Since 2026 I have used Claude Code / Codex multi-agent workflows to ship 15 business systems and an in-house LLM gateway on my own.</span></p>
-  <div class="tags"><span class="tag">HKUST(GZ) · MPhil</span><span class="tag">VINCI 2025 · 1st author</span><span class="tag">CHI 2025 · co-author</span><span class="tag">4 patents + 1 SW©</span><span class="tag">15 systems · AI-native</span></div>
-  <p class="dim"><span class="lang-zh">状态：寻找全职机会 · AI Agent 工程化落地 · 多模态 RAG · 全栈系统</span><span class="lang-en">Status: open to full-time roles · agentic engineering · multimodal RAG · full-stack systems</span></p>
-</section>
-<section class="doc" id="s-heritage" aria-labelledby="h-heritage">
-  <h2 id="h-heritage"><span class="lang-zh">遗产图谱</span><span class="lang-en">Heritage</span> <small>HERITAGE.GIS</small></h2>
-  <p><b><span class="lang-zh">广西历史建筑多模态 GIS 平台。</span><span class="lang-en">A multimodal GIS platform for Guangxi heritage.</span></b>
-    <span class="lang-zh">前端 Vue 3 + Mars2D，后端 FastAPI + Neo4j，一键 Docker Compose —— 可看、可搜、可对话。</span>
-    <span class="lang-en">Vue 3 + Mars2D front end, FastAPI + Neo4j back end, one Docker Compose — visible, searchable, conversational.</span></p>
-  <a class="vga" href="assets/gisauto_hero.webp" target="_blank" rel="noopener"><img src="assets/retro/gisauto_hero-vga.png" width="400" height="199" alt="HeritageExplorer interface" loading="lazy" /><span class="cap"><span>GISAUTOH.PCX</span><span><span class="lang-zh">原图 ↗</span><span class="lang-en">Full size ↗</span></span></span></a>
-  <div class="stats">
-    <div><b>2,036</b><span class="lang-zh">历史建筑</span><span class="lang-en">buildings</span></div>
-    <div><b>9,636</b><span class="lang-zh">建筑构件</span><span class="lang-en">components</span></div>
-    <div><b>1,294</b><span class="lang-zh">地图点</span><span class="lang-en">map points</span></div>
-    <div><b>4</b><span class="lang-zh">检索通路</span><span class="lang-en">retrieval lanes</span></div>
+<div id="hud" aria-live="polite">
+  <div class="tag" id="hudName"></div>
+  <div class="tag" id="hudRole"></div>
+  <div class="row">
+    <div class="tag" id="hudClock">00:00:00</div>
+    <button type="button" id="btnSound" aria-label="声音 / Sound" title="声音 / Sound"><svg viewBox="0 0 16 16" id="sndIcon"><path d="M2 6h3l4-4v12l-4-4H2z"/><path d="M11 5c1.2 1.2 1.2 4.8 0 6M13 3c2.4 2.4 2.4 7.6 0 10" stroke="currentColor" fill="none" stroke-width="1.4"/></svg></button>
+    <button type="button" id="btnView" aria-label="切换视角 / Change view" title="切换视角 / Change view"><svg viewBox="0 0 16 16"><path d="M1 4h10v8H1zM11 7l4-3v8l-4-3z"/></svg></button>
+    <button type="button" id="back"><span class="lang-zh">← 退后</span><span class="lang-en">← Back</span></button>
   </div>
-  <div class="two">
-    <div class="card"><b><span class="lang-zh">地图入口 · 图谱大脑</span><span class="lang-en">Map entry · graph brain</span></b>
-      <p class="dim"><span class="lang-zh">Neo4j 存储建筑、构件、城市与年代关系。</span><span class="lang-en">Neo4j relations across buildings, components, cities, and eras.</span></p>
-      <div class="tags"><span class="tag">Vue 3</span><span class="tag">Mars2D</span><span class="tag">FastAPI</span><span class="tag">Neo4j</span><span class="tag">Docker</span></div></div>
-    <div class="card"><b><span class="lang-zh">4 通路 RAG · 可追溯回答</span><span class="lang-en">4-lane RAG · grounded replies</span></b>
-      <p class="dim"><span class="lang-zh">关键词、BGE 文本、CLIP 图像、CLIP 构件并行检索，DeepSeek-V3 融合答复。</span><span class="lang-en">Keyword, BGE text, CLIP image and CLIP component lanes fused by DeepSeek-V3.</span></p>
-      <div class="tags"><span class="tag">BGE</span><span class="tag">CLIP</span><span class="tag">Grounding DINO</span><span class="tag">DeepSeek-V3</span></div></div>
-  </div>
-</section>
-<section class="doc" id="s-work" aria-labelledby="h-work">
-  <h2 id="h-work"><span class="lang-zh">论文与系统</span><span class="lang-en">Papers</span> <small>PAPERS.DOC</small></h2>
-  <div class="two">
-    <div class="card hl"><b>HeritageExplorer</b> · First author · VINCI 2025
-      <p><span class="lang-zh">广州 831 处历史建筑的多模态交互式可视化与对话系统，并扩展至广西历史建筑数据与工程化部署。</span><span class="lang-en">Interactive visualization + dialogue for 831 Guangzhou heritage buildings, extended to Guangxi-scale data and production deployment.</span></p>
-      <p class="dim">DOI · <a href="https://doi.org/10.1145/3769534.3769571" target="_blank" rel="noopener">10.1145/3769534.3769571</a></p></div>
-    <div class="card"><b>GenColor</b> · Co-author · CHI 2025
-      <p><span class="lang-zh">基于文生图扩散模型的生成式框架，自动提取与语境相关的设计配色方案。</span><span class="lang-en">A text-to-image diffusion framework that extracts context-specific color palettes for visual design.</span></p>
-      <div class="tags"><span class="tag">Diffusion</span><span class="tag">Color Design</span><span class="tag">HCI</span></div></div>
-  </div>
-  <div class="stats" style="grid-template-columns:1fr 1fr">
-    <div><b>4</b><span class="lang-zh">发明专利</span><span class="lang-en">patents</span></div>
-    <div><b>1</b><span class="lang-zh">软件著作权</span><span class="lang-en">software copyright</span></div>
-  </div>
-  <h3><span class="lang-zh">企业系统 · AI 原生交付（2026）</span><span class="lang-en">Business systems · AI-native delivery (2026)</span></h3>
-  <p class="dim"><span class="lang-zh">以 Claude Code / Codex 为主力，独立承担调研、设计评审、实现、测试、部署与运维；协作规范按“宪法—路由—Skills—Hooks 门禁—评测”五层组织，每个里程碑都有真测证据和独立盲审。</span><span class="lang-en">Claude Code / Codex do most of the typing; I own research, design review, implementation, testing, deployment and operations. The workflow is layered as constitution → router → skills → hook gates → evals, with real-run evidence and a blind review at every milestone.</span></p>
-  <div class="stats">
-    <div><b>15</b><span class="lang-zh">在用系统</span><span class="lang-en">systems in use</span></div>
-    <div><b>16</b><span class="lang-zh">主力仓库</span><span class="lang-en">main repos</span></div>
-    <div><b>~2,800</b><span class="lang-zh">次提交</span><span class="lang-en">commits</span></div>
-    <div><b>347</b><span class="lang-zh">例 ERP 测试</span><span class="lang-en">ERP tests</span></div>
-  </div>
-  <a class="vga" href="assets/work/dipark.webp" target="_blank" rel="noopener"><img src="assets/retro/dipark-vga.png" width="400" height="221" alt="DIPARK 智慧云仓运营总览（演示数据）/ DIPARK operations overview (demo data)" loading="lazy" /><span class="cap"><span>DIPARK.PCX</span><span><span class="lang-zh">原图 ↗</span><span class="lang-en">Full size ↗</span></span></span></a>
-  <div class="row"><span class="k">2026.08</span><div><b><span class="lang-zh">AI 中台 · LLM 网关</span><span class="lang-en">AI hub · LLM gateway</span></b><small><span class="lang-zh">零依赖 Node 22，作为全部系统唯一的大模型出口：18 个系统独立 Key、模型别名路由、9 类引擎巡检、逐笔计费与钱包续航告警。</span><span class="lang-en">Zero-dependency Node 22 service and the only LLM exit for every system: per-system keys for 18 apps, model alias routing, health probes for 9 engines, per-call cost ledger and budget alerts.</span></small></div></div>
-  <div class="row"><span class="k">2026.07</span><div><b><span class="lang-zh">智慧云仓 DIPARK</span><span class="lang-en">DIPARK smart park</span></b><small><span class="lang-zh">Spring Boot 3 + Vue 3 园区运营系统：招商—合同—账单—收款闭环，收款幂等与领域事件，3D 楼宇运营总览（上图为演示数据）。</span><span class="lang-en">Spring Boot 3 + Vue 3 park operations: leasing → contract → billing → payment, idempotent receipts and domain events, a 3D building overview (demo data above).</span></small></div></div>
-  <div class="row"><span class="k">2026.08</span><div><b><span class="lang-zh">售卖机 ERP · 租赁业务</span><span class="lang-en">Vending ERP · Leasing</span></b><small><span class="lang-zh">业财一体进销存：40 张表、22 个模块、347 例自动化测试，(R,S) 补货引擎，历史流水导入分毫不差；租赁板块含 IRR 报价与租金计划勾稽。</span><span class="lang-en">Inventory + finance in one: 40 tables, 22 modules, 347 automated tests, an (R,S) replenishment engine and exact legacy import; the leasing module adds IRR quotes and reconciled rent schedules.</span></small></div></div>
-  <div class="row"><span class="k">2026.08</span><div><b><span class="lang-zh">知人 · AI 人资中枢</span><span class="lang-en">Zhiren · AI HR hub</span></b><small><span class="lang-zh">合并人事、培训、招聘三套系统并与钉钉同步；AI 写操作必须落成待人确认的流程，LLM 只经中台调用。</span><span class="lang-en">Merges HR, training and recruiting into one system synced with DingTalk; every AI write becomes a step a person confirms, and LLM calls go only through the hub.</span></small></div></div>
-  <div class="row"><span class="k">2026.08</span><div><b><span class="lang-zh">门户 SSO · Ops Monitor</span><span class="lang-en">Portal SSO · Ops Monitor</span></b><small><span class="lang-zh">24 个系统统一入口、按人授权免二次登录；运维总览监控 27 个服务入口、23 个 n8n 定时任务与三条备份链路。</span><span class="lang-en">One door for 24 systems with per-person access and no second login; the ops board watches 27 endpoints, 23 n8n jobs and three backup chains.</span></small></div></div>
-  <div class="row"><span class="k">2026.05</span><div><b><span class="lang-zh">更多独立项目</span><span class="lang-en">More</span></b><small><span class="lang-zh">财务中心工具箱、AI 用量中台、资产罗盘（家庭数字家办 PWA）、洪源润收藏管家（Expo + Supabase）、火星账局（一句话记账 PWA）。</span><span class="lang-en">Finance toolbox, AI usage center, Asset Compass (family-office PWA), a collectibles vault (Expo + Supabase) and a one-sentence ledger PWA.</span></small></div></div>
-  <h3><span class="lang-zh">工程项目</span><span class="lang-en">Projects</span></h3>
-  <div class="row"><span class="k">2020–22</span><div><b><span class="lang-zh">危化品云数据联动装置</span><span class="lang-en">Hazardous-chemical cloud sensor</span></b><small><span class="lang-zh">上海市科委 19511102801。CH4/CO2/温湿度 + 摄像头多传感器融合。</span><span class="lang-en">STCSM #19511102801. CH4/CO2/T&amp;H sensors fused with camera imagery.</span></small></div></div>
-  <div class="row"><span class="k">2020–22</span><div><b><span class="lang-zh">消防管理智能感知设备</span><span class="lang-en">Smart fire-safety sensor</span></b><small><span class="lang-zh">上海市科委 19DZ12020027。场景自适应配置，CSMA/CA 载波侦听。</span><span class="lang-en">STCSM #19DZ12020027. Scene-adaptive configuration, CSMA/CA sensing.</span></small></div></div>
-  <div class="row"><span class="k">2021–22</span><div><b><span class="lang-zh">振弦式钢筋计无线测力</span><span class="lang-en">Wireless force sensor</span></b><small><span class="lang-zh">基于 LoRa 的深基坑混凝土支撑轴力无线监测。</span><span class="lang-en">LoRa axial-force monitoring for deep-pit struts.</span></small></div></div>
-  <div class="row"><span class="k">2020–21</span><div><b><span class="lang-zh">虹桥站客流检测</span><span class="lang-en">Hongqiao passenger flow</span></b><small><span class="lang-zh">基于蓝牙的实时热力图，用于高峰预警与规划。</span><span class="lang-en">Bluetooth heatmaps for peak-hour alerts and planning.</span></small></div></div>
-  <div class="row"><span class="k">2019</span><div><b><span class="lang-zh">光伏运维平台</span><span class="lang-en">PV O&amp;M platform</span></b><small><span class="lang-zh">第五届“互联网+”大赛，光伏故障监测与修复。</span><span class="lang-en">5th Internet+ contest, IoT PV fault detection.</span></small></div></div>
-  <div class="row"><span class="k">2017</span><div><b><span class="lang-zh">智慧农业</span><span class="lang-en">Smart agriculture</span></b><small><span class="lang-zh">第三届“互联网+”大赛，果园病虫害检测与反馈平台。</span><span class="lang-en">3rd Internet+ contest, orchard pest feedback platform.</span></small></div></div>
-</section>
-<section class="doc" id="s-portfolio" aria-labelledby="h-portfolio">
-  <h2 id="h-portfolio"><span class="lang-zh">实际作品</span><span class="lang-en">Real work</span> <small>WORKS.IMG</small></h2>
-  <p><span class="lang-zh">我的工作：从园区运营、AI 接入到数据可视化与运维工具。以下为实际工作界面，图片按原始比例完整展示，点击在新标签页查看大图。</span><span class="lang-en">Selected work across park operations, AI integration, data visualization and operational tools. These are actual project screenshots, shown uncropped. Select an image to open it full size in a new tab.</span></p>
-  <div class="pf">
-    <figure data-project="dipark"><a class="vga" href="assets/work/dipark.webp" target="_blank" rel="noopener"><img src="assets/retro/dipark-vga.png" width="400" height="221" alt="DIPARK 三维园区与运营总览，演示数据 / DIPARK 3D park operations overview with demo data" loading="lazy" /></a><figcaption><b><span class="lang-zh">DIPARK · 智慧云仓</span><span class="lang-en">DIPARK · Smart park</span></b><span class="lang-zh">以三维楼宇总览连接空间出租、租金收缴、物业工单与能源信息。截图中的运营指标为演示数据。</span><span class="lang-en">A 3D building overview brings together occupancy, rent collection, property work orders and energy information. Operational metrics shown here are demo data.</span></figcaption></figure>
-    <figure data-project="ai-gateway"><a class="vga" href="assets/work/ai-gateway.webp" target="_blank" rel="noopener"><img src="assets/retro/ai-gateway-vga.png" width="400" height="224" alt="AI 中台总控室的用量、调用监控与费用流向界面 / AI gateway console showing usage, call monitoring and cost flows" loading="lazy" /></a><figcaption><b><span class="lang-zh">AI 中台 · LLM 网关</span><span class="lang-en">AI hub · LLM gateway</span></b><span class="lang-zh">统一管理模型接入与调用，集中呈现调用日志、引擎巡检、费用流向和钱包续航。</span><span class="lang-en">A shared console for model access and calls, with call logs, engine probes, cost flows and wallet budget estimates.</span></figcaption></figure>
-    <figure data-project="tunan-data-lab"><a class="vga" href="assets/work/tunan-data-lab.webp" target="_blank" rel="noopener"><img src="assets/retro/tunan-data-lab-vga.png" width="400" height="223" alt="图南 Data Lab 数据源关系图、供应商探针与分析维度界面 / Tunan Data Lab with data-source relationships, provider probes and analysis dimensions" loading="lazy" /></a><figcaption><b><span class="lang-zh">图南 · Data Lab</span><span class="lang-en">Tunan · Data Lab</span></b><span class="lang-zh">以径向关系图组织数据源与分析维度，结合供应商探针、财报接口和抓取流水视图。截图中的流水、股价与持仓因子为 DEMO 模拟。</span><span class="lang-en">A radial view connects data sources with analysis dimensions, alongside provider probes, financial-data APIs and a fetch feed. The feed, prices and portfolio factors shown are DEMO simulations.</span></figcaption></figure>
-    <figure data-project="ops-monitor"><a class="vga" href="assets/work/ops-monitor.webp" target="_blank" rel="noopener"><img src="assets/retro/ops-monitor-vga.png" width="400" height="245" alt="Ops Monitor 服务拓扑、任务、备份与待处理事项界面 / Ops Monitor service topology, jobs, backups and attention queue" loading="lazy" /></a><figcaption><b><span class="lang-zh">运维总控 · Ops Monitor</span><span class="lang-en">Operations console · Ops Monitor</span></b><span class="lang-zh">将服务入口、自动化任务、备份与通知链路放到同一张拓扑视图，配合待处理事项和延迟趋势定位问题。</span><span class="lang-en">Service endpoints, scheduled jobs, backups and notification paths share a topology view, supported by an attention queue and latency trends.</span></figcaption></figure>
-    <figure data-project="enterprise-portal"><a class="vga" href="assets/work/enterprise-portal.webp" target="_blank" rel="noopener"><img src="assets/retro/enterprise-portal-vga.png" width="400" height="183" alt="企业应用门户按类别组织业务系统、运维与文档入口 / Enterprise portal organizing business applications, operations and documentation" loading="lazy" /></a><figcaption><b><span class="lang-zh">企业应用门户</span><span class="lang-en">Enterprise application portal</span></b><span class="lang-zh">按企业管理、园区运营与技术服务组织应用，并提供运维中心、文档、产品资料与代码仓库入口。</span><span class="lang-en">Applications grouped by enterprise management, park operations and technical services, with links to operations, documentation, product materials and repositories.</span></figcaption></figure>
-  </div>
-</section>
-<section class="doc" id="s-exp" aria-labelledby="h-exp">
-  <h2 id="h-exp"><span class="lang-zh">经历</span><span class="lang-en">Timeline</span> <small>HISTORY.TXT</small></h2>
-  <div class="row"><span class="k">2016<br/>—2020</span><div><b><span class="lang-zh">广西大学 · 电气工程本科</span><span class="lang-en">Guangxi University · B.Eng</span></b><small><span class="lang-zh">电气工程及其自动化。参与两届互联网+大赛（智慧农业、光伏运维）。</span><span class="lang-en">Electrical Engineering &amp; Automation. Competed twice in Internet+ (smart agriculture, PV O&amp;M).</span></small></div></div>
-  <div class="row"><span class="k">2020<br/>—2022</span><div><b><span class="lang-zh">中科院上海微系统所 · 嵌入式工程师</span><span class="lang-en">CAS SIMIT · Embedded engineer</span></b><small><span class="lang-zh">无线水压表 / LoRa 测力 / 消防感知。原理图、MCU 固件、现场部署全流程，参与标准起草。</span><span class="lang-en">Wireless meters / LoRa sensors / fire-safety, schematic to field deployment; co-authored industry standards.</span></small></div></div>
-  <div class="row"><span class="k">2024<br/>—2025</span><div><b><span class="lang-zh">HKUST(GZ) · 计算媒体与艺术 MPhil</span><span class="lang-en">HKUST(GZ) · CMA MPhil</span></b><small><span class="lang-zh">HeritageExplorer 投稿 VINCI 2025；合作 GenColor（CHI 2025）；HeritageExplorer 从 0 到 1 搭建。</span><span class="lang-en">HeritageExplorer at VINCI 2025; co-authored GenColor (CHI 2025); built HeritageExplorer from zero.</span></small></div></div>
-  <div class="row"><span class="k">2026<br/>—</span><div><b><span class="lang-zh">企业 AI 原生系统矩阵 · 独立负责</span><span class="lang-en">AI-native business systems · solo owner</span></b><small><span class="lang-zh">以 Coding Agent 为主力，从调研、设计评审到部署运维，交付园区、ERP、财务、人资、运维与 LLM 网关等 15 个系统。</span><span class="lang-en">With coding agents doing most of the typing, took 15 systems from research and design review to deployment and operations — park ops, ERP, finance, HR, monitoring and an LLM gateway.</span></small></div></div>
-  <div class="row"><span class="k"><span class="lang-zh">下一站</span><span class="lang-en">Next</span></span><div><b><span class="lang-zh">想做的事</span><span class="lang-en">What’s next</span></b><small><span class="lang-zh">AI Agent 工程化 · 多模态 RAG · 遗产叙事。寻找全职机会。</span><span class="lang-en">Agentic engineering · multimodal RAG · heritage storytelling. Open to full-time roles.</span></small></div></div>
-</section>
-<section class="doc" id="s-toolbox" aria-labelledby="h-toolbox">
-  <h2 id="h-toolbox"><span class="lang-zh">技能</span><span class="lang-en">Toolbox</span> <small>SKILLS.TXT</small></h2>
-  <h3><span class="lang-zh">Agent 工程</span><span class="lang-en">Agentic engineering</span></h3>
-  <div class="tags"><span class="tag">Claude Code</span><span class="tag">Codex</span><span class="tag">Subagents · worktree</span><span class="tag">Skills / Hooks / MCP</span><span class="tag">CodeGraph</span><span class="tag"><span class="lang-zh">ADR · 设计评审</span><span class="lang-en">ADR · design review</span></span><span class="tag"><span class="lang-zh">独立盲审</span><span class="lang-en">Blind code review</span></span><span class="tag"><span class="lang-zh">LLM 网关</span><span class="lang-en">LLM gateway</span></span></div>
-  <h3><span class="lang-zh">后端 &amp; 数据</span><span class="lang-en">Back end &amp; data</span></h3>
-  <div class="tags"><span class="tag">Java 17 · Spring Boot</span><span class="tag">MyBatis-Plus</span><span class="tag">Node 22 · tRPC</span><span class="tag">Drizzle</span><span class="tag">MySQL 8</span><span class="tag">PostgreSQL · pgvector</span><span class="tag">SQLite</span><span class="tag">Supabase</span><span class="tag">Flyway</span><span class="tag">Redis</span></div>
-  <h3><span class="lang-zh">多模态 AI &amp; 大模型</span><span class="lang-en">Multimodal AI &amp; LLMs</span></h3>
-  <div class="tags"><span class="tag">Chinese-CLIP</span><span class="tag">BGE</span><span class="tag">Grounding DINO</span><span class="tag">Qwen-VL</span><span class="tag">DeepSeek-V3</span><span class="tag">GPT</span><span class="tag">Claude API</span><span class="tag">Prompt Eng.</span><span class="tag">Agent Workflow</span></div>
-  <h3><span class="lang-zh">GIS &amp; 可视化</span><span class="lang-en">GIS &amp; Visualization</span></h3>
-  <div class="tags"><span class="tag">Mars2D</span><span class="tag">Cesium</span><span class="tag">Leaflet</span><span class="tag"><span class="lang-zh">高德 API</span><span class="lang-en">Amap API</span></span><span class="tag">ECharts</span><span class="tag">vis-network</span><span class="tag">Cytoscape</span></div>
-  <h3><span class="lang-zh">图谱 &amp; 检索</span><span class="lang-en">Graph &amp; Retrieval</span></h3>
-  <div class="tags"><span class="tag">Neo4j · Cypher</span><span class="tag"><span class="lang-zh">向量索引</span><span class="lang-en">Vector Index</span></span><span class="tag">RAG</span><span class="tag"><span class="lang-zh">多通道融合</span><span class="lang-en">Multi-lane Fusion</span></span></div>
-  <h3><span class="lang-zh">Web &amp; 部署</span><span class="lang-en">Web &amp; Deployment</span></h3>
-  <div class="tags"><span class="tag">Vue 3 + Vite</span><span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">FastAPI</span><span class="tag">Docker Compose</span><span class="tag">Nginx</span><span class="tag">Cloudflare Tunnel</span><span class="tag">Tailscale</span><span class="tag">n8n</span><span class="tag">Uptime Kuma</span></div>
-  <h3><span class="lang-zh">编程 &amp; 嵌入式</span><span class="lang-en">Programming &amp; Embedded</span></h3>
-  <div class="tags"><span class="tag">Python</span><span class="tag">C / C++</span><span class="tag">TypeScript</span><span class="tag">HTML</span><span class="tag"><span class="lang-zh">汇编</span><span class="lang-en">Assembly</span></span><span class="tag">IAR Workbench</span></div>
-  <h3><span class="lang-zh">设计 &amp; 建模</span><span class="lang-en">Design &amp; Modeling</span></h3>
-  <div class="tags"><span class="tag">Altium Designer</span><span class="tag">SolidWorks</span><span class="tag">Photoshop</span><span class="tag">TouchDesigner</span><span class="tag">Blender</span></div>
-  <p class="dim"><span class="lang-zh">语言：中文母语 · 英语 CET-6 / IELTS 6.5</span><span class="lang-en">Languages: Chinese (native) · English (CET-6, IELTS 6.5)</span></p>
-</section>
-<section class="doc" id="s-contact" aria-labelledby="h-contact">
-  <h2 id="h-contact"><span class="lang-zh">联系</span><span class="lang-en">Contact</span> <small>CONTACT.TXT</small></h2>
-  <p><b><span class="lang-zh">一起把历史装进下一个模型。</span><span class="lang-en">Let’s put history into the next model.</span></b></p>
-  <div class="row"><span class="k">Email</span><a href="mailto:ywang677@connect.hkust-gz.edu.cn">ywang677@connect.hkust-gz.edu.cn</a></div>
-  <div class="row"><span class="k"><span class="lang-zh">电话</span><span class="lang-en">Phone</span></span><a href="tel:+8618877145317">(+86) 188 7714 5317</a></div>
-  <div class="row"><span class="k"><span class="lang-zh">所在地</span><span class="lang-en">Based</span></span><span><span class="lang-zh">广西南宁 / 广州</span><span class="lang-en">Nanning · Guangzhou</span></span></div>
-  <p style="margin-top:.8rem"><a class="pxbtn red" href="mailto:ywang677@connect.hkust-gz.edu.cn"><span class="lang-zh">发邮件 →</span><span class="lang-en">Email me →</span></a>
-  <a class="pxbtn" href="CV_Yusong_Wang.pdf"><span class="lang-zh">下载简历 (PDF)</span><span class="lang-en">Download CV (PDF)</span></a></p>
-</section>
-<section class="doc" id="s-cv" aria-labelledby="h-cv">
-  <h2 id="h-cv"><span class="lang-zh">简历</span><span class="lang-en">CV</span> <small>RESUME.PDF</small></h2>
-  <p><span class="lang-zh">履歴書 · 简历（2026 年 10 月版）</span><span class="lang-en">履歴書 · CV (October 2026)</span></p>
-  <p><a class="pxbtn red" href="CV_Yusong_Wang.pdf"><span class="lang-zh">下载 PDF</span><span class="lang-en">Download PDF</span></a>
-  <a class="pxbtn" href="CV_Yusong_Wang.docx"><span class="lang-zh">Word 版</span><span class="lang-en">Word version</span></a></p>
-</section>
-<section class="doc" id="s-door" aria-labelledby="h-door">
-  <h2 id="h-door"><span class="lang-zh">其他版本</span><span class="lang-en">Other views</span> <small>VIEWS.LNK</small></h2>
-  <p><span class="lang-zh">同一份经历，这台机器之外还有三种看法：</span><span class="lang-en">The same story, three other ways to look at it:</span></p>
-  <ul class="dir">
-    <li><a href="worlds.html">WORLDS.HTM</a><span><span class="lang-zh">两个互动世界的总览入口</span><span class="lang-en">Overview of the two interactive worlds</span></span></li>
-    <li><a href="ukiyoe.html">UKIYOE.HTM</a><span><span class="lang-zh">浮世绘书斋 · WebGL 和式书案，拿起摆件阅读</span><span class="lang-en">Ukiyo-e study · a WebGL desk you can pick things up from</span></span></li>
-    <li><a href="retro-future.html">YWOS98.HTM</a><span><span class="lang-zh">YW/OS 98 个人研究工作站 · 琥珀色矢量 CRT</span><span class="lang-en">YW/OS 98 research workstation · amber vector CRT</span></span></li>
-    <li><a href="https://github.com/xjxl0104/xjxl0104.github.io" target="_blank" rel="noopener">SOURCE.GIT</a><span><span class="lang-zh">本站源代码</span><span class="lang-en">Source code of this site</span></span></li>
-  </ul>
-  <p class="dim"><span class="lang-zh">提示：按 F10 进入命令行，输入 HELP 看看能做什么。</span><span class="lang-en">Tip: press F10 for the command line and type HELP.</span></p>
-</section>
-      </div>
-    </main>
-  </div>
-
-  <div id="status" class="bar" aria-hidden="true">
-    <span class="grow" id="path">C:\YUSONG\ABOUT.TXT</span>
-    <span id="pos">100%</span>
-  </div>
-  <nav id="fkeys" aria-label="功能键 / Function keys">
-    <button type="button" data-fn="help"><kbd>F1</kbd><span><span class="lang-zh">帮助</span><span class="lang-en">Help</span></span></button>
-    <button type="button" data-fn="cv"><kbd>F2</kbd><span><span class="lang-zh">简历</span><span class="lang-en">CV</span></span></button>
-    <button type="button" data-fn="portfolio"><kbd>F3</kbd><span><span class="lang-zh">作品</span><span class="lang-en">Work</span></span></button>
-    <button type="button" data-fn="work"><kbd>F4</kbd><span><span class="lang-zh">论文</span><span class="lang-en">Papers</span></span></button>
-    <button type="button" data-fn="contact"><kbd>F6</kbd><span><span class="lang-zh">联系</span><span class="lang-en">Mail</span></span></button>
-    <button type="button" data-fn="door"><kbd>F7</kbd><span><span class="lang-zh">版本</span><span class="lang-en">Views</span></span></button>
-    <button type="button" data-fn="crt" id="btnMode"><kbd>F8</kbd><span><span class="lang-zh">显示</span><span class="lang-en">CRT</span></span></button>
-    <button type="button" data-fn="lang"><kbd>F9</kbd><span><span class="lang-zh">英文</span><span class="lang-en">中文</span></span></button>
-    <button type="button" data-fn="dos"><kbd>F10</kbd><span><span class="lang-zh">命令</span><span class="lang-en">DOS</span></span></button>
-  </nav>
 </div>
+<div id="hint"><span id="hintText"></span><span class="cur">_</span></div>
 
-<div id="crt" aria-hidden="true"></div>
-
-<div id="help" class="dialog" role="dialog" aria-modal="true" aria-labelledby="helpTitle" hidden>
-  <div class="win">
-    <div class="wt"><span id="helpTitle"><span class="lang-zh">帮 助</span><span class="lang-en">HELP</span></span></div>
-    <dl>
-      <dt>1 – 9</dt><dd><span class="lang-zh">打开对应菜单项</span><span class="lang-en">Open a menu item</span></dd>
-      <dt>← →</dt><dd><span class="lang-zh">上一篇 / 下一篇</span><span class="lang-en">Previous / next file</span></dd>
-      <dt>↑ ↓ PgUp PgDn</dt><dd><span class="lang-zh">滚动文档</span><span class="lang-en">Scroll the document</span></dd>
-      <dt>F1 F2 F3 F4</dt><dd><span class="lang-zh">帮助 · 简历 · 作品 · 论文</span><span class="lang-en">Help · CV · Work · Papers</span></dd>
-      <dt>F6 F7</dt><dd><span class="lang-zh">联系 · 其他版本</span><span class="lang-en">Contact · Other views</span></dd>
-      <dt>F8 F9 F10</dt><dd><span class="lang-zh">扫描线开关 · 中/英 · 命令行</span><span class="lang-en">Scanlines · Language · Command line</span></dd>
-      <dt>Esc</dt><dd><span class="lang-zh">关闭窗口 / 返回菜单</span><span class="lang-en">Close / back to menu</span></dd>
-    </dl>
-    <button type="button" class="ok" data-close><span class="lang-zh">确 定</span><span class="lang-en">OK</span></button>
+<div id="loader" role="dialog" aria-modal="true" aria-labelledby="ldTitle">
+  <div class="box">
+    <pre id="ldLog" aria-hidden="true"></pre>
+    <div class="title" id="ldTitle"><span class="lang-zh">王钰淞 作品集 2026</span><span class="lang-en">Yusong Wang Portfolio Showcase 2026</span></div>
+    <div><span class="lang-zh">点击开始</span><span class="lang-en">Click start to begin</span> <span class="cur">_</span></div>
+    <button type="button" id="start" disabled><span class="lang-zh">开 始</span><span class="lang-en">START</span></button>
+    <div class="alt"><a href="os.html"><span class="lang-zh">设备较旧？直接打开作品集</span><span class="lang-en">Older device? Open the portfolio directly</span></a> · <a href="#" id="langLd">EN / 中文</a></div>
   </div>
 </div>
 
-<div id="boot" hidden aria-hidden="true">
-  <pre id="post"></pre>
-  <div id="splash"><div class="frame">
-    <div class="big">王钰淞</div>
-    <div><span class="lang-zh">个人档案系统</span><span class="lang-en">Personal Archive</span>　YSDOS 6.0</div>
-    <div style="color:var(--lcyan)">GIS × Multimodal AI × Systems</div>
-    <div class="blink" style="margin-top:calc(var(--lh) * .5)"><span class="lang-zh">按任意键继续……</span><span class="lang-en">Press any key…</span></div>
-  </div></div>
-  <span class="skip"><span class="lang-zh">按任意键跳过</span><span class="lang-en">Any key to skip</span></span>
-</div>
+<noscript><div style="position:fixed;inset:0;z-index:30;background:#000;color:#fff;display:grid;place-items:center;text-align:center;padding:20px">这个页面的三维书桌需要 JavaScript。<br /><a style="color:#fff" href="os.html">直接打开作品集 / Open the portfolio</a></div></noscript>
 
-<div id="dos" hidden role="dialog" aria-modal="true" aria-label="命令行 / Command line">
-  <pre id="dosOut"></pre>
-  <form id="dosForm" autocomplete="off"><label for="dosIn">C:\YUSONG&gt;</label><input id="dosIn" spellcheck="false" autocapitalize="off" enterkeyhint="go" /></form>
-</div>
+<script type="module">
+import * as THREE from './assets/vendor/three.module.min.js';
+import { CSS3DRenderer, CSS3DObject } from './assets/vendor/CSS3DRenderer.js';
+import { RoomEnvironment } from './assets/vendor/RoomEnvironment.js';
 
-<noscript><p style="position:fixed;left:0;right:0;bottom:0;margin:0;padding:.5em 1em;background:#aaa;color:#000;z-index:60">这个页面在没有 JavaScript 时会把全部档案依次列出，可以直接滚动阅读。/ Without JavaScript every file is listed in order — just scroll.</p><style>body{overflow:auto}#screen{position:static}#desk{display:block}#menu,#status,#fkeys{display:none}#doc{overflow:visible}</style></noscript>
+const d = document.documentElement;
+const $ = (s) => document.querySelector(s);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const small = () => innerWidth < 700;
+const L = (zh, en) => (d.dataset.lang === 'en' ? en : zh);
+const log = $('#ldLog');
+const say = (s, nl = true) => { log.textContent += s + (nl ? '\n' : ''); };
+const store = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
 
-<script>
-(function(){
-'use strict';
-var d=document.documentElement,$=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
-var ORDER=["about", "heritage", "work", "portfolio", "exp", "toolbox", "contact", "cv", "door"];
-var FILES={"about": "ABOUT.TXT", "heritage": "HERITAGE.GIS", "work": "PAPERS.DOC", "portfolio": "WORKS.IMG", "exp": "HISTORY.TXT", "toolbox": "SKILLS.TXT", "contact": "CONTACT.TXT", "cv": "RESUME.PDF", "door": "VIEWS.LNK"};
-var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-var docEl=$('#doc'),cur=null;
-function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+say(L('YW 作品集加载器 v2026', 'YW Portfolio Loader v2026'));
+say(L('正在载入 three.js ………… 完成', 'Loading three.js ............ OK'));
 
-/* ---------- 打开文档 ---------- */
-function open(id,opts){
-  opts=opts||{};
-  if(ORDER.indexOf(id)<0)id=ORDER[0];
-  $$('.doc').forEach(function(s){s.classList.toggle('on',s.id==='s-'+id)});
-  $$('#menu button[data-sec]').forEach(function(b){b.setAttribute('aria-current',b.dataset.sec===id?'true':'false')});
-  cur=id;docEl.scrollTop=0;
-  var f=FILES[id];$('#paneTitle').textContent=f;$('#path').textContent='C:\\YUSONG\\'+f;
-  if(!opts.noHash&&location.hash!=='#'+id)history.replaceState(null,'','#'+id);
-  pos();
-  if(opts.focus)docEl.focus({preventScroll:true});
+/* ================= 渲染器 ================= */
+const canvas = $('#gl');
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+} catch (e) {
+  say(L('这台设备打不开 WebGL。', 'WebGL is not available here.'));
+  $('#start').hidden = true;
+  $('.alt a').textContent = L('→ 直接打开作品集', '→ Open the portfolio');
+  throw e;
 }
-function step(n){var i=ORDER.indexOf(cur);open(ORDER[(i+n+ORDER.length)%ORDER.length],{focus:true})}
-function pos(){var m=docEl.scrollHeight-docEl.clientHeight;$('#pos').textContent=(m<=0?100:Math.round(docEl.scrollTop/m*100))+'%'}
-docEl.addEventListener('scroll',pos,{passive:true});
-$$('#menu button[data-sec]').forEach(function(b){b.addEventListener('click',function(){open(b.dataset.sec,{focus:true})})});
-addEventListener('hashchange',function(){var h=location.hash.slice(1);if(h&&h!==cur)open(h,{noHash:true})});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setClearColor(0x000000, 0);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-/* ---------- 时钟与语言 ---------- */
-var WK={zh:'日一二三四五六',en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat']};
-function tick(){var t=new Date(),p=function(n){return (n<10?'0':'')+n};
-  var w=d.dataset.lang==='en'?WK.en[t.getDay()]:'星期'+WK.zh[t.getDay()];
-  $('#clock').textContent=t.getFullYear()+'-'+p(t.getMonth()+1)+'-'+p(t.getDate())+' '+w+' '+p(t.getHours())+':'+p(t.getMinutes())+':'+p(t.getSeconds())}
-tick();setInterval(tick,1000);
-function setLang(l){d.dataset.lang=l;store('ysdos-lang',l);tick()}
-function toggleLang(){setLang(d.dataset.lang==='en'?'zh':'en')}
-$('#btnLang').addEventListener('click',toggleLang);
-function toggleCrt(){d.classList.toggle('flat');store('ysdos-flat',d.classList.contains('flat')?'1':'0')}
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.55;
 
-/* ---------- 帮助框 ---------- */
-var help=$('#help'),lastFocus=null;
-function showHelp(){lastFocus=document.activeElement;help.hidden=false;$('[data-close]',help).focus()}
-function closeHelp(){help.hidden=true;if(lastFocus)lastFocus.focus()}
-$('[data-close]',help).addEventListener('click',closeHelp);
-help.addEventListener('click',function(e){if(e.target===help)closeHelp()});
+const camera = new THREE.PerspectiveCamera(35, innerWidth / innerHeight, 0.05, 60);
 
-/* ---------- 功能键 ---------- */
-function fn(name){
-  if(name==='help')showHelp();
-  else if(name==='crt')toggleCrt();
-  else if(name==='lang')toggleLang();
-  else if(name==='dos')dos(true);
-  else open(name,{focus:true});
+const css = new CSS3DRenderer();
+$('#css').appendChild(css.domElement);
+const cssScene = new THREE.Scene();
+const cssCam = new THREE.PerspectiveCamera(35, innerWidth / innerHeight, 5, 6000);
+const CSS_SCALE = 100; // CSS 层用厘米，避免极小的 matrix3d 数值
+
+/* ================= 灯光 ================= */
+scene.add(new THREE.HemisphereLight(0xffffff, 0xb9b9c0, 0.75));
+const key = new THREE.DirectionalLight(0xfff6ea, 2.1);
+key.position.set(2.6, 5.2, 3.4);
+key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+key.shadow.camera.left = -2.2; key.shadow.camera.right = 2.2;
+key.shadow.camera.top = 2.2; key.shadow.camera.bottom = -2.2;
+key.shadow.camera.near = 1; key.shadow.camera.far = 14;
+key.shadow.bias = -0.0004; key.shadow.normalBias = 0.02; key.shadow.radius = 4;
+scene.add(key);
+const fill = new THREE.DirectionalLight(0xdfe6ff, 0.55);
+fill.position.set(-4, 2.5, 1.5);
+scene.add(fill);
+
+/* ================= 材质与小工具 ================= */
+const M = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.6, metalness: 0, ...o });
+const beige = M(0xd9d4c6, { roughness: 0.55 });
+const beigeDark = M(0xc4bead, { roughness: 0.6 });
+const deskTop = M(0x2e2e30, { roughness: 0.5 });
+const metal = M(0x9fa2a7, { roughness: 0.38, metalness: 0.65 });
+const darkMetal = M(0x3a3b3f, { roughness: 0.45, metalness: 0.5 });
+const black = M(0x161616, { roughness: 0.5 });
+const paper = M(0xf4f3ef, { roughness: 0.9 });
+function mesh(geo, mat, x = 0, y = 0, z = 0, parent = scene) {
+  const m = new THREE.Mesh(geo, mat);
+  m.position.set(x, y, z);
+  m.castShadow = true; m.receiveShadow = true;
+  parent.add(m);
+  return m;
 }
-$$('#fkeys button').forEach(function(b){b.addEventListener('click',function(){fn(b.dataset.fn)})});
-var FK={F1:'help',F2:'cv',F3:'portfolio',F4:'work',F6:'contact',F7:'door',F8:'crt',F9:'lang',F10:'dos'};
+const box = (w, h, dd, mat, x, y, z, p) => mesh(new THREE.BoxGeometry(w, h, dd), mat, x, y, z, p);
+function canvasTex(w, h, draw) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  draw(c.getContext('2d'), w, h);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+  return t;
+}
+function rrect(w, h, r) {
+  const s = new THREE.Shape();
+  s.moveTo(-w / 2 + r, -h / 2); s.lineTo(w / 2 - r, -h / 2); s.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r);
+  s.lineTo(w / 2, h / 2 - r); s.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2); s.lineTo(-w / 2 + r, h / 2);
+  s.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r); s.lineTo(-w / 2, -h / 2 + r); s.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2);
+  return s;
+}
+function rbox(w, h, dd, r, mat, x, y, z, p) {
+  const g = new THREE.ExtrudeGeometry(rrect(w, h, r), { depth: dd - 2 * Math.min(r, dd / 3), bevelEnabled: true, bevelThickness: Math.min(r, dd / 3), bevelSize: Math.min(r, dd / 3) * 0.9, bevelSegments: 3, curveSegments: 6 });
+  g.center();
+  return mesh(g, mat, x, y, z, p);
+}
 
-addEventListener('keydown',function(e){
-  if(!boot.hidden){endBoot();e.preventDefault();return}
-  if(!dosEl.hidden){if(e.key==='Escape'){dos(false);e.preventDefault()}return}
-  if(!help.hidden){if(e.key==='Escape'||e.key==='Enter'){closeHelp();e.preventDefault()}return}
-  if(e.metaKey||e.ctrlKey||e.altKey)return;
-  var t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'))return;
-  if(FK[e.key]){fn(FK[e.key]);e.preventDefault();return}
-  if(/^[1-9]$/.test(e.key)){var b=$('#menu button[data-key="'+e.key+'"]');if(b){open(b.dataset.sec,{focus:true});e.preventDefault()}return}
-  if(e.key==='ArrowRight'){step(1);e.preventDefault()}
-  else if(e.key==='ArrowLeft'){step(-1);e.preventDefault()}
-  else if(e.key==='Escape'){var m=$('#menu button[aria-current="true"]');if(m)m.focus()}
-  else if((e.key==='ArrowDown'||e.key==='ArrowUp'||e.key==='PageDown'||e.key==='PageUp'||e.key===' ')&&!docEl.contains(t)&&!(t&&t.closest&&t.closest('#menu'))){
-    var lh=parseFloat(getComputedStyle(docEl).lineHeight)||32,dy={ArrowDown:lh*2,ArrowUp:-lh*2,PageDown:docEl.clientHeight*.9,PageUp:-docEl.clientHeight*.9,' ':docEl.clientHeight*.9}[e.key];
-    docEl.scrollBy({top:dy});e.preventDefault()}
+say(L('正在搭建书桌 ………………… ', 'Building the desk ........... '), false);
+
+/* ================= 地面（只接影子，透出 CSS 背景） ================= */
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.ShadowMaterial({ opacity: 0.22 }));
+floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+
+/* ================= 书桌 ================= */
+const TOP = 0.75;
+const desk = new THREE.Group(); scene.add(desk);
+rbox(1.62, 0.036, 0.82, 0.008, deskTop, 0, TOP - 0.018, 0, desk);
+box(1.5, 0.06, 0.03, darkMetal, 0.04, TOP - 0.07, -0.37, desk); // 背板横梁
+for (const z of [-0.36, 0.36]) {
+  box(0.04, TOP - 0.036, 0.04, metal, 0.76, (TOP - 0.036) / 2, z, desk);
+}
+box(0.04, 0.04, 0.72, metal, 0.76, 0.12, 0, desk);
+// 左侧抽屉柜
+const ped = new THREE.Group(); ped.position.set(-0.55, 0, 0); desk.add(ped);
+box(0.44, TOP - 0.036 - 0.03, 0.76, M(0xb8bbc0, { roughness: 0.45, metalness: 0.35 }), 0, (TOP - 0.066) / 2 + 0.03, 0, ped);
+for (const [y, h] of [[0.58, 0.16], [0.3, 0.36]]) {
+  box(0.4, h - 0.012, 0.012, M(0xc9ccd1, { roughness: 0.4, metalness: 0.3 }), 0, y, 0.385, ped);
+  box(0.12, 0.016, 0.02, darkMetal, 0, y + h / 2 - 0.05, 0.4, ped);
+}
+for (const x of [-0.2, 0.2]) box(0.03, 0.03, 0.74, darkMetal, x, 0.015, 0, ped);
+
+/* ================= 电脑主机 ================= */
+const pc = new THREE.Group(); pc.position.set(0, TOP, -0.12); scene.add(pc);
+rbox(0.46, 0.13, 0.42, 0.012, beige, 0, 0.065, 0, pc);
+box(0.13, 0.012, 0.004, black, 0.12, 0.075, 0.211, pc);       // 软驱口
+box(0.15, 0.03, 0.004, beigeDark, 0.12, 0.045, 0.211, pc);    // 光驱面板
+box(0.022, 0.012, 0.006, beigeDark, -0.17, 0.08, 0.211, pc);  // 电源键
+mesh(new THREE.SphereGeometry(0.0035, 8, 8), new THREE.MeshBasicMaterial({ color: 0x3dff6a }), -0.13, 0.08, 0.212, pc);
+// 显示器底座
+mesh(new THREE.CylinderGeometry(0.1, 0.12, 0.02, 32), beigeDark, 0, 0.14, 0, pc);
+box(0.08, 0.04, 0.08, beigeDark, 0, 0.165, -0.01, pc);
+
+/* ================= 显示器 ================= */
+const mon = new THREE.Group(); mon.position.set(0, TOP + 0.13 + 0.235, -0.04); scene.add(mon);
+const BW = 0.43, BH = 0.375, SW = 0.32, SH = 0.24, SY = 0.018; // 外框与屏幕（4:3）
+{
+  const outer = rrect(BW, BH, 0.018);
+  const hole = rrect(SW + 0.024, SH + 0.022, 0.012); // 屏幕开口
+  const holePath = new THREE.Path(); holePath.setFromPoints(hole.getPoints(8).map((p) => new THREE.Vector2(p.x, p.y + SY)).reverse());
+  outer.holes.push(holePath);
+  const g = new THREE.ExtrudeGeometry(outer, { depth: 0.045, bevelEnabled: true, bevelThickness: 0.006, bevelSize: 0.006, bevelSegments: 3, curveSegments: 8 });
+  g.translate(0, 0, -0.045);
+  mesh(g, beige, 0, 0, 0, mon);
+  // 屏幕四周向内收的斜边（显像管外沿）
+  const tunnel = new THREE.Mesh(new THREE.CylinderGeometry(Math.SQRT2 * (SW / 2 + 0.012), Math.SQRT2 * (SW / 2 + 0.002), 0.03, 4, 1, true, Math.PI / 4), M(0x2a2a2a, { roughness: 0.7, side: THREE.DoubleSide }));
+  tunnel.rotation.set(Math.PI / 2, 0, 0); tunnel.scale.set(1, 1, (SH + 0.022) / (SW + 0.024));
+  tunnel.position.set(0, SY, -0.02); mon.add(tunnel);
+  // 机身：后部收窄的显像管外壳
+  const back = new THREE.Mesh(new THREE.CylinderGeometry(Math.SQRT2 * 0.2, Math.SQRT2 * 0.12, 0.3, 4, 1, false, Math.PI / 4), beige);
+  back.rotation.set(Math.PI / 2, 0, 0); back.scale.set(1, 1, 0.86);
+  back.position.set(0, 0.0, -0.2); back.castShadow = back.receiveShadow = true; mon.add(back);
+  box(0.24, 0.16, 0.06, beigeDark, 0, -0.01, -0.37, mon);
+  // 铭牌、电源灯
+  const badge = new THREE.Mesh(new THREE.PlaneGeometry(0.075, 0.022), new THREE.MeshStandardMaterial({ map: canvasTex(300, 88, (g, w, h) => {
+    g.fillStyle = '#d9d4c6'; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#3a3a3a'; g.beginPath(); g.arc(30, 44, 22, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#d9d4c6'; g.font = 'bold 26px Georgia, serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('YW', 30, 46);
+    g.fillStyle = '#2b2b2b'; g.textAlign = 'left'; g.font = 'italic bold 34px Georgia, serif'; g.fillText('Yusong', 62, 34);
+    g.font = '18px Georgia, serif'; g.fillText('Systems Lab', 64, 66);
+  }), roughness: 0.6 }));
+  badge.position.set(-0.15, -0.165, 0.0062); mon.add(badge);
+  mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.006, 20), beigeDark, 0.17, -0.165, 0.004, mon).rotation.x = Math.PI / 2;
+  mesh(new THREE.SphereGeometry(0.003, 8, 8), new THREE.MeshBasicMaterial({ color: 0x3dff6a }), 0.15, -0.165, 0.006, mon);
+}
+// 屏幕：在 WebGL 里“挖洞”，让后面的网页透出来
+const screenMesh = new THREE.Mesh(new THREE.PlaneGeometry(SW, SH), new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 0, blending: THREE.NoBlending }));
+screenMesh.position.set(0, SY, -0.03); mon.add(screenMesh);
+// 玻璃反光
+const glass = new THREE.Mesh(new THREE.PlaneGeometry(SW, SH), new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, map: canvasTex(256, 192, (g, w, h) => {
+  const r = g.createRadialGradient(w * 0.5, h * 0.5, h * 0.25, w * 0.5, h * 0.5, w * 0.62);
+  r.addColorStop(0, 'rgba(0,0,0,0)'); r.addColorStop(1, 'rgba(0,0,0,0.42)'); g.fillStyle = r; g.fillRect(0, 0, w, h);
+  const l = g.createLinearGradient(0, 0, w, h); l.addColorStop(0, 'rgba(255,255,255,0.10)'); l.addColorStop(0.3, 'rgba(255,255,255,0.015)'); l.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = l; g.fillRect(0, 0, w, h);
+}) }));
+glass.position.set(0, SY, -0.029); mon.add(glass);
+
+/* ================= 键盘与鼠标 ================= */
+const kb = new THREE.Group(); kb.position.set(-0.02, TOP, 0.2); kb.rotation.set(0.05, 0, 0); scene.add(kb);
+rbox(0.47, 0.026, 0.165, 0.006, beige, 0, 0.013, 0, kb);
+{
+  const keyGeo = new THREE.BoxGeometry(0.0155, 0.009, 0.0155);
+  const keys = new THREE.InstancedMesh(keyGeo, M(0xe6e1d4, { roughness: 0.5 }), 120);
+  const keys2 = new THREE.InstancedMesh(keyGeo, M(0xb9b4a6, { roughness: 0.5 }), 40);
+  keys.castShadow = keys2.castShadow = true;
+  const m4 = new THREE.Matrix4(); let n1 = 0, n2 = 0;
+  const put = (x, z, sx = 1, dark = false) => { m4.makeScale(sx, 1, 1).setPosition(x, 0.031, z); if (dark) keys2.setMatrixAt(n2++, m4); else keys.setMatrixAt(n1++, m4); };
+  for (let r = 0; r < 5; r++) for (let c = 0; c < 14; c++) put(-0.215 + c * 0.0185 + (r % 2) * 0.004, -0.045 + r * 0.0185, 1, c === 0 || c === 13);
+  put(-0.09, 0.048, 7.2);                                                           // 空格
+  for (let c = 0; c < 12; c++) put(-0.215 + c * 0.0195, -0.07, 1, true);            // 功能键
+  for (let r = 0; r < 5; r++) for (let c = 0; c < 4; c++) put(0.105 + c * 0.0185, -0.045 + r * 0.0185, 1, c === 3); // 小键盘
+  keys.count = n1; keys2.count = n2; kb.add(keys, keys2);
+}
+const mouse = mesh(new THREE.SphereGeometry(1, 24, 16), beige, 0.33, TOP + 0.012, 0.22);
+mouse.scale.set(0.032, 0.018, 0.05);
+box(0.003, 0.004, 0.03, beigeDark, 0.33, TOP + 0.03, 0.2);
+function cable(points, r = 0.0035) {
+  const g = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map((p) => new THREE.Vector3(...p))), 48, r, 6, false);
+  return mesh(g, M(0x2a2a2a, { roughness: 0.7 }));
+}
+cable([[0.33, TOP + 0.006, 0.172], [0.32, TOP + 0.004, 0.06], [0.26, TOP + 0.004, -0.06], [0.2, TOP + 0.006, -0.32]]);
+cable([[-0.02, TOP + 0.006, 0.115], [-0.03, TOP + 0.004, 0.05], [-0.08, TOP + 0.004, -0.33]]);
+cable([[0.0, TOP + 0.3, -0.42], [0.06, TOP + 0.08, -0.4], [0.18, TOP + 0.004, -0.36], [0.6, TOP + 0.004, -0.38], [0.79, 0.4, -0.42], [0.82, 0.02, -0.45]], 0.004);
+
+/* ================= 桌上的东西 ================= */
+// 纸堆
+for (const [x, z, n, r] of [[-0.62, -0.18, 5, 0.03], [-0.38, -0.2, 3, -0.05]]) {
+  for (let i = 0; i < n; i++) {
+    const s = box(0.22, 0.045, 0.29, paper, x + (Math.random() - 0.5) * 0.008, TOP + 0.0225 + i * 0.046, z + (Math.random() - 0.5) * 0.008);
+    s.rotation.y = r + (Math.random() - 0.5) * 0.03;
+  }
+}
+// 两层文件盘
+{
+  const tray = new THREE.Group(); tray.position.set(-0.64, TOP, 0.12); tray.rotation.y = 0.12; scene.add(tray);
+  const tm = M(0xbdb6a6, { roughness: 0.6 });
+  for (const y of [0.012, 0.085]) {
+    box(0.25, 0.006, 0.32, tm, 0, y, 0, tray);
+    box(0.25, 0.04, 0.006, tm, 0, y + 0.02, 0.16, tray);
+    for (const x of [-0.125, 0.125]) box(0.006, 0.05, 0.32, tm, x, y + 0.025, 0, tray);
+    box(0.23, 0.012, 0.3, paper, 0, y + 0.012, -0.005, tray);
+  }
+}
+// 桌上散页（简历）
+{
+  const sheet = new THREE.Mesh(new THREE.PlaneGeometry(0.21, 0.297), new THREE.MeshStandardMaterial({ roughness: 0.9, map: canvasTex(420, 594, (g, w, h) => {
+    g.fillStyle = '#f6f5f1'; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#a40000'; g.font = 'bold 34px "Songti SC","SimSun",serif'; g.fillText('王钰淞', 36, 64);
+    g.fillStyle = '#555'; g.font = '18px Georgia, serif'; g.fillText('Yusong Wang · CV 2026', 36, 92);
+    g.fillStyle = '#a40000'; g.fillRect(36, 108, w - 72, 2);
+    g.fillStyle = '#9a9a9a'; for (let y = 130; y < h - 40; y += 14) g.fillRect(36, y, (w - 72) * (0.55 + Math.random() * 0.45), 4);
+  }) }));
+  sheet.rotation.set(-Math.PI / 2, 0, 0.32); sheet.position.set(-0.45, TOP + 0.0015, 0.24); sheet.receiveShadow = true; scene.add(sheet);
+}
+// 文件夹
+for (const [x, r] of [[0.52, 0], [0.585, 0.02]]) {
+  const b = rbox(0.055, 0.3, 0.26, 0.004, M(0x4a3a33, { roughness: 0.55 }), x, TOP + 0.15, -0.26);
+  b.rotation.y = Math.PI / 2 + r; b.rotation.z = 0;
+  const ring = mesh(new THREE.TorusGeometry(0.012, 0.003, 8, 20), metal, x + 0.028, TOP + 0.08, -0.26);
+  ring.rotation.y = Math.PI / 2;
+}
+// 马克杯
+{
+  const prof = [[0, 0], [0.038, 0], [0.04, 0.004], [0.041, 0.095], [0.036, 0.095], [0.035, 0.008], [0, 0.008]].map(([x, y]) => new THREE.Vector2(x, y));
+  const mug = mesh(new THREE.LatheGeometry(prof, 32), M(0xf2f1ee, { roughness: 0.25 }), 0.6, TOP, 0.04);
+  const h = mesh(new THREE.TorusGeometry(0.025, 0.007, 10, 24, Math.PI), M(0xf2f1ee, { roughness: 0.25 }), 0.64, TOP + 0.05, 0.04);
+  h.rotation.z = -Math.PI / 2;
+  mesh(new THREE.CircleGeometry(0.035, 24), M(0x3b2416, { roughness: 0.2 }), 0.6, TOP + 0.075, 0.04).rotation.x = -Math.PI / 2;
+}
+
+/* ================= 椅子 ================= */
+{
+  const ch = new THREE.Group(); ch.position.set(0.12, 0, 0.72); ch.rotation.y = -0.35; scene.add(ch);
+  const leather = M(0x93613a, { roughness: 0.55 });
+  rbox(0.46, 0.07, 0.44, 0.03, leather, 0, 0.47, 0, ch);
+  const backrest = rbox(0.42, 0.3, 0.06, 0.03, leather, 0, 0.8, 0.24, ch); backrest.rotation.x = -0.12;
+  box(0.05, 0.3, 0.03, darkMetal, 0, 0.6, 0.25, ch).rotation.x = -0.25;
+  mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.28, 16), darkMetal, 0, 0.3, 0, ch);
+  for (let i = 0; i < 5; i++) {
+    const a = (i / 5) * Math.PI * 2, arm = new THREE.Group(); arm.rotation.y = a; ch.add(arm);
+    box(0.3, 0.025, 0.035, darkMetal, 0.15, 0.07, 0, arm);
+    mesh(new THREE.SphereGeometry(0.028, 12, 10), black, 0.29, 0.03, 0, arm);
+  }
+}
+
+/* ================= 盆栽 ================= */
+{
+  const pl = new THREE.Group(); pl.position.set(1.08, 0, -0.18); scene.add(pl);
+  const pot = [[0, 0], [0.13, 0], [0.155, 0.3], [0.165, 0.32], [0.15, 0.32], [0.14, 0.04], [0, 0.04]].map(([x, y]) => new THREE.Vector2(x, y));
+  mesh(new THREE.LatheGeometry(pot, 32), M(0xf0efec, { roughness: 0.4 }), 0, 0, 0, pl);
+  mesh(new THREE.CircleGeometry(0.145, 24), M(0x3a2a1e, { roughness: 1 }), 0, 0.3, 0, pl).rotation.x = -Math.PI / 2;
+  const leafShape = new THREE.Shape(); leafShape.moveTo(0, 0); leafShape.bezierCurveTo(0.09, 0.08, 0.08, 0.28, 0, 0.36); leafShape.bezierCurveTo(-0.08, 0.28, -0.09, 0.08, 0, 0);
+  const leafGeo = new THREE.ShapeGeometry(leafShape, 10);
+  { const p = leafGeo.attributes.position; for (let i = 0; i < p.count; i++) { const y = p.getY(i), x = p.getX(i); p.setZ(i, -y * y * 0.9 + Math.abs(x) * 0.35); } leafGeo.computeVertexNormals(); }
+  const leafMat = M(0x4f9a58, { roughness: 0.5, side: THREE.DoubleSide });
+  const stemMat = M(0x3f7d45, { roughness: 0.6 });
+  for (let i = 0; i < 13; i++) {
+    const a = i * 2.4, h = 0.42 + (i % 5) * 0.1, tilt = 0.25 + (i % 4) * 0.16;
+    const st = new THREE.Group(); st.position.set(0, 0.3, 0); st.rotation.set(tilt * Math.cos(a), a, tilt * Math.sin(a)); pl.add(st);
+    mesh(new THREE.CylinderGeometry(0.005, 0.007, h, 6), stemMat, 0, h / 2, 0, st);
+    const lf = mesh(leafGeo, leafMat, 0, h - 0.02, 0, st); lf.rotation.set(-0.9, 0, 0); lf.scale.setScalar(0.55 + (i % 3) * 0.08);
+  }
+}
+say(L('完成', 'OK'));
+
+/* ================= 屏幕网页（CSS3D） ================= */
+const SCREEN_PX = { w: 1024, h: 768 };
+const frame = document.createElement('iframe');
+frame.src = 'os.html?embed' + (d.dataset.lang === 'en' ? '&lang=en' : '');
+frame.title = L('王钰淞的作品集电脑', "Yusong Wang's portfolio computer");
+frame.style.width = SCREEN_PX.w + 'px'; frame.style.height = SCREEN_PX.h + 'px';
+frame.setAttribute('allow', 'autoplay');
+const cssObj = new CSS3DObject(frame);
+cssScene.add(cssObj);
+scene.updateMatrixWorld(true);
+const screenPos = new THREE.Vector3(), screenQuat = new THREE.Quaternion(), screenNormal = new THREE.Vector3(0, 0, 1);
+screenMesh.getWorldPosition(screenPos); screenMesh.getWorldQuaternion(screenQuat); screenNormal.applyQuaternion(screenQuat);
+cssObj.position.copy(screenPos).multiplyScalar(CSS_SCALE);
+cssObj.quaternion.copy(screenQuat);
+cssObj.scale.setScalar((SW * CSS_SCALE) / SCREEN_PX.w);
+let osReady = false;
+say(L('正在接通显示器 …………… ', 'Connecting the monitor ...... '), false);
+const readyTimer = setTimeout(() => { if (!osReady) { osReady = true; say(L('完成', 'OK')); enableStart(); } }, 6000);
+addEventListener('message', (e) => {
+  if (e.origin !== location.origin || !e.data || !e.data.yw) return;
+  const m = e.data;
+  if (m.type === 'ready' && !osReady) { osReady = true; clearTimeout(readyTimer); say(L('完成', 'OK')); enableStart(); }
+  else if (m.type === 'click') sfx.click();
+  else if (m.type === 'key') sfx.key();
+  else if (m.type === 'boot') sfx.boot();
+  else if (m.type === 'leave') go('desk');
+  else if (m.type === 'sound') setSound(m.on, false);
+  else if (m.type === 'lang') { d.dataset.lang = m.lang; store('yw-lang', m.lang); typeHud(true); }
 });
-/* 菜单里用上下键移动 */
-$('#menu').addEventListener('keydown',function(e){
-  if(e.key!=='ArrowDown'&&e.key!=='ArrowUp')return;
-  var bs=$$('#menu button[data-sec]'),i=bs.indexOf(document.activeElement);if(i<0)return;
-  bs[(i+(e.key==='ArrowDown'?1:-1)+bs.length)%bs.length].focus();e.preventDefault();e.stopPropagation();
-});
+function toOS(msg) { try { frame.contentWindow.postMessage({ yw: 1, ...msg }, location.origin); } catch (e) {} }
 
-/* ---------- 开机自检 ---------- */
-var boot=$('#boot'),post=$('#post'),bootTimers=[];
-function endBoot(){if(boot.hidden)return;bootTimers.forEach(clearTimeout);boot.hidden=true;try{sessionStorage.setItem('ysdos-booted','1')}catch(e){}}
-function runBoot(){
-  var seen=false;try{seen=sessionStorage.getItem('ysdos-booted')==='1'}catch(e){}
-  if(seen||reduce||/[?&]noboot\b/.test(location.search))return;
-  boot.hidden=false;
-  var en=d.dataset.lang==='en';
-  var L=[
-    ['<span class="hi">YSBIOS (C) 1995 Yusong Wang Lab · Version 6.0</span>',0],
-    ['CPU : i486DX2-66   Cache 256K',260],
-    [en?'Memory Test : ':'内存检测 : ','mem',320],
-    [(en?'Detecting IDE drive C: ':'检测到 IDE 硬盘 C: ')+'420MB    '+(en?'Floppy A: ':'软驱 A: ')+'1.44M',1150],
-    ['',1250],
-    ['C:\\&gt; YSDOS',1400],
-    [en?'Loading YSDOS 6.0 Chinese system …':'正在装入 钰淞汉字系统 YSDOS 6.0 ……',1600],
-    [(en?'  16×16 dot-matrix font HZK16  ':'  装入 16×16 点阵字库 HZK16  ')+'<span class="y" id="bar"></span>','bar',1800],
-    [(en?'  Pinyin / Wubi input methods ':'  装入 拼音 / 五笔 输入法 ')+'……… <span class="ok">OK</span>',2500],
-    [(en?'  Archive index: 9 files ':'  建立档案索引：9 个文件 ')+'……… <span class="ok">OK</span>',2700]
-  ];
-  L.forEach(function(row){
-    var at=row[row.length-1];
-    bootTimers.push(setTimeout(function(){
-      if(row[1]==='mem'){post.insertAdjacentHTML('beforeend',row[0]+'<span id="mem">0K</span>\n');var k=0,el=$('#mem');var iv=setInterval(function(){k+=640;if(k>=16384){k=16384;clearInterval(iv);el.insertAdjacentHTML('afterend',' <span class="ok">OK</span>')}el.textContent=k+'K'},40);bootTimers.push(iv)}
-      else if(row[1]==='bar'){post.insertAdjacentHTML('beforeend',row[0]+'\n');var n=0,bar=$('#bar');var iv2=setInterval(function(){n++;bar.textContent='█'.repeat(n)+'░'.repeat(10-n)+' '+n*10+'%';if(n>=10)clearInterval(iv2)},55);bootTimers.push(iv2)}
-      else post.insertAdjacentHTML('beforeend',row[0]+'\n');
-    },at));
-  });
-  bootTimers.push(setTimeout(function(){boot.classList.add('splash')},3100));
-  bootTimers.push(setTimeout(endBoot,4600));
-  boot.addEventListener('pointerdown',endBoot);
-}
-
-/* ---------- 命令行 ---------- */
-var dosEl=$('#dos'),out=$('#dosOut'),inp=$('#dosIn');
-function say(s){out.textContent+=s+'\n';dosEl.scrollTop=dosEl.scrollHeight}
-function dos(on){
-  dosEl.hidden=!on;
-  if(on){if(!out.textContent){say('YSDOS 6.0  (C) 1995 Yusong Wang Lab');say(d.dataset.lang==='en'?'Type HELP for commands, EXIT to return.':'输入 HELP 查看命令，EXIT 返回菜单。');say('')}inp.focus()}
-  else{var m=$('#menu button[aria-current="true"]');if(m)m.focus()}
-}
-var CMDS={
-  HELP:function(){say(d.dataset.lang==='en'
-    ?'DIR          list files\nTYPE <file>  open a file, e.g. TYPE ABOUT\nCV           download the CV (PDF)\nMAIL         write an email\nWORLDS       other versions of this site\nLANG         switch Chinese / English\nVER  DATE  CLS  EXIT'
-    :'DIR          列出档案\nTYPE 文件名  打开档案，例如 TYPE ABOUT\nCV           下载简历（PDF）\nMAIL         写邮件\nWORLDS       本站的其他版本\nLANG         切换中文 / 英文\nVER  DATE  CLS  EXIT')},
-  DIR:function(){say(' C:\\YUSONG 的目录\n');ORDER.forEach(function(id,i){var f=FILES[id].split('.');say(' '+(f[0]+'        ').slice(0,9)+(f[1]||'')+'      '+(i+1))});say('\n       '+ORDER.length+' 个文件')},
-  TYPE:function(a){var n=(a||'').toUpperCase().replace(/\..*$/,''),hit=null;ORDER.forEach(function(id){if(FILES[id].split('.')[0]===n||id.toUpperCase()===n)hit=id});
-    if(hit){dos(false);open(hit,{focus:true})}else say(d.dataset.lang==='en'?'File not found':'找不到文件')},
-  CV:function(){say('CV_Yusong_Wang.pdf ……');location.href='CV_Yusong_Wang.pdf'},
-  MAIL:function(){location.href='mailto:ywang677@connect.hkust-gz.edu.cn'},
-  WORLDS:function(){location.href='worlds.html'},
-  LANG:function(){toggleLang();say(d.dataset.lang==='en'?'Language: English':'语言：中文')},
-  VER:function(){say('YSDOS Version 6.0 · '+document.lastModified)},
-  DATE:function(){say(new Date().toString())},
-  CLS:function(){out.textContent=''},
-  EXIT:function(){dos(false)}
-};
-CMDS.LS=CMDS.DIR;CMDS.CAT=CMDS.TYPE;CMDS.OPEN=CMDS.TYPE;CMDS.MENU=CMDS.EXIT;CMDS.WIN=CMDS.EXIT;CMDS['?']=CMDS.HELP;
-$('#dosForm').addEventListener('submit',function(e){
-  e.preventDefault();var v=inp.value.trim();inp.value='';say('C:\\YUSONG>'+v);if(!v)return;
-  var parts=v.split(/\s+/),c=parts[0].toUpperCase();
-  if(CMDS[c])CMDS[c](parts.slice(1).join(' '));
-  else{var n=c.replace(/\..*$/,''),hit=null;ORDER.forEach(function(id){if(FILES[id].split('.')[0]===n)hit=id});
-    if(hit){dos(false);open(hit,{focus:true})}else say((d.dataset.lang==='en'?'Bad command or file name':'命令或文件名错误')+'：'+parts[0])}
-});
-dosEl.addEventListener('click',function(e){if(e.target===dosEl||e.target===out)inp.focus()});
-
-/* ---------- 启动 ---------- */
-open(location.hash.slice(1)||ORDER[0],{noHash:true,quiet:true});
-runBoot();
+/* ================= 声音（WebAudio 合成：房间底噪、主机嗡声、硬盘与按键） ================= */
+const sfx = (() => {
+  let ctx = null, master = null, on = true;
+  try { on = localStorage.getItem('yw-sound') !== '0'; } catch (e) {}
+  function noiseBuf(sec, brown) {
+    const b = ctx.createBuffer(1, ctx.sampleRate * sec, ctx.sampleRate), ch = b.getChannelData(0); let last = 0;
+    for (let i = 0; i < ch.length; i++) { const w = Math.random() * 2 - 1; ch[i] = brown ? (last = (last + 0.02 * w) / 1.02) * 3.5 : w; }
+    return b;
+  }
+  function loop(buf, filterType, freq, gain) {
+    const s = ctx.createBufferSource(); s.buffer = buf; s.loop = true;
+    const f = ctx.createBiquadFilter(); f.type = filterType; f.frequency.value = freq;
+    const g = ctx.createGain(); g.gain.value = gain; s.connect(f).connect(g).connect(master); s.start();
+  }
+  function burst(freq, dur, gain, q = 1.2) {
+    if (!ctx || !on) return;
+    const s = ctx.createBufferSource(); s.buffer = noiseBuf(dur, false);
+    const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = q;
+    const g = ctx.createGain(); const t = ctx.currentTime; g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(f).connect(g).connect(master); s.start();
+  }
+  return {
+    get on() { return on; },
+    start() {
+      if (ctx) return;
+      try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
+      master = ctx.createGain(); master.gain.value = on ? 1 : 0; master.connect(ctx.destination);
+      loop(noiseBuf(4, true), 'lowpass', 500, 0.05);             // 房间底噪
+      loop(noiseBuf(3, false), 'bandpass', 1300, 0.006);         // 主机风扇
+      for (const [fq, gn] of [[60, 0.012], [120, 0.006]]) { const o = ctx.createOscillator(); o.frequency.value = fq; const g = ctx.createGain(); g.gain.value = gn; o.connect(g).connect(master); o.start(); }
+    },
+    set(v) { on = v; if (master) master.gain.setTargetAtTime(v ? 1 : 0, ctx.currentTime, 0.05); },
+    click() { burst(2600, 0.03, 0.35, 0.9); setTimeout(() => burst(1800, 0.025, 0.2, 0.9), 70); },
+    key() { burst(3200 + Math.random() * 800, 0.025, 0.25, 0.8); },
+    boot() { // 开机：硬盘寻道的咔哒声
+      if (!ctx) return;
+      for (let i = 0; i < 26; i++) setTimeout(() => burst(900 + Math.random() * 1400, 0.018, 0.18 + Math.random() * 0.12, 2), 300 + i * (90 + Math.random() * 110));
+    },
+  };
 })();
+function paintSound() {
+  $('#sndIcon').innerHTML = sfx.on
+    ? '<path d="M2 6h3l4-4v12l-4-4H2z"/><path d="M11 5c1.2 1.2 1.2 4.8 0 6M13 3c2.4 2.4 2.4 7.6 0 10" stroke="currentColor" fill="none" stroke-width="1.4"/>'
+    : '<path d="M2 6h3l4-4v12l-4-4H2z"/><path d="M11 6l4 4M15 6l-4 4" stroke="currentColor" stroke-width="1.6"/>';
+}
+function setSound(v, tell = true) { sfx.set(v); store('yw-sound', v ? '1' : '0'); paintSound(); if (tell) toOS({ type: 'sound', on: v }); }
+paintSound();
+$('#btnSound').addEventListener('click', (e) => { e.stopPropagation(); sfx.start(); setSound(!sfx.on); });
+
+/* ================= 镜头 ================= */
+const target = new THREE.Vector3(), camPos = new THREE.Vector3();
+const views = {
+  overview(t) {
+    const a = 0.5 + (reduce ? 0 : Math.sin(t * 0.06) * 0.45), r = small() ? 8.2 : 5.6;
+    return { pos: new THREE.Vector3(Math.sin(a) * r, small() ? 3.6 : 2.9, Math.cos(a) * r), look: new THREE.Vector3(0.12, 0.5, 0.05) };
+  },
+  desk() {
+    // 竖屏要退远才装得下显示器，镜头抬高从椅背上方看过去
+    if (camera.aspect < 0.9) return { pos: new THREE.Vector3(0, TOP + 0.78, 2.05), look: new THREE.Vector3(0, TOP + 0.24, -0.1) };
+    return { pos: new THREE.Vector3(0, TOP + 0.5, 1.42), look: new THREE.Vector3(0, TOP + 0.22, -0.1) };
+  },
+  screen() {
+    const vf = THREE.MathUtils.degToRad(camera.fov), fitH = (SH / 0.86) / 2 / Math.tan(vf / 2), fitW = (SW / 0.9) / 2 / (Math.tan(vf / 2) * camera.aspect);
+    const dist = Math.max(fitH, fitW);
+    return { pos: screenPos.clone().addScaledVector(screenNormal, dist), look: screenPos.clone() };
+  },
+};
+let state = 'loading', from = null, tween = null, clock0 = performance.now();
+const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+function go(next) {
+  if (next === state && !tween) return;
+  const t = (performance.now() - clock0) / 1000;
+  from = { pos: camera.position.clone(), look: target.clone() };
+  tween = { t0: performance.now(), dur: reduce ? 1 : next === 'screen' || state === 'screen' ? 1100 : 1700, to: next };
+  state = next;
+  d.classList.toggle('at-screen', next === 'screen');
+  d.classList.toggle('at-desk', next === 'desk');
+  $('#hint').classList.toggle('on', next === 'overview');
+  if (next === 'screen') setTimeout(() => { try { frame.focus(); } catch (e) {} }, 400);
+  if (next !== 'screen' && document.activeElement === frame) frame.blur();
+}
+let px = 0, py = 0;
+function frameCamera(now) {
+  const t = (now - clock0) / 1000;
+  const v = views[state === 'loading' ? 'overview' : state](t);
+  if (state === 'desk' && !reduce) { v.pos.x += px * 0.05; v.pos.y += -py * 0.03; }
+  if (tween) {
+    let k = Math.min(1, (now - tween.t0) / tween.dur); k = ease(k);
+    camera.position.lerpVectors(from.pos, v.pos, k); target.lerpVectors(from.look, v.look, k);
+    if (k >= 1) tween = null;
+  } else {
+    camera.position.lerp(v.pos, state === 'overview' ? 1 : 0.08); target.lerp(v.look, state === 'overview' ? 1 : 0.08);
+  }
+  camera.lookAt(target);
+}
+
+/* ================= 交互 ================= */
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+const monitorParts = []; mon.traverse((o) => o.isMesh && monitorParts.push(o)); pc.traverse((o) => o.isMesh && monitorParts.push(o));
+function hit(e, list) { ndc.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera); return ray.intersectObjects(list, false)[0]; }
+let hoverT = 0, outT = 0;
+addEventListener('pointermove', (e) => {
+  px = e.clientX / innerWidth - 0.5; py = e.clientY / innerHeight - 0.5;
+  if (state === 'desk' && !tween && e.pointerType === 'mouse') {
+    if (hit(e, [screenMesh])) { if (!hoverT) hoverT = setTimeout(() => { hoverT = 0; if (state === 'desk') go('screen'); }, 160); }
+    else { clearTimeout(hoverT); hoverT = 0; }
+  }
+  if (state === 'screen' && !tween && e.pointerType === 'mouse') {
+    // 指针只有离开 iframe 时父页面才收得到移动事件
+    if (!outT) outT = setTimeout(() => { outT = 0; if (state === 'screen') go('desk'); }, 260);
+  }
+});
+frame.addEventListener('pointerenter', () => { clearTimeout(outT); outT = 0; });
+addEventListener('click', (e) => {
+  if (state === 'loading' || e.target.closest('#hud,#loader,a,button')) return;
+  sfx.click();
+  if (state === 'overview') go('desk');
+  else if (state === 'desk') {
+    if (hit(e, [screenMesh])) { if (small()) { location.href = 'os.html'; } else go('screen'); }
+    else if (!hit(e, monitorParts)) go('overview');
+  } else if (state === 'screen') go('desk');
+});
+addEventListener('keydown', (e) => {
+  if (state === 'loading') return;
+  if (e.key === 'Escape') go(state === 'screen' ? 'desk' : 'overview');
+  else if (e.key === 'Enter' && document.activeElement === document.body) go(state === 'overview' ? 'desk' : 'screen');
+});
+$('#btnView').addEventListener('click', (e) => { e.stopPropagation(); go(state === 'overview' ? 'desk' : 'overview'); });
+$('#back').addEventListener('click', (e) => { e.stopPropagation(); go(state === 'screen' ? 'desk' : 'overview'); });
+
+/* ================= 名牌、提示与时钟 ================= */
+function typeInto(el, text, delay = 0) {
+  el.textContent = '';
+  if (reduce) { el.textContent = text; return; }
+  [...text].forEach((ch, i) => setTimeout(() => { el.textContent += ch; }, delay + i * 45));
+}
+function typeHud(instant) {
+  const n = L('王钰淞 · Yusong Wang', 'Yusong Wang · 王钰淞'), r = L('GIS × 多模态 AI × 全栈系统', 'GIS × Multimodal AI × Systems');
+  if (instant) { $('#hudName').textContent = n; $('#hudRole').textContent = r; } else { typeInto($('#hudName'), n); typeInto($('#hudRole'), r, 600); }
+  $('#hintText').textContent = small() ? L('点一下开始', 'Tap to begin') : L('点击任意位置开始', 'Click anywhere to begin');
+  frame.title = L('王钰淞的作品集电脑', "Yusong Wang's portfolio computer");
+}
+function tick() { const t = new Date(), p = (n) => String(n).padStart(2, '0'); $('#hudClock').textContent = `${p(t.getHours())}:${p(t.getMinutes())}:${p(t.getSeconds())}`; }
+tick(); setInterval(tick, 1000);
+
+/* ================= 开场 ================= */
+function enableStart() { const b = $('#start'); b.disabled = false; b.focus(); }
+$('#langLd').addEventListener('click', (e) => { e.preventDefault(); d.dataset.lang = d.dataset.lang === 'en' ? 'zh' : 'en'; store('yw-lang', d.dataset.lang); toOS({ type: 'lang', lang: d.dataset.lang }); });
+$('#start').addEventListener('click', () => {
+  sfx.start(); sfx.click();
+  toOS({ type: 'lang', lang: d.dataset.lang }); toOS({ type: 'sound', on: sfx.on }); toOS({ type: 'power' });
+  $('#loader').classList.add('out'); setTimeout(() => { $('#loader').hidden = true; }, 700);
+  $('#hud').classList.add('on'); typeHud(false);
+  clock0 = performance.now(); state = 'overview'; $('#hint').classList.add('on');
+  if (/[#&]desk\b/.test(location.hash)) setTimeout(() => go('desk'), 300);
+});
+
+/* ================= 渲染循环 ================= */
+function resize() {
+  const w = innerWidth, h = innerHeight;
+  renderer.setSize(w, h, false); css.setSize(w, h);
+  camera.aspect = cssCam.aspect = w / h; camera.updateProjectionMatrix(); cssCam.updateProjectionMatrix();
+}
+addEventListener('resize', resize); resize();
+{ const v = views.overview(0); camera.position.copy(v.pos); target.copy(v.look); camera.lookAt(target); }
+function render(now) {
+  frameCamera(now);
+  renderer.render(scene, camera);
+  cssCam.position.copy(camera.position).multiplyScalar(CSS_SCALE); cssCam.quaternion.copy(camera.quaternion);
+  cssCam.fov = camera.fov; cssCam.updateProjectionMatrix(); cssCam.updateMatrixWorld();
+  css.render(cssScene, cssCam);
+  requestAnimationFrame(render);
+}
+requestAnimationFrame(render);
+
+/* 胶片颗粒：运行时生成一张噪声图 */
+{
+  const c = document.createElement('canvas'); c.width = c.height = 160; const g = c.getContext('2d'), im = g.createImageData(160, 160);
+  for (let i = 0; i < im.data.length; i += 4) { const v = Math.random() * 255; im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = 255; }
+  g.putImageData(im, 0, 0); $('#grain').style.background = `url(${c.toDataURL()}) repeat`;
+}
 </script>
 </body>
 </html>
