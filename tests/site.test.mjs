@@ -5,7 +5,8 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const pages = ['index.html', 'ukiyoe.html', 'retro-future.html'];
+const pages = ['index.html', 'worlds.html', 'ukiyoe.html', 'retro-future.html'];
+const scenes = ['ukiyoe.html', 'retro-future.html'];
 
 async function html(file) {
   return readFile(path.join(root, file), 'utf8');
@@ -19,8 +20,30 @@ function localLinks(source) {
     .filter(Boolean);
 }
 
-test('portal contains exactly two interactive scene experiences', async () => {
+test('home is the YSDOS retro archive with all nine files', async () => {
   const source = await html('index.html');
+  assert.ok(source.includes('YSDOS'), 'home must be the retro archive');
+  const sections = ['about', 'heritage', 'work', 'portfolio', 'exp', 'toolbox', 'contact', 'cv', 'door'];
+  for (const id of sections) {
+    assert.equal(source.match(new RegExp(`<section class="doc" id="s-${id}"`, 'g'))?.length, 1, `missing file ${id}`);
+    assert.match(source, new RegExp(`data-sec="${id}"`), `menu misses ${id}`);
+  }
+  for (const target of ['worlds.html', 'ukiyoe.html', 'retro-future.html', 'CV_Yusong_Wang.pdf']) {
+    assert.match(source, new RegExp(`href=["']${target.replace('.', '\\.')}["']`), `home must link to ${target}`);
+  }
+  for (const text of ['HeritageExplorer', 'VINCI 2025', 'CHI 2025', 'DIPARK', 'ywang677@connect.hkust-gz.edu.cn']) {
+    assert.ok(source.includes(text), `missing real content: ${text}`);
+  }
+  assert.match(source, /url\(["']assets\/retro\/fusion-pixel-12-subset\.woff2["']\)/, 'pixel font must be self-hosted');
+  await assert.doesNotReject(readFile(path.join(root, 'assets/retro/OFL-fusion-pixel.txt')), 'font licence must ship with the font');
+  assert.match(source, /id=["']btnLang["']/);
+  assert.match(source, /prefers-reduced-motion/);
+  assert.match(source, /<noscript>/);
+  assert.match(source, /@media\s*\(max-width:/);
+});
+
+test('worlds overview contains exactly two interactive scene experiences', async () => {
+  const source = await html('worlds.html');
   for (const target of ['ukiyoe.html', 'retro-future.html']) {
     assert.match(source, new RegExp(`href=["']${target.replace('.', '\\.')}(?:[?#][^"']*)?["']`), `missing ${target}`);
   }
@@ -42,16 +65,16 @@ test('classic, pixel and document-style retro versions are removed', async () =>
 });
 
 test('both retained homepages use the interactive WebGL scene architecture', async () => {
-  for (const page of pages.slice(1)) {
+  for (const page of scenes) {
     const source = await html(page);
     for (const marker of ['id="gl"', 'id="stage"', 'id="panel"', 'id="reader"', 'type="module"', 'WebGLRenderer', 'function register(', 'function openSection(', 'function setReader(']) {
       assert.ok(source.includes(marker), `${page} missing scene marker: ${marker}`);
     }
-    assert.match(source, /href=["'](?:\.\/)?index\.html["']/, `${page} cannot return to portal`);
+    assert.match(source, /href=["'](?:\.\/)?worlds\.html["']/, `${page} cannot return to the worlds overview`);
     assert.match(source, /id=["']btnWork["']/, `${page} needs a direct work entry`);
     const switcher = source.match(/<(?:nav|div)[^>]*id=["']sceneSwitcher["'][^>]*>([\s\S]*?)<\/(?:nav|div)>/)?.[1];
     assert.ok(switcher, `${page} needs a visible scene switcher`);
-    for (const target of pages.slice(1)) assert.match(switcher, new RegExp(`href=["'](?:\\./)?${target.replace('.', '\\.')}["']`), `${page} needs a direct link to ${target}`);
+    for (const target of scenes) assert.match(switcher, new RegExp(`href=["'](?:\\./)?${target.replace('.', '\\.')}["']`), `${page} needs a direct link to ${target}`);
     assert.match(source, /prefers-reduced-motion/);
   }
 });
@@ -73,7 +96,7 @@ test('both original scenes retain nine entries and the five real projects', asyn
     ['ops-monitor', /Ops\s*Monitor|运维/i],
     ['enterprise-portal', /Enterprise(?:\s+application)?\s*Portal|企业(?:应用)?门户|企业应用|工作门户|Workspace/i],
   ];
-  for (const page of pages.slice(1)) {
+  for (const page of scenes) {
     const scene = await html(page);
     const templates = [...scene.matchAll(/<template\s+id=["']t-([^"']+)["']/g)].map((match) => match[1]);
     assert.deepEqual(templates.sort(), [...sections].sort(), `${page}: all nine content entries need one unique template`);

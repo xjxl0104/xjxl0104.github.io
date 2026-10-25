@@ -1,96 +1,572 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-lang="zh">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>王钰淞 · Yusong Wang — Two Interactive Worlds</title>
-<meta name="description" content="王钰淞 Yusong Wang 的两个互动场景式主页：浮世绘书斋与 YW/OS 98 个人研究工作站。" />
-<meta name="theme-color" content="#151615" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>王钰淞 · Yusong Wang — YSDOS 档案系统</title>
+<meta name="description" content="王钰淞（Yusong Wang）的个人主页：一台 90 年代中文电脑上的档案系统。HeritageExplorer、企业 AI 原生系统、论文专利与经历。" />
+<meta name="theme-color" content="#0000aa" />
+<link rel="preload" href="assets/retro/fusion-pixel-12-subset.woff2" as="font" type="font/woff2" crossorigin />
 <style>
-  :root{--bg:#151615;--ink:#f4f1e8;--muted:#a5a69f;--acid:#dfff57;--line:#343632;--radius:30px}
-  *{box-sizing:border-box;margin:0;padding:0}html{color-scheme:dark;scroll-behavior:smooth}
-  body{min-height:100vh;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-  a{color:inherit;text-decoration:none}a:focus-visible{outline:3px solid var(--acid);outline-offset:5px}
-  .shell{width:min(1380px,calc(100% - 64px));margin:auto}
-  .top{height:92px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
-  .logo{display:flex;align-items:center;gap:14px;font:700 13px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}
-  .logo-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--acid);color:#171813;font-size:12px;letter-spacing:-.04em}
-  .logo small{display:block;margin-top:4px;color:var(--muted);font-weight:400;font-size:10px;letter-spacing:.13em}
-  .top-links{display:flex;align-items:center;gap:26px;color:var(--muted);font-size:12px}.top-links a:hover{color:var(--acid)}
-  .top-links .cv{padding:10px 16px;border:1px solid #4a4c46;border-radius:99px;color:var(--ink)}
-  .hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.6fr);gap:48px;align-items:end;padding:64px 0 46px}
-  .eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:20px;color:var(--acid);font:600 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase}.eyebrow::before{content:"";width:28px;height:2px;background:currentColor}
-  h1{font-size:clamp(46px,6vw,86px);font-weight:650;line-height:1.08;letter-spacing:-.055em}h1 span{color:var(--muted);font-weight:400}
-  .hero-note{padding-bottom:8px;color:var(--muted);font-size:14px;line-height:1.9}.hero-note b{display:block;margin-bottom:12px;color:var(--ink);font-size:15px;font-weight:500}
-  .hero-note .count{display:flex;align-items:baseline;gap:8px;margin-top:22px;color:var(--ink);font:500 38px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.06em}.hero-note .count small{color:var(--muted);font-size:10px;letter-spacing:.12em}
-  #version-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding-bottom:30px}
-  .card{position:relative;isolation:isolate;display:flex;flex-direction:column;min-height:430px;padding:30px;overflow:hidden;border-radius:var(--radius);color:#191a17;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
-  .card:hover{transform:translateY(-5px);box-shadow:0 18px 45px rgba(0,0,0,.22)}.card.ukiyoe{background:#e9bf53}.card.future{background:#080c0d;color:#ffc36b;box-shadow:inset 0 0 0 1px #6b4b28}
-  .card-head{display:flex;align-items:center;gap:10px;font:650 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase}.version{opacity:.62}
-  .badge{padding:6px 9px;border:1px solid rgba(25,26,23,.3);border-radius:99px}.badge.new{border:0;background:#8f2d24;color:#eee7d6}
-  .arrow{position:absolute;top:24px;right:24px;display:grid;place-items:center;width:48px;height:48px;border:1px solid rgba(25,26,23,.28);border-radius:50%;font-size:22px;transition:background .2s,transform .25s}.card:hover .arrow{background:#191a17;color:#fff;transform:rotate(45deg)}
-  .card-body{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:20px;align-items:center;flex:1;padding-top:38px}
-  .card h2{font-size:clamp(30px,3.3vw,48px);font-weight:650;line-height:1.13;letter-spacing:-.045em}.mobile-break{display:none}.card h2 small{display:block;margin-bottom:11px;font:650 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;opacity:.64}
-  .card p{max-width:350px;margin-top:18px;font-size:13px;line-height:1.8;opacity:.72}.art{display:grid;place-items:center;height:220px}.art svg{width:100%;max-width:220px;max-height:220px;overflow:visible}
-  .card-foot{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px;font:550 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;opacity:.6}.card-foot span+span::before{content:"·";margin-right:8px}
-  .footer{display:flex;justify-content:space-between;gap:24px;padding:22px 0 32px;border-top:1px solid var(--line);color:var(--muted);font:400 10px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase}.footer a:hover{color:var(--acid)}
-  .future .card-head{color:#ffc36b;font-size:11px}.future .version{opacity:.75}.future .badge.new{border:1px solid #75502b;border-radius:2px;background:transparent;color:#ffc36b}
-  .future .arrow{border-color:#75502b;color:#ffc36b}.future:hover .arrow{background:#ffc36b;color:#080c0d}
-  .future .card-body{grid-template-columns:minmax(0,1fr) minmax(156px,.86fr);gap:16px;padding-top:28px}
-  .future h2{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:clamp(30px,3.2vw,43px);letter-spacing:-.04em;white-space:nowrap}
-  .future h2 small{max-width:180px;font-size:11px;line-height:1.65;letter-spacing:.11em;white-space:normal;color:#76d8ce;opacity:1}
-  .future .workstation-name{display:block;margin-top:12px;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-size:20px;font-weight:500;letter-spacing:.01em}
-  .future p{color:#e2b582;opacity:1}.future .art{height:240px}.future .art svg{max-width:240px;max-height:240px}
-  .future .card-foot{color:#e2b582;font-size:11px;line-height:1.4;opacity:1}.future::after{content:"";position:absolute;inset:0;z-index:-1;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,195,107,.025) 3px 4px);pointer-events:none}
-  .radar-sweep{transform-origin:120px 108px;animation:radar-scan 12s linear infinite}.future:focus-visible{outline-color:#76d8ce}
-  .future::selection,.future ::selection{background:#ffc36b;color:#080c0d}
-  @keyframes radar-scan{to{transform:rotate(360deg)}}
-  @media(max-width:960px){.shell{width:min(100% - 36px,720px)}.hero{grid-template-columns:1fr;gap:24px;padding:50px 0 38px}.hero-note .count{display:none}#version-grid{grid-template-columns:1fr}.card{min-height:390px}}
-  @media(max-width:540px){.shell{width:calc(100% - 28px)}.top{height:74px}.top-links>a:first-child{display:none}.top-links .cv{padding:8px 12px}.hero{padding-top:40px}h1{font-size:45px}.card{padding:24px;min-height:400px;border-radius:24px}.arrow{top:18px;right:18px;width:42px;height:42px}.card-body{grid-template-columns:minmax(0,1fr) 118px;gap:10px}.card h2{font-size:29px}.mobile-break{display:block}.card p{font-size:12px}.art{height:150px}.art svg{max-width:135px;max-height:150px}.future .card-body{grid-template-columns:minmax(0,1fr) clamp(94px,30vw,134px);gap:8px}.future h2{font-size:clamp(24px,7.7vw,29px)}.future .workstation-name{font-size:17px}.future .art{height:170px}.future .art svg{max-width:150px;max-height:170px}.footer{flex-direction:column;gap:8px}}
-  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.card,.arrow{transition:none}.radar-sweep{animation:none}.card:hover{transform:none}}
+/* Fusion Pixel 12px（SIL OFL 1.1，见 assets/retro/OFL-fusion-pixel.txt），按本页用字子集化 */
+@font-face{font-family:"YS Pixel";src:url("assets/retro/fusion-pixel-12-subset.woff2") format("woff2");font-display:swap}
+:root{
+  /* 16 色 VGA 调色板 */
+  --blue:#0000aa;--black:#000;--gray:#aaaaaa;--dgray:#555555;--white:#ffffff;
+  --cyan:#00aaaa;--lcyan:#55ffff;--yellow:#ffff55;--brown:#aa5500;--lred:#ff5555;--green:#00aa00;--lgreen:#55ff55;
+  --fs:24px;--px:calc(var(--fs) / 12);--lh:calc(var(--fs) * 4 / 3);--ch:calc(var(--fs) / 2);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--black)}
+body{font:var(--fs)/var(--lh) "YS Pixel","Courier New",monospace;color:var(--gray);-webkit-text-size-adjust:100%;overflow:hidden}
+html[data-lang="zh"] .lang-en,html[data-lang="en"] .lang-zh{display:none}
+a{color:var(--lcyan);text-decoration:underline;text-underline-offset:calc(var(--px) * 2)}
+a:hover{background:var(--lcyan);color:var(--black);text-decoration:none}
+:focus-visible{outline:var(--px) solid var(--yellow);outline-offset:var(--px)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+kbd{font:inherit}
+
+/* ===== 整屏 ===== */
+#screen{position:fixed;inset:0;display:grid;grid-template-rows:auto 1fr auto auto;background:var(--blue);
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.bar{display:flex;align-items:center;gap:var(--ch);white-space:nowrap;overflow:hidden;padding:0 var(--ch)}
+#titlebar{background:var(--cyan);color:var(--black)}
+#titlebar .grow{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+#titlebar button{padding:0 var(--ch);background:var(--black);color:var(--lcyan)}
+#titlebar button:hover{background:var(--white);color:var(--black)}
+#clock{font-variant-numeric:tabular-nums}
+
+#desk{display:grid;grid-template-columns:calc(var(--fs) * 10.5) 1fr;gap:var(--fs);min-height:0;
+  padding:calc(var(--lh) * .75) calc(var(--fs) * 1.5) calc(var(--lh) * 1.1) var(--fs)}
+
+/* 双线框窗口 + 一格黑色投影（文本模式对话框的样子） */
+.win{position:relative;min-height:0;display:flex;flex-direction:column;
+  border:calc(var(--px) * 3) double var(--gray);padding:calc(var(--lh) * .5) var(--ch) calc(var(--lh) * .3);
+  box-shadow:var(--fs) var(--lh) 0 var(--black)}
+.win>.wt{position:absolute;top:calc(var(--lh) * -.5 - var(--px) * 1.5);left:0;right:0;text-align:center;line-height:var(--lh);pointer-events:none}
+.win>.wt span{background:var(--blue);color:var(--white);padding:0 var(--ch)}
+#menu{background:var(--blue)}
+#menu ol{list-style:none;margin:0;padding:0;overflow-y:auto;overflow-x:hidden}
+#menu li button{display:flex;gap:var(--ch);width:100%;padding:0 var(--ch);color:var(--gray);white-space:nowrap}
+#menu li button span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+#menu li button kbd{color:var(--yellow)}
+#menu li button:hover{background:var(--dgray);color:var(--white)}
+#menu li button[aria-current="true"]{background:var(--cyan);color:var(--black)}
+#menu li button[aria-current="true"] kbd{color:var(--black)}
+#menu .sep{border-top:var(--px) solid var(--dgray);margin:calc(var(--lh) * .25) 0}
+#menu .who{margin-top:auto;padding-top:calc(var(--lh) * .5);color:var(--dgray);white-space:pre-line}
+#menu .who img{display:block;width:100%;max-width:calc(var(--fs) * 6);image-rendering:pixelated;border:var(--px) solid var(--gray);margin-bottom:calc(var(--lh) * .25)}
+
+#pane{background:var(--blue)}
+#doc{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:var(--ch);scrollbar-color:var(--white) var(--dgray);scrollbar-width:auto}
+#doc::-webkit-scrollbar{width:var(--fs)}
+#doc::-webkit-scrollbar-track{background:repeating-conic-gradient(var(--gray) 0 25%,var(--blue) 0 50%) 0 0/calc(var(--px) * 2) calc(var(--px) * 2)}
+#doc::-webkit-scrollbar-thumb{background:var(--white)}
+
+/* ===== 文档排版（各页模板里的类） ===== */
+.doc{color:var(--gray)}
+html.js .doc{display:none}
+html.js .doc.on{display:block}
+.doc h2{margin:0 0 calc(var(--lh) * .5);font-size:var(--fs);font-weight:400;color:var(--yellow)}
+.doc h2::before{content:"■ ";color:var(--lcyan)}
+.doc h2 small{color:var(--dgray);font-size:var(--fs)}
+.doc h3{margin:calc(var(--lh) * .75) 0 calc(var(--lh) * .25);font-size:var(--fs);font-weight:400;color:var(--white)}
+.doc h3::before{content:"── ";color:var(--dgray)}
+.doc p{margin:0 0 calc(var(--lh) * .5)}
+.doc b{font-weight:400;color:var(--white)}
+.doc small{font-size:var(--fs)}
+.doc .dim{color:var(--lcyan)}
+.doc .tags{display:flex;flex-wrap:wrap;gap:0 var(--ch);margin:0 0 calc(var(--lh) * .5)}
+.doc .tag{color:var(--white);white-space:nowrap}
+.doc .tag::before{content:"[";color:var(--lcyan)}
+.doc .tag::after{content:"]";color:var(--lcyan)}
+.doc .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(calc(var(--fs) * 6),1fr));gap:var(--ch);margin:calc(var(--lh) * .25) 0 calc(var(--lh) * .75)}
+.doc .stats div{border:var(--px) solid var(--gray);padding:calc(var(--lh) * .25) var(--ch);text-align:center;background:var(--black)}
+.doc .stats b{display:block;color:var(--yellow);font-size:calc(var(--fs) * 2);line-height:calc(var(--lh) * 2)}
+.doc .stats span{color:var(--gray)}
+.doc .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(calc(var(--fs) * 14),1fr));gap:var(--fs);margin:calc(var(--lh) * .5) 0}
+.doc .card{border:var(--px) solid var(--gray);padding:calc(var(--lh) * .25) var(--ch)}
+.doc .card.hl{border-color:var(--yellow);box-shadow:inset 0 0 0 var(--px) var(--yellow)}
+.doc .row{display:grid;grid-template-columns:calc(var(--fs) * 4) 1fr;gap:var(--ch);padding:calc(var(--lh) * .2) 0;border-bottom:var(--px) dashed var(--dgray)}
+.doc .row .k{color:var(--yellow)}
+.doc .row small{display:block;color:var(--gray)}
+.doc .portrait{float:right;width:calc(var(--fs) * 5);margin:0 0 var(--ch) var(--fs);border:var(--px) solid var(--gray);image-rendering:pixelated}
+.vga{display:block;margin:calc(var(--lh) * .5) 0;max-width:calc(var(--fs) * 30);text-decoration:none;border:var(--px) solid var(--gray);background:var(--black)}
+.vga img{display:block;width:100%;height:auto;image-rendering:pixelated}
+.vga .cap{display:flex;justify-content:space-between;gap:var(--ch);padding:0 var(--ch);background:var(--gray);color:var(--black)}
+.vga:hover{background:var(--black)}
+.vga:hover .cap{background:var(--lcyan)}
+.doc .pf{display:grid;grid-template-columns:repeat(auto-fit,minmax(calc(var(--fs) * 15),1fr));gap:var(--fs);margin-top:calc(var(--lh) * .5)}
+.doc .pf figure{margin:0}
+.doc .pf figure .vga{margin:0;max-width:none}
+.doc .pf figcaption{padding-top:calc(var(--lh) * .25)}
+.doc .pf figcaption b{display:block;color:var(--yellow)}
+.pxbtn{display:inline-block;margin:0 var(--fs) calc(var(--lh) * .5) 0;padding:0 var(--fs);background:var(--gray);color:var(--black);text-decoration:none;box-shadow:var(--ch) calc(var(--lh) * .5) 0 var(--black)}
+.pxbtn::before{content:"< "}.pxbtn::after{content:" >"}
+.pxbtn.red{background:var(--cyan)}
+.pxbtn:hover{background:var(--white);color:var(--black)}
+.doc ul.dir{list-style:none;margin:0;padding:0}
+.doc ul.dir li{display:grid;grid-template-columns:calc(var(--fs) * 7) 1fr;gap:var(--ch);padding:calc(var(--lh) * .2) 0}
+.doc ul.dir li a{white-space:nowrap}
+
+/* ===== 状态行与功能键 ===== */
+#status{background:var(--gray);color:var(--black)}
+#status .grow{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+#fkeys{display:grid;grid-template-columns:repeat(9,1fr);background:var(--black);padding:0}
+#fkeys button{display:flex;min-width:0;white-space:nowrap;overflow:hidden}
+#fkeys kbd{color:var(--white);padding:0 calc(var(--px) * 2) 0 var(--ch)}
+#fkeys span{flex:1;min-width:0;background:var(--cyan);color:var(--black);overflow:hidden;text-overflow:ellipsis;padding-left:var(--px)}
+#fkeys button:hover span{background:var(--white)}
+
+/* CRT：只留很淡的扫描线和暗角，不影响阅读 */
+#crt{position:fixed;inset:0;pointer-events:none;z-index:50;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,.14) 0 1px,transparent 1px 3px),radial-gradient(ellipse at center,transparent 62%,rgba(0,0,0,.35) 100%)}
+html.flat #crt{display:none}
+
+/* ===== 弹窗、开机、命令行 ===== */
+.dialog{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:rgba(0,0,0,.35)}
+.dialog[hidden]{display:none}
+.dialog .win{background:var(--gray);color:var(--black);border-color:var(--black);width:min(calc(var(--fs) * 26),calc(100vw - var(--fs) * 2));max-height:calc(100dvh - var(--lh) * 4)}
+.dialog .win>.wt span{background:var(--gray);color:var(--black)}
+.dialog dl{display:grid;grid-template-columns:auto 1fr;gap:0 var(--fs);margin:0 0 calc(var(--lh) * .5);overflow:auto}
+.dialog dt{color:var(--blue)}
+.dialog dd{margin:0}
+.dialog .ok{justify-self:center;align-self:center;margin:0 auto;display:block;padding:0 var(--fs);background:var(--blue);color:var(--white);box-shadow:var(--ch) calc(var(--lh) * .5) 0 var(--black)}
+
+#boot,#dos{position:fixed;inset:0;z-index:45;background:var(--black);color:var(--gray);padding:calc(var(--lh) * .5) var(--fs);overflow:hidden}
+#boot[hidden],#dos[hidden]{display:none}
+#boot pre,#dos pre{margin:0;font:inherit;white-space:pre-wrap;word-break:break-all}
+#boot .hi{color:var(--white)}#boot .ok{color:var(--lgreen)}#boot .y{color:var(--yellow)}
+#boot .skip{position:absolute;right:var(--fs);bottom:calc(var(--lh) * .5);color:var(--dgray)}
+#splash{position:absolute;inset:0;display:none;place-content:center;text-align:center;background:var(--blue);color:var(--white)}
+#boot.splash #splash{display:grid}
+#splash .big{font-size:calc(var(--fs) * 4);line-height:calc(var(--lh) * 4);color:var(--yellow);text-shadow:calc(var(--px) * 4) calc(var(--px) * 4) 0 var(--black)}
+#splash .frame{border:calc(var(--px) * 3) double var(--white);padding:calc(var(--lh) * .5) calc(var(--fs) * 2);box-shadow:var(--fs) var(--lh) 0 var(--black)}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+#dos{overflow:auto}
+#dos form{display:flex;gap:0}
+#dos label{white-space:nowrap}
+#dos input{flex:1;min-width:0;font:inherit;color:var(--white);background:transparent;border:0;outline:0;caret-color:var(--white);padding:0}
+
+/* ===== 窄屏：菜单变成三列编号格，功能键两行 ===== */
+@media (max-width:760px){
+  #desk{grid-template-columns:1fr;grid-template-rows:auto 1fr;gap:calc(var(--lh) * .9);padding:calc(var(--lh) * .7) calc(var(--ch) * 2) calc(var(--lh) * .9) var(--ch)}
+  .win{box-shadow:var(--ch) calc(var(--lh) * .5) 0 var(--black)}
+  #menu ol{display:grid;grid-template-columns:repeat(3,1fr);gap:0 var(--ch)}
+  #menu li button{padding:0 calc(var(--px) * 2);overflow:hidden;text-overflow:ellipsis}
+  #menu .sep,#menu .who{display:none}
+  #fkeys{grid-template-columns:repeat(5,1fr)}
+  #fkeys button:last-child{grid-column:span 2}
+  #titlebar .wide{display:none}
+  .doc .row{grid-template-columns:calc(var(--fs) * 3.5) 1fr}
+  .doc .portrait{width:calc(var(--fs) * 4)}
+}
+@media (prefers-reduced-motion:reduce){
+  .blink{animation:none}
+}
+@media print{
+  body{overflow:visible;background:#fff;color:#000}
+  #screen{position:static;display:block;background:#fff}
+  #titlebar,#status,#fkeys,#menu,#crt,#boot,#dos,.dialog{display:none!important}
+  html.js .doc{display:block}
+  .doc,.doc b,.doc h2,.doc h3{color:#000}
+}
 </style>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23151615'/%3E%3Ccircle cx='32' cy='32' r='21' fill='%23dfff57'/%3E%3Cpath d='M17 22h7l8 12 8-12h7L35 42v7h-7v-7z' fill='%23151615'/%3E%3C/svg%3E" />
 </head>
 <body>
-<header class="top shell">
-  <a class="logo" href="index.html" aria-label="Yusong Wang 双场景总览"><span class="logo-mark">YW</span><span>YUSONG WANG<small>TWO INTERACTIVE WORLDS</small></span></a>
-  <nav class="top-links" aria-label="快捷链接"><a href="#version-grid">场景总览 / WORLDS</a><a class="cv" href="CV_Yusong_Wang.pdf">下载简历 ↗</a></nav>
-</header>
-<main class="shell">
-  <section class="hero" aria-labelledby="page-title">
-    <div><div class="eyebrow">One person · Two worlds · 2026</div><h1 id="page-title">两种宇宙，<br><span>同一个人。</span></h1></div>
-    <div class="hero-note"><b>选择一扇门，走进场景。</b>一张和式书案，一座 YW/OS 98 个人研究工作站。点击场景里的摆件与设备，阅读同一份真实的经历、研究与工作项目。<div class="count">02 <small>WORLDS / 场景</small></div></div>
-  </section>
-  <section id="version-grid" aria-label="两个互动主页">
-    <a class="card ukiyoe" href="ukiyoe.html" aria-label="进入浮世绘书斋互动场景">
-      <div class="card-head"><span class="version">01</span><span class="badge">INTERACTIVE 3D</span></div><span class="arrow" aria-hidden="true">↗</span>
-      <div class="card-body"><div><h2><small>Ukiyo-e Study</small>浮世绘书斋</h2><p>光影落在和式书案上。拿起地图、笔记与信件，阅读 HeritageExplorer、论文和作品。</p></div><div class="art" aria-hidden="true"><svg viewBox="0 0 220 200" fill="none"><path d="M23 157 106 110l91 43-91 43z" fill="#1d1a1f" opacity=".15"/><path d="m42 103 76-40 65 35-76 43z" fill="#f4e9d0" stroke="#1d1a1f" stroke-width="4"/><path d="m42 103 65 38v32l-65-37z" fill="#c8392b" stroke="#1d1a1f" stroke-width="4"/><path d="m107 141 76-43v32l-76 43z" fill="#1f3a63" stroke="#1d1a1f" stroke-width="4"/><path d="m86 91 35-18 29 15-35 20z" fill="#2f5f93" stroke="#1d1a1f" stroke-width="4"/><path d="M64 67V29m0 0c-25 3-26 28 0 30 25-3 25-27 0-30Z" fill="#f4e9d0" stroke="#1d1a1f" stroke-width="4"/><path d="M64 29V12" stroke="#1d1a1f" stroke-width="4"/></svg></div></div>
-      <div class="card-foot"><span>WebGL</span><span>昼夜光影</span><span>摆件交互</span></div>
-    </a>
-    <a class="card future" href="retro-future.html" aria-label="进入 YW/OS 98 个人研究工作站互动场景">
-      <div class="card-head"><span class="version">02</span><span class="badge new">VECTOR / CRT</span></div><span class="arrow" aria-hidden="true">↗</span>
-      <div class="card-body">
-        <div><h2><small>Personal Research Workstation</small>YW/OS 98<span class="workstation-name">个人研究工作站</span></h2><p>琥珀色 CRT 点亮矢量雷达与航空路径。点击终端、地图和通信设备，打开研究档案与作品窗口。</p></div>
-        <div class="art" aria-hidden="true">
-          <svg viewBox="0 0 240 240" fill="none">
-            <defs><pattern id="radar-grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" stroke="#ffc36b" stroke-opacity=".12" stroke-width=".7"/></pattern><clipPath id="radar-disc"><circle cx="120" cy="108" r="77"/></clipPath></defs>
-            <path d="M8 24V8h28M204 8h28v16M8 206v26h28m168 0h28v-26" stroke="#d29146"/>
-            <path d="M16 34h208v150H16z" fill="url(#radar-grid)"/>
-            <g stroke="#ffc36b" stroke-width=".7"><circle cx="120" cy="108" r="77"/><circle cx="120" cy="108" r="57" stroke-opacity=".6"/><circle cx="120" cy="108" r="37" stroke-opacity=".6"/><circle cx="120" cy="108" r="17" stroke-opacity=".6"/><path d="M120 23v170M35 108h170M60 48l120 120M60 168 180 48" stroke-opacity=".38"/><path d="M120 23v8m0 154v8M35 108h8m154 0h8M60 48l6 6m108 108 6 6M60 168l6-6M174 54l6-6"/></g>
-            <g clip-path="url(#radar-disc)"><g class="radar-sweep"><path d="M120 108 43 108a77 77 0 0 1 30-61Z" fill="#ffc36b" fill-opacity=".08"/><path d="M120 108 43 108" stroke="#ffc36b" stroke-opacity=".8"/></g></g>
-            <path d="m32 145 42-5 28-34 42-12 27-42 39 9M38 79l43 13 21 14 37 28 35 9 25 31" stroke="#ffc36b" stroke-width="1.3"/>
-            <path d="m74 140 11-42 59-4 30 49-35-9Z" stroke="#76d8ce" stroke-width=".8" stroke-dasharray="3 3"/>
-            <g stroke="#76d8ce" stroke-width="1.2" fill="#080c0d"><circle cx="74" cy="140" r="3"/><circle cx="102" cy="106" r="3"/><circle cx="144" cy="94" r="3"/><circle cx="171" cy="52" r="3"/><path d="m174 139 4 4-4 4-4-4Z"/></g>
-            <path d="M112 108h16m-8-8v16M20 197h200M20 222h200" stroke="#8d6339" stroke-width=".7"/>
-            <path d="m21 212 9-1 5 3 6-9 4 12 5-8 8 3h12l5-4 6 5 7-3 5 1h11l5-6 5 13 5-8 7 2h13l5-3 6 5 5-2h14l6-4 6 6 8-4 8 1h18" stroke="#76d8ce" stroke-width=".9"/>
-            <g font-family="monospace" font-size="5.5" letter-spacing=".45" fill="#e2b582"><text x="17" y="20">YW / VECTOR NAVIGATION</text><text x="191" y="20">CH. 02</text><text x="117" y="19">N</text><text x="20" y="107">W</text><text x="211" y="107">E</text><text x="117" y="193">S</text><text x="80" y="151">ARCHIVE</text><text x="148" y="88">RESEARCH</text><text x="174" y="47">WORK</text><text x="18" y="188">CRT / AMBER</text><text x="172" y="188">VECTOR 98</text><text x="18" y="231">PERSONAL RESEARCH / YW-98</text></g>
-          </svg>
-        </div>
+<script>
+/* 在首帧前决定语言、字号与是否播放开机画面，避免闪动 */
+(function(){
+  var d=document.documentElement;d.classList.add('js');
+  try{var l=localStorage.getItem('ysdos-lang');if(l==='en'||l==='zh')d.dataset.lang=l;if(localStorage.getItem('ysdos-flat')==='1')d.classList.add('flat');}catch(e){}
+  if(/[?&]lang=en\b/.test(location.search))d.dataset.lang='en';
+  function size(){
+    var dpr=window.devicePixelRatio||1,w=innerWidth,h=innerHeight;
+    var small=w<=760,target=small?Math.max(14,Math.min(w/21,18)):Math.max(16,Math.min(w/50,h/27,24)),cap=small?18:24;
+    var step=12/dpr,best=0;
+    /* 点阵字只有在“设备像素整数倍”时才锐利：在 12/dpr 的倍数里挑最接近目标的字号 */
+    for(var fs=step;fs<=cap+0.01;fs+=step){if(fs>=12-0.01&&(!best||Math.abs(fs-target)<Math.abs(best-target)))best=fs}
+    if(!best)best=Math.max(12,Math.round(target));
+    d.style.setProperty('--fs',best+'px');
+  }
+  size();addEventListener('resize',size);
+  window.__ysSize=size;
+})();
+</script>
+
+<div id="screen">
+  <header id="titlebar" class="bar">
+    <span class="grow"><span class="lang-zh">钰淞汉字系统 YSDOS 6.0 · 个人档案</span><span class="lang-en">YSDOS 6.0 · Personal Archive</span></span>
+    <span id="clock" class="wide" aria-hidden="true"></span>
+    <button id="btnLang" type="button" aria-label="切换语言 / Switch language"><span class="lang-zh">EN</span><span class="lang-en">中文</span></button>
+  </header>
+
+  <div id="desk">
+    <nav id="menu" class="win" aria-label="主菜单 / Main menu">
+      <div class="wt"><span><span class="lang-zh">主菜单</span><span class="lang-en">MENU</span></span></div>
+      <ol>
+        <li><button type="button" data-sec="about" data-key="1" aria-current="false"><kbd>1</kbd><span><span class="lang-zh">个人简介</span><span class="lang-en">About</span></span></button></li>
+        <li><button type="button" data-sec="heritage" data-key="2" aria-current="false"><kbd>2</kbd><span><span class="lang-zh">遗产图谱</span><span class="lang-en">Heritage</span></span></button></li>
+        <li><button type="button" data-sec="work" data-key="3" aria-current="false"><kbd>3</kbd><span><span class="lang-zh">论文与系统</span><span class="lang-en">Papers</span></span></button></li>
+        <li><button type="button" data-sec="portfolio" data-key="4" aria-current="false"><kbd>4</kbd><span><span class="lang-zh">实际作品</span><span class="lang-en">Real work</span></span></button></li>
+        <li><button type="button" data-sec="exp" data-key="5" aria-current="false"><kbd>5</kbd><span><span class="lang-zh">经历</span><span class="lang-en">Timeline</span></span></button></li>
+        <li><button type="button" data-sec="toolbox" data-key="6" aria-current="false"><kbd>6</kbd><span><span class="lang-zh">技能</span><span class="lang-en">Toolbox</span></span></button></li>
+        <li><button type="button" data-sec="contact" data-key="7" aria-current="false"><kbd>7</kbd><span><span class="lang-zh">联系</span><span class="lang-en">Contact</span></span></button></li>
+        <li><button type="button" data-sec="cv" data-key="8" aria-current="false"><kbd>8</kbd><span><span class="lang-zh">简历</span><span class="lang-en">CV</span></span></button></li>
+        <li class="sep" aria-hidden="true"></li>
+        <li><button type="button" data-sec="door" data-key="9" aria-current="false"><kbd>9</kbd><span><span class="lang-zh">其他版本</span><span class="lang-en">Other views</span></span></button></li>
+      </ol>
+      <div class="who" aria-hidden="true"><span class="lang-zh">基本内存 640K
+扩展内存 15360K
+档案 9 个</span><span class="lang-en">Base memory 640K
+Extended 15360K
+9 files</span>
+C:\YUSONG&gt;<span class="blink">_</span></div>
+    </nav>
+
+    <main id="pane" class="win" aria-live="polite">
+      <div class="wt"><span id="paneTitle">ABOUT.TXT</span></div>
+      <div id="doc" tabindex="0" aria-label="文档 / Document">
+<section class="doc" id="s-about" aria-labelledby="h-about">
+  <h2 id="h-about"><span class="lang-zh">个人简介</span><span class="lang-en">About</span> <small>ABOUT.TXT</small></h2>
+  <img class="portrait" src="assets/retro/portrait-vga.png" width="160" height="240" alt="Yusong Wang" />
+  <h3><span class="lang-zh">王钰淞 · Yusong Wang</span><span class="lang-en">About · Yusong Wang</span></h3>
+  <p><span class="lang-zh">香港科技大学（广州）计算媒体与艺术 MPhil，前中科院上海微系统所嵌入式工程师。关注 GIS 可视化、知识图谱、多模态检索与文化遗产计算；2026 年起以 Claude Code / Codex 多 Agent 协作，独立交付了 15 个企业业务系统和一套 LLM 网关。</span><span class="lang-en">MPhil student in Computational Media &amp; Arts at HKUST(GZ), formerly an embedded engineer at CAS SIMIT. I work across GIS visualization, knowledge graphs, multimodal retrieval, and computational heritage. Since 2026 I have used Claude Code / Codex multi-agent workflows to ship 15 business systems and an in-house LLM gateway on my own.</span></p>
+  <div class="tags"><span class="tag">HKUST(GZ) · MPhil</span><span class="tag">VINCI 2025 · 1st author</span><span class="tag">CHI 2025 · co-author</span><span class="tag">4 patents + 1 SW©</span><span class="tag">15 systems · AI-native</span></div>
+  <p class="dim"><span class="lang-zh">状态：寻找全职机会 · AI Agent 工程化落地 · 多模态 RAG · 全栈系统</span><span class="lang-en">Status: open to full-time roles · agentic engineering · multimodal RAG · full-stack systems</span></p>
+</section>
+<section class="doc" id="s-heritage" aria-labelledby="h-heritage">
+  <h2 id="h-heritage"><span class="lang-zh">遗产图谱</span><span class="lang-en">Heritage</span> <small>HERITAGE.GIS</small></h2>
+  <p><b><span class="lang-zh">广西历史建筑多模态 GIS 平台。</span><span class="lang-en">A multimodal GIS platform for Guangxi heritage.</span></b>
+    <span class="lang-zh">前端 Vue 3 + Mars2D，后端 FastAPI + Neo4j，一键 Docker Compose —— 可看、可搜、可对话。</span>
+    <span class="lang-en">Vue 3 + Mars2D front end, FastAPI + Neo4j back end, one Docker Compose — visible, searchable, conversational.</span></p>
+  <a class="vga" href="assets/gisauto_hero.webp" target="_blank" rel="noopener"><img src="assets/retro/gisauto_hero-vga.png" width="400" height="199" alt="HeritageExplorer interface" loading="lazy" /><span class="cap"><span>GISAUTOH.PCX</span><span><span class="lang-zh">原图 ↗</span><span class="lang-en">Full size ↗</span></span></span></a>
+  <div class="stats">
+    <div><b>2,036</b><span class="lang-zh">历史建筑</span><span class="lang-en">buildings</span></div>
+    <div><b>9,636</b><span class="lang-zh">建筑构件</span><span class="lang-en">components</span></div>
+    <div><b>1,294</b><span class="lang-zh">地图点</span><span class="lang-en">map points</span></div>
+    <div><b>4</b><span class="lang-zh">检索通路</span><span class="lang-en">retrieval lanes</span></div>
+  </div>
+  <div class="two">
+    <div class="card"><b><span class="lang-zh">地图入口 · 图谱大脑</span><span class="lang-en">Map entry · graph brain</span></b>
+      <p class="dim"><span class="lang-zh">Neo4j 存储建筑、构件、城市与年代关系。</span><span class="lang-en">Neo4j relations across buildings, components, cities, and eras.</span></p>
+      <div class="tags"><span class="tag">Vue 3</span><span class="tag">Mars2D</span><span class="tag">FastAPI</span><span class="tag">Neo4j</span><span class="tag">Docker</span></div></div>
+    <div class="card"><b><span class="lang-zh">4 通路 RAG · 可追溯回答</span><span class="lang-en">4-lane RAG · grounded replies</span></b>
+      <p class="dim"><span class="lang-zh">关键词、BGE 文本、CLIP 图像、CLIP 构件并行检索，DeepSeek-V3 融合答复。</span><span class="lang-en">Keyword, BGE text, CLIP image and CLIP component lanes fused by DeepSeek-V3.</span></p>
+      <div class="tags"><span class="tag">BGE</span><span class="tag">CLIP</span><span class="tag">Grounding DINO</span><span class="tag">DeepSeek-V3</span></div></div>
+  </div>
+</section>
+<section class="doc" id="s-work" aria-labelledby="h-work">
+  <h2 id="h-work"><span class="lang-zh">论文与系统</span><span class="lang-en">Papers</span> <small>PAPERS.DOC</small></h2>
+  <div class="two">
+    <div class="card hl"><b>HeritageExplorer</b> · First author · VINCI 2025
+      <p><span class="lang-zh">广州 831 处历史建筑的多模态交互式可视化与对话系统，并扩展至广西历史建筑数据与工程化部署。</span><span class="lang-en">Interactive visualization + dialogue for 831 Guangzhou heritage buildings, extended to Guangxi-scale data and production deployment.</span></p>
+      <p class="dim">DOI · <a href="https://doi.org/10.1145/3769534.3769571" target="_blank" rel="noopener">10.1145/3769534.3769571</a></p></div>
+    <div class="card"><b>GenColor</b> · Co-author · CHI 2025
+      <p><span class="lang-zh">基于文生图扩散模型的生成式框架，自动提取与语境相关的设计配色方案。</span><span class="lang-en">A text-to-image diffusion framework that extracts context-specific color palettes for visual design.</span></p>
+      <div class="tags"><span class="tag">Diffusion</span><span class="tag">Color Design</span><span class="tag">HCI</span></div></div>
+  </div>
+  <div class="stats" style="grid-template-columns:1fr 1fr">
+    <div><b>4</b><span class="lang-zh">发明专利</span><span class="lang-en">patents</span></div>
+    <div><b>1</b><span class="lang-zh">软件著作权</span><span class="lang-en">software copyright</span></div>
+  </div>
+  <h3><span class="lang-zh">企业系统 · AI 原生交付（2026）</span><span class="lang-en">Business systems · AI-native delivery (2026)</span></h3>
+  <p class="dim"><span class="lang-zh">以 Claude Code / Codex 为主力，独立承担调研、设计评审、实现、测试、部署与运维；协作规范按“宪法—路由—Skills—Hooks 门禁—评测”五层组织，每个里程碑都有真测证据和独立盲审。</span><span class="lang-en">Claude Code / Codex do most of the typing; I own research, design review, implementation, testing, deployment and operations. The workflow is layered as constitution → router → skills → hook gates → evals, with real-run evidence and a blind review at every milestone.</span></p>
+  <div class="stats">
+    <div><b>15</b><span class="lang-zh">在用系统</span><span class="lang-en">systems in use</span></div>
+    <div><b>16</b><span class="lang-zh">主力仓库</span><span class="lang-en">main repos</span></div>
+    <div><b>~2,800</b><span class="lang-zh">次提交</span><span class="lang-en">commits</span></div>
+    <div><b>347</b><span class="lang-zh">例 ERP 测试</span><span class="lang-en">ERP tests</span></div>
+  </div>
+  <a class="vga" href="assets/work/dipark.webp" target="_blank" rel="noopener"><img src="assets/retro/dipark-vga.png" width="400" height="221" alt="DIPARK 智慧云仓运营总览（演示数据）/ DIPARK operations overview (demo data)" loading="lazy" /><span class="cap"><span>DIPARK.PCX</span><span><span class="lang-zh">原图 ↗</span><span class="lang-en">Full size ↗</span></span></span></a>
+  <div class="row"><span class="k">2026.08</span><div><b><span class="lang-zh">AI 中台 · LLM 网关</span><span class="lang-en">AI hub · LLM gateway</span></b><small><span class="lang-zh">零依赖 Node 22，作为全部系统唯一的大模型出口：18 个系统独立 Key、模型别名路由、9 类引擎巡检、逐笔计费与钱包续航告警。</span><span class="lang-en">Zero-dependency Node 22 service and the only LLM exit for every system: per-system keys for 18 apps, model alias routing, health probes for 9 engines, per-call cost ledger and budget alerts.</span></small></div></div>
+  <div class="row"><span class="k">2026.07</span><div><b><span class="lang-zh">智慧云仓 DIPARK</span><span class="lang-en">DIPARK smart park</span></b><small><span class="lang-zh">Spring Boot 3 + Vue 3 园区运营系统：招商—合同—账单—收款闭环，收款幂等与领域事件，3D 楼宇运营总览（上图为演示数据）。</span><span class="lang-en">Spring Boot 3 + Vue 3 park operations: leasing → contract → billing → payment, idempotent receipts and domain events, a 3D building overview (demo data above).</span></small></div></div>
+  <div class="row"><span class="k">2026.08</span><div><b><span class="lang-zh">售卖机 ERP · 租赁业务</span><span class="lang-en">Vending ERP · Leasing</span></b><small><span class="lang-zh">业财一体进销存：40 张表、22 个模块、347 例自动化测试，(R,S) 补货引擎，历史流水导入分毫不差；租赁板块含 IRR 报价与租金计划勾稽。</span><span class="lang-en">Inventory + finance in one: 40 tables, 22 modules, 347 automated tests, an (R,S) replenishment engine and exact legacy import; the leasing module adds IRR quotes and reconciled rent schedules.</span></small></div></div>
+  <div class="row"><span class="k">2026.08</span><div><b><span class="lang-zh">知人 · AI 人资中枢</span><span class="lang-en">Zhiren · AI HR hub</span></b><small><span class="lang-zh">合并人事、培训、招聘三套系统并与钉钉同步；AI 写操作必须落成待人确认的流程，LLM 只经中台调用。</span><span class="lang-en">Merges HR, training and recruiting into one system synced with DingTalk; every AI write becomes a step a person confirms, and LLM calls go only through the hub.</span></small></div></div>
+  <div class="row"><span class="k">2026.08</span><div><b><span class="lang-zh">门户 SSO · Ops Monitor</span><span class="lang-en">Portal SSO · Ops Monitor</span></b><small><span class="lang-zh">24 个系统统一入口、按人授权免二次登录；运维总览监控 27 个服务入口、23 个 n8n 定时任务与三条备份链路。</span><span class="lang-en">One door for 24 systems with per-person access and no second login; the ops board watches 27 endpoints, 23 n8n jobs and three backup chains.</span></small></div></div>
+  <div class="row"><span class="k">2026.05</span><div><b><span class="lang-zh">更多独立项目</span><span class="lang-en">More</span></b><small><span class="lang-zh">财务中心工具箱、AI 用量中台、资产罗盘（家庭数字家办 PWA）、洪源润收藏管家（Expo + Supabase）、火星账局（一句话记账 PWA）。</span><span class="lang-en">Finance toolbox, AI usage center, Asset Compass (family-office PWA), a collectibles vault (Expo + Supabase) and a one-sentence ledger PWA.</span></small></div></div>
+  <h3><span class="lang-zh">工程项目</span><span class="lang-en">Projects</span></h3>
+  <div class="row"><span class="k">2020–22</span><div><b><span class="lang-zh">危化品云数据联动装置</span><span class="lang-en">Hazardous-chemical cloud sensor</span></b><small><span class="lang-zh">上海市科委 19511102801。CH4/CO2/温湿度 + 摄像头多传感器融合。</span><span class="lang-en">STCSM #19511102801. CH4/CO2/T&amp;H sensors fused with camera imagery.</span></small></div></div>
+  <div class="row"><span class="k">2020–22</span><div><b><span class="lang-zh">消防管理智能感知设备</span><span class="lang-en">Smart fire-safety sensor</span></b><small><span class="lang-zh">上海市科委 19DZ12020027。场景自适应配置，CSMA/CA 载波侦听。</span><span class="lang-en">STCSM #19DZ12020027. Scene-adaptive configuration, CSMA/CA sensing.</span></small></div></div>
+  <div class="row"><span class="k">2021–22</span><div><b><span class="lang-zh">振弦式钢筋计无线测力</span><span class="lang-en">Wireless force sensor</span></b><small><span class="lang-zh">基于 LoRa 的深基坑混凝土支撑轴力无线监测。</span><span class="lang-en">LoRa axial-force monitoring for deep-pit struts.</span></small></div></div>
+  <div class="row"><span class="k">2020–21</span><div><b><span class="lang-zh">虹桥站客流检测</span><span class="lang-en">Hongqiao passenger flow</span></b><small><span class="lang-zh">基于蓝牙的实时热力图，用于高峰预警与规划。</span><span class="lang-en">Bluetooth heatmaps for peak-hour alerts and planning.</span></small></div></div>
+  <div class="row"><span class="k">2019</span><div><b><span class="lang-zh">光伏运维平台</span><span class="lang-en">PV O&amp;M platform</span></b><small><span class="lang-zh">第五届“互联网+”大赛，光伏故障监测与修复。</span><span class="lang-en">5th Internet+ contest, IoT PV fault detection.</span></small></div></div>
+  <div class="row"><span class="k">2017</span><div><b><span class="lang-zh">智慧农业</span><span class="lang-en">Smart agriculture</span></b><small><span class="lang-zh">第三届“互联网+”大赛，果园病虫害检测与反馈平台。</span><span class="lang-en">3rd Internet+ contest, orchard pest feedback platform.</span></small></div></div>
+</section>
+<section class="doc" id="s-portfolio" aria-labelledby="h-portfolio">
+  <h2 id="h-portfolio"><span class="lang-zh">实际作品</span><span class="lang-en">Real work</span> <small>WORKS.IMG</small></h2>
+  <p><span class="lang-zh">我的工作：从园区运营、AI 接入到数据可视化与运维工具。以下为实际工作界面，图片按原始比例完整展示，点击在新标签页查看大图。</span><span class="lang-en">Selected work across park operations, AI integration, data visualization and operational tools. These are actual project screenshots, shown uncropped. Select an image to open it full size in a new tab.</span></p>
+  <div class="pf">
+    <figure data-project="dipark"><a class="vga" href="assets/work/dipark.webp" target="_blank" rel="noopener"><img src="assets/retro/dipark-vga.png" width="400" height="221" alt="DIPARK 三维园区与运营总览，演示数据 / DIPARK 3D park operations overview with demo data" loading="lazy" /></a><figcaption><b><span class="lang-zh">DIPARK · 智慧云仓</span><span class="lang-en">DIPARK · Smart park</span></b><span class="lang-zh">以三维楼宇总览连接空间出租、租金收缴、物业工单与能源信息。截图中的运营指标为演示数据。</span><span class="lang-en">A 3D building overview brings together occupancy, rent collection, property work orders and energy information. Operational metrics shown here are demo data.</span></figcaption></figure>
+    <figure data-project="ai-gateway"><a class="vga" href="assets/work/ai-gateway.webp" target="_blank" rel="noopener"><img src="assets/retro/ai-gateway-vga.png" width="400" height="224" alt="AI 中台总控室的用量、调用监控与费用流向界面 / AI gateway console showing usage, call monitoring and cost flows" loading="lazy" /></a><figcaption><b><span class="lang-zh">AI 中台 · LLM 网关</span><span class="lang-en">AI hub · LLM gateway</span></b><span class="lang-zh">统一管理模型接入与调用，集中呈现调用日志、引擎巡检、费用流向和钱包续航。</span><span class="lang-en">A shared console for model access and calls, with call logs, engine probes, cost flows and wallet budget estimates.</span></figcaption></figure>
+    <figure data-project="tunan-data-lab"><a class="vga" href="assets/work/tunan-data-lab.webp" target="_blank" rel="noopener"><img src="assets/retro/tunan-data-lab-vga.png" width="400" height="223" alt="图南 Data Lab 数据源关系图、供应商探针与分析维度界面 / Tunan Data Lab with data-source relationships, provider probes and analysis dimensions" loading="lazy" /></a><figcaption><b><span class="lang-zh">图南 · Data Lab</span><span class="lang-en">Tunan · Data Lab</span></b><span class="lang-zh">以径向关系图组织数据源与分析维度，结合供应商探针、财报接口和抓取流水视图。截图中的流水、股价与持仓因子为 DEMO 模拟。</span><span class="lang-en">A radial view connects data sources with analysis dimensions, alongside provider probes, financial-data APIs and a fetch feed. The feed, prices and portfolio factors shown are DEMO simulations.</span></figcaption></figure>
+    <figure data-project="ops-monitor"><a class="vga" href="assets/work/ops-monitor.webp" target="_blank" rel="noopener"><img src="assets/retro/ops-monitor-vga.png" width="400" height="245" alt="Ops Monitor 服务拓扑、任务、备份与待处理事项界面 / Ops Monitor service topology, jobs, backups and attention queue" loading="lazy" /></a><figcaption><b><span class="lang-zh">运维总控 · Ops Monitor</span><span class="lang-en">Operations console · Ops Monitor</span></b><span class="lang-zh">将服务入口、自动化任务、备份与通知链路放到同一张拓扑视图，配合待处理事项和延迟趋势定位问题。</span><span class="lang-en">Service endpoints, scheduled jobs, backups and notification paths share a topology view, supported by an attention queue and latency trends.</span></figcaption></figure>
+    <figure data-project="enterprise-portal"><a class="vga" href="assets/work/enterprise-portal.webp" target="_blank" rel="noopener"><img src="assets/retro/enterprise-portal-vga.png" width="400" height="183" alt="企业应用门户按类别组织业务系统、运维与文档入口 / Enterprise portal organizing business applications, operations and documentation" loading="lazy" /></a><figcaption><b><span class="lang-zh">企业应用门户</span><span class="lang-en">Enterprise application portal</span></b><span class="lang-zh">按企业管理、园区运营与技术服务组织应用，并提供运维中心、文档、产品资料与代码仓库入口。</span><span class="lang-en">Applications grouped by enterprise management, park operations and technical services, with links to operations, documentation, product materials and repositories.</span></figcaption></figure>
+  </div>
+</section>
+<section class="doc" id="s-exp" aria-labelledby="h-exp">
+  <h2 id="h-exp"><span class="lang-zh">经历</span><span class="lang-en">Timeline</span> <small>HISTORY.TXT</small></h2>
+  <div class="row"><span class="k">2016<br/>—2020</span><div><b><span class="lang-zh">广西大学 · 电气工程本科</span><span class="lang-en">Guangxi University · B.Eng</span></b><small><span class="lang-zh">电气工程及其自动化。参与两届互联网+大赛（智慧农业、光伏运维）。</span><span class="lang-en">Electrical Engineering &amp; Automation. Competed twice in Internet+ (smart agriculture, PV O&amp;M).</span></small></div></div>
+  <div class="row"><span class="k">2020<br/>—2022</span><div><b><span class="lang-zh">中科院上海微系统所 · 嵌入式工程师</span><span class="lang-en">CAS SIMIT · Embedded engineer</span></b><small><span class="lang-zh">无线水压表 / LoRa 测力 / 消防感知。原理图、MCU 固件、现场部署全流程，参与标准起草。</span><span class="lang-en">Wireless meters / LoRa sensors / fire-safety, schematic to field deployment; co-authored industry standards.</span></small></div></div>
+  <div class="row"><span class="k">2024<br/>—2025</span><div><b><span class="lang-zh">HKUST(GZ) · 计算媒体与艺术 MPhil</span><span class="lang-en">HKUST(GZ) · CMA MPhil</span></b><small><span class="lang-zh">HeritageExplorer 投稿 VINCI 2025；合作 GenColor（CHI 2025）；HeritageExplorer 从 0 到 1 搭建。</span><span class="lang-en">HeritageExplorer at VINCI 2025; co-authored GenColor (CHI 2025); built HeritageExplorer from zero.</span></small></div></div>
+  <div class="row"><span class="k">2026<br/>—</span><div><b><span class="lang-zh">企业 AI 原生系统矩阵 · 独立负责</span><span class="lang-en">AI-native business systems · solo owner</span></b><small><span class="lang-zh">以 Coding Agent 为主力，从调研、设计评审到部署运维，交付园区、ERP、财务、人资、运维与 LLM 网关等 15 个系统。</span><span class="lang-en">With coding agents doing most of the typing, took 15 systems from research and design review to deployment and operations — park ops, ERP, finance, HR, monitoring and an LLM gateway.</span></small></div></div>
+  <div class="row"><span class="k"><span class="lang-zh">下一站</span><span class="lang-en">Next</span></span><div><b><span class="lang-zh">想做的事</span><span class="lang-en">What’s next</span></b><small><span class="lang-zh">AI Agent 工程化 · 多模态 RAG · 遗产叙事。寻找全职机会。</span><span class="lang-en">Agentic engineering · multimodal RAG · heritage storytelling. Open to full-time roles.</span></small></div></div>
+</section>
+<section class="doc" id="s-toolbox" aria-labelledby="h-toolbox">
+  <h2 id="h-toolbox"><span class="lang-zh">技能</span><span class="lang-en">Toolbox</span> <small>SKILLS.TXT</small></h2>
+  <h3><span class="lang-zh">Agent 工程</span><span class="lang-en">Agentic engineering</span></h3>
+  <div class="tags"><span class="tag">Claude Code</span><span class="tag">Codex</span><span class="tag">Subagents · worktree</span><span class="tag">Skills / Hooks / MCP</span><span class="tag">CodeGraph</span><span class="tag"><span class="lang-zh">ADR · 设计评审</span><span class="lang-en">ADR · design review</span></span><span class="tag"><span class="lang-zh">独立盲审</span><span class="lang-en">Blind code review</span></span><span class="tag"><span class="lang-zh">LLM 网关</span><span class="lang-en">LLM gateway</span></span></div>
+  <h3><span class="lang-zh">后端 &amp; 数据</span><span class="lang-en">Back end &amp; data</span></h3>
+  <div class="tags"><span class="tag">Java 17 · Spring Boot</span><span class="tag">MyBatis-Plus</span><span class="tag">Node 22 · tRPC</span><span class="tag">Drizzle</span><span class="tag">MySQL 8</span><span class="tag">PostgreSQL · pgvector</span><span class="tag">SQLite</span><span class="tag">Supabase</span><span class="tag">Flyway</span><span class="tag">Redis</span></div>
+  <h3><span class="lang-zh">多模态 AI &amp; 大模型</span><span class="lang-en">Multimodal AI &amp; LLMs</span></h3>
+  <div class="tags"><span class="tag">Chinese-CLIP</span><span class="tag">BGE</span><span class="tag">Grounding DINO</span><span class="tag">Qwen-VL</span><span class="tag">DeepSeek-V3</span><span class="tag">GPT</span><span class="tag">Claude API</span><span class="tag">Prompt Eng.</span><span class="tag">Agent Workflow</span></div>
+  <h3><span class="lang-zh">GIS &amp; 可视化</span><span class="lang-en">GIS &amp; Visualization</span></h3>
+  <div class="tags"><span class="tag">Mars2D</span><span class="tag">Cesium</span><span class="tag">Leaflet</span><span class="tag"><span class="lang-zh">高德 API</span><span class="lang-en">Amap API</span></span><span class="tag">ECharts</span><span class="tag">vis-network</span><span class="tag">Cytoscape</span></div>
+  <h3><span class="lang-zh">图谱 &amp; 检索</span><span class="lang-en">Graph &amp; Retrieval</span></h3>
+  <div class="tags"><span class="tag">Neo4j · Cypher</span><span class="tag"><span class="lang-zh">向量索引</span><span class="lang-en">Vector Index</span></span><span class="tag">RAG</span><span class="tag"><span class="lang-zh">多通道融合</span><span class="lang-en">Multi-lane Fusion</span></span></div>
+  <h3><span class="lang-zh">Web &amp; 部署</span><span class="lang-en">Web &amp; Deployment</span></h3>
+  <div class="tags"><span class="tag">Vue 3 + Vite</span><span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">FastAPI</span><span class="tag">Docker Compose</span><span class="tag">Nginx</span><span class="tag">Cloudflare Tunnel</span><span class="tag">Tailscale</span><span class="tag">n8n</span><span class="tag">Uptime Kuma</span></div>
+  <h3><span class="lang-zh">编程 &amp; 嵌入式</span><span class="lang-en">Programming &amp; Embedded</span></h3>
+  <div class="tags"><span class="tag">Python</span><span class="tag">C / C++</span><span class="tag">TypeScript</span><span class="tag">HTML</span><span class="tag"><span class="lang-zh">汇编</span><span class="lang-en">Assembly</span></span><span class="tag">IAR Workbench</span></div>
+  <h3><span class="lang-zh">设计 &amp; 建模</span><span class="lang-en">Design &amp; Modeling</span></h3>
+  <div class="tags"><span class="tag">Altium Designer</span><span class="tag">SolidWorks</span><span class="tag">Photoshop</span><span class="tag">TouchDesigner</span><span class="tag">Blender</span></div>
+  <p class="dim"><span class="lang-zh">语言：中文母语 · 英语 CET-6 / IELTS 6.5</span><span class="lang-en">Languages: Chinese (native) · English (CET-6, IELTS 6.5)</span></p>
+</section>
+<section class="doc" id="s-contact" aria-labelledby="h-contact">
+  <h2 id="h-contact"><span class="lang-zh">联系</span><span class="lang-en">Contact</span> <small>CONTACT.TXT</small></h2>
+  <p><b><span class="lang-zh">一起把历史装进下一个模型。</span><span class="lang-en">Let’s put history into the next model.</span></b></p>
+  <div class="row"><span class="k">Email</span><a href="mailto:ywang677@connect.hkust-gz.edu.cn">ywang677@connect.hkust-gz.edu.cn</a></div>
+  <div class="row"><span class="k"><span class="lang-zh">电话</span><span class="lang-en">Phone</span></span><a href="tel:+8618877145317">(+86) 188 7714 5317</a></div>
+  <div class="row"><span class="k"><span class="lang-zh">所在地</span><span class="lang-en">Based</span></span><span><span class="lang-zh">广西南宁 / 广州</span><span class="lang-en">Nanning · Guangzhou</span></span></div>
+  <p style="margin-top:.8rem"><a class="pxbtn red" href="mailto:ywang677@connect.hkust-gz.edu.cn"><span class="lang-zh">发邮件 →</span><span class="lang-en">Email me →</span></a>
+  <a class="pxbtn" href="CV_Yusong_Wang.pdf"><span class="lang-zh">下载简历 (PDF)</span><span class="lang-en">Download CV (PDF)</span></a></p>
+</section>
+<section class="doc" id="s-cv" aria-labelledby="h-cv">
+  <h2 id="h-cv"><span class="lang-zh">简历</span><span class="lang-en">CV</span> <small>RESUME.PDF</small></h2>
+  <p><span class="lang-zh">履歴書 · 简历（2026 年 10 月版）</span><span class="lang-en">履歴書 · CV (October 2026)</span></p>
+  <p><a class="pxbtn red" href="CV_Yusong_Wang.pdf"><span class="lang-zh">下载 PDF</span><span class="lang-en">Download PDF</span></a>
+  <a class="pxbtn" href="CV_Yusong_Wang.docx"><span class="lang-zh">Word 版</span><span class="lang-en">Word version</span></a></p>
+</section>
+<section class="doc" id="s-door" aria-labelledby="h-door">
+  <h2 id="h-door"><span class="lang-zh">其他版本</span><span class="lang-en">Other views</span> <small>VIEWS.LNK</small></h2>
+  <p><span class="lang-zh">同一份经历，这台机器之外还有三种看法：</span><span class="lang-en">The same story, three other ways to look at it:</span></p>
+  <ul class="dir">
+    <li><a href="worlds.html">WORLDS.HTM</a><span><span class="lang-zh">两个互动世界的总览入口</span><span class="lang-en">Overview of the two interactive worlds</span></span></li>
+    <li><a href="ukiyoe.html">UKIYOE.HTM</a><span><span class="lang-zh">浮世绘书斋 · WebGL 和式书案，拿起摆件阅读</span><span class="lang-en">Ukiyo-e study · a WebGL desk you can pick things up from</span></span></li>
+    <li><a href="retro-future.html">YWOS98.HTM</a><span><span class="lang-zh">YW/OS 98 个人研究工作站 · 琥珀色矢量 CRT</span><span class="lang-en">YW/OS 98 research workstation · amber vector CRT</span></span></li>
+    <li><a href="https://github.com/xjxl0104/xjxl0104.github.io" target="_blank" rel="noopener">SOURCE.GIT</a><span><span class="lang-zh">本站源代码</span><span class="lang-en">Source code of this site</span></span></li>
+  </ul>
+  <p class="dim"><span class="lang-zh">提示：按 F10 进入命令行，输入 HELP 看看能做什么。</span><span class="lang-en">Tip: press F10 for the command line and type HELP.</span></p>
+</section>
       </div>
-      <div class="card-foot"><span>WebGL</span><span>矢量雷达</span><span>9 个内容入口</span></div>
-    </a>
-  </section>
-</main>
-<footer class="footer shell"><span>© 2026 Yusong Wang · Two scenes, one real story.</span><a href="https://github.com/xjxl0104/xjxl0104.github.io" target="_blank" rel="noopener">SOURCE / GITHUB ↗</a></footer>
+    </main>
+  </div>
+
+  <div id="status" class="bar" aria-hidden="true">
+    <span class="grow" id="path">C:\YUSONG\ABOUT.TXT</span>
+    <span id="pos">100%</span>
+  </div>
+  <nav id="fkeys" aria-label="功能键 / Function keys">
+    <button type="button" data-fn="help"><kbd>F1</kbd><span><span class="lang-zh">帮助</span><span class="lang-en">Help</span></span></button>
+    <button type="button" data-fn="cv"><kbd>F2</kbd><span><span class="lang-zh">简历</span><span class="lang-en">CV</span></span></button>
+    <button type="button" data-fn="portfolio"><kbd>F3</kbd><span><span class="lang-zh">作品</span><span class="lang-en">Work</span></span></button>
+    <button type="button" data-fn="work"><kbd>F4</kbd><span><span class="lang-zh">论文</span><span class="lang-en">Papers</span></span></button>
+    <button type="button" data-fn="contact"><kbd>F6</kbd><span><span class="lang-zh">联系</span><span class="lang-en">Mail</span></span></button>
+    <button type="button" data-fn="door"><kbd>F7</kbd><span><span class="lang-zh">版本</span><span class="lang-en">Views</span></span></button>
+    <button type="button" data-fn="crt" id="btnMode"><kbd>F8</kbd><span><span class="lang-zh">显示</span><span class="lang-en">CRT</span></span></button>
+    <button type="button" data-fn="lang"><kbd>F9</kbd><span><span class="lang-zh">英文</span><span class="lang-en">中文</span></span></button>
+    <button type="button" data-fn="dos"><kbd>F10</kbd><span><span class="lang-zh">命令</span><span class="lang-en">DOS</span></span></button>
+  </nav>
+</div>
+
+<div id="crt" aria-hidden="true"></div>
+
+<div id="help" class="dialog" role="dialog" aria-modal="true" aria-labelledby="helpTitle" hidden>
+  <div class="win">
+    <div class="wt"><span id="helpTitle"><span class="lang-zh">帮 助</span><span class="lang-en">HELP</span></span></div>
+    <dl>
+      <dt>1 – 9</dt><dd><span class="lang-zh">打开对应菜单项</span><span class="lang-en">Open a menu item</span></dd>
+      <dt>← →</dt><dd><span class="lang-zh">上一篇 / 下一篇</span><span class="lang-en">Previous / next file</span></dd>
+      <dt>↑ ↓ PgUp PgDn</dt><dd><span class="lang-zh">滚动文档</span><span class="lang-en">Scroll the document</span></dd>
+      <dt>F1 F2 F3 F4</dt><dd><span class="lang-zh">帮助 · 简历 · 作品 · 论文</span><span class="lang-en">Help · CV · Work · Papers</span></dd>
+      <dt>F6 F7</dt><dd><span class="lang-zh">联系 · 其他版本</span><span class="lang-en">Contact · Other views</span></dd>
+      <dt>F8 F9 F10</dt><dd><span class="lang-zh">扫描线开关 · 中/英 · 命令行</span><span class="lang-en">Scanlines · Language · Command line</span></dd>
+      <dt>Esc</dt><dd><span class="lang-zh">关闭窗口 / 返回菜单</span><span class="lang-en">Close / back to menu</span></dd>
+    </dl>
+    <button type="button" class="ok" data-close><span class="lang-zh">确 定</span><span class="lang-en">OK</span></button>
+  </div>
+</div>
+
+<div id="boot" hidden aria-hidden="true">
+  <pre id="post"></pre>
+  <div id="splash"><div class="frame">
+    <div class="big">王钰淞</div>
+    <div><span class="lang-zh">个人档案系统</span><span class="lang-en">Personal Archive</span>　YSDOS 6.0</div>
+    <div style="color:var(--lcyan)">GIS × Multimodal AI × Systems</div>
+    <div class="blink" style="margin-top:calc(var(--lh) * .5)"><span class="lang-zh">按任意键继续……</span><span class="lang-en">Press any key…</span></div>
+  </div></div>
+  <span class="skip"><span class="lang-zh">按任意键跳过</span><span class="lang-en">Any key to skip</span></span>
+</div>
+
+<div id="dos" hidden role="dialog" aria-modal="true" aria-label="命令行 / Command line">
+  <pre id="dosOut"></pre>
+  <form id="dosForm" autocomplete="off"><label for="dosIn">C:\YUSONG&gt;</label><input id="dosIn" spellcheck="false" autocapitalize="off" enterkeyhint="go" /></form>
+</div>
+
+<noscript><p style="position:fixed;left:0;right:0;bottom:0;margin:0;padding:.5em 1em;background:#aaa;color:#000;z-index:60">这个页面在没有 JavaScript 时会把全部档案依次列出，可以直接滚动阅读。/ Without JavaScript every file is listed in order — just scroll.</p><style>body{overflow:auto}#screen{position:static}#desk{display:block}#menu,#status,#fkeys{display:none}#doc{overflow:visible}</style></noscript>
+
+<script>
+(function(){
+'use strict';
+var d=document.documentElement,$=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var ORDER=["about", "heritage", "work", "portfolio", "exp", "toolbox", "contact", "cv", "door"];
+var FILES={"about": "ABOUT.TXT", "heritage": "HERITAGE.GIS", "work": "PAPERS.DOC", "portfolio": "WORKS.IMG", "exp": "HISTORY.TXT", "toolbox": "SKILLS.TXT", "contact": "CONTACT.TXT", "cv": "RESUME.PDF", "door": "VIEWS.LNK"};
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var docEl=$('#doc'),cur=null;
+function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+
+/* ---------- 打开文档 ---------- */
+function open(id,opts){
+  opts=opts||{};
+  if(ORDER.indexOf(id)<0)id=ORDER[0];
+  $$('.doc').forEach(function(s){s.classList.toggle('on',s.id==='s-'+id)});
+  $$('#menu button[data-sec]').forEach(function(b){b.setAttribute('aria-current',b.dataset.sec===id?'true':'false')});
+  cur=id;docEl.scrollTop=0;
+  var f=FILES[id];$('#paneTitle').textContent=f;$('#path').textContent='C:\\YUSONG\\'+f;
+  if(!opts.noHash&&location.hash!=='#'+id)history.replaceState(null,'','#'+id);
+  pos();
+  if(opts.focus)docEl.focus({preventScroll:true});
+}
+function step(n){var i=ORDER.indexOf(cur);open(ORDER[(i+n+ORDER.length)%ORDER.length],{focus:true})}
+function pos(){var m=docEl.scrollHeight-docEl.clientHeight;$('#pos').textContent=(m<=0?100:Math.round(docEl.scrollTop/m*100))+'%'}
+docEl.addEventListener('scroll',pos,{passive:true});
+$$('#menu button[data-sec]').forEach(function(b){b.addEventListener('click',function(){open(b.dataset.sec,{focus:true})})});
+addEventListener('hashchange',function(){var h=location.hash.slice(1);if(h&&h!==cur)open(h,{noHash:true})});
+
+/* ---------- 时钟与语言 ---------- */
+var WK={zh:'日一二三四五六',en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat']};
+function tick(){var t=new Date(),p=function(n){return (n<10?'0':'')+n};
+  var w=d.dataset.lang==='en'?WK.en[t.getDay()]:'星期'+WK.zh[t.getDay()];
+  $('#clock').textContent=t.getFullYear()+'-'+p(t.getMonth()+1)+'-'+p(t.getDate())+' '+w+' '+p(t.getHours())+':'+p(t.getMinutes())+':'+p(t.getSeconds())}
+tick();setInterval(tick,1000);
+function setLang(l){d.dataset.lang=l;store('ysdos-lang',l);tick()}
+function toggleLang(){setLang(d.dataset.lang==='en'?'zh':'en')}
+$('#btnLang').addEventListener('click',toggleLang);
+function toggleCrt(){d.classList.toggle('flat');store('ysdos-flat',d.classList.contains('flat')?'1':'0')}
+
+/* ---------- 帮助框 ---------- */
+var help=$('#help'),lastFocus=null;
+function showHelp(){lastFocus=document.activeElement;help.hidden=false;$('[data-close]',help).focus()}
+function closeHelp(){help.hidden=true;if(lastFocus)lastFocus.focus()}
+$('[data-close]',help).addEventListener('click',closeHelp);
+help.addEventListener('click',function(e){if(e.target===help)closeHelp()});
+
+/* ---------- 功能键 ---------- */
+function fn(name){
+  if(name==='help')showHelp();
+  else if(name==='crt')toggleCrt();
+  else if(name==='lang')toggleLang();
+  else if(name==='dos')dos(true);
+  else open(name,{focus:true});
+}
+$$('#fkeys button').forEach(function(b){b.addEventListener('click',function(){fn(b.dataset.fn)})});
+var FK={F1:'help',F2:'cv',F3:'portfolio',F4:'work',F6:'contact',F7:'door',F8:'crt',F9:'lang',F10:'dos'};
+
+addEventListener('keydown',function(e){
+  if(!boot.hidden){endBoot();e.preventDefault();return}
+  if(!dosEl.hidden){if(e.key==='Escape'){dos(false);e.preventDefault()}return}
+  if(!help.hidden){if(e.key==='Escape'||e.key==='Enter'){closeHelp();e.preventDefault()}return}
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  var t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'))return;
+  if(FK[e.key]){fn(FK[e.key]);e.preventDefault();return}
+  if(/^[1-9]$/.test(e.key)){var b=$('#menu button[data-key="'+e.key+'"]');if(b){open(b.dataset.sec,{focus:true});e.preventDefault()}return}
+  if(e.key==='ArrowRight'){step(1);e.preventDefault()}
+  else if(e.key==='ArrowLeft'){step(-1);e.preventDefault()}
+  else if(e.key==='Escape'){var m=$('#menu button[aria-current="true"]');if(m)m.focus()}
+  else if((e.key==='ArrowDown'||e.key==='ArrowUp'||e.key==='PageDown'||e.key==='PageUp'||e.key===' ')&&!docEl.contains(t)&&!(t&&t.closest&&t.closest('#menu'))){
+    var lh=parseFloat(getComputedStyle(docEl).lineHeight)||32,dy={ArrowDown:lh*2,ArrowUp:-lh*2,PageDown:docEl.clientHeight*.9,PageUp:-docEl.clientHeight*.9,' ':docEl.clientHeight*.9}[e.key];
+    docEl.scrollBy({top:dy});e.preventDefault()}
+});
+/* 菜单里用上下键移动 */
+$('#menu').addEventListener('keydown',function(e){
+  if(e.key!=='ArrowDown'&&e.key!=='ArrowUp')return;
+  var bs=$$('#menu button[data-sec]'),i=bs.indexOf(document.activeElement);if(i<0)return;
+  bs[(i+(e.key==='ArrowDown'?1:-1)+bs.length)%bs.length].focus();e.preventDefault();e.stopPropagation();
+});
+
+/* ---------- 开机自检 ---------- */
+var boot=$('#boot'),post=$('#post'),bootTimers=[];
+function endBoot(){if(boot.hidden)return;bootTimers.forEach(clearTimeout);boot.hidden=true;try{sessionStorage.setItem('ysdos-booted','1')}catch(e){}}
+function runBoot(){
+  var seen=false;try{seen=sessionStorage.getItem('ysdos-booted')==='1'}catch(e){}
+  if(seen||reduce||/[?&]noboot\b/.test(location.search))return;
+  boot.hidden=false;
+  var en=d.dataset.lang==='en';
+  var L=[
+    ['<span class="hi">YSBIOS (C) 1995 Yusong Wang Lab · Version 6.0</span>',0],
+    ['CPU : i486DX2-66   Cache 256K',260],
+    [en?'Memory Test : ':'内存检测 : ','mem',320],
+    [(en?'Detecting IDE drive C: ':'检测到 IDE 硬盘 C: ')+'420MB    '+(en?'Floppy A: ':'软驱 A: ')+'1.44M',1150],
+    ['',1250],
+    ['C:\\&gt; YSDOS',1400],
+    [en?'Loading YSDOS 6.0 Chinese system …':'正在装入 钰淞汉字系统 YSDOS 6.0 ……',1600],
+    [(en?'  16×16 dot-matrix font HZK16  ':'  装入 16×16 点阵字库 HZK16  ')+'<span class="y" id="bar"></span>','bar',1800],
+    [(en?'  Pinyin / Wubi input methods ':'  装入 拼音 / 五笔 输入法 ')+'……… <span class="ok">OK</span>',2500],
+    [(en?'  Archive index: 9 files ':'  建立档案索引：9 个文件 ')+'……… <span class="ok">OK</span>',2700]
+  ];
+  L.forEach(function(row){
+    var at=row[row.length-1];
+    bootTimers.push(setTimeout(function(){
+      if(row[1]==='mem'){post.insertAdjacentHTML('beforeend',row[0]+'<span id="mem">0K</span>\n');var k=0,el=$('#mem');var iv=setInterval(function(){k+=640;if(k>=16384){k=16384;clearInterval(iv);el.insertAdjacentHTML('afterend',' <span class="ok">OK</span>')}el.textContent=k+'K'},40);bootTimers.push(iv)}
+      else if(row[1]==='bar'){post.insertAdjacentHTML('beforeend',row[0]+'\n');var n=0,bar=$('#bar');var iv2=setInterval(function(){n++;bar.textContent='█'.repeat(n)+'░'.repeat(10-n)+' '+n*10+'%';if(n>=10)clearInterval(iv2)},55);bootTimers.push(iv2)}
+      else post.insertAdjacentHTML('beforeend',row[0]+'\n');
+    },at));
+  });
+  bootTimers.push(setTimeout(function(){boot.classList.add('splash')},3100));
+  bootTimers.push(setTimeout(endBoot,4600));
+  boot.addEventListener('pointerdown',endBoot);
+}
+
+/* ---------- 命令行 ---------- */
+var dosEl=$('#dos'),out=$('#dosOut'),inp=$('#dosIn');
+function say(s){out.textContent+=s+'\n';dosEl.scrollTop=dosEl.scrollHeight}
+function dos(on){
+  dosEl.hidden=!on;
+  if(on){if(!out.textContent){say('YSDOS 6.0  (C) 1995 Yusong Wang Lab');say(d.dataset.lang==='en'?'Type HELP for commands, EXIT to return.':'输入 HELP 查看命令，EXIT 返回菜单。');say('')}inp.focus()}
+  else{var m=$('#menu button[aria-current="true"]');if(m)m.focus()}
+}
+var CMDS={
+  HELP:function(){say(d.dataset.lang==='en'
+    ?'DIR          list files\nTYPE <file>  open a file, e.g. TYPE ABOUT\nCV           download the CV (PDF)\nMAIL         write an email\nWORLDS       other versions of this site\nLANG         switch Chinese / English\nVER  DATE  CLS  EXIT'
+    :'DIR          列出档案\nTYPE 文件名  打开档案，例如 TYPE ABOUT\nCV           下载简历（PDF）\nMAIL         写邮件\nWORLDS       本站的其他版本\nLANG         切换中文 / 英文\nVER  DATE  CLS  EXIT')},
+  DIR:function(){say(' C:\\YUSONG 的目录\n');ORDER.forEach(function(id,i){var f=FILES[id].split('.');say(' '+(f[0]+'        ').slice(0,9)+(f[1]||'')+'      '+(i+1))});say('\n       '+ORDER.length+' 个文件')},
+  TYPE:function(a){var n=(a||'').toUpperCase().replace(/\..*$/,''),hit=null;ORDER.forEach(function(id){if(FILES[id].split('.')[0]===n||id.toUpperCase()===n)hit=id});
+    if(hit){dos(false);open(hit,{focus:true})}else say(d.dataset.lang==='en'?'File not found':'找不到文件')},
+  CV:function(){say('CV_Yusong_Wang.pdf ……');location.href='CV_Yusong_Wang.pdf'},
+  MAIL:function(){location.href='mailto:ywang677@connect.hkust-gz.edu.cn'},
+  WORLDS:function(){location.href='worlds.html'},
+  LANG:function(){toggleLang();say(d.dataset.lang==='en'?'Language: English':'语言：中文')},
+  VER:function(){say('YSDOS Version 6.0 · '+document.lastModified)},
+  DATE:function(){say(new Date().toString())},
+  CLS:function(){out.textContent=''},
+  EXIT:function(){dos(false)}
+};
+CMDS.LS=CMDS.DIR;CMDS.CAT=CMDS.TYPE;CMDS.OPEN=CMDS.TYPE;CMDS.MENU=CMDS.EXIT;CMDS.WIN=CMDS.EXIT;CMDS['?']=CMDS.HELP;
+$('#dosForm').addEventListener('submit',function(e){
+  e.preventDefault();var v=inp.value.trim();inp.value='';say('C:\\YUSONG>'+v);if(!v)return;
+  var parts=v.split(/\s+/),c=parts[0].toUpperCase();
+  if(CMDS[c])CMDS[c](parts.slice(1).join(' '));
+  else{var n=c.replace(/\..*$/,''),hit=null;ORDER.forEach(function(id){if(FILES[id].split('.')[0]===n)hit=id});
+    if(hit){dos(false);open(hit,{focus:true})}else say((d.dataset.lang==='en'?'Bad command or file name':'命令或文件名错误')+'：'+parts[0])}
+});
+dosEl.addEventListener('click',function(e){if(e.target===dosEl||e.target===out)inp.focus()});
+
+/* ---------- 启动 ---------- */
+open(location.hash.slice(1)||ORDER[0],{noHash:true,quiet:true});
+runBoot();
+})();
+</script>
 </body>
 </html>
