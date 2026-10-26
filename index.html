@@ -20,7 +20,8 @@ html[data-lang="zh"] .lang-en,html[data-lang="en"] .lang-zh{display:none}
 #css iframe{border:0;background:#000;pointer-events:none!important}
 html.at-screen #css iframe{pointer-events:auto!important}
 #gl{z-index:1;pointer-events:none;display:block}
-#grain{position:fixed;inset:-50%;z-index:2;pointer-events:none;opacity:.07;mix-blend-mode:multiply;animation:grain .5s steps(4) infinite}
+#grain{position:fixed;inset:-50%;z-index:2;pointer-events:none;opacity:.17;mix-blend-mode:multiply;animation:grain .5s steps(4) infinite;transition:opacity .6s}
+html.at-screen #grain{opacity:.06}
 @keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-1%)}}
 #vignette{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,.18) 100%)}
 
@@ -455,6 +456,13 @@ ld.loaded('deskPropsModels');
   rbox(0.46, 0.07, 0.44, 0.03, leather, 0, 0.47, 0, ch);
   const backrest = rbox(0.42, 0.3, 0.06, 0.03, leather, 0, 0.8, 0.24, ch); backrest.rotation.x = -0.12;
   box(0.05, 0.3, 0.03, darkMetal, 0, 0.6, 0.25, ch).rotation.x = -0.25;
+  // 扶手：座板下的横撑 + 立柱 + 扶手垫
+  for (const sx of [-1, 1]) {
+    box(0.09, 0.02, 0.04, darkMetal, sx * 0.2, 0.425, 0.02, ch);
+    box(0.03, 0.22, 0.04, darkMetal, sx * 0.25, 0.53, 0.02, ch);
+    box(0.03, 0.03, 0.14, darkMetal, sx * 0.25, 0.635, 0.0, ch);
+    rbox(0.065, 0.032, 0.25, 0.012, black, sx * 0.25, 0.665, -0.01, ch);
+  }
   mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.28, 16), darkMetal, 0, 0.3, 0, ch);
   for (let i = 0; i < 5; i++) {
     const a = (i / 5) * Math.PI * 2, arm = new THREE.Group(); arm.rotation.y = a; ch.add(arm);
@@ -464,25 +472,34 @@ ld.loaded('deskPropsModels');
 }
 
 ld.loaded('officeChairModel');
-/* ================= 盆栽 ================= */
+/* ================= 盆栽松树 ================= */
 {
   const pl = new THREE.Group(); pl.position.set(1.08, 0, -0.18); scene.add(pl);
   const pot = [[0, 0], [0.13, 0], [0.155, 0.3], [0.165, 0.32], [0.15, 0.32], [0.14, 0.04], [0, 0.04]].map(([x, y]) => new THREE.Vector2(x, y));
   mesh(new THREE.LatheGeometry(pot, 32), M(0xf0efec, { roughness: 0.4 }), 0, 0, 0, pl);
   mesh(new THREE.CircleGeometry(0.145, 24), M(0x3a2a1e, { roughness: 1 }), 0, 0.3, 0, pl).rotation.x = -Math.PI / 2;
-  const leafShape = new THREE.Shape(); leafShape.moveTo(0, 0); leafShape.bezierCurveTo(0.09, 0.08, 0.08, 0.28, 0, 0.36); leafShape.bezierCurveTo(-0.08, 0.28, -0.09, 0.08, 0, 0);
-  const leafGeo = new THREE.ShapeGeometry(leafShape, 10);
-  { const p = leafGeo.attributes.position; for (let i = 0; i < p.count; i++) { const y = p.getY(i), x = p.getX(i); p.setZ(i, -y * y * 0.9 + Math.abs(x) * 0.35); } leafGeo.computeVertexNormals(); }
-  const leafMat = M(0x4f9a58, { roughness: 0.5, side: THREE.DoubleSide });
-  const stemMat = M(0x3f7d45, { roughness: 0.6 });
-  for (let i = 0; i < 13; i++) {
-    const a = i * 2.4, h = 0.42 + (i % 5) * 0.1, tilt = 0.25 + (i % 4) * 0.16;
-    const st = new THREE.Group(); st.position.set(0, 0.3, 0); st.rotation.set(tilt * Math.cos(a), a, tilt * Math.sin(a)); pl.add(st);
-    mesh(new THREE.CylinderGeometry(0.005, 0.007, h, 6), stemMat, 0, h / 2, 0, st);
-    const lf = mesh(leafGeo, leafMat, 0, h - 0.02, 0, st); lf.rotation.set(-0.9, 0, 0); lf.scale.setScalar(0.55 + (i % 3) * 0.08);
+  // 固定种子的随机数，让每次打开都是同一棵树
+  let seed = 7; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const bark = M(0x5a3a26, { roughness: 0.9 });
+  mesh(new THREE.CylinderGeometry(0.018, 0.034, 1.0, 10), bark, 0, 0.8, 0, pl);
+  // 针叶层：一层层低多边形的锥，顶点随机错开，看起来不那么规整
+  const greens = [0x2c5a37, 0x356a40, 0x2f6139];
+  const tiers = 10;
+  for (let i = 0; i < tiers; i++) {
+    const k = i / (tiers - 1), r = 0.34 - k * 0.27, h = 0.3 - k * 0.12, y = 0.42 + k * 0.86; // 层距小于层高，层层重叠
+    const g = new THREE.ConeGeometry(r, h, 12, 2, true);
+    const pos = g.attributes.position;
+    for (let v = 0; v < pos.count; v++) {
+      if (pos.getY(v) > h / 2 - 1e-4) continue; // 锥尖不动
+      const j = 1 + (rnd() - 0.5) * 0.16, droop = pos.getY(v) < -h / 2 + 1e-4 ? -0.025 * rnd() : 0;
+      pos.setXYZ(v, pos.getX(v) * j, pos.getY(v) + droop, pos.getZ(v) * j);
+    }
+    g.computeVertexNormals();
+    const tier = mesh(g, M(greens[i % 3], { roughness: 0.75, flatShading: true, side: THREE.DoubleSide }), (rnd() - 0.5) * 0.02, 0.3 + y, (rnd() - 0.5) * 0.02, pl);
+    tier.rotation.y = rnd() * Math.PI;
   }
 }
-ld.loaded('plantModel');
+ld.loaded('pineTreeModel');
 
 /* ================= 屏幕网页（CSS3D） ================= */
 const SCREEN_PX = { w: 1024, h: 768 };
