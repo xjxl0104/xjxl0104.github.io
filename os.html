@@ -61,7 +61,7 @@ img{-webkit-user-drag:none}
   background:linear-gradient(135deg,transparent 0 45%,var(--shadow) 45% 52%,var(--hi) 52% 58%,transparent 58% 66%,var(--shadow) 66% 73%,var(--hi) 73% 79%,transparent 79%)}
 .win.max .grip{display:none}
 
-.pane{position:absolute;inset:0;overflow:auto;background:#fff;box-shadow:var(--field);padding:2px;user-select:text;-webkit-user-select:text}
+.pane{position:absolute;inset:0;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#fff;box-shadow:var(--field);padding:2px;user-select:text;-webkit-user-select:text}
 .pane::-webkit-scrollbar{width:16px;height:16px;background:repeating-conic-gradient(var(--face) 0 25%,#fff 0 50%) 0 0/2px 2px}
 .pane::-webkit-scrollbar-thumb{background:var(--face);box-shadow:var(--out)}
 .pane::-webkit-scrollbar-button:single-button{background:var(--face);box-shadow:var(--out);height:16px;width:16px;display:block}
@@ -130,6 +130,7 @@ img{-webkit-user-drag:none}
 .page .stats span{font-size:13px}
 .page .when{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .page .when span{font-weight:700;white-space:nowrap}
+.page .when span:not(:last-child){white-space:normal}
 .page .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
 .page .grid figure{margin:0}
 .page .tags{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
@@ -166,6 +167,7 @@ html.embed body{cursor:default}
   .page aside{position:static}
   .page aside .yr{margin-bottom:12px}
   .page aside nav{flex-direction:row;flex-wrap:wrap;gap:8px 16px}
+  .page article{min-width:0;overflow-wrap:anywhere}
   .page h2{font-size:34px}
   .page .stats{grid-template-columns:repeat(2,1fr)}
   .home h1{font-size:46px}
@@ -205,7 +207,7 @@ html.embed body{cursor:default}
 <div id="desktop" aria-label="YW/OS 98 桌面 / desktop">
   <div id="icons" role="list">
     <button class="icon" data-open="cv" role="listitem"><svg><use href="#i-pdf"/></svg><span><span class="lang-zh">简历.pdf</span><span class="lang-en">Resume.pdf</span></span></button>
-    <button class="icon" data-open="projects" role="listitem"><svg><use href="#i-folder"/></svg><span><span class="lang-zh">项目</span><span class="lang-en">Projects</span></span></button>
+    <button class="icon" data-open="about" role="listitem"><svg><use href="#i-show"/></svg><span><span class="lang-zh">关于我</span><span class="lang-en">About Me</span></span></button>
     <button class="icon" data-open="mail" role="listitem"><svg><use href="#i-mail"/></svg><span><span class="lang-zh">写信给我</span><span class="lang-en">Mail Me</span></span></button>
     <button class="icon" data-open="credits" role="listitem"><svg><use href="#i-note"/></svg><span><span class="lang-zh">关于本站.txt</span><span class="lang-en">Credits.txt</span></span></button>
   </div>
@@ -224,7 +226,7 @@ html.embed body{cursor:default}
 <div id="startmenu" role="menu" hidden>
   <div class="band"><b>YW</b>/OS 98</div>
   <ul>
-    <li><button role="menuitem" data-open="show"><svg><use href="#i-show"/></svg><span><span class="lang-zh">我的作品集</span><span class="lang-en">My Showcase</span></span></button></li>
+    <li><button role="menuitem" data-open="about"><svg><use href="#i-show"/></svg><span><span class="lang-zh">关于我</span><span class="lang-en">About Me</span></span></button></li>
     <li><button role="menuitem" data-open="cv"><svg><use href="#i-pdf"/></svg><span><span class="lang-zh">简历</span><span class="lang-en">Resume</span></span></button></li>
     <li><button role="menuitem" data-open="projects"><svg><use href="#i-folder"/></svg><span><span class="lang-zh">项目</span><span class="lang-en">Projects</span></span></button></li>
     <li><button role="menuitem" data-open="credits"><svg><use href="#i-note"/></svg><span><span class="lang-zh">关于本站</span><span class="lang-en">Credits</span></span></button></li>
@@ -475,6 +477,8 @@ function siteNode(){
     .replace('{{ART}}',ART.map(function(a){return '<figure><img src="'+('assets/ai_portfolio/'+a[0]+'.jpg')+'" width="'+a[3]+'" height="'+a[4]+'" alt="'+a[1]+' / '+a[2]+'" loading="lazy" data-view /><figcaption>'+L(a[1],a[2])+'</figcaption></figure>'}).join(''));
   var t=document.createElement('template');t.innerHTML=html;return t.content.firstElementChild;
 }
+var PAGES={home:['主页','Home'],about:['关于我','About Me'],experience:['经历','Experience'],projects:['项目','Projects'],contact:['联系','Contact']};
+function winTitle(hash){var p=PAGES[(hash||'#home').slice(1).split('/')[0]]||PAGES.home;return L('王钰淞 - '+p[0],'Yusong Wang - '+p[1])}
 function route(pane,hash){
   var h=(hash||'#home').slice(1).split('/'),page=h[0]||'home',sub=h[1];
   var site=$('.site',pane);if(!$('[data-page="'+page+'"]',site))page='home';
@@ -482,7 +486,8 @@ function route(pane,hash){
   $$('aside nav a',site).forEach(function(a){a.classList.toggle('cur',a.getAttribute('href')==='#'+page)});
   if(page==='projects'){sub=sub||'heritage';$$('[data-sub]',site).forEach(function(s){s.hidden=s.dataset.sub!==sub});$$('.subnav a',site).forEach(function(a){a.classList.toggle('cur',a.getAttribute('href')==='#projects/'+sub)})}
   pane.scrollTop=0;
-  var w=wins.show;if(w)$('.sb span',w.el).textContent='http://yusong.wang/'+(page==='home'?'':page+(sub&&page==='projects'?'/'+sub:''));
+  var w=wins.show;if(w){$('.tt',w.el).innerHTML=$('span',w.task).innerHTML=winTitle('#'+page)}
+  if(w)$('.sb span',w.el).textContent='http://yusong.wang/'+(page==='home'?'':page+(sub&&page==='projects'?'/'+sub:''));
 }
 function openShow(hash){
   if(wins.show){wins.show.el.hidden=false;focusWin(wins.show);if(hash)route($('.pane',wins.show.el),hash);return}
@@ -495,7 +500,7 @@ function openShow(hash){
   f.addEventListener('submit',function(e){e.preventDefault();var n=$('#mf-name',f).value.trim(),m=$('#mf-msg',f).value.trim();
     location.href='mailto:ywang677@connect.hkust-gz.edu.cn?subject='+encodeURIComponent((d.dataset.lang==='en'?'Hello from ':'来自作品集的问候 · ')+(n||'a visitor'))+'&body='+encodeURIComponent(m)});
   var b=bounds();
-  makeWin('show',{icon:'i-show',title:L('王钰淞 - 作品集 2026','Yusong Wang - Showcase 2026'),content:pane,status:'© 2026 Yusong Wang',w:Math.min(b.width-90,900),h:b.height-40,x:Math.max(84,(b.width-Math.min(b.width-90,900))/2+30),y:12});
+  makeWin('show',{icon:'i-show',title:winTitle(hash||'#home'),content:pane,status:'© 2026 Yusong Wang',w:Math.min(b.width-90,900),h:b.height-40,x:Math.max(84,(b.width-Math.min(b.width-90,900))/2+30),y:12});
   route(pane,hash||'#home');
 }
 
@@ -514,6 +519,7 @@ function openDialog(id,icon,title,html,buttons){
 function openNote(id,title,text){var p=div('pane note');p.textContent=text;makeWin(id,{icon:'i-note',title:title,content:p,menu:'<span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>S</u>earch</span><span><u>H</u>elp</span>',w:520,h:360})}
 var OPEN={
   show:function(){openShow()},
+  about:function(){openShow('#about')},
   projects:function(){openShow('#projects')},
   cv:function(){openDialog('cv','i-pdf',L('简历.pdf','Resume.pdf'),L('<b>CV_Yusong_Wang.pdf</b><br />王钰淞 · 2026 年 10 月版简历，1 页。','<b>CV_Yusong_Wang.pdf</b><br />Yusong Wang · October 2026 resume, one page.'),
     '<a href="CV_Yusong_Wang.pdf" target="_blank" rel="noopener">'+L('打开','Open')+'</a><a href="CV_Yusong_Wang.pdf" download>'+L('下载','Download')+'</a><button type="button" data-close>'+L('取消','Cancel')+'</button>')},

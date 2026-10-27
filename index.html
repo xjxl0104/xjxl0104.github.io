@@ -12,7 +12,7 @@
 :root{--mono:"YS Pixel","SFMono-Regular",Menlo,Consolas,monospace}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html,body{margin:0;height:100%;overflow:hidden}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none}
 body{background:radial-gradient(ellipse 85% 75% at 50% 46%,#f1f1f3 0%,#d9d9dd 52%,#a9a9b0 100%);font:16px/1.4 var(--mono);color:#000;-webkit-font-smoothing:none}
 html[data-lang="zh"] .lang-en,html[data-lang="en"] .lang-zh{display:none}
 #css,#gl{position:fixed;inset:0;width:100%;height:100%}
@@ -222,6 +222,9 @@ const d = document.documentElement;
 const $ = (s) => document.querySelector(s);
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small = () => innerWidth < 700;
+// 触屏设备（含平板、横屏手机）不进三维屏幕：屏幕里的 iframe 在触屏上滚不动，直接打开平面版
+const touchOnly = matchMedia('(pointer: coarse)').matches && !matchMedia('(any-pointer: fine)').matches;
+const flat = () => small() || touchOnly;
 const L = (zh, en) => (d.dataset.lang === 'en' ? en : zh);
 const ld = window.ywLoad;
 const store = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
@@ -634,7 +637,8 @@ function go(next) {
   state = next;
   d.classList.toggle('at-screen', next === 'screen');
   d.classList.toggle('at-desk', next === 'desk');
-  $('#hint').classList.toggle('on', next === 'overview');
+  if (flat() && next !== 'screen') $('#hintText').textContent = next === 'desk' ? L('点屏幕或上滑，打开电脑', 'Tap the screen or swipe up') : L('点一下或上滑开始', 'Tap or swipe up to begin');
+  $('#hint').classList.toggle('on', next === 'overview' || (next === 'desk' && flat()));
   if (next === 'screen') setTimeout(() => { try { frame.focus(); } catch (e) {} }, 400);
   if (next !== 'screen' && document.activeElement === frame) frame.blur();
 }
@@ -675,7 +679,8 @@ addEventListener('click', (e) => {
   sfx.click();
   if (state === 'overview') go('desk');
   else if (state === 'desk') {
-    if (hit(e, [screenMesh])) { if (small()) { location.href = 'os.html'; } else go('screen'); }
+    if (flat() && hit(e, monitorParts)) location.href = 'os.html';
+    else if (hit(e, [screenMesh])) go('screen');
     else if (!hit(e, monitorParts)) go('overview');
   } else if (state === 'screen') go('desk');
 });
@@ -683,6 +688,19 @@ addEventListener('keydown', (e) => {
   if (state === 'loading') return;
   if (e.key === 'Escape') go(state === 'screen' ? 'desk' : 'overview');
   else if (e.key === 'Enter' && document.activeElement === document.body) go(state === 'overview' ? 'desk' : 'screen');
+});
+/* 触屏：上滑往前走（远景 → 书桌 → 打开电脑），下滑退回远景 */
+let sw = null;
+addEventListener('touchstart', (e) => {
+  sw = state !== 'loading' && state !== 'screen' && e.touches.length === 1 && !e.target.closest('#hud,#loader,a,button') ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
+}, { passive: true });
+addEventListener('touchend', (e) => {
+  if (!sw || tween) return;
+  const t = e.changedTouches[0], dx = t.clientX - sw.x, dy = t.clientY - sw.y; sw = null;
+  if (Math.abs(dy) < 50 || Math.abs(dy) < Math.abs(dx) * 1.5) return;
+  e.preventDefault(); // 这一下是滑动，不再当成点击
+  if (dy < 0) { if (state === 'overview') go('desk'); else if (state === 'desk') location.href = 'os.html'; }
+  else if (state === 'desk') go('overview');
 });
 $('#btnView').addEventListener('click', (e) => { e.stopPropagation(); go(state === 'overview' ? 'desk' : 'overview'); });
 $('#back').addEventListener('click', (e) => { e.stopPropagation(); go(state === 'screen' ? 'desk' : 'overview'); });
@@ -696,7 +714,7 @@ function typeInto(el, text, delay = 0) {
 function typeHud(instant) {
   const n = L('王钰淞 · Yusong Wang', 'Yusong Wang · 王钰淞'), r = L('GIS × 多模态 AI × 全栈系统', 'GIS × Multimodal AI × Systems');
   if (instant) { $('#hudName').textContent = n; $('#hudRole').textContent = r; } else { typeInto($('#hudName'), n); typeInto($('#hudRole'), r, 600); }
-  $('#hintText').textContent = small() ? L('点一下开始', 'Tap to begin') : L('点击任意位置开始', 'Click anywhere to begin');
+  $('#hintText').textContent = flat() ? L('点一下或上滑开始', 'Tap or swipe up to begin') : L('点击任意位置开始', 'Click anywhere to begin');
   frame.title = L('王钰淞的作品集电脑', "Yusong Wang's portfolio computer");
 }
 function tick() { const t = new Date(), p = (n) => String(n).padStart(2, '0'); $('#hudClock').textContent = `${p(t.getHours())}:${p(t.getMinutes())}:${p(t.getSeconds())}`; }

@@ -61,8 +61,9 @@ test('portfolio navigation exposes only the current desk', async () => {
   const os = await html('os.html');
   assert.doesNotMatch(os, /data-open=["']views["']|views:function/, 'the other-versions launcher must be removed, including the start menu');
   const icons = os.match(/<div id="icons"[\s\S]*?<\/div>/)[0];
-  for (const gone of ['show', 'works', 'heritage', 'dos']) assert.doesNotMatch(icons, new RegExp(`data-open="${gone}"`), `desktop still shows the ${gone} icon`);
-  assert.match(icons, /data-open="projects"/, 'desktop needs one projects entry');
+  for (const gone of ['show', 'works', 'heritage', 'dos', 'projects']) assert.doesNotMatch(icons, new RegExp(`data-open="${gone}"`), `desktop still shows the ${gone} icon`);
+  assert.match(icons, /data-open="about"/, 'desktop needs an About Me entry');
+  assert.doesNotMatch(os, /作品集 2026|Showcase 2026/, 'window title follows the open page');
 });
 
 test('all local HTML and asset references resolve', async () => {
