@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const pages = ['index.html', 'os.html', 'dos.html'];
+const pages = ['index.html', 'os.html'];
 
 async function html(file) {
   return readFile(path.join(root, file), 'utf8');
@@ -34,52 +34,35 @@ test('home is the 3D desk whose monitor runs the YW/OS portfolio', async () => {
 test('YW/OS portfolio has every page and real content, without borrowed branding', async () => {
   const source = await html('os.html');
   for (const page of ['home', 'about', 'experience', 'projects', 'contact']) assert.match(source, new RegExp(`data-page="${page}"`), `missing page ${page}`);
-  for (const sub of ['heritage', 'systems', 'papers', 'art', 'early']) assert.match(source, new RegExp(`data-sub="${sub}"`), `missing project ${sub}`);
-  for (const text of ['HeritageExplorer', 'VINCI 2025', 'CHI 2025', 'DIPARK', 'ywang677@connect.hkust-gz.edu.cn', 'CV_Yusong_Wang.pdf', 'dos.html']) {
+  for (const sub of ['heritage', 'systems', 'art', 'early']) assert.match(source, new RegExp(`data-sub="${sub}"`), `missing project ${sub}`);
+  for (const text of ['HeritageExplorer', 'VINCI 2025', 'CHI 2025', 'DIPARK', 'ywang677@connect.hkust-gz.edu.cn', 'CV_Yusong_Wang.pdf']) {
     assert.ok(source.includes(text), `missing real content: ${text}`);
   }
   assert.match(source, /Henry Heffernan/, 'credits must acknowledge the inspiration');
+  assert.match(source, /url\(["']?assets\/retro\/fusion-pixel-12-subset\.woff2/, 'pixel font must be self-hosted');
+  await assert.doesNotReject(readFile(path.join(root, 'assets/retro/OFL-fusion-pixel.txt')), 'font licence must ship with the font');
   assert.doesNotMatch(source, /\bWindows\b|Microsoft(?! YaHei)/, 'no third-party OS branding (a YaHei font fallback is fine)');
 });
 
-test('YSDOS archive keeps all nine files', async () => {
-  const source = await html('dos.html');
-  assert.ok(source.includes('YSDOS'), 'dos.html must be the retro archive');
-  const sections = ['about', 'heritage', 'work', 'portfolio', 'exp', 'toolbox', 'contact', 'cv', 'door'];
-  for (const id of sections) {
-    assert.equal(source.match(new RegExp(`<section class="doc" id="s-${id}"`, 'g'))?.length, 1, `missing file ${id}`);
-    assert.match(source, new RegExp(`data-sec="${id}"`), `menu misses ${id}`);
-  }
-  for (const target of ['index.html', 'os.html', 'CV_Yusong_Wang.pdf']) {
-    assert.match(source, new RegExp(`href=["']${target.replace('.', '\\.')}["']`), `archive must link to ${target}`);
-  }
-  for (const text of ['HeritageExplorer', 'VINCI 2025', 'CHI 2025', 'DIPARK', 'ywang677@connect.hkust-gz.edu.cn']) {
-    assert.ok(source.includes(text), `missing real content: ${text}`);
-  }
-  assert.match(source, /url\(["']assets\/retro\/fusion-pixel-12-subset\.woff2["']\)/, 'pixel font must be self-hosted');
-  await assert.doesNotReject(readFile(path.join(root, 'assets/retro/OFL-fusion-pixel.txt')), 'font licence must ship with the font');
-  assert.match(source, /id=["']btnLang["']/);
-  assert.match(source, /prefers-reduced-motion/);
-  assert.match(source, /<noscript>/);
-  assert.match(source, /@media\s*\(max-width:/);
-});
-
 test('retired standalone versions are absent from the published tree', async () => {
-  for (const file of ['classic.html', 'pixel-room.html', 'worlds.html', 'ukiyoe.html', 'retro-future.html']) {
+  for (const file of ['classic.html', 'pixel-room.html', 'worlds.html', 'ukiyoe.html', 'retro-future.html', 'dos.html']) {
     await assert.rejects(readFile(path.join(root, file)), { code: 'ENOENT' }, `${file} must stay off the live site`);
   }
 });
 
-test('portfolio and DOS navigation expose only the current desk', async () => {
+test('portfolio navigation exposes only the current desk', async () => {
   for (const page of pages) {
     const source = await html(page);
     for (const target of localLinks(source).filter((link) => link.endsWith('.html'))) {
       assert.ok(pages.includes(target), `${page} exposes a retired route: ${target}`);
     }
-    assert.doesNotMatch(source, /(?:worlds|ukiyoe|retro-future|classic|pixel-room)\.html/, `${page} still contains an alternate navigation handler`);
+    assert.doesNotMatch(source, /(?:worlds|ukiyoe|retro-future|classic|pixel-room|dos)\.html/, `${page} still contains an alternate navigation handler`);
   }
   const os = await html('os.html');
   assert.doesNotMatch(os, /data-open=["']views["']|views:function/, 'the other-versions launcher must be removed, including the start menu');
+  const icons = os.match(/<div id="icons"[\s\S]*?<\/div>/)[0];
+  for (const gone of ['show', 'works', 'heritage', 'dos']) assert.doesNotMatch(icons, new RegExp(`data-open="${gone}"`), `desktop still shows the ${gone} icon`);
+  assert.match(icons, /data-open="projects"/, 'desktop needs one projects entry');
 });
 
 test('all local HTML and asset references resolve', async () => {

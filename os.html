@@ -144,12 +144,8 @@ img{-webkit-user-drag:none}
 .page .subnav a.cur::before{content:"○ "}
 .foot{position:sticky;bottom:0}
 
-/* 记事本 / 资源管理器 / 看图 */
+/* 记事本 / 看图 */
 .note{font:12px/18px var(--ui);padding:6px 8px;white-space:pre-wrap;user-select:text;-webkit-user-select:text}
-.explorer{display:flex;flex-wrap:wrap;align-content:flex-start;gap:12px;padding:10px}
-.explorer .icon{color:#000;width:92px}
-.explorer .icon img{width:72px;height:54px;object-fit:cover;border:1px solid #000;image-rendering:auto}
-.explorer .icon.sel span{color:#fff}
 .viewer{display:grid;place-items:center;background:#808080}
 .viewer img{max-width:100%;max-height:100%;object-fit:contain;display:block}
 .dlg{display:flex;gap:14px;padding:16px 14px 8px;align-items:flex-start}
@@ -157,7 +153,6 @@ img{-webkit-user-drag:none}
 .dlgbtns{display:flex;justify-content:center;gap:8px;padding:10px}
 .dlgbtns a,.dlgbtns button{min-width:80px;padding:4px 12px;border:0;background:var(--face);box-shadow:var(--out);color:#000;text-decoration:none;text-align:center}
 .dlgbtns a:active,.dlgbtns button:active{box-shadow:var(--in)}
-.frame{position:absolute;inset:0;width:100%;height:100%;border:0;box-shadow:var(--field);background:#000}
 
 /* CRT：只在嵌进三维显示器时叠加扫描线和暗角 */
 #crt{position:fixed;inset:0;pointer-events:none;z-index:200;display:none;
@@ -191,9 +186,7 @@ html.embed body{cursor:default}
   <defs>
     <symbol id="i-show" viewBox="0 0 32 32"><rect x="3" y="4" width="26" height="20" fill="#fff"/><rect x="3" y="4" width="26" height="4" fill="#000080"/><rect x="5" y="11" width="10" height="9" fill="#2e7d7a"/><rect x="17" y="11" width="10" height="2" fill="#000"/><rect x="17" y="15" width="8" height="2" fill="#808080"/><rect x="17" y="19" width="9" height="2" fill="#808080"/><rect x="2" y="3" width="28" height="1" fill="#000"/><rect x="2" y="24" width="28" height="1" fill="#000"/><rect x="2" y="3" width="1" height="22" fill="#000"/><rect x="29" y="3" width="1" height="22" fill="#000"/><rect x="11" y="25" width="10" height="3" fill="#808080"/><rect x="8" y="28" width="16" height="2" fill="#000"/></symbol>
     <symbol id="i-pdf" viewBox="0 0 32 32"><path d="M7 2h13l6 6v22H7z" fill="#fff"/><path d="M20 2v6h6" fill="#c0c0c0"/><path d="M6 1h15l7 7v23H6zM8 3v26h18V9h-6V3z" fill="#000"/><rect x="10" y="12" width="12" height="2" fill="#808080"/><rect x="10" y="16" width="10" height="2" fill="#808080"/><rect x="4" y="20" width="20" height="8" fill="#c00"/><path d="M6 22h3v1H7v1h2v1H7v1H6zM10 22h3v4h-3zM11 23v2h1v-2zM14 22h3v1h-2v1h2v1h-2v1h-1z" fill="#fff"/></symbol>
-    <symbol id="i-globe" viewBox="0 0 32 32"><circle cx="16" cy="15" r="12" fill="#1f5fbf"/><path d="M9 7h6v3h4v4h-3v4h-4v-3H8v-4h1zM19 17h5v5h-3v3h-3v-5h1z" fill="#3fa34d"/><circle cx="16" cy="15" r="12" fill="none" stroke="#000" stroke-width="2"/><rect x="8" y="27" width="16" height="2" fill="#000"/><rect x="14" y="27" width="4" height="3" fill="#808080"/><path d="M21 4l6 0 0 6" stroke="#c00" stroke-width="2" fill="none"/></symbol>
     <symbol id="i-folder" viewBox="0 0 32 32"><path d="M2 8h10l2 3h16v17H2z" fill="#f2d24c"/><path d="M2 13h28v15H2z" fill="#ffe680"/><path d="M1 7h12l2 3h16v19H1zM3 9v18h26V12H14l-2-3z" fill="#000"/><rect x="3" y="12" width="26" height="1" fill="#c9a426"/></symbol>
-    <symbol id="i-dos" viewBox="0 0 32 32"><rect x="2" y="4" width="28" height="22" fill="#c0c0c0"/><rect x="5" y="7" width="22" height="16" fill="#0000aa"/><rect x="7" y="9" width="6" height="2" fill="#ffff55"/><rect x="7" y="13" width="12" height="2" fill="#fff"/><rect x="7" y="17" width="8" height="2" fill="#aaa"/><rect x="16" y="17" width="2" height="2" fill="#fff"/><rect x="1" y="3" width="30" height="1" fill="#000"/><rect x="1" y="26" width="30" height="1" fill="#000"/><rect x="1" y="3" width="1" height="24" fill="#000"/><rect x="30" y="3" width="1" height="24" fill="#000"/><rect x="9" y="27" width="14" height="3" fill="#808080"/></symbol>
     <symbol id="i-link" viewBox="0 0 32 32"><rect x="4" y="4" width="24" height="24" fill="#fff"/><path d="M3 3h26v26H3zM5 5v22h22V5z" fill="#000"/><path d="M9 9h9l-3 3 6 6-3 3-6-6-3 3z" fill="#000080"/><rect x="2" y="20" width="10" height="10" fill="#fff"/><path d="M2 20h10v10H2zM3 21v8h8v-8z" fill="#000"/><path d="M5 27l4-4M6 23h3v3" stroke="#000" stroke-width="1.5" fill="none"/></symbol>
     <symbol id="i-note" viewBox="0 0 32 32"><rect x="6" y="3" width="20" height="26" fill="#fff"/><path d="M5 2h22v28H5zM7 4v24h18V4z" fill="#000"/><rect x="5" y="2" width="22" height="4" fill="#3a6fc4"/><rect x="9" y="10" width="14" height="1" fill="#000"/><rect x="9" y="14" width="14" height="1" fill="#000"/><rect x="9" y="18" width="10" height="1" fill="#000"/><rect x="9" y="22" width="12" height="1" fill="#000"/></symbol>
     <symbol id="i-pic" viewBox="0 0 32 32"><rect x="3" y="5" width="26" height="22" fill="#fff"/><path d="M2 4h28v24H2zM4 6v20h24V6z" fill="#000"/><rect x="4" y="6" width="24" height="12" fill="#7fb6ff"/><path d="M4 26l8-10 6 7 4-4 6 7z" fill="#3fa34d"/><circle cx="22" cy="11" r="3" fill="#ffd400"/></symbol>
@@ -211,11 +204,8 @@ html.embed body{cursor:default}
 
 <div id="desktop" aria-label="YW/OS 98 桌面 / desktop">
   <div id="icons" role="list">
-    <button class="icon" data-open="show" role="listitem"><svg><use href="#i-show"/></svg><span><span class="lang-zh">我的作品集</span><span class="lang-en">My Showcase</span></span></button>
     <button class="icon" data-open="cv" role="listitem"><svg><use href="#i-pdf"/></svg><span><span class="lang-zh">简历.pdf</span><span class="lang-en">Resume.pdf</span></span></button>
-    <button class="icon" data-open="works" role="listitem"><svg><use href="#i-folder"/></svg><span><span class="lang-zh">实际作品</span><span class="lang-en">Real Work</span></span></button>
-    <button class="icon" data-open="heritage" role="listitem"><svg><use href="#i-globe"/></svg><span>Heritage Explorer</span></button>
-    <button class="icon" data-open="dos" role="listitem"><svg><use href="#i-dos"/></svg><span>YSDOS</span></button>
+    <button class="icon" data-open="projects" role="listitem"><svg><use href="#i-folder"/></svg><span><span class="lang-zh">项目</span><span class="lang-en">Projects</span></span></button>
     <button class="icon" data-open="mail" role="listitem"><svg><use href="#i-mail"/></svg><span><span class="lang-zh">写信给我</span><span class="lang-en">Mail Me</span></span></button>
     <button class="icon" data-open="credits" role="listitem"><svg><use href="#i-note"/></svg><span><span class="lang-zh">关于本站.txt</span><span class="lang-en">Credits.txt</span></span></button>
   </div>
@@ -236,8 +226,7 @@ html.embed body{cursor:default}
   <ul>
     <li><button role="menuitem" data-open="show"><svg><use href="#i-show"/></svg><span><span class="lang-zh">我的作品集</span><span class="lang-en">My Showcase</span></span></button></li>
     <li><button role="menuitem" data-open="cv"><svg><use href="#i-pdf"/></svg><span><span class="lang-zh">简历</span><span class="lang-en">Resume</span></span></button></li>
-    <li><button role="menuitem" data-open="works"><svg><use href="#i-folder"/></svg><span><span class="lang-zh">实际作品</span><span class="lang-en">Real Work</span></span></button></li>
-    <li><button role="menuitem" data-open="dos"><svg><use href="#i-dos"/></svg><span>YSDOS</span></button></li>
+    <li><button role="menuitem" data-open="projects"><svg><use href="#i-folder"/></svg><span><span class="lang-zh">项目</span><span class="lang-en">Projects</span></span></button></li>
     <li><button role="menuitem" data-open="credits"><svg><use href="#i-note"/></svg><span><span class="lang-zh">关于本站</span><span class="lang-en">Credits</span></span></button></li>
     <li class="sep" role="separator"></li>
     <li><button role="menuitem" data-open="off"><svg><use href="#i-off"/></svg><span><span class="lang-zh">离开电脑……</span><span class="lang-en">Step away…</span></span></button></li>
@@ -311,11 +300,10 @@ html.embed body{cursor:default}
     <aside>{{ASIDE}}</aside>
     <article>
       <h2><span class="lang-zh">项目</span><span class="lang-en">Projects</span></h2>
-      <p><span class="lang-zh">从历史建筑到企业系统，从论文到硬件。挑一个看看：</span><span class="lang-en">From heritage buildings to business systems, from papers to hardware. Pick one:</span></p>
+      <p><span class="lang-zh">从历史建筑到企业系统，从生成影像到硬件。挑一个看看：</span><span class="lang-en">From heritage buildings to business systems, from generative art to hardware. Pick one:</span></p>
       <div class="subnav">
-        <a href="#projects/heritage">HeritageExplorer</a>
+        <a href="#projects/heritage"><span class="lang-zh">遗产与研究</span><span class="lang-en">Heritage &amp; research</span></a>
         <a href="#projects/systems"><span class="lang-zh">企业系统</span><span class="lang-en">Business systems</span></a>
-        <a href="#projects/papers"><span class="lang-zh">论文与专利</span><span class="lang-en">Papers &amp; IP</span></a>
         <a href="#projects/art"><span class="lang-zh">AI 叙事影像</span><span class="lang-en">AI narrative art</span></a>
         <a href="#projects/early"><span class="lang-zh">早期工程</span><span class="lang-en">Early engineering</span></a>
       </div>
@@ -332,7 +320,9 @@ html.embed body{cursor:default}
           <li><span class="lang-zh">统一工具接口与规则路由：文搜 / 图搜建筑与构件及智能问答 5 类 FastAPI 接口，结果联动地图与建筑详情。</span><span class="lang-en">Unified tools and rule routing: five FastAPI endpoints for text / image search of buildings and components plus Q&amp;A, linked to the map and detail views.</span></li>
           <li><span class="lang-zh">“检索—问答—可视化探索”链路：Mars2D 展示 1,294 处建筑坐标，vis-network 渲染建筑与构件关系。</span><span class="lang-en">Search → answer → explore: Mars2D plots 1,294 buildings and vis-network renders building–component relations.</span></li>
         </ul>
-        <p><span class="lang-zh">论文：</span><span class="lang-en">Paper: </span><a href="https://doi.org/10.1145/3769534.3769571" target="_blank" rel="noopener">VINCI 2025 · DOI 10.1145/3769534.3769571</a></p>
+        <p><span class="lang-zh">论文（第一作者）：</span><span class="lang-en">Paper (first author): </span><a href="https://doi.org/10.1145/3769534.3769571" target="_blank" rel="noopener">VINCI 2025 · DOI 10.1145/3769534.3769571</a></p>
+        <h4>GenColor · CHI 2025 <span class="lang-zh">（合作者）</span><span class="lang-en">(co-author)</span></h4>
+        <p><span class="lang-zh">基于文生图扩散模型的生成式框架，通过文本引导分割与颜色提取，生成符合语境的设计配色。</span><span class="lang-en">A text-to-image diffusion framework that uses text-guided segmentation and colour extraction to produce context-specific palettes.</span> <a href="https://doi.org/10.1145/3706598.3713418" target="_blank" rel="noopener">DOI 10.1145/3706598.3713418</a></p>
       </div>
 
       <div data-sub="systems" hidden>
@@ -342,17 +332,6 @@ html.embed body{cursor:default}
         {{WORKS}}
       </div>
 
-      <div data-sub="papers" hidden>
-        <h3><span class="lang-zh">论文、知识产权与荣誉</span><span class="lang-en">Papers, IP &amp; awards</span></h3>
-        <h4>HeritageExplorer · VINCI 2025 <span class="lang-zh">（第一作者）</span><span class="lang-en">(first author)</span></h4>
-        <p><span class="lang-zh">面向多模态建筑遗产探索的交互式可视化与对话系统：广州 831 处历史建筑，并扩展至广西历史建筑数据与工程化部署。</span><span class="lang-en">Interactive visualization and dialogue for multimodal heritage exploration: 831 Guangzhou buildings, later extended to Guangxi-scale data and production deployment.</span> <a href="https://doi.org/10.1145/3769534.3769571" target="_blank" rel="noopener">DOI 10.1145/3769534.3769571</a></p>
-        <h4>GenColor · CHI 2025 <span class="lang-zh">（合作者）</span><span class="lang-en">(co-author)</span></h4>
-        <p><span class="lang-zh">基于文生图扩散模型的生成式框架，通过文本引导分割与颜色提取，生成符合语境的设计配色。</span><span class="lang-en">A text-to-image diffusion framework that uses text-guided segmentation and colour extraction to produce context-specific palettes.</span> <a href="https://doi.org/10.1145/3706598.3713418" target="_blank" rel="noopener">DOI 10.1145/3706598.3713418</a></p>
-        <h4><span class="lang-zh">发明专利 4 项 · 软件著作权 1 项</span><span class="lang-en">4 invention patents · 1 software copyright</span></h4>
-        <p><span class="lang-zh">危化品云联动平台开发 / 光伏故障诊断方法 / 光伏电站监控系统 / 异常定位方法；光伏数据展示系统。</span><span class="lang-en">Hazardous-chemical cloud linkage platform / PV fault diagnosis / PV plant monitoring / anomaly localisation; PV data display system.</span></p>
-        <h4><span class="lang-zh">中国“互联网+”大学生创新创业大赛</span><span class="lang-en">China Internet+ Innovation Contest</span></h4>
-        <p><span class="lang-zh">第五届全国铜奖（物联网光伏智能运维平台）；第三、四届区银奖 / 金奖（物联网智慧农业平台）。</span><span class="lang-en">National bronze in the 5th (IoT PV maintenance platform); regional silver / gold in the 3rd and 4th (IoT smart agriculture).</span></p>
-      </div>
 
       <div data-sub="art" hidden>
         <h3><span class="lang-zh">AI 叙事影像与生成媒介</span><span class="lang-en">AI narrative &amp; generative media</span></h3>
@@ -361,7 +340,7 @@ html.embed body{cursor:default}
       </div>
 
       <div data-sub="early" hidden>
-        <h3><span class="lang-zh">早期工程项目</span><span class="lang-en">Early engineering</span></h3>
+        <h3><span class="lang-zh">早期工程与专利</span><span class="lang-en">Early engineering &amp; patents</span></h3>
         <h4 class="when"><span class="lang-zh">危化品云数据联动装置</span><span class="lang-en">Hazardous-chemical cloud sensor</span><span>2020–22</span></h4>
         <p><span class="lang-zh">上海市科委 19511102801。CH4/CO2/温湿度与摄像头多传感器融合；智能网关集成 RS232/485、LTE、LoRa、WiFi 与以太网，STM32 以 ADC 多通道采样、DMA 与协议解析采集数据。</span><span class="lang-en">STCSM 19511102801. CH4/CO2/T&amp;H sensors fused with cameras; a gateway with RS232/485, LTE, LoRa, WiFi and Ethernet, STM32 sampling via multi-channel ADC, DMA and protocol parsing.</span></p>
         <h4 class="when"><span class="lang-zh">消防管理智能感知设备</span><span class="lang-en">Smart fire-safety sensor</span><span>2020–22</span></h4>
@@ -371,7 +350,9 @@ html.embed body{cursor:default}
         <h4 class="when"><span class="lang-zh">虹桥站客流检测</span><span class="lang-en">Hongqiao passenger flow</span><span>2020–21</span></h4>
         <p><span class="lang-zh">基于蓝牙的实时热力图，用于高峰预警与规划。</span><span class="lang-en">Bluetooth-based realtime heatmaps for peak alerts and planning.</span></p>
         <h4 class="when"><span class="lang-zh">光伏运维平台 · 智慧农业</span><span class="lang-en">PV maintenance · Smart agriculture</span><span>2017–19</span></h4>
-        <p><span class="lang-zh">两届“互联网+”项目：光伏电站运行监测、故障识别与维修辅助；果园环境与图像采集、病虫害检测。</span><span class="lang-en">Two Internet+ projects: PV plant monitoring, fault detection and repair support; orchard sensing, imaging and pest detection.</span></p>
+        <p><span class="lang-zh">“互联网+”项目：光伏电站运行监测、故障识别与维修辅助（第五届全国铜奖）；果园环境与图像采集、病虫害检测（第三、四届区银奖 / 金奖）。</span><span class="lang-en">Internet+ projects: PV plant monitoring, fault detection and repair support (national bronze, 5th contest); orchard sensing, imaging and pest detection (regional silver / gold, 3rd and 4th).</span></p>
+        <h4><span class="lang-zh">发明专利 4 项 · 软件著作权 1 项</span><span class="lang-en">4 invention patents · 1 software copyright</span></h4>
+        <p><span class="lang-zh">危化品云联动平台开发 / 光伏故障诊断方法 / 光伏电站监控系统 / 异常定位方法；光伏数据展示系统。</span><span class="lang-en">Hazardous-chemical cloud linkage platform / PV fault diagnosis / PV plant monitoring / anomaly localisation; PV data display system.</span></p>
       </div>
     </article>
   </section>
@@ -524,16 +505,6 @@ function openViewer(src,alt){
   if(wins.viewer){$('.body',wins.viewer.el).replaceChildren(v);$('.tt',wins.viewer.el).textContent=src.split('/').pop()+' - '+(d.dataset.lang==='en'?'Image Viewer':'看图');wins.viewer.el.hidden=false;focusWin(wins.viewer);return}
   makeWin('viewer',{icon:'i-pic',title:src.split('/').pop()+' - '+L('看图','Image Viewer'),content:v,status:L('点“原图”可在新标签页打开','Use the link to open full size')+' · <a href="'+src+'" target="_blank" rel="noopener">'+L('原图','full size')+'</a>',w:760,h:500});
 }
-function openWorks(){
-  var ex=div('pane');var box=div('explorer');ex.appendChild(box);
-  WORKS.forEach(function(w){var b=document.createElement('button');b.className='icon';b.type='button';
-    b.innerHTML='<img src="'+('assets/work/'+w[0]+'.webp')+'" alt="" loading="lazy" /><span>'+L(w[1],w[2])+'</span>';
-    b.addEventListener('click',function(){$$('.icon',box).forEach(function(x){x.classList.remove('sel')});b.classList.add('sel')});
-    b.addEventListener('dblclick',function(){openViewer('assets/work/'+w[0]+'.webp',w[1])});
-    b.addEventListener('keydown',function(e){if(e.key==='Enter')openViewer('assets/work/'+w[0]+'.webp',w[1])});
-    box.appendChild(b)});
-  makeWin('works',{icon:'i-folder',title:L('实际作品','Real Work'),content:ex,menu:'<span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>V</u>iew</span><span><u>H</u>elp</span>',status:L('5 个对象 · 双击打开','5 objects · double-click to open'),w:560,h:330});
-}
 function openDialog(id,icon,title,html,buttons){
   var c=div('');c.innerHTML='<div class="dlg"><svg><use href="#'+icon+'"/></svg><div>'+html+'</div></div><div class="dlgbtns">'+buttons+'</div>';
   var w=makeWin(id,{icon:icon,title:title,content:c,fixed:true,w:400,h:190});
@@ -543,13 +514,10 @@ function openDialog(id,icon,title,html,buttons){
 function openNote(id,title,text){var p=div('pane note');p.textContent=text;makeWin(id,{icon:'i-note',title:title,content:p,menu:'<span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>S</u>earch</span><span><u>H</u>elp</span>',w:520,h:360})}
 var OPEN={
   show:function(){openShow()},
-  heritage:function(){openShow('#projects/heritage')},
-  works:openWorks,
+  projects:function(){openShow('#projects')},
   cv:function(){openDialog('cv','i-pdf',L('简历.pdf','Resume.pdf'),L('<b>CV_Yusong_Wang.pdf</b><br />王钰淞 · 2026 年 10 月版简历，1 页。','<b>CV_Yusong_Wang.pdf</b><br />Yusong Wang · October 2026 resume, one page.'),
     '<a href="CV_Yusong_Wang.pdf" target="_blank" rel="noopener">'+L('打开','Open')+'</a><a href="CV_Yusong_Wang.pdf" download>'+L('下载','Download')+'</a><button type="button" data-close>'+L('取消','Cancel')+'</button>')},
   mail:function(){openShow('#contact')},
-  dos:function(){var f=document.createElement('iframe');f.className='frame';f.src='dos.html?noboot';f.title='YSDOS';var c=div('');c.style.cssText='position:absolute;inset:0';c.appendChild(f);
-    makeWin('dos',{icon:'i-dos',title:'YSDOS 6.0',content:c,w:720,h:470})},
   credits:function(){openNote('credits',L('关于本站.txt - 记事本','Credits.txt - Notepad'),d.dataset.lang==='en'
     ?'YW/OS 98 — Yusong Wang, 2026\r\n\r\nThis homepage is a desk you can walk up to: a 3D studio scene (three.js) with a computer whose screen runs this little operating system.\r\n\r\nInspired by Henry Heffernan\'s portfolio (henryheffernan.com). The scene, models, icons, operating system and words here are my own.\r\n\r\nType: Fusion Pixel 12px (SIL Open Font License 1.1)\r\n3D: three.js (MIT)\r\n\r\nContact: ywang677@connect.hkust-gz.edu.cn'
     :'YW/OS 98 —— 王钰淞，2026\r\n\r\n这个主页是一张可以走近的书桌：three.js 搭的三维摄影棚里放着一台电脑，屏幕里运行的就是这个小小的操作系统。\r\n\r\n灵感来自 Henry Heffernan 的作品集（henryheffernan.com）。这里的场景、模型、图标、系统界面和文字都是我自己做的。\r\n\r\n字体：Fusion Pixel 12px（SIL 开源字体许可 1.1）\r\n三维：three.js（MIT）\r\n\r\n联系：ywang677@connect.hkust-gz.edu.cn')},
