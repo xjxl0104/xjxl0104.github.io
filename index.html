@@ -6,7 +6,6 @@
 <title>王钰淞 · Yusong Wang — Portfolio 2026</title>
 <meta name="description" content="王钰淞（Yusong Wang）的作品集：走到一张书桌前，打开那台复古电脑。GIS × 多模态 AI × 全栈系统。" />
 <meta name="theme-color" content="#d4d4d8" />
-<link rel="modulepreload" href="assets/vendor/three.module.min.js" />
 <style>
 @font-face{font-family:"YS Pixel";src:url("assets/retro/fusion-pixel-12-subset.woff2") format("woff2");font-display:swap}
 :root{--mono:"YS Pixel","SFMono-Regular",Menlo,Consolas,monospace}
@@ -47,6 +46,12 @@ html.at-screen #hud .row{gap:0}
 
 /* 开场加载框 */
 /* 开场 BIOS 加载屏：照参考站的结构与节奏（16px 等宽、白字黑底、48px 边距） */
+/* 录好的开场动画：没有 WebGL 时代替实时三维场景 */
+#film{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;background:#d9d9dd;transition:transform .45s ease-in,opacity .45s ease-in}
+/* 动画停在显示器前，真正的系统叠在屏幕的位置上 */
+#filmOS{position:fixed;left:0;top:0;width:1024px;height:768px;border:0;background:#000;transform-origin:0 0;opacity:0;visibility:hidden;transition:opacity .35s;z-index:1}
+#filmOS.on{opacity:1;visibility:visible}
+#filmFull{position:fixed;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:5;background:#000;color:#fff;padding:3px 14px;text-decoration:none;white-space:nowrap;font:13px/18px monospace}
 #loader{position:fixed;inset:0;z-index:10;background:#000;color:#fff;font:16px/1.15 monospace;letter-spacing:.8px;transition:opacity .2s ease-in-out,transform .2s ease-in-out}
 #loader.out{opacity:0;transform:scale(1.1);pointer-events:none}
 #loader p{margin:0;color:#fff;font:inherit;white-space:pre}
@@ -99,6 +104,7 @@ html.at-screen #hud .row{gap:0}
 </script>
 
 <div id="css" aria-hidden="true"></div>
+<video id="film" muted playsinline preload="auto" hidden aria-label="镜头走向书桌并推进到电脑屏幕 / The camera walks up to the desk and into the computer screen"></video>
 <canvas id="gl" role="img" aria-label="一张书桌，桌上有一台复古电脑 / A desk with a retro computer"></canvas>
 <div id="vignette" aria-hidden="true"></div>
 <div id="grain" aria-hidden="true"></div>
@@ -177,8 +183,11 @@ window.ywLoad = (function () {
     var n = 3, el = $('#glCount'); $('#glGo').focus();
     var iv = setInterval(function () { n--; el.textContent = n; if (n <= 0) { clearInterval(iv); location.replace('os.html'); } }, 1000);
   }
-  if (/[?&]nogl\b/.test(location.search)) gl = null; // 调试：模拟没有 WebGL 的设备
-  if (!gl) fallback();
+  var q = location.search;
+  if (/[?&]nogl\b/.test(q)) gl = null; // 调试：模拟没有 WebGL 的设备
+  // 没有 WebGL 时的备选：放录好的开场动画（?film 可强制预览）
+  var film = !gl || /[?&]film\b/.test(q);
+  if (film) TOTAL = 4;
   function pad(n) { var s = ''; for (var i = n.length; i < 24; i++) s += '\u00a0'; return s; }
   function pump() {
     if (busy || !queue.length) return;
@@ -205,15 +214,84 @@ window.ywLoad = (function () {
   addEventListener('keydown', function (e) { if (e.key === 'Escape' && !finished) { fast = true; pump(); } });
   setTimeout(function () { if (!shown) $('#ldState').textContent = 'LOADING RESOURCES (0/' + TOTAL + ')'; }, 350);
   return {
-    loaded: function (name) { if (!gl) return; queue.push(name); pump(); },
-    error: fallback
+    loaded: function (name) { if (fellBack) return; queue.push(name); pump(); },
+    error: fallback,
+    film: film
   };
+})();
+
+/* ================= 录好的开场动画 ================= */
+(function () {
+  var ld = window.ywLoad;
+  if (!ld.film) return;
+  var $ = function (s) { return document.querySelector(s); }, d = document.documentElement;
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var v = $('#film'), tall = innerHeight > innerWidth, base = 'assets/intro/desk-' + (tall ? 'tall' : 'wide');
+  v.style.transformOrigin = tall ? '50% 38%' : '50% 50%'; // 最后一帧屏幕所在的位置
+  v.poster = base + '.jpg';
+  var img = new Image(); img.onload = function () { ld.loaded('posterFrame'); }; img.onerror = ld.error; img.src = base + '.jpg';
+  // iOS 在用户点击前不预加载视频，等不到 canplaythrough 时最多等 2.5 秒，播放时再边下边播
+  var ready = false; function filmReady() { if (!ready) { ready = true; ld.loaded('introFilm'); } }
+  v.addEventListener('canplaythrough', filmReady); setTimeout(filmReady, 2500);
+  v.addEventListener('error', ld.error);
+  v.src = base + '.mp4'; v.load();
+  document.fonts.load('16px "YS Pixel"').finally(function () { ld.loaded('pixelFont'); });
+
+  /* 胶片颗粒（实时三维那边也有一份） */
+  var c = document.createElement('canvas'); c.width = c.height = 160; var g = c.getContext('2d'), im = g.createImageData(160, 160);
+  for (var i = 0; i < im.data.length; i += 4) { var n = Math.random() * 255; im.data[i] = im.data[i + 1] = im.data[i + 2] = n; im.data[i + 3] = 255; }
+  g.putImageData(im, 0, 0); $('#grain').style.background = 'url(' + c.toDataURL() + ') repeat';
+
+  /* 屏幕里的系统：先在后台加载好，动画放完再叠到屏幕上 */
+  var lang = d.dataset.lang || 'zh';
+  var os = document.createElement('iframe'); os.id = 'filmOS'; os.title = '王钰淞的作品集电脑 / Yusong Wang\'s portfolio computer';
+  os.src = 'os.html?embed' + (lang === 'en' ? '&lang=en' : '');
+  function toOS(m) { try { m.yw = 1; os.contentWindow.postMessage(m, location.origin); } catch (e) {} }
+  var osReady = false; function osOk() { if (!osReady) { osReady = true; ld.loaded('monitorOperatingSystem'); } }
+  os.addEventListener('load', function () { toOS({ type: 'ping' }); }); setTimeout(osOk, 5000);
+  addEventListener('message', function (e) {
+    if (e.origin !== location.origin || !e.data || !e.data.yw) return;
+    if (e.data.type === 'ready') osOk();
+    else if (e.data.type === 'lang') { d.dataset.lang = e.data.lang; try { localStorage.setItem('yw-lang', e.data.lang); } catch (x) {} }
+  });
+  document.body.appendChild(os);
+  // 录制时最后一帧里屏幕占画面的比例（见录制脚本）
+  var R = tall ? { x: 0.05, y: 0.34405, w: 0.9, h: 0.31191 } : { x: 0.275, y: 0.2, w: 0.45, h: 0.6 };
+  function place() {
+    var VW = v.videoWidth || (tall ? 780 : 1920), VH = v.videoHeight || (tall ? 1688 : 1080);
+    var k = Math.max(innerWidth / VW, innerHeight / VH), ox = (innerWidth - VW * k) / 2, oy = (innerHeight - VH * k) / 2;
+    os.style.left = ox + R.x * VW * k + 'px'; os.style.top = oy + R.y * VH * k + 'px';
+    os.style.transform = 'scale(' + (R.w * VW * k / 1024) + ',' + (R.h * VH * k / 768) + ')';
+  }
+  addEventListener('resize', place);
+
+  var entered = false;
+  function enter() {
+    if (entered) return; entered = true;
+    $('#hint').classList.remove('on');
+    if (v.duration && v.currentTime < v.duration - 0.05) { v.pause(); try { v.currentTime = v.duration; } catch (e) {} } // 跳过：直接到最后一帧
+    place(); d.classList.add('at-screen'); os.classList.add('on');
+    setTimeout(function () { try { os.focus(); } catch (e) {} }, 400);
+    var a = document.createElement('a'); a.id = 'filmFull'; a.href = 'os.html'; a.textContent = '全屏查看 · Full screen'; document.body.appendChild(a);
+  }
+  function hint(t) { $('#hintText').textContent = t; $('#hint').classList.add('on'); }
+  $('#start').addEventListener('click', function () {
+    var loader = $('#loader'); loader.classList.add('out'); setTimeout(function () { loader.hidden = true; }, 260);
+    toOS({ type: 'lang', lang: d.dataset.lang || 'zh' }); toOS({ type: 'power' });
+    v.hidden = false;
+    if (reduce) { enter(); return; }
+    v.addEventListener('ended', enter);
+    var p = v.play();
+    if (p && p.catch) p.catch(function () { hint('点一下进入 · Tap to enter'); }); // 有的内置浏览器不让播：停在首帧，点一下直接进
+    setTimeout(function () { if (!entered) hint('点一下跳过 · Tap to skip'); }, 600);
+    setTimeout(function () { addEventListener('click', function (e) { if (!e.target.closest('a')) enter(); }); }, 300);
+  });
 })();
 </script>
 
 <noscript><div style="position:fixed;inset:0;z-index:30;background:#000;color:#fff;display:grid;place-items:center;text-align:center;padding:20px">这个页面的三维书桌需要 JavaScript。<br /><a style="color:#fff" href="os.html">直接打开作品集 / Open the portfolio</a></div></noscript>
 
-<script type="module">
+<script type="text/x-desk3d" id="desk3d">
 import * as THREE from './assets/vendor/three.module.min.js';
 import { CSS3DRenderer, CSS3DObject } from './assets/vendor/CSS3DRenderer.js';
 import { RoomEnvironment } from './assets/vendor/RoomEnvironment.js';
@@ -754,6 +832,9 @@ requestAnimationFrame(render);
   for (let i = 0; i < im.data.length; i += 4) { const v = Math.random() * 255; im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = 255; }
   g.putImageData(im, 0, 0); $('#grain').style.background = `url(${c.toDataURL()}) repeat`;
 }
+</script>
+<script>
+if (!window.ywLoad.film) { var m = document.createElement('script'); m.type = 'module'; m.textContent = document.getElementById('desk3d').textContent; document.body.appendChild(m); }
 </script>
 </body>
 </html>
