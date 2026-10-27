@@ -33,7 +33,7 @@ test('home is the 3D desk whose monitor runs the YW/OS portfolio', async () => {
 
 test('YW/OS portfolio has every page and real content, without borrowed branding', async () => {
   const source = await html('os.html');
-  for (const page of ['home', 'about', 'experience', 'projects', 'contact']) assert.match(source, new RegExp(`data-page="${page}"`), `missing page ${page}`);
+  for (const page of ['home', 'about', 'education', 'projects', 'work', 'honors', 'contact']) assert.match(source, new RegExp(`data-page="${page}"`), `missing page ${page}`);
   for (const sub of ['heritage', 'systems', 'art', 'early']) assert.match(source, new RegExp(`data-sub="${sub}"`), `missing project ${sub}`);
   for (const text of ['HeritageExplorer', 'VINCI 2025', 'CHI 2025', 'DIPARK', 'ywang677@connect.hkust-gz.edu.cn', 'CV_Yusong_Wang.pdf']) {
     assert.ok(source.includes(text), `missing real content: ${text}`);
