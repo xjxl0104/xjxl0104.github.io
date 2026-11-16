@@ -10,7 +10,7 @@
 @font-face{font-family:"YS Pixel";src:url("assets/retro/fusion-pixel-12-subset.woff2") format("woff2");font-display:swap}
 :root{
   --face:#c0c0c0;--light:#dfdfdf;--hi:#fff;--shadow:#808080;--dark:#0a0a0a;
-  --title:#000080;--title2:#1084d0;--desk:#2e7d7a;--sel:#000080;
+  --title:#000080;--title2:#1084d0;--desk:#7c7fe8;--sel:#000080;
   --ui:"YS Pixel","Tahoma","Microsoft YaHei",sans-serif;
   --serif:"Times New Roman","Songti SC","STSong","SimSun","Noto Serif SC",serif;
   --out:inset -1px -1px var(--dark),inset 1px 1px var(--hi),inset -2px -2px var(--shadow),inset 2px 2px var(--light);
@@ -33,10 +33,10 @@ img{-webkit-user-drag:none}
 /* ===== 桌面 ===== */
 #desktop{position:fixed;inset:0 0 30px 0;background:var(--desk);overflow:hidden}
 #icons{position:absolute;inset:8px auto 8px 8px;display:flex;flex-direction:column;flex-wrap:wrap;align-content:flex-start;gap:6px 10px;width:auto;max-height:calc(100% - 16px)}
-.icon{display:flex;flex-direction:column;align-items:center;gap:4px;width:76px;padding:2px;border:0;background:none;color:#fff;cursor:default;text-align:center}
+.icon{display:flex;flex-direction:column;align-items:center;gap:4px;width:76px;padding:2px;border:0;background:none;color:#000;cursor:default;text-align:center}
 .icon svg{width:32px;height:32px;shape-rendering:crispEdges;image-rendering:pixelated}
 .icon span{padding:1px 2px;line-height:14px;text-shadow:none}
-.icon.sel span{background:var(--sel);outline:1px dotted #ff0}
+.icon.sel span{background:var(--sel);color:#fff;outline:1px dotted #ff0}
 .icon.sel svg{filter:brightness(.6) sepia(1) hue-rotate(190deg) saturate(4)}
 
 .win{position:absolute;display:flex;flex-direction:column;min-width:220px;min-height:120px;background:var(--face);box-shadow:var(--out);padding:3px}
@@ -55,8 +55,8 @@ img{-webkit-user-drag:none}
 .menubar span u{text-decoration:underline}
 .body{flex:1;min-height:0;position:relative}
 .sb{display:flex;gap:2px;margin-top:2px;flex:none}
-.sb span{flex:1;padding:1px 4px;box-shadow:inset -1px -1px var(--hi),inset 1px 1px var(--shadow);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sb span:last-child{flex:0 0 120px}
+.sb>span{flex:1;padding:1px 4px;box-shadow:inset -1px -1px var(--hi),inset 1px 1px var(--shadow);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb>span:last-child{flex:0 0 120px}
 .grip{position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;touch-action:none;
   background:linear-gradient(135deg,transparent 0 45%,var(--shadow) 45% 52%,var(--hi) 52% 58%,transparent 58% 66%,var(--shadow) 66% 73%,var(--hi) 73% 79%,transparent 79%)}
 .win.max .grip{display:none}
@@ -64,7 +64,12 @@ img{-webkit-user-drag:none}
 .pane{position:absolute;inset:0;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#fff;box-shadow:var(--field);padding:2px;user-select:text;-webkit-user-select:text}
 .pane::-webkit-scrollbar{width:16px;height:16px;background:repeating-conic-gradient(var(--face) 0 25%,#fff 0 50%) 0 0/2px 2px}
 .pane::-webkit-scrollbar-thumb{background:var(--face);box-shadow:var(--out)}
-.pane::-webkit-scrollbar-button:single-button{background:var(--face);box-shadow:var(--out);height:16px;width:16px;display:block}
+.pane::-webkit-scrollbar-button{display:none}
+.pane::-webkit-scrollbar-button:start:decrement,.pane::-webkit-scrollbar-button:end:increment{display:block;width:16px;height:16px;background:var(--face) center/7px 7px no-repeat;box-shadow:var(--out)}
+.pane::-webkit-scrollbar-button:vertical:start:decrement{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 7'%3E%3Cpath d='M3 1h1v1h1v1h1v1h1v1H0V4h1V3h1V2h1z'/%3E%3C/svg%3E")}
+.pane::-webkit-scrollbar-button:vertical:end:increment{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 7'%3E%3Cpath d='M0 2h7v1H6v1H5v1H4v1H3V5H2V4H1V3H0z'/%3E%3C/svg%3E")}
+.pane::-webkit-scrollbar-button:horizontal:start:decrement{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 7'%3E%3Cpath d='M1 3h1V2h1V1h1V0h1v7H4V6H3V5H2V4H1z'/%3E%3C/svg%3E")}
+.pane::-webkit-scrollbar-button:horizontal:end:increment{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 7'%3E%3Cpath d='M2 0h1v1h1v1h1v1h1v1H5v1H4v1H3v1H2z'/%3E%3C/svg%3E")}
 .pane::-webkit-scrollbar-corner{background:var(--face)}
 
 /* ===== 任务栏 ===== */
@@ -92,58 +97,155 @@ img{-webkit-user-drag:none}
 #startmenu li.sep{height:2px;margin:3px 2px;box-shadow:inset 0 1px var(--shadow),inset 0 -1px var(--hi)}
 
 /* ===== 作品集（展示窗口里的网站） ===== */
-.site{font:16px/1.65 var(--serif);color:#111;user-select:text;-webkit-user-select:text}
-.site a{color:#0000ee}
-.site a:visited{color:#551a8b}
-.home{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}
-.home h1{margin:0;font:900 64px/1.05 var(--serif);letter-spacing:.02em}
-.home h1 small{display:block;margin-top:8px;font-size:22px;font-weight:700;letter-spacing:.08em}
-.home .tag{margin:14px 0 0;font:700 18px/1.4 var(--serif)}
-.home nav{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 30px;margin-top:44px;font:700 17px var(--serif)}
-.home nav a{text-transform:uppercase}
-.page{display:grid;grid-template-columns:200px 1fr;gap:36px;padding:34px 40px 50px}
-.page aside{position:sticky;top:0;align-self:start}
-.page aside .nm{font:900 30px/1.05 var(--serif)}
-.page aside .yr{margin:6px 0 34px;font:700 17px var(--serif)}
-.page aside nav{display:flex;flex-direction:column;gap:18px;font:700 16px var(--serif)}
-.page aside nav a{text-transform:uppercase}
-.page aside nav a.cur::before{content:"○ ";color:#000}
-.page article{min-width:0}
-.page h2{margin:0 0 4px;font:900 46px/1.1 var(--serif)}
-.page h3{margin:26px 0 8px;font:900 22px/1.3 var(--serif)}
-.page h4{margin:18px 0 4px;font:700 17px/1.35 var(--serif)}
-.page p{margin:0 0 12px}
-.page ul{margin:0 0 12px;padding-left:22px}
-.page .lead{font-weight:700;font-size:18px}
-.page .meta{color:#555;font-size:14px}
-.page hr{border:0;border-top:2px solid #000;margin:22px 0}
-.page .box{display:flex;gap:14px;align-items:center;border-top:2px solid #000;border-bottom:2px solid #000;padding:12px 0;margin:20px 0}
+/* 网站自己的配色：米色纸面 + 墨线，橙色做唯一的强调色，每页顶上一条色带 */
+.site{--ink:#141414;--paper:#f8f4e4;--cream:#ece5cc;--mute:#6b6653;
+  --orange:#ff4d00;--green:#1fb37b;--pink:#e8b4e2;--yellow:#ffc20e;--blue:#5257dc;--lilac:#c3c5f6;
+  --sans:"Helvetica Neue",Helvetica,Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+  container-type:inline-size;min-height:100%;display:flex;flex-direction:column;background:var(--paper);font:15px/1.7 var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;user-select:text;-webkit-user-select:text}
+.site>section{flex:1 0 auto}
+.site ::selection{background:var(--yellow);color:var(--ink)}
+.site :focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.site p a,.site li a,.site figcaption a,.site .box a{color:inherit;text-decoration:underline;text-decoration-color:var(--orange);text-decoration-thickness:2px;text-underline-offset:3px;transition:background-color .15s}
+.site p a:hover,.site li a:hover,.site figcaption a:hover,.site .box a:hover{background:var(--yellow)}
+
+/* 主页：名字 + 一条目录，下面直接摆项目 */
+.home .intro{padding:24px 36px 20px}
+.home .eyebrow{display:inline-block;margin:0 0 10px;padding:1px 8px;border:1px solid var(--ink);font:600 12px/20px var(--sans);letter-spacing:.08em;text-transform:uppercase}
+.home h1{margin:0;font:800 clamp(44px,7.6cqi,76px)/1 var(--sans);letter-spacing:-.035em}
+html[data-lang="zh"] .home h1{letter-spacing:.02em}
+.home h1 small{display:inline-block;margin-left:.6em;font-size:.28em;line-height:1.2;font-weight:600;letter-spacing:.02em;color:var(--mute)}
+.home .tag{margin:10px 0 0;font:500 16px/1.5 var(--sans)}
+.home .menu{display:flex;flex-wrap:wrap;border:solid var(--ink);border-width:1px 0;font:600 13px/1.2 var(--sans);letter-spacing:.06em;text-transform:uppercase}
+.home .menu a{flex:1 0 auto;padding:10px 14px;text-align:center;color:inherit;text-decoration:none;box-shadow:1px 0 0 var(--ink);transition:background-color .12s,color .12s}
+.home .menu a:hover{background:var(--ink);color:var(--paper)}
+.home .menu a.cv{background:var(--yellow)}
+.home .menu a.cv:hover{background:var(--orange);color:var(--ink)}
+.home .feat{padding:18px 36px 44px}
+.home .feat-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:12px}
+.home .feat-h h2{margin:0;font:800 22px/1.2 var(--sans);letter-spacing:-.01em}
+.home .feat-h a{font:600 13px/1.2 var(--sans);color:inherit;text-decoration:underline;text-decoration-color:var(--orange);text-decoration-thickness:2px;text-underline-offset:3px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.card{display:flex;flex-direction:column;min-width:0;border:1px solid var(--ink);background:var(--paper);color:var(--ink);text-decoration:none;transition:transform .15s,box-shadow .15s}
+.card:hover,.card:focus-visible{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink)}
+.card:active{transform:none;box-shadow:none}
+.card img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;object-position:top left;border-bottom:1px solid var(--ink);background:var(--cream)}
+.card .cap{display:flex;flex-direction:column;gap:3px;padding:9px 11px 10px}
+.card .k{font:600 11px/1.3 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.card b{font:700 15px/1.25 var(--sans);letter-spacing:-.01em}
+.card.txt{justify-content:space-between;padding:11px 12px 12px;background:var(--orange)}
+.card.txt .k{color:var(--ink)}
+.card.txt b{font-size:20px;line-height:1.15}
+.card.txt b::after{content:" →"}
+
+/* 内页：左栏目录，右栏正文，正文顶上一条本页的色带 */
+[data-page="about"]{--acc:var(--pink)}
+[data-page="education"]{--acc:var(--yellow)}
+[data-page="projects"]{--acc:var(--green)}
+[data-page="work"]{--acc:var(--blue);--acc-ink:#fff}
+[data-page="honors"]{--acc:var(--orange)}
+[data-page="contact"]{--acc:var(--lilac)}
+.page{display:grid;grid-template-columns:190px minmax(0,1fr)}
+.page aside{position:sticky;top:0;align-self:start;padding:26px 18px 26px 22px}
+.page aside .nm{font:800 26px/1.05 var(--sans);letter-spacing:-.02em}
+html[data-lang="zh"] .page aside .nm{letter-spacing:.02em}
+.page aside .yr{margin:6px 0 24px;font:500 13px/1.4 var(--sans);color:var(--mute)}
+.page aside nav{display:flex;flex-direction:column;gap:2px;font:600 13px/1.2 var(--sans);letter-spacing:.06em}
+.page aside nav a{padding:7px 9px;color:inherit;text-decoration:none;text-transform:uppercase;transition:background-color .12s,color .12s}
+.page aside nav a:hover{background:var(--cream)}
+.page aside nav a.cur{background:var(--ink);color:var(--paper)}
+.page article{min-width:0;padding:0 36px 52px;border-left:1px solid var(--ink)}
+.page h2{margin:0 -36px 26px;padding:30px 36px 24px;background:var(--acc);color:var(--acc-ink,var(--ink));border-bottom:1px solid var(--ink);font:800 44px/1.05 var(--sans);letter-spacing:-.03em}
+html[data-lang="zh"] .page h2{letter-spacing:.01em}
+.page h3{margin:30px 0 8px;font:700 21px/1.3 var(--sans);letter-spacing:-.01em;text-wrap:balance;scroll-margin-top:92px}
+.page h4{margin:20px 0 4px;font:700 16px/1.4 var(--sans)}
+.page p{margin:0 0 12px;max-width:46em;text-wrap:pretty}
+.page ul{margin:0 0 12px;padding-left:20px;max-width:46em;list-style:square}
+.page li{margin-bottom:6px}
+.page li::marker{color:var(--orange)}
+.page .lead{font-weight:700;font-size:19px;line-height:1.4}
+.page .hello{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:8px 30px;align-items:start}
+.page .me{margin:4px 0 0}
+.page .me img{aspect-ratio:4/5;object-fit:cover;object-position:50% 18%;box-shadow:4px 4px 0 var(--ink)}
+.page .me figcaption{margin-top:12px}
+.page .meta{color:var(--mute);font-size:13px}
+.page hr{border:0;border-top:1px solid var(--ink);margin:24px 0}
+.page .box{display:flex;gap:14px;align-items:center;max-width:520px;border:1px solid var(--ink);background:var(--yellow);box-shadow:4px 4px 0 var(--ink);padding:12px 16px;margin:22px 0 28px}
 .page .box svg{width:42px;height:42px;flex:none;shape-rendering:crispEdges}
-.page .box b{display:block;font-size:20px}
-.page figure{margin:14px 0 22px}
-.page figure img{display:block;width:100%;height:auto;border:1px solid #000;cursor:zoom-in}
-.page figcaption{font-size:14px;color:#333;margin-top:6px}
-.page figcaption b{color:#000}
-.page .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
-.page .stats div{border:2px solid #000;padding:6px 8px;text-align:center}
-.page .stats b{display:block;font:900 28px/1.1 var(--serif)}
-.page .stats span{font-size:13px}
-.page .when{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.page .when span{font-weight:700;white-space:nowrap}
-.page .when span:not(:last-child){white-space:normal}
-.page .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.page .box b{display:block;font-size:18px;line-height:1.3}
+.page .box a{text-decoration-color:var(--ink)}
+.page .box a:hover{background:var(--paper)}
+.page figure{margin:16px 0 26px;max-width:980px;scroll-margin-top:92px}
+.page figure img{display:block;width:100%;height:auto;border:1px solid var(--ink);background:var(--cream)}
+.page figure img[data-view]{cursor:zoom-in;box-shadow:4px 4px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+.page figure img[data-view]:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.page figcaption{font-size:13px;line-height:1.55;color:var(--mute);margin-top:12px;max-width:46em}
+.page figcaption b{color:var(--ink);font-size:14px}
+.page .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:18px 0 20px;border:1px solid var(--ink);background:var(--cream)}
+.page .stats div{padding:10px 12px 9px}
+.page .stats div+div{border-left:1px solid var(--ink)}
+.page .stats b{display:block;font:800 28px/1.1 var(--sans);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.page .stats span{font-size:12px;line-height:1.3}
+.page .when{display:flex;justify-content:space-between;align-items:flex-start;gap:6px 14px;flex-wrap:wrap}
+.page .when>span:last-child{flex:none;margin-top:.25em;padding:0 8px;border:1px solid var(--ink);background:var(--yellow);font:600 12px/20px var(--sans);font-variant-numeric:tabular-nums;letter-spacing:.02em;white-space:nowrap}
+.page .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:22px 18px;margin:18px 0 8px}
 .page .grid figure{margin:0}
-.page .tags{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
-.page .tags span{border:1px solid #000;padding:0 6px;font-size:14px;line-height:22px}
-.page form{display:grid;gap:10px;max-width:520px}
-.page label{font-weight:700}
-.page input,.page textarea{font:16px var(--serif);padding:6px 8px;border:0;box-shadow:var(--field);background:#fff}
-.page .btn{justify-self:start;font:12px var(--ui);padding:5px 18px;border:0;background:var(--face);box-shadow:var(--out);cursor:pointer}
-.page .btn:active{box-shadow:var(--in)}
-.page .subnav{display:flex;flex-wrap:wrap;gap:8px 18px;margin:10px 0 18px;font-weight:700}
-.page .subnav a.cur{color:#000;text-decoration:none}
-.page .subnav a.cur::before{content:"○ "}
-.foot{position:sticky;bottom:0}
+.page .grid figcaption{color:var(--ink);font-weight:600}
+.page .grid.two{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 22px}
+.page .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.page .grid.two figcaption,.page .grid.three figcaption{font-weight:400;color:var(--mute)}
+.page .grid.mini{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:14px 12px}
+.page .grid.mini img[data-view]{aspect-ratio:16/10;object-fit:cover;object-position:top left;box-shadow:2px 2px 0 var(--ink)}
+.page .grid.mini figcaption{margin-top:7px;font-size:12px;line-height:1.35}
+/* 项目页的四个大标签：滚动时吸在顶上，始终能切换 */
+.page .subnav{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:18px -36px 26px;border:solid var(--ink);border-width:1px 0;background:var(--paper)}
+.page .subnav a{display:flex;flex-direction:column;gap:3px;min-width:0;padding:10px 14px 11px;color:inherit;text-decoration:none;transition:background-color .12s,color .12s}
+.page .subnav a+a{border-left:1px solid var(--ink)}
+.page .subnav i{font:600 11px/1 var(--sans);font-variant-numeric:tabular-nums;letter-spacing:.06em;color:var(--orange)}
+.page .subnav b{font:700 15px/1.25 var(--sans);letter-spacing:-.01em}
+.page .subnav small{font:400 12px/1.3 var(--sans);color:var(--mute)}
+.page .subnav a:hover{background:var(--yellow)}
+.page .subnav a.cur{background:var(--ink);color:var(--paper)}
+.page .subnav a.cur small{color:#cfc9b4}
+/* 像素视频的六步流程 */
+.page .flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:18px 0 26px;padding:0;max-width:none;list-style:none;border:solid var(--ink);border-width:1px 0 0 1px;counter-reset:step}
+.page .flow li{margin:0;padding:11px 13px 13px;border:solid var(--ink);border-width:0 1px 1px 0;font-size:13px;line-height:1.5;color:var(--mute);counter-increment:step}
+.page .flow li::before{content:counter(step,decimal-leading-zero);display:block;margin-bottom:5px;font:600 11px/1 var(--sans);letter-spacing:.06em;color:var(--orange)}
+.page .flow b{display:block;font-size:15px;line-height:1.3;color:var(--ink)}
+.page form{display:grid;gap:8px;max-width:520px;margin:22px 0 14px}
+.page label{font-weight:600;font-size:13px}
+.page input,.page textarea{font:15px/1.5 var(--sans);color:var(--ink);padding:7px 9px;margin-bottom:6px;border:1px solid var(--ink);border-radius:0;background:#fffdf4;box-shadow:none;transition:box-shadow .12s}
+.page input:focus,.page textarea:focus{outline:0;box-shadow:3px 3px 0 var(--blue)}
+.page textarea{resize:vertical}
+.page .btn{justify-self:start;font:600 14px/1.2 var(--sans);padding:10px 18px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;transition:background-color .15s,color .15s,transform .1s}
+.page .btn:hover{background:var(--orange);color:var(--ink)}
+.page .btn:active{transform:translate(1px,1px)}
+
+/* 窗口变窄（手机上窗口是铺满的）时，网站自己改成单栏 */
+@container (max-width:640px){
+  .home .intro{padding:22px 16px 18px}
+  .home h1 small{display:block;margin:10px 0 0;font-size:18px}
+  .home .menu a{flex-basis:33.33%}
+  .home .feat{padding:20px 16px 36px}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .page{grid-template-columns:1fr}
+  .page aside{position:static;padding:16px 16px 12px}
+  .page aside .yr{margin-bottom:12px}
+  .page aside nav{flex-direction:row;flex-wrap:wrap;gap:4px}
+  .page article{padding:0 16px 40px;border-left:0;border-top:1px solid var(--ink);overflow-wrap:anywhere}
+  .page h2{margin:0 -16px 20px;padding:22px 16px 18px;font-size:34px}
+  .page .hello{grid-template-columns:1fr}
+  .page .me{order:-1;width:132px;margin:0 0 14px}
+  .page .subnav{grid-template-columns:repeat(2,minmax(0,1fr));margin:16px -16px 22px}
+  .page .subnav a{padding:8px 12px 9px}
+  .page .subnav a:nth-child(3){border-left:0}
+  .page .subnav a:nth-child(n+3){border-top:1px solid var(--ink)}
+  .page .subnav small{display:none}
+  .page .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .page .stats div:nth-child(3){border-left:0}
+  .page .stats div:nth-child(n+3){border-top:1px solid var(--ink)}
+  .page .grid.two,.page .grid.three{grid-template-columns:1fr}
+  .page .flow{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 
 /* 记事本 / 看图 */
 .note{font:12px/18px var(--ui);padding:6px 8px;white-space:pre-wrap;user-select:text;-webkit-user-select:text}
@@ -163,14 +265,6 @@ html.embed body{cursor:default}
 
 @media (max-width:700px){
   .icon{width:68px}
-  .page{grid-template-columns:1fr;gap:16px;padding:20px 16px 40px}
-  .page aside{position:static}
-  .page aside .yr{margin-bottom:12px}
-  .page aside nav{flex-direction:row;flex-wrap:wrap;gap:8px 16px}
-  .page article{min-width:0;overflow-wrap:anywhere}
-  .page h2{font-size:34px}
-  .page .stats{grid-template-columns:repeat(2,1fr)}
-  .home h1{font-size:46px}
   #tasks button{flex-basis:110px}
 }
 </style>
@@ -242,18 +336,30 @@ html.embed body{cursor:default}
 <template id="site">
 <div class="site">
   <section data-page="home" class="home">
-    <h1><span class="lang-zh">王钰淞</span><span class="lang-en">Yusong Wang</span><small><span class="lang-zh">Yusong Wang</span><span class="lang-en">王钰淞</span></small></h1>
-    <p class="tag"><span class="lang-zh">GIS × 多模态 AI × 全栈系统</span><span class="lang-en">GIS × Multimodal AI × Full-stack systems</span></p>
-    <nav><a href="#about">About</a><a href="#education">Education</a><a href="#projects">Projects</a><a href="#work">Work</a><a href="#honors">Honors</a><a href="#contact">Contact</a></nav>
+    <header class="intro">
+      <p class="eyebrow"><span class="lang-zh">作品集 ’26</span><span class="lang-en">Showcase ’26</span></p>
+      <h1><span class="lang-zh">王钰淞</span><span class="lang-en">Yusong Wang</span><small><span class="lang-zh">Yusong Wang</span><span class="lang-en">王钰淞</span></small></h1>
+      <p class="tag"><span class="lang-zh">GIS × 多模态 AI × 全栈系统</span><span class="lang-en">GIS × Multimodal AI × Full-stack systems</span></p>
+    </header>
+    <nav class="menu"><a href="#about">About</a><a href="#education">Education</a><a href="#projects">Projects</a><a href="#work">Work</a><a href="#honors">Honors</a><a href="#contact">Contact</a><a class="cv" href="CV_Yusong_Wang.pdf" target="_blank" rel="noopener"><span class="lang-zh">简历 PDF</span><span class="lang-en">Resume PDF</span></a></nav>
+    <div class="feat">
+      <div class="feat-h"><h2><span class="lang-zh">项目</span><span class="lang-en">Projects</span></h2><a href="#projects"><span class="lang-zh">全部项目 →</span><span class="lang-en">All projects →</span></a></div>
+      <div class="cards">{{CARDS}}</div>
+    </div>
   </section>
 
   <section data-page="about" class="page" hidden>
     <aside>{{ASIDE}}</aside>
     <article>
       <h2><span class="lang-zh">欢迎</span><span class="lang-en">Welcome</span></h2>
-      <p class="lead"><span class="lang-zh">我是王钰淞</span><span class="lang-en">I'm Yusong Wang</span></p>
-      <p><span class="lang-zh">香港科技大学（广州）计算媒体与艺术 MPhil，前中科院上海微系统所嵌入式工程师。我做 GIS 可视化、知识图谱、多模态检索与文化遗产计算；2026 年起以 Claude Code / Codex 多 Agent 协作，独立交付了 15 个企业业务系统和一套 LLM 网关。</span><span class="lang-en">I'm an MPhil student in Computational Media &amp; Arts at HKUST (Guangzhou) and a former embedded engineer at CAS SIMIT. I work on GIS visualization, knowledge graphs, multimodal retrieval and computational heritage. Since 2026 I have used Claude Code / Codex multi-agent workflows to ship 15 business systems and an in-house LLM gateway on my own.</span></p>
-      <p><span class="lang-zh">谢谢你来到这台电脑前。如果有问题或合作想法，欢迎 <a href="#contact">给我写信</a>，或直接发邮件到 <a href="mailto:ywang677@connect.hkust-gz.edu.cn">ywang677@connect.hkust-gz.edu.cn</a>。</span><span class="lang-en">Thanks for stopping by this computer. If you have questions or ideas, <a href="#contact">write to me</a> or email <a href="mailto:ywang677@connect.hkust-gz.edu.cn">ywang677@connect.hkust-gz.edu.cn</a>.</span></p>
+      <div class="hello">
+        <div>
+          <p class="lead"><span class="lang-zh">我是王钰淞</span><span class="lang-en">I'm Yusong Wang</span></p>
+          <p><span class="lang-zh">香港科技大学（广州）计算媒体与艺术 MPhil，前中科院上海微系统所嵌入式工程师。我做 GIS 可视化、知识图谱、多模态检索与文化遗产计算；2026 年起以 Claude Code / Codex 多 Agent 协作，独立交付了 15 个企业业务系统和一套 LLM 网关。</span><span class="lang-en">I'm an MPhil student in Computational Media &amp; Arts at HKUST (Guangzhou) and a former embedded engineer at CAS SIMIT. I work on GIS visualization, knowledge graphs, multimodal retrieval and computational heritage. Since 2026 I have used Claude Code / Codex multi-agent workflows to ship 15 business systems and an in-house LLM gateway on my own.</span></p>
+          <p><span class="lang-zh">谢谢你来到这台电脑前。如果有问题或合作想法，欢迎 <a href="#contact">给我写信</a>，或直接发邮件到 <a href="mailto:ywang677@connect.hkust-gz.edu.cn">ywang677@connect.hkust-gz.edu.cn</a>。</span><span class="lang-en">Thanks for stopping by this computer. If you have questions or ideas, <a href="#contact">write to me</a> or email <a href="mailto:ywang677@connect.hkust-gz.edu.cn">ywang677@connect.hkust-gz.edu.cn</a>.</span></p>
+        </div>
+        <figure class="me"><img src="assets/yusong_portrait.webp" width="799" height="1200" alt="王钰淞 / Yusong Wang" /><figcaption><span class="lang-zh">王钰淞，2026</span><span class="lang-en">Yusong Wang, 2026</span></figcaption></figure>
+      </div>
       <div class="box"><svg><use href="#i-pdf"/></svg><div><b><span class="lang-zh">在找我的简历？</span><span class="lang-en">Looking for my resume?</span></b><a href="CV_Yusong_Wang.pdf" target="_blank" rel="noopener"><span class="lang-zh">点这里下载 PDF</span><span class="lang-en">Click here to download it</span></a></div></div>
       <h3><span class="lang-zh">关于我</span><span class="lang-en">About me</span></h3>
       <p><span class="lang-zh">本科在广西大学读电气工程及其自动化，课余做了智慧农业和光伏运维两个“互联网+”项目，拿过全国铜奖。毕业后在中科院上海微系统所做嵌入式：从原理图、单片机固件到现场部署，做过无线水压表、LoRa 测力、消防感知，也参与了标准起草。</span><span class="lang-en">I studied Electrical Engineering &amp; Automation at Guangxi University, where I built smart-agriculture and PV-maintenance platforms for the Internet+ contest (national bronze). I then spent two years as an embedded engineer at CAS SIMIT — schematics, MCU firmware, field deployment — on wireless pressure meters, LoRa force sensing and fire-safety devices, and helped draft industry standards.</span></p>
@@ -261,7 +367,6 @@ html.embed body{cursor:default}
       <p><span class="lang-zh">2026 年，我用 Coding Agent 作为主力，从调研、设计评审一路做到部署运维，交付了园区运营、业财一体 ERP、AI 人资、LLM 网关和运维监控等一整套系统。</span><span class="lang-en">In 2026, with coding agents doing most of the typing, I took a whole set of systems from research and design review to deployment and operations: park operations, an ERP with finance, an AI HR hub, an LLM gateway and an ops monitor.</span></p>
       <h3><span class="lang-zh">我想做的事</span><span class="lang-en">What's next</span></h3>
       <p><span class="lang-zh">AI Agent 工程化落地 · 多模态 RAG · 遗产叙事。正在寻找全职机会。</span><span class="lang-en">Agentic engineering · multimodal RAG · heritage storytelling. Open to full-time roles.</span></p>
-      <figure style="max-width:220px"><img src="assets/yusong_portrait.webp" width="799" height="1200" alt="王钰淞 / Yusong Wang" loading="lazy" /><figcaption><span class="lang-zh">王钰淞，2026</span><span class="lang-en">Yusong Wang, 2026</span></figcaption></figure>
     </article>
   </section>
 
@@ -312,10 +417,10 @@ html.embed body{cursor:default}
       <h2><span class="lang-zh">项目</span><span class="lang-en">Projects</span></h2>
       <p><span class="lang-zh">从历史建筑到企业系统，从生成影像到硬件。挑一个看看：</span><span class="lang-en">From heritage buildings to business systems, from generative art to hardware. Pick one:</span></p>
       <div class="subnav">
-        <a href="#projects/heritage">HeritageExplorer</a>
-        <a href="#projects/systems"><span class="lang-zh">企业系统</span><span class="lang-en">Business systems</span></a>
-        <a href="#projects/art"><span class="lang-zh">AI 叙事影像</span><span class="lang-en">AI narrative art</span></a>
-        <a href="#projects/early"><span class="lang-zh">早期工程</span><span class="lang-en">Early engineering</span></a>
+        <a href="#projects/heritage"><i>01</i><b>HeritageExplorer</b><small><span class="lang-zh">多模态 GIS · VINCI 2025</span><span class="lang-en">Multimodal GIS · VINCI 2025</span></small></a>
+        <a href="#projects/systems"><i>02</i><b><span class="lang-zh">企业系统</span><span class="lang-en">Business systems</span></b><small><span class="lang-zh">5 套系统界面</span><span class="lang-en">5 system interfaces</span></small></a>
+        <a href="#projects/art"><i>03</i><b><span class="lang-zh">像素视频 · AI 影像</span><span class="lang-en">Pixel video · AI art</span></b><small><span class="lang-zh">35 期科普 · 15 部改编</span><span class="lang-en">35 explainers · 15 adaptations</span></small></a>
+        <a href="#projects/early"><i>04</i><b><span class="lang-zh">早期工程</span><span class="lang-en">Early engineering</span></b><small><span class="lang-zh">嵌入式 · 物联网</span><span class="lang-en">Embedded · IoT</span></small></a>
       </div>
 
       <div data-sub="heritage">
@@ -335,16 +440,22 @@ html.embed body{cursor:default}
 
       <div data-sub="systems" hidden>
         <h3><span class="lang-zh">企业系统 · AI 原生交付（2026）</span><span class="lang-en">Business systems · AI-native delivery (2026)</span></h3>
-        <p><span class="lang-zh">以 Claude Code / Codex 为主力，独立承担调研、设计评审、实现、测试、部署与运维；协作规范按“宪法—路由—Skills—Hooks 门禁—评测”五层组织，每个里程碑都有真测证据和独立盲审。</span><span class="lang-en">Claude Code / Codex do most of the typing; I own research, design review, implementation, testing, deployment and operations. The workflow is layered as constitution → router → skills → hook gates → evals, with real-run evidence and a blind review at every milestone.</span></p>
+        <div class="grid two">{{WORKS}}</div>
         <div class="stats"><div><b>15</b><span class="lang-zh">在用系统</span><span class="lang-en">systems in use</span></div><div><b>16</b><span class="lang-zh">主力仓库</span><span class="lang-en">main repos</span></div><div><b>~2,800</b><span class="lang-zh">次提交</span><span class="lang-en">commits</span></div><div><b>347</b><span class="lang-zh">例 ERP 测试</span><span class="lang-en">ERP tests</span></div></div>
-        {{WORKS}}
+        <p><span class="lang-zh">以 Claude Code / Codex 为主力，独立承担调研、设计评审、实现、测试、部署与运维；协作规范按“宪法—路由—Skills—Hooks 门禁—评测”五层组织，每个里程碑都有真测证据和独立盲审。</span><span class="lang-en">Claude Code / Codex do most of the typing; I own research, design review, implementation, testing, deployment and operations. The workflow is layered as constitution → router → skills → hook gates → evals, with real-run evidence and a blind review at every milestone.</span></p>
       </div>
 
-
       <div data-sub="art" hidden>
-        <h3><span class="lang-zh">AI 叙事影像与生成媒介</span><span class="lang-en">AI narrative &amp; generative media</span></h3>
-        <p><span class="lang-zh">从历史文本、风格转译到实时生成的跨媒介创作。点图片可以在看图程序里打开。</span><span class="lang-en">Cross-media work from historical texts and style transfer to realtime generation. Click an image to open it in the viewer.</span></p>
-        <div class="grid">{{ART}}</div>
+        <h3><span class="lang-zh">像素视频工作流</span><span class="lang-en">Pixel video workflow</span></h3>
+        <p class="meta">Claude Code Skills · Python · NumPy · Pillow · edge-tts · ffmpeg</p>
+        <p><span class="lang-zh">不用剪辑软件，每一帧都由代码画出来。我把选题、写稿、配音、逐帧绘制、配乐和封面沉淀成三个可复用的 Claude Code Skill（科普视频、像素画风、小说改编），由 Coding Agent 把一个选题做到成片。已完成《天文五词》《天文十问》《三体十词》共 35 期科普短片，以及《山》《哨兵》《诗云》等 15 部科幻短篇改编。</span><span class="lang-en">No editing software: every frame is drawn by code. I turned topic selection, scripting, voice-over, frame-by-frame drawing, music and covers into three reusable Claude Code skills (science explainers, pixel style, story adaptations), so a coding agent can take one topic all the way to a finished film. So far: 35 science shorts across three series, plus 15 adaptations of sci-fi short stories such as The Mountain, The Sentinel and Poetry Cloud.</span></p>
+        {{PIXEL1}}
+        <div class="stats"><div><b>35</b><span class="lang-zh">期科普短片</span><span class="lang-en">science shorts</span></div><div><b>15</b><span class="lang-zh">部小说改编</span><span class="lang-en">story adaptations</span></div><div><b>640×360</b><span class="lang-zh">像素画布</span><span class="lang-en">pixel canvas</span></div><div><b>3</b><span class="lang-zh">个可复用 Skill</span><span class="lang-en">reusable skills</span></div></div>
+        <ol class="flow"><li><b><span class="lang-zh">选题与写稿</span><span class="lang-en">Topic &amp; script</span></b><span class="lang-zh">每期约 12 句旁白，原著情节和科学事实逐条核实。</span><span class="lang-en">About 12 narration lines per episode; plot details and science facts are checked one by one.</span></li><li><b><span class="lang-zh">配音与时间轴</span><span class="lang-en">Voice &amp; timeline</span></b><span class="lang-zh">edge-tts 合成旁白，按句生成时间轴。</span><span class="lang-en">edge-tts narration, with a timeline generated line by line.</span></li><li><b><span class="lang-zh">逐帧像素画</span><span class="lang-en">Frame-by-frame pixels</span></b><span class="lang-zh">640×360 画布，Pillow + NumPy 逐帧绘制，整数倍放大到 1080p；轨道、等值线这类画面按公式算。</span><span class="lang-en">A 640×360 canvas drawn frame by frame with Pillow + NumPy and integer-scaled to 1080p; orbits and contours are computed, not posed.</span></li><li><b><span class="lang-zh">配乐与音效</span><span class="lang-en">Music &amp; sound</span></b><span class="lang-zh">代码合成的 8-bit 配乐分段编曲，音效与画面逐帧对齐。</span><span class="lang-en">Code-synthesised 8-bit music arranged in sections, with effects aligned to the frame.</span></li><li><b><span class="lang-zh">渲染与检查</span><span class="lang-en">Render &amp; checks</span></b><span class="lang-zh">ffmpeg 合成成片，再做抽帧检查、缺字检查和响度校验。</span><span class="lang-en">ffmpeg assembles the film, followed by still-frame, missing-glyph and loudness checks.</span></li><li><b><span class="lang-zh">封面与交付</span><span class="lang-en">Covers &amp; delivery</span></b><span class="lang-zh">统一版式的 16:9 / 3:4 封面，带配乐和无配乐两版成片。</span><span class="lang-en">Covers in one shared 16:9 / 3:4 layout, and two cuts with and without music.</span></li></ol>
+        <div class="grid three">{{PIXEL}}</div>
+        <h3 data-id="ai"><span class="lang-zh">AI 叙事影像</span><span class="lang-en">AI narrative art</span></h3>
+        <p><span class="lang-zh">从历史文本、风格转译到实时生成的跨媒介创作，点图片可放大。</span><span class="lang-en">Cross-media work from historical texts and style transfer to realtime generation. Click an image to enlarge it.</span></p>
+        <div class="grid mini">{{ART}}</div>
       </div>
 
       <div data-sub="early" hidden>
@@ -439,6 +550,7 @@ addEventListener('message',function(e){
 var desk=$('#desktop'),tasks=$('#tasks'),Z=10,wins={};
 function bounds(){return desk.getBoundingClientRect()}
 function focusWin(w){if(!w)return;Z++;w.el.style.zIndex=Z;Object.keys(wins).forEach(function(k){var o=wins[k];o.el.classList.toggle('active',o===w&&!o.el.hidden);o.task.classList.toggle('on',o===w&&!o.el.hidden)})}
+function focusTop(){var top=null;Object.keys(wins).forEach(function(k){var o=wins[k];if(!o.el.hidden&&(!top||+o.el.style.zIndex>+top.el.style.zIndex))top=o});if(top)focusWin(top)}
 function makeWin(id,o){
   if(wins[id]){var w0=wins[id];w0.el.hidden=false;focusWin(w0);return w0}
   var el=document.createElement('section');el.className='win';el.setAttribute('role','dialog');el.setAttribute('aria-label',o.label||id);
@@ -463,8 +575,8 @@ function makeWin(id,o){
   task.addEventListener('click',function(){if(!el.hidden&&el.classList.contains('active')){el.hidden=true;focusWin(null);task.classList.remove('on')}else{el.hidden=false;focusWin(w)}});
   el.addEventListener('pointerdown',function(){focusWin(w)});
   $$('.tb [data-act]',el).forEach(function(bt){bt.addEventListener('click',function(e){e.stopPropagation();var a=bt.dataset.act;
-    if(a==='close'){el.remove();task.remove();delete wins[id];if(o.onclose)o.onclose()}
-    else if(a==='min'){el.hidden=true;task.classList.remove('on');el.classList.remove('active')}
+    if(a==='close'){el.remove();task.remove();delete wins[id];if(o.onclose)o.onclose();focusTop()}
+    else if(a==='min'){el.hidden=true;task.classList.remove('on');el.classList.remove('active');focusTop()}
     else if(a==='max'){el.classList.toggle('max')}})});
   $('.tb',el).addEventListener('dblclick',function(e){if(!o.fixed&&!e.target.closest('button'))el.classList.toggle('max')});
   drag($('.tb',el),el,'move');var g=$('.grip',el);if(g)drag(g,el,'size');
@@ -494,11 +606,30 @@ var WORKS=[
   ['enterprise-portal','企业应用门户','Enterprise application portal','按企业管理、园区运营与技术服务组织应用，并提供运维中心、文档、产品资料与代码仓库入口。','Applications grouped by enterprise management, park operations and technical services, with links to ops, docs, product materials and repositories.',2400,1096]
 ];
 var ART=[['ai_cover','作品集封面','Portfolio cover',1600,900],['ai_method','创作方法地图','Creative method map',1280,936],['ai_lishishi','李师师 · 分镜','Li Shishi · storyboard',1280,752],['ai_straw_boats','草船借箭','Straw Boats',1280,874],['ai_star','The Star · 改写','The Star · rewrite',1280,714],['ai_twodimensional','二向箔','Two-Dimensional Foil',1280,720],['ai_qingming','清明上河图 RPG','Qingming RPG',1280,954],['ai_boat_style','训练与风格转译','Training & style transfer',1280,712],['ai_touchdesigner','TouchDesigner 实时','TouchDesigner realtime',1280,720]];
+var PIXEL=[
+  ['shan','《山》','The Mountain','刘慈欣原著改编 · 像素短片','after Liu Cixin · pixel short'],
+  ['gravitational-waves','引力波','Gravitational waves','天文五词 · 第二季','Five Astronomy Words · season 2'],
+  ['habitable-zone','宜居带','Habitable zone','天文五词 · 第三季','Five Astronomy Words · season 3'],
+  ['cepheid','造父变星','Cepheid variables','天文五词 · 第四季','Five Astronomy Words · season 4'],
+  ['tidal-locking','潮汐锁定','Tidal locking','天文五词 · 第二季','Five Astronomy Words · season 2'],
+  ['sentinel','《哨兵》','The Sentinel','阿瑟·克拉克原著改编','after Arthur C. Clarke'],
+  ['minority-report','《少数派报告》','The Minority Report','菲利普·迪克原著改编','after Philip K. Dick']
+];
+/* 主页上的项目卡片：[缩略图, 链接, 中文名, 英文名, 中文小标, 英文小标, 样式] */
+var CARDS=[['heritage','#projects/heritage','HeritageExplorer','HeritageExplorer','多模态 GIS · VINCI 2025','Multimodal GIS · VINCI 2025','']]
+  .concat(WORKS.map(function(w){return [w[0],'#projects/systems/'+w[0],w[1],w[2],'企业系统','Business system','']}))
+  .concat([['pixel','#projects/art','像素视频工作流','Pixel video workflow','35 期科普 · 15 部改编','35 explainers · 15 adaptations',''],
+    ['ai_cover','#projects/art/ai','AI 叙事影像','AI narrative art','生成媒介','Generative media',''],
+    [null,'#projects/early','早期工程','Early engineering','嵌入式 · 物联网 · 2017–22','Embedded · IoT · 2017–22','txt']]);
+function pixelFig(p){return '<figure><img src="'+('assets/pixel/'+p[0]+'.webp')+'" width="1280" height="720" alt="'+p[1]+' / '+p[2]+'" loading="lazy" data-view /><figcaption><b>'+L(p[1],p[2])+'</b><br />'+L(p[3],p[4])+'</figcaption></figure>'}
 function aside(){return '<div class="nm">'+L('王钰淞','Yusong<br />Wang')+'</div><div class="yr">'+L('作品集 ’26','Showcase ’26')+'</div><nav><a href="#home">Home</a><a href="#about">About</a><a href="#education">Education</a><a href="#projects">Projects</a><a href="#work">Work</a><a href="#honors">Honors</a><a href="#contact">Contact</a></nav>'}
 function siteNode(){
   var html=$('#site').innerHTML.split('{{ASIDE}}').join(aside())
-    .replace('{{WORKS}}',WORKS.map(function(w){return '<figure><img src="'+('assets/work/'+w[0]+'.webp')+'" width="'+w[5]+'" height="'+w[6]+'" alt="'+w[1]+' / '+w[2]+'" loading="lazy" data-view /><figcaption><b>'+L(w[1],w[2])+'</b><br />'+L(w[3],w[4])+'</figcaption></figure>'}).join(''))
-    .replace('{{ART}}',ART.map(function(a){return '<figure><img src="'+('assets/ai_portfolio/'+a[0]+'.jpg')+'" width="'+a[3]+'" height="'+a[4]+'" alt="'+a[1]+' / '+a[2]+'" loading="lazy" data-view /><figcaption>'+L(a[1],a[2])+'</figcaption></figure>'}).join(''));
+    .replace('{{WORKS}}',WORKS.map(function(w){return '<figure data-id="'+w[0]+'"><img src="'+('assets/thumb/'+w[0]+'.webp')+'" data-full="'+('assets/work/'+w[0]+'.webp')+'" width="'+w[5]+'" height="'+w[6]+'" alt="'+w[1]+' / '+w[2]+'" loading="lazy" data-view /><figcaption><b>'+L(w[1],w[2])+'</b><br />'+L(w[3],w[4])+'</figcaption></figure>'}).join(''))
+    .replace('{{CARDS}}',CARDS.map(function(c){return '<a class="card'+(c[6]?' '+c[6]:'')+'" href="'+c[1]+'">'+(c[0]?'<img src="'+('assets/thumb/'+c[0]+'.webp')+'" alt="" loading="lazy" />':'')+'<span class="cap"><span class="k">'+L(c[4],c[5])+'</span><b>'+L(c[2],c[3])+'</b></span></a>'}).join(''))
+    .replace('{{PIXEL1}}',pixelFig(PIXEL[0]))
+    .replace('{{PIXEL}}',PIXEL.slice(1).map(pixelFig).join(''))
+    .replace('{{ART}}',ART.map(function(a){return '<figure><img src="'+('assets/thumb/'+a[0]+'.webp')+'" data-full="'+('assets/ai_portfolio/'+a[0]+'.jpg')+'" width="'+a[3]+'" height="'+a[4]+'" alt="'+a[1]+' / '+a[2]+'" loading="lazy" data-view /><figcaption>'+L(a[1],a[2])+'</figcaption></figure>'}).join(''));
   var t=document.createElement('template');t.innerHTML=html;return t.content.firstElementChild;
 }
 var PAGES={home:['主页','Home'],about:['关于我','About Me'],education:['教育经历','Education'],work:['工作经历','Work'],honors:['奖项','Honors'],projects:['项目','Projects'],contact:['联系','Contact']};
@@ -510,6 +641,8 @@ function route(pane,hash){
   $$('aside nav a',site).forEach(function(a){a.classList.toggle('cur',a.getAttribute('href')==='#'+page)});
   if(page==='projects'){sub=sub||'heritage';$$('[data-sub]',site).forEach(function(s){s.hidden=s.dataset.sub!==sub});$$('.subnav a',site).forEach(function(a){a.classList.toggle('cur',a.getAttribute('href')==='#projects/'+sub)})}
   pane.scrollTop=0;
+  var to=h[2]&&$('[data-id="'+h[2].replace(/[^\w-]/g,'')+'"]',site);
+  if(to)pane.scrollTop=Math.max(0,to.getBoundingClientRect().top-pane.getBoundingClientRect().top-96);
   var w=wins.show;if(w){$('.tt',w.el).innerHTML=$('span',w.task).innerHTML=winTitle('#'+page)}
   if(w)$('.sb span',w.el).textContent='http://yusong.wang/'+(page==='home'?'':page+(sub&&page==='projects'?'/'+sub:''));
 }
@@ -518,7 +651,7 @@ function openShow(hash){
   var pane=div('pane');pane.style.padding='0';pane.appendChild(siteNode());
   pane.addEventListener('click',function(e){
     var a=e.target.closest('a[href^="#"]');if(a){e.preventDefault();route(pane,a.getAttribute('href'));return}
-    var im=e.target.closest('img[data-view]');if(im){openViewer(im.getAttribute('src'),im.getAttribute('alt'))}
+    var im=e.target.closest('img[data-view]');if(im){openViewer(im.dataset.full||im.getAttribute('src'),im.getAttribute('alt'))}
   });
   var f=$('#mailform',pane);
   f.addEventListener('submit',function(e){e.preventDefault();var n=$('#mf-name',f).value.trim(),m=$('#mf-msg',f).value.trim();
@@ -574,7 +707,7 @@ document.addEventListener('keydown',function(e){if(e.key!=='Escape')return;if(!s
 
 /* ---------- 开机 ---------- */
 var booted=false;
-function powerOn(){if(booted)return;booted=true;$('#boot').hidden=true;openShow()}
+function powerOn(){if(booted)return;booted=true;$('#boot').hidden=true;openShow('#about')}
 /* 独立打开时直接开机；嵌在显示器里时等外层点“开始” */
 if(!EMBED)powerOn();else{$('#boot').hidden=false;post({type:'ready'})}
 })();
