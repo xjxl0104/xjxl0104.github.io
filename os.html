@@ -108,35 +108,6 @@ img{-webkit-user-drag:none}
 .site p a,.site li a,.site figcaption a,.site .box a{color:inherit;text-decoration:underline;text-decoration-color:var(--orange);text-decoration-thickness:2px;text-underline-offset:3px;transition:background-color .15s}
 .site p a:hover,.site li a:hover,.site figcaption a:hover,.site .box a:hover{background:var(--yellow)}
 
-/* 主页：名字 + 一条目录，下面直接摆项目 */
-.home .intro{padding:24px 36px 20px}
-.home .eyebrow{display:inline-block;margin:0 0 10px;padding:1px 8px;border:1px solid var(--ink);font:600 12px/20px var(--sans);letter-spacing:.08em;text-transform:uppercase}
-.home h1{margin:0;font:800 clamp(44px,7.6cqi,76px)/1 var(--sans);letter-spacing:-.035em}
-html[data-lang="zh"] .home h1{letter-spacing:.02em}
-.home h1 small{display:inline-block;margin-left:.6em;font-size:.28em;line-height:1.2;font-weight:600;letter-spacing:.02em;color:var(--mute)}
-.home .tag{margin:10px 0 0;font:500 16px/1.5 var(--sans)}
-.home .menu{display:flex;flex-wrap:wrap;border:solid var(--ink);border-width:1px 0;font:600 13px/1.2 var(--sans);letter-spacing:.06em;text-transform:uppercase}
-.home .menu a{flex:1 0 auto;padding:10px 14px;text-align:center;color:inherit;text-decoration:none;box-shadow:1px 0 0 var(--ink);transition:background-color .12s,color .12s}
-.home .menu a:hover{background:var(--ink);color:var(--paper)}
-.home .menu a.cv{background:var(--yellow)}
-.home .menu a.cv:hover{background:var(--orange);color:var(--ink)}
-.home .feat{padding:18px 36px 44px}
-.home .feat-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:12px}
-.home .feat-h h2{margin:0;font:800 22px/1.2 var(--sans);letter-spacing:-.01em}
-.home .feat-h a{font:600 13px/1.2 var(--sans);color:inherit;text-decoration:underline;text-decoration-color:var(--orange);text-decoration-thickness:2px;text-underline-offset:3px}
-.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.card{display:flex;flex-direction:column;min-width:0;border:1px solid var(--ink);background:var(--paper);color:var(--ink);text-decoration:none;transition:transform .15s,box-shadow .15s}
-.card:hover,.card:focus-visible{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink)}
-.card:active{transform:none;box-shadow:none}
-.card img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;object-position:top left;border-bottom:1px solid var(--ink);background:var(--cream)}
-.card .cap{display:flex;flex-direction:column;gap:3px;padding:9px 11px 10px}
-.card .k{font:600 11px/1.3 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
-.card b{font:700 15px/1.25 var(--sans);letter-spacing:-.01em}
-.card.txt{justify-content:space-between;padding:11px 12px 12px;background:var(--orange)}
-.card.txt .k{color:var(--ink)}
-.card.txt b{font-size:20px;line-height:1.15}
-.card.txt b::after{content:" →"}
-
 /* 内页：左栏目录，右栏正文，正文顶上一条本页的色带 */
 [data-page="about"]{--acc:var(--pink)}
 [data-page="education"]{--acc:var(--yellow)}
@@ -222,11 +193,6 @@ html[data-lang="zh"] .page h2{letter-spacing:.01em}
 
 /* 窗口变窄（手机上窗口是铺满的）时，网站自己改成单栏 */
 @container (max-width:640px){
-  .home .intro{padding:22px 16px 18px}
-  .home h1 small{display:block;margin:10px 0 0;font-size:18px}
-  .home .menu a{flex-basis:33.33%}
-  .home .feat{padding:20px 16px 36px}
-  .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .page{grid-template-columns:1fr}
   .page aside{position:static;padding:16px 16px 12px}
   .page aside .yr{margin-bottom:12px}
@@ -256,6 +222,10 @@ html[data-lang="zh"] .page h2{letter-spacing:.01em}
 .dlgbtns{display:flex;justify-content:center;gap:8px;padding:10px}
 .dlgbtns a,.dlgbtns button{min-width:80px;padding:4px 12px;border:0;background:var(--face);box-shadow:var(--out);color:#000;text-decoration:none;text-align:center}
 .dlgbtns a:active,.dlgbtns button:active{box-shadow:var(--in)}
+
+/* 屏保：没人坐到屏幕前时，一块 YW 在黑屏上弹来弹去 */
+#saver{position:fixed;inset:0;z-index:90;background:#000;overflow:hidden;cursor:none}
+#saver svg{position:absolute;left:0;top:0;width:176px;height:112px;shape-rendering:crispEdges;color:#ff4d00;will-change:transform}
 
 /* CRT：只在嵌进三维显示器时叠加扫描线和暗角 */
 #crt{position:fixed;inset:0;pointer-events:none;z-index:200;display:none;
@@ -329,25 +299,13 @@ html.embed body{cursor:default}
   </ul>
 </div>
 
+<div id="saver" hidden aria-hidden="true"><svg viewBox="0 0 11 7"><path d="M0 0h1v1h-1zM4 0h1v1h-1zM0 1h1v1h-1zM4 1h1v1h-1zM1 2h1v1h-1zM3 2h1v1h-1zM2 3h1v1h-1zM2 4h1v1h-1zM2 5h1v1h-1zM2 6h1v1h-1zM6 0h1v1h-1zM10 0h1v1h-1zM6 1h1v1h-1zM10 1h1v1h-1zM6 2h1v1h-1zM10 2h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM10 3h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM10 4h1v1h-1zM6 5h2v1h-2zM9 5h2v1h-2zM6 6h1v1h-1zM10 6h1v1h-1z" fill="currentColor"/></svg></div>
 <div id="boot" hidden aria-hidden="true"></div>
 <div id="crt" aria-hidden="true"></div>
 
 <!-- ===== 作品集网站内容（放进“我的作品集”窗口） ===== -->
 <template id="site">
 <div class="site">
-  <section data-page="home" class="home">
-    <header class="intro">
-      <p class="eyebrow"><span class="lang-zh">作品集 ’26</span><span class="lang-en">Showcase ’26</span></p>
-      <h1><span class="lang-zh">王钰淞</span><span class="lang-en">Yusong Wang</span><small><span class="lang-zh">Yusong Wang</span><span class="lang-en">王钰淞</span></small></h1>
-      <p class="tag"><span class="lang-zh">GIS × 多模态 AI × 全栈系统</span><span class="lang-en">GIS × Multimodal AI × Full-stack systems</span></p>
-    </header>
-    <nav class="menu"><a href="#about">About</a><a href="#education">Education</a><a href="#projects">Projects</a><a href="#work">Work</a><a href="#honors">Honors</a><a href="#contact">Contact</a><a class="cv" href="CV_Yusong_Wang.pdf" target="_blank" rel="noopener"><span class="lang-zh">简历 PDF</span><span class="lang-en">Resume PDF</span></a></nav>
-    <div class="feat">
-      <div class="feat-h"><h2><span class="lang-zh">项目</span><span class="lang-en">Projects</span></h2><a href="#projects"><span class="lang-zh">全部项目 →</span><span class="lang-en">All projects →</span></a></div>
-      <div class="cards">{{CARDS}}</div>
-    </div>
-  </section>
-
   <section data-page="about" class="page" hidden>
     <aside>{{ASIDE}}</aside>
     <article>
@@ -541,6 +499,7 @@ tick();setInterval(tick,10000);
 addEventListener('message',function(e){
   if(e.origin!==location.origin||!e.data||!e.data.yw)return;
   if(e.data.type==='power')powerOn();
+  if(e.data.type==='focus'){if(e.data.on)wake();else if(booted){clearTimeout(napTimer);napTimer=setTimeout(function(){saver(true)},1200)}}
   if(e.data.type==='ping')post({type:'ready'});
   if(e.data.type==='lang'&&e.data.lang!==d.dataset.lang){d.dataset.lang=e.data.lang;tick()}
   if(e.data.type==='sound'){sound=e.data.on;paintSnd()}
@@ -615,28 +574,21 @@ var PIXEL=[
   ['sentinel','《哨兵》','The Sentinel','阿瑟·克拉克原著改编','after Arthur C. Clarke'],
   ['minority-report','《少数派报告》','The Minority Report','菲利普·迪克原著改编','after Philip K. Dick']
 ];
-/* 主页上的项目卡片：[缩略图, 链接, 中文名, 英文名, 中文小标, 英文小标, 样式] */
-var CARDS=[['heritage','#projects/heritage','HeritageExplorer','HeritageExplorer','多模态 GIS · VINCI 2025','Multimodal GIS · VINCI 2025','']]
-  .concat(WORKS.map(function(w){return [w[0],'#projects/systems/'+w[0],w[1],w[2],'企业系统','Business system','']}))
-  .concat([['pixel','#projects/art','像素视频工作流','Pixel video workflow','35 期科普 · 15 部改编','35 explainers · 15 adaptations',''],
-    ['ai_cover','#projects/art/ai','AI 叙事影像','AI narrative art','生成媒介','Generative media',''],
-    [null,'#projects/early','早期工程','Early engineering','嵌入式 · 物联网 · 2017–22','Embedded · IoT · 2017–22','txt']]);
 function pixelFig(p){return '<figure><img src="'+('assets/pixel/'+p[0]+'.webp')+'" width="1280" height="720" alt="'+p[1]+' / '+p[2]+'" loading="lazy" data-view /><figcaption><b>'+L(p[1],p[2])+'</b><br />'+L(p[3],p[4])+'</figcaption></figure>'}
-function aside(){return '<div class="nm">'+L('王钰淞','Yusong<br />Wang')+'</div><div class="yr">'+L('作品集 ’26','Showcase ’26')+'</div><nav><a href="#home">Home</a><a href="#about">About</a><a href="#education">Education</a><a href="#projects">Projects</a><a href="#work">Work</a><a href="#honors">Honors</a><a href="#contact">Contact</a></nav>'}
+function aside(){return '<div class="nm">'+L('王钰淞','Yusong<br />Wang')+'</div><div class="yr">'+L('作品集 ’26','Showcase ’26')+'</div><nav><a href="#about">About</a><a href="#education">Education</a><a href="#projects">Projects</a><a href="#work">Work</a><a href="#honors">Honors</a><a href="#contact">Contact</a></nav>'}
 function siteNode(){
   var html=$('#site').innerHTML.split('{{ASIDE}}').join(aside())
     .replace('{{WORKS}}',WORKS.map(function(w){return '<figure data-id="'+w[0]+'"><img src="'+('assets/thumb/'+w[0]+'.webp')+'" data-full="'+('assets/work/'+w[0]+'.webp')+'" width="'+w[5]+'" height="'+w[6]+'" alt="'+w[1]+' / '+w[2]+'" loading="lazy" data-view /><figcaption><b>'+L(w[1],w[2])+'</b><br />'+L(w[3],w[4])+'</figcaption></figure>'}).join(''))
-    .replace('{{CARDS}}',CARDS.map(function(c){return '<a class="card'+(c[6]?' '+c[6]:'')+'" href="'+c[1]+'">'+(c[0]?'<img src="'+('assets/thumb/'+c[0]+'.webp')+'" alt="" loading="lazy" />':'')+'<span class="cap"><span class="k">'+L(c[4],c[5])+'</span><b>'+L(c[2],c[3])+'</b></span></a>'}).join(''))
     .replace('{{PIXEL1}}',pixelFig(PIXEL[0]))
     .replace('{{PIXEL}}',PIXEL.slice(1).map(pixelFig).join(''))
     .replace('{{ART}}',ART.map(function(a){return '<figure><img src="'+('assets/thumb/'+a[0]+'.webp')+'" data-full="'+('assets/ai_portfolio/'+a[0]+'.jpg')+'" width="'+a[3]+'" height="'+a[4]+'" alt="'+a[1]+' / '+a[2]+'" loading="lazy" data-view /><figcaption>'+L(a[1],a[2])+'</figcaption></figure>'}).join(''));
   var t=document.createElement('template');t.innerHTML=html;return t.content.firstElementChild;
 }
-var PAGES={home:['主页','Home'],about:['关于我','About Me'],education:['教育经历','Education'],work:['工作经历','Work'],honors:['奖项','Honors'],projects:['项目','Projects'],contact:['联系','Contact']};
-function winTitle(hash){var p=PAGES[(hash||'#home').slice(1).split('/')[0]]||PAGES.home;return L('王钰淞 - '+p[0],'Yusong Wang - '+p[1])}
+var PAGES={about:['关于我','About Me'],education:['教育经历','Education'],work:['工作经历','Work'],honors:['奖项','Honors'],projects:['项目','Projects'],contact:['联系','Contact']};
+function winTitle(hash){var p=PAGES[(hash||'#about').slice(1).split('/')[0]]||PAGES.about;return L('王钰淞 - '+p[0],'Yusong Wang - '+p[1])}
 function route(pane,hash){
-  var h=(hash||'#home').slice(1).split('/'),page=h[0]||'home',sub=h[1];if(page==='experience')page='work'; // 旧链接
-  var site=$('.site',pane);if(!$('[data-page="'+page+'"]',site))page='home';
+  var h=(hash||'#about').slice(1).split('/'),page=h[0]||'about',sub=h[1];if(page==='experience')page='work'; // 旧链接
+  var site=$('.site',pane);if(!$('[data-page="'+page+'"]',site))page='about';
   $$('[data-page]',site).forEach(function(s){s.hidden=s.dataset.page!==page});
   $$('aside nav a',site).forEach(function(a){a.classList.toggle('cur',a.getAttribute('href')==='#'+page)});
   if(page==='projects'){sub=sub||'heritage';$$('[data-sub]',site).forEach(function(s){s.hidden=s.dataset.sub!==sub});$$('.subnav a',site).forEach(function(a){a.classList.toggle('cur',a.getAttribute('href')==='#projects/'+sub)})}
@@ -644,7 +596,7 @@ function route(pane,hash){
   var to=h[2]&&$('[data-id="'+h[2].replace(/[^\w-]/g,'')+'"]',site);
   if(to)pane.scrollTop=Math.max(0,to.getBoundingClientRect().top-pane.getBoundingClientRect().top-96);
   var w=wins.show;if(w){$('.tt',w.el).innerHTML=$('span',w.task).innerHTML=winTitle('#'+page)}
-  if(w)$('.sb span',w.el).textContent='http://yusong.wang/'+(page==='home'?'':page+(sub&&page==='projects'?'/'+sub:''));
+  if(w)$('.sb span',w.el).textContent='http://yusong.wang/'+page+(sub&&page==='projects'?'/'+sub:'');
 }
 function openShow(hash){
   if(wins.show){wins.show.el.hidden=false;focusWin(wins.show);if(hash)route($('.pane',wins.show.el),hash);return}
@@ -657,8 +609,8 @@ function openShow(hash){
   f.addEventListener('submit',function(e){e.preventDefault();var n=$('#mf-name',f).value.trim(),m=$('#mf-msg',f).value.trim();
     location.href='mailto:ywang677@connect.hkust-gz.edu.cn?subject='+encodeURIComponent((d.dataset.lang==='en'?'Hello from ':'来自作品集的问候 · ')+(n||'a visitor'))+'&body='+encodeURIComponent(m)});
   var b=bounds();
-  makeWin('show',{icon:'i-show',title:winTitle(hash||'#home'),content:pane,status:'© 2026 Yusong Wang',w:Math.min(b.width-90,900),h:b.height-40,x:Math.max(84,(b.width-Math.min(b.width-90,900))/2+30),y:12});
-  route(pane,hash||'#home');
+  makeWin('show',{icon:'i-show',title:winTitle(hash||'#about'),content:pane,status:'© 2026 Yusong Wang',w:Math.min(b.width-90,900),h:b.height-40,x:Math.max(84,(b.width-Math.min(b.width-90,900))/2+30),y:12});
+  route(pane,hash||'#about');
 }
 
 /* ---------- 其他程序 ---------- */
@@ -707,7 +659,25 @@ document.addEventListener('keydown',function(e){if(e.key!=='Escape')return;if(!s
 
 /* ---------- 开机 ---------- */
 var booted=false;
-function powerOn(){if(booted)return;booted=true;$('#boot').hidden=true;openShow('#about')}
+function powerOn(){if(booted)return;booted=true;$('#boot').hidden=true;if(EMBED)saver(true);else openShow('#about')}
+/* 屏保只在嵌进三维显示器时出现：坐到屏幕前（外层发 focus，或者直接点到了屏幕）才收起，第一次收起时打开“关于我” */
+var sv=$('#saver'),svLogo=$('svg',sv),svRaf=0,napTimer=0,greeted=false;
+var SV_COLORS=['#ff4d00','#1fb37b','#e8b4e2','#ffc20e','#c3c5f6','#f8f4e4'];
+function saver(on){
+  clearTimeout(napTimer);cancelAnimationFrame(svRaf);sv.hidden=!on;if(!on)return;
+  var W=innerWidth,H=innerHeight,w=176,h=112,x=Math.random()*(W-w),y=Math.random()*(H-h),vx=70,vy=52,ci=0,last=0;
+  function paint(){svLogo.style.transform='translate('+Math.round(x)+'px,'+Math.round(y)+'px)'}
+  function hit(){ci=(ci+1)%SV_COLORS.length;svLogo.style.color=SV_COLORS[ci]}
+  if(reduce){x=(W-w)/2;y=(H-h)/2;paint();return}
+  (function step(now){
+    var dt=last?Math.min(.05,(now-last)/1000):0;last=now;x+=vx*dt;y+=vy*dt;
+    if(x<=0||x>=W-w){vx=-vx;x=Math.max(0,Math.min(W-w,x));hit()}
+    if(y<=0||y>=H-h){vy=-vy;y=Math.max(0,Math.min(H-h,y));hit()}
+    paint();svRaf=requestAnimationFrame(step);
+  })(0);
+}
+function wake(){clearTimeout(napTimer);if(!booted)return;saver(false);if(!greeted){greeted=true;openShow('#about')}}
+sv.addEventListener('pointerdown',function(e){e.preventDefault();e.stopPropagation();wake()});
 /* 独立打开时直接开机；嵌在显示器里时等外层点“开始” */
 if(!EMBED)powerOn();else{$('#boot').hidden=false;post({type:'ready'})}
 })();

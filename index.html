@@ -270,7 +270,7 @@ window.ywLoad = (function () {
     if (entered) return; entered = true;
     $('#hint').classList.remove('on');
     if (v.duration && v.currentTime < v.duration - 0.05) { v.pause(); try { v.currentTime = v.duration; } catch (e) {} } // 跳过：直接到最后一帧
-    place(); d.classList.add('at-screen'); os.classList.add('on');
+    place(); d.classList.add('at-screen'); os.classList.add('on'); toOS({ type: 'focus', on: true });
     setTimeout(function () { try { os.focus(); } catch (e) {} }, 400);
     var a = document.createElement('a'); a.id = 'filmFull'; a.href = 'os.html'; a.textContent = '全屏查看 · Full screen'; document.body.appendChild(a);
   }
@@ -712,6 +712,7 @@ function go(next) {
   const t = (performance.now() - clock0) / 1000;
   from = { pos: camera.position.clone(), look: target.clone() };
   tween = { t0: performance.now(), dur: reduce ? 1 : next === 'screen' || state === 'screen' ? 1100 : 1700, to: next };
+  if ((next === 'screen') !== (state === 'screen')) toOS({ type: 'focus', on: next === 'screen' });
   state = next;
   d.classList.toggle('at-screen', next === 'screen');
   d.classList.toggle('at-desk', next === 'desk');
