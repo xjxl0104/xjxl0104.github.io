@@ -223,9 +223,9 @@ html[data-lang="zh"] .page h2{letter-spacing:.01em}
 .dlgbtns a,.dlgbtns button{min-width:80px;padding:4px 12px;border:0;background:var(--face);box-shadow:var(--out);color:#000;text-decoration:none;text-align:center}
 .dlgbtns a:active,.dlgbtns button:active{box-shadow:var(--in)}
 
-/* 屏保：没人坐到屏幕前时，一块 YW 在黑屏上弹来弹去 */
-#saver{position:fixed;inset:0;z-index:90;background:#000;overflow:hidden;cursor:none}
-#saver svg{position:absolute;left:0;top:0;width:176px;height:112px;shape-rendering:crispEdges;color:#ff4d00;will-change:transform}
+/* 屏保：没人坐到屏幕前时，一块 YW 在原来那种青绿底上弹来弹去 */
+#saver{position:fixed;inset:0;z-index:90;background:#2e7d7a;overflow:hidden;cursor:none}
+#saver svg{position:absolute;left:0;top:0;width:176px;height:112px;shape-rendering:crispEdges;color:#f8f4e4;will-change:transform}
 
 /* CRT：只在嵌进三维显示器时叠加扫描线和暗角 */
 #crt{position:fixed;inset:0;pointer-events:none;z-index:200;display:none;
@@ -662,7 +662,7 @@ var booted=false;
 function powerOn(){if(booted)return;booted=true;$('#boot').hidden=true;if(EMBED)saver(true);else openShow('#about')}
 /* 屏保只在嵌进三维显示器时出现：坐到屏幕前（外层发 focus，或者直接点到了屏幕）才收起，第一次收起时打开“关于我” */
 var sv=$('#saver'),svLogo=$('svg',sv),svRaf=0,napTimer=0,greeted=false;
-var SV_COLORS=['#ff4d00','#1fb37b','#e8b4e2','#ffc20e','#c3c5f6','#f8f4e4'];
+var SV_COLORS=['#f8f4e4','#ffc20e','#e8b4e2','#ff4d00','#c3c5f6','#fff'];
 function saver(on){
   clearTimeout(napTimer);cancelAnimationFrame(svRaf);sv.hidden=!on;if(!on)return;
   var W=innerWidth,H=innerHeight,w=176,h=112,x=Math.random()*(W-w),y=Math.random()*(H-h),vx=70,vy=52,ci=0,last=0;
