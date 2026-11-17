@@ -223,9 +223,11 @@ html[data-lang="zh"] .page h2{letter-spacing:.01em}
 .dlgbtns a,.dlgbtns button{min-width:80px;padding:4px 12px;border:0;background:var(--face);box-shadow:var(--out);color:#000;text-decoration:none;text-align:center}
 .dlgbtns a:active,.dlgbtns button:active{box-shadow:var(--in)}
 
-/* 屏保：没人坐到屏幕前时，一块 YW 在原来那种青绿底上弹来弹去 */
-#saver{position:fixed;inset:0;z-index:90;background:#2e7d7a;overflow:hidden;cursor:none}
-#saver svg{position:absolute;left:0;top:0;width:176px;height:112px;shape-rendering:crispEdges;color:#f8f4e4;will-change:transform}
+/* 待机：没人坐到屏幕前时，屏幕上只有原来那张青绿色桌面（图标、任务栏），窗口先收着 */
+#desktop{transition:background-color .35s}
+html.nap{--desk:#2e7d7a}
+html.nap #icons .icon{color:#fff}
+html.nap #desktop>.win,html.nap #tasks,html.nap #startmenu{visibility:hidden}
 
 /* CRT：只在嵌进三维显示器时叠加扫描线和暗角 */
 #crt{position:fixed;inset:0;pointer-events:none;z-index:200;display:none;
@@ -299,7 +301,6 @@ html.embed body{cursor:default}
   </ul>
 </div>
 
-<div id="saver" hidden aria-hidden="true"><svg viewBox="0 0 11 7"><path d="M0 0h1v1h-1zM4 0h1v1h-1zM0 1h1v1h-1zM4 1h1v1h-1zM1 2h1v1h-1zM3 2h1v1h-1zM2 3h1v1h-1zM2 4h1v1h-1zM2 5h1v1h-1zM2 6h1v1h-1zM6 0h1v1h-1zM10 0h1v1h-1zM6 1h1v1h-1zM10 1h1v1h-1zM6 2h1v1h-1zM10 2h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM10 3h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM10 4h1v1h-1zM6 5h2v1h-2zM9 5h2v1h-2zM6 6h1v1h-1zM10 6h1v1h-1z" fill="currentColor"/></svg></div>
 <div id="boot" hidden aria-hidden="true"></div>
 <div id="crt" aria-hidden="true"></div>
 
@@ -499,7 +500,7 @@ tick();setInterval(tick,10000);
 addEventListener('message',function(e){
   if(e.origin!==location.origin||!e.data||!e.data.yw)return;
   if(e.data.type==='power')powerOn();
-  if(e.data.type==='focus'){if(e.data.on)wake();else if(booted){clearTimeout(napTimer);napTimer=setTimeout(function(){saver(true)},1200)}}
+  if(e.data.type==='focus'){if(e.data.on)wake();else if(booted){clearTimeout(napTimer);napTimer=setTimeout(function(){nap(true)},1200)}}
   if(e.data.type==='ping')post({type:'ready'});
   if(e.data.type==='lang'&&e.data.lang!==d.dataset.lang){d.dataset.lang=e.data.lang;tick()}
   if(e.data.type==='sound'){sound=e.data.on;paintSnd()}
@@ -659,25 +660,12 @@ document.addEventListener('keydown',function(e){if(e.key!=='Escape')return;if(!s
 
 /* ---------- 开机 ---------- */
 var booted=false;
-function powerOn(){if(booted)return;booted=true;$('#boot').hidden=true;if(EMBED)saver(true);else openShow('#about')}
-/* 屏保只在嵌进三维显示器时出现：坐到屏幕前（外层发 focus，或者直接点到了屏幕）才收起，第一次收起时打开“关于我” */
-var sv=$('#saver'),svLogo=$('svg',sv),svRaf=0,napTimer=0,greeted=false;
-var SV_COLORS=['#f8f4e4','#ffc20e','#e8b4e2','#ff4d00','#c3c5f6','#fff'];
-function saver(on){
-  clearTimeout(napTimer);cancelAnimationFrame(svRaf);sv.hidden=!on;if(!on)return;
-  var W=innerWidth,H=innerHeight,w=176,h=112,x=Math.random()*(W-w),y=Math.random()*(H-h),vx=70,vy=52,ci=0,last=0;
-  function paint(){svLogo.style.transform='translate('+Math.round(x)+'px,'+Math.round(y)+'px)'}
-  function hit(){ci=(ci+1)%SV_COLORS.length;svLogo.style.color=SV_COLORS[ci]}
-  if(reduce){x=(W-w)/2;y=(H-h)/2;paint();return}
-  (function step(now){
-    var dt=last?Math.min(.05,(now-last)/1000):0;last=now;x+=vx*dt;y+=vy*dt;
-    if(x<=0||x>=W-w){vx=-vx;x=Math.max(0,Math.min(W-w,x));hit()}
-    if(y<=0||y>=H-h){vy=-vy;y=Math.max(0,Math.min(H-h,y));hit()}
-    paint();svRaf=requestAnimationFrame(step);
-  })(0);
-}
-function wake(){clearTimeout(napTimer);if(!booted)return;saver(false);if(!greeted){greeted=true;openShow('#about')}}
-sv.addEventListener('pointerdown',function(e){e.preventDefault();e.stopPropagation();wake()});
+function powerOn(){if(booted)return;booted=true;$('#boot').hidden=true;if(EMBED)nap(true);else openShow('#about')}
+/* 待机只在嵌进三维显示器时出现：坐到屏幕前（外层发 focus，或者直接点到了屏幕）才醒，第一次醒来时打开“关于我” */
+var napTimer=0,greeted=false;
+function nap(on){clearTimeout(napTimer);d.classList.toggle('nap',on)}
+function wake(){clearTimeout(napTimer);if(!booted)return;nap(false);if(!greeted){greeted=true;openShow('#about')}}
+document.addEventListener('pointerdown',function(){if(d.classList.contains('nap'))wake()},true);
 /* 独立打开时直接开机；嵌在显示器里时等外层点“开始” */
 if(!EMBED)powerOn();else{$('#boot').hidden=false;post({type:'ready'})}
 })();
